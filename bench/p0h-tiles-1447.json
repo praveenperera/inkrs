@@ -1,0 +1,10 @@
+[
+ {"y0": 1024, "x0": 1440, "reverse": false},
+ {"y0": 1696, "x0": 736, "reverse": true},
+ {"y0": 1504, "x0": 224, "reverse": false},
+ {"y0": 1152, "x0": 384, "reverse": true},
+ {"y0": 256, "x0": 2656, "reverse": false},
+ {"y0": 2016, "x0": 1824, "reverse": true},
+ {"y0": 2304, "x0": 1408, "reverse": false},
+ {"y0": 1344, "x0": 224, "reverse": true}
+]
