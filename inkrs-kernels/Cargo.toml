@@ -1,0 +1,24 @@
+[package]
+name = "inkrs-kernels"
+version = "0.0.0"
+edition = "2024"
+publish = false
+license = "MIT OR Apache-2.0"
+description = "cuda-oxide device kernels for inkrs, compiled offline to the PTX the inkrs crate embeds"
+
+# standalone: cuda-oxide needs its pinned toolchain with rustc-dev, so this crate stays out of the
+# host crate's workspace and only scripts/build-ptx.sh builds it
+[workspace]
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+# cuda-oxide from NVIDIA/cuda-rust main at 8d8254869; Cargo.lock pins the same commit and
+# scripts/build-ptx.sh installs the cargo-oxide of that commit
+cuda-device = { git = "https://github.com/NVIDIA/cuda-rust.git", rev = "8d825486993f806903d8968232214ddafa8ed7da" }
+
+[features]
+# the Turing tier (scripts/build-ptx.sh builds sm_75 with it): FP16 packing and the tensor-core
+# product from instructions sm_75 has; see src/common.rs
+sm75 = []

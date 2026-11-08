@@ -1,0 +1,8 @@
+__nv_dsqrt_rn
+__nv_expf
+__nv_fmaxf
+__nv_fminf
+__nv_logf
+__nv_rintf
+__nv_rsqrtf
+__nv_sqrtf

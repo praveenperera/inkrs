@@ -1,0 +1,366 @@
+ptxas info    : 8 bytes gmem
+ptxas info    : Compiling entry function 'v8_up2cat' for 'sm_120'
+ptxas info    : Function properties for v8_up2cat
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 0 barriers
+ptxas info    : Compile time = 16.197 ms
+ptxas info    : Compiling entry function 'v8_stem' for 'sm_120'
+ptxas info    : Function properties for v8_stem
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 96 registers, used 1 barriers, 39296 bytes smem
+ptxas info    : Compile time = 28.909 ms
+ptxas info    : Compiling entry function 'v8_stats' for 'sm_120'
+ptxas info    : Function properties for v8_stats
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 32 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 11.058 ms
+ptxas info    : Compiling entry function 'v8_head' for 'sm_120'
+ptxas info    : Function properties for v8_head
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 30 registers, used 0 barriers
+ptxas info    : Compile time = 5.796 ms
+ptxas info    : Compiling entry function 'v8_epilogue' for 'sm_120'
+ptxas info    : Function properties for v8_epilogue
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, used 0 barriers
+ptxas info    : Compile time = 1.982 ms
+ptxas info    : Compiling entry function 'v8_dmax' for 'sm_120'
+ptxas info    : Function properties for v8_dmax
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, used 0 barriers
+ptxas info    : Compile time = 3.171 ms
+ptxas info    : Compiling entry function 'v8_blend' for 'sm_120'
+ptxas info    : Function properties for v8_blend
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, used 0 barriers
+ptxas info    : Compile time = 6.986 ms
+ptxas info    : Compiling entry function 'u3_up' for 'sm_120'
+ptxas info    : Function properties for u3_up
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 0 barriers
+ptxas info    : Compile time = 3.060 ms
+ptxas info    : Compiling entry function 'u3_prep' for 'sm_120'
+ptxas info    : Function properties for u3_prep
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 12 registers, used 0 barriers
+ptxas info    : Compile time = 2.431 ms
+ptxas info    : Compiling entry function 'u3_pool2' for 'sm_120'
+ptxas info    : Function properties for u3_pool2
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 26 registers, used 0 barriers
+ptxas info    : Compile time = 3.892 ms
+ptxas info    : Compiling entry function 'u3_partial' for 'sm_120'
+ptxas info    : Function properties for u3_partial
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 29 registers, used 1 barriers, 6144 bytes smem
+ptxas info    : Compile time = 8.613 ms
+ptxas info    : Compiling entry function 'u3_hist' for 'sm_120'
+ptxas info    : Function properties for u3_hist
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 1 barriers, 1024 bytes smem
+ptxas info    : Compile time = 2.440 ms
+ptxas info    : Compiling entry function 'u3_head_blend' for 'sm_120'
+ptxas info    : Function properties for u3_head_blend
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 23 registers, used 0 barriers
+ptxas info    : Compile time = 5.911 ms
+ptxas info    : Compiling entry function 'u3_finish' for 'sm_120'
+ptxas info    : Function properties for u3_finish
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 0 barriers
+ptxas info    : Compile time = 3.298 ms
+ptxas info    : Compiling entry function 'u3_finalize' for 'sm_120'
+ptxas info    : Function properties for u3_finalize
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 1 barriers, 3072 bytes smem
+ptxas info    : Compile time = 14.459 ms
+ptxas info    : Compiling entry function 'u3_covered' for 'sm_120'
+ptxas info    : Function properties for u3_covered
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 10 registers, used 0 barriers
+ptxas info    : Compile time = 0.847 ms
+ptxas info    : Compiling entry function 'u3_apply_pool' for 'sm_120'
+ptxas info    : Function properties for u3_apply_pool
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 48 registers, used 0 barriers
+ptxas info    : Compile time = 8.605 ms
+ptxas info    : Compiling entry function 'u3_apply' for 'sm_120'
+ptxas info    : Function properties for u3_apply
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 36 registers, used 0 barriers
+ptxas info    : Compile time = 5.362 ms
+ptxas info    : Compiling entry function 'tta_rot90_u8' for 'sm_120'
+ptxas info    : Function properties for tta_rot90_u8
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 12 registers, used 0 barriers
+ptxas info    : Compile time = 1.587 ms
+ptxas info    : Compiling entry function 'tta_combine' for 'sm_120'
+ptxas info    : Function properties for tta_combine
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 20 registers, used 0 barriers
+ptxas info    : Compile time = 4.127 ms
+ptxas info    : Compiling entry function 'tta_blend_mirror4' for 'sm_120'
+ptxas info    : Function properties for tta_blend_mirror4
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 51 registers, used 0 barriers
+ptxas info    : Compile time = 9.936 ms
+ptxas info    : Compiling entry function 'tile_sum_384' for 'sm_120'
+ptxas info    : Function properties for tile_sum_384
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 38 registers, used 1 barriers, 128 bytes smem
+ptxas info    : Compile time = 6.651 ms
+ptxas info    : Compiling entry function 'tile_std_finish_384' for 'sm_120'
+ptxas info    : Function properties for tile_std_finish_384
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, used 1 barriers, 36 bytes smem
+ptxas info    : Compile time = 5.895 ms
+ptxas info    : Compiling entry function 'tile_std' for 'sm_120'
+ptxas info    : Function properties for tile_std
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 45 registers, used 1 barriers, 8196 bytes smem
+ptxas info    : Compile time = 20.951 ms
+ptxas info    : Compiling entry function 'tile_stats' for 'sm_120'
+ptxas info    : Function properties for tile_stats
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 24 registers, used 0 barriers
+ptxas info    : Compile time = 23.001 ms
+ptxas info    : Compiling entry function 'tile_sq_384' for 'sm_120'
+ptxas info    : Function properties for tile_sq_384
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 38 registers, used 1 barriers, 160 bytes smem
+ptxas info    : Compile time = 11.059 ms
+ptxas info    : Compiling entry function 'tile_norm_384' for 'sm_120'
+ptxas info    : Function properties for tile_norm_384
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 27 registers, used 0 barriers
+ptxas info    : Compile time = 4.884 ms
+ptxas info    : Compiling entry function 'tile_norm' for 'sm_120'
+ptxas info    : Function properties for tile_norm
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 27 registers, used 0 barriers
+ptxas info    : Compile time = 4.849 ms
+ptxas info    : Compiling entry function 'tile_hist_384' for 'sm_120'
+ptxas info    : Function properties for tile_hist_384
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, used 1 barriers, 1024 bytes smem
+ptxas info    : Compile time = 1.792 ms
+ptxas info    : Compiling entry function 'tile_hist' for 'sm_120'
+ptxas info    : Function properties for tile_hist
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 13 registers, used 1 barriers, 1024 bytes smem
+ptxas info    : Compile time = 1.761 ms
+ptxas info    : Compiling entry function 'stem2_finalize_384' for 'sm_120'
+ptxas info    : Function properties for stem2_finalize_384
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 40 registers, used 0 barriers
+ptxas info    : Compile time = 11.444 ms
+ptxas info    : Compiling entry function 'stem2_finalize' for 'sm_120'
+ptxas info    : Function properties for stem2_finalize
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 40 registers, used 0 barriers
+ptxas info    : Compile time = 11.427 ms
+ptxas info    : Compiling entry function 'stem2_conv_384' for 'sm_120'
+ptxas info    : Function properties for stem2_conv_384
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 81 registers, used 1 barriers, 32896 bytes smem
+ptxas info    : Compile time = 29.454 ms
+ptxas info    : Compiling entry function 'stem2_conv' for 'sm_120'
+ptxas info    : Function properties for stem2_conv
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 82 registers, used 1 barriers, 32896 bytes smem
+ptxas info    : Compile time = 30.327 ms
+ptxas info    : Compiling entry function 'stem1_stats_384' for 'sm_120'
+ptxas info    : Function properties for stem1_stats_384
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 56 registers, used 1 barriers, 8376 bytes smem
+ptxas info    : Compile time = 22.124 ms
+ptxas info    : Compiling entry function 'stem1_stats' for 'sm_120'
+ptxas info    : Function properties for stem1_stats
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 56 registers, used 1 barriers, 8376 bytes smem
+ptxas info    : Compile time = 17.948 ms
+ptxas info    : Compiling entry function 'stem1_finalize_384' for 'sm_120'
+ptxas info    : Function properties for stem1_finalize_384
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 40 registers, used 0 barriers
+ptxas info    : Compile time = 10.131 ms
+ptxas info    : Compiling entry function 'stem1_finalize' for 'sm_120'
+ptxas info    : Function properties for stem1_finalize
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 34 registers, used 0 barriers
+ptxas info    : Compile time = 6.868 ms
+ptxas info    : Compiling entry function 'stem1_apply_384' for 'sm_120'
+ptxas info    : Function properties for stem1_apply_384
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 60 registers, used 1 barriers, 7800 bytes smem
+ptxas info    : Compile time = 19.603 ms
+ptxas info    : Compiling entry function 'stem1_apply' for 'sm_120'
+ptxas info    : Function properties for stem1_apply
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 56 registers, used 1 barriers, 7800 bytes smem
+ptxas info    : Compile time = 16.409 ms
+ptxas info    : Compiling entry function 'in_partial' for 'sm_120'
+ptxas info    : Function properties for in_partial
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 38 registers, used 1 barriers, 4096 bytes smem
+ptxas info    : Compile time = 6.052 ms
+ptxas info    : Compiling entry function 'in_finalize' for 'sm_120'
+ptxas info    : Function properties for in_finalize
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 36 registers, used 0 barriers
+ptxas info    : Compile time = 7.557 ms
+ptxas info    : Compiling entry function 'in_apply' for 'sm_120'
+ptxas info    : Function properties for in_apply
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 30 registers, used 0 barriers
+ptxas info    : Compile time = 3.255 ms
+ptxas info    : Compiling entry function 'hec_up2cat' for 'sm_120'
+ptxas info    : Function properties for hec_up2cat
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 35 registers, used 0 barriers
+ptxas info    : Compile time = 5.279 ms
+ptxas info    : Compiling entry function 'hec_head' for 'sm_120'
+ptxas info    : Function properties for hec_head
+    192 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 40 registers, used 0 barriers, 192 bytes cumulative stack size
+ptxas info    : Compile time = 15.212 ms
+ptxas info    : Compiling entry function 'hec_gather' for 'sm_120'
+ptxas info    : Function properties for hec_gather
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 29 registers, used 0 barriers
+ptxas info    : Compile time = 5.214 ms
+ptxas info    : Compiling entry function 'hec_blend' for 'sm_120'
+ptxas info    : Function properties for hec_blend
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 36 registers, used 0 barriers
+ptxas info    : Compile time = 6.066 ms
+ptxas info    : Compiling entry function 'hec_affine' for 'sm_120'
+ptxas info    : Function properties for hec_affine
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 0 barriers
+ptxas info    : Compile time = 3.241 ms
+ptxas info    : Compiling entry function 'head_logits_384' for 'sm_120'
+ptxas info    : Function properties for head_logits_384
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 40 registers, used 0 barriers
+ptxas info    : Compile time = 3.051 ms
+ptxas info    : Compiling entry function 'head_logits' for 'sm_120'
+ptxas info    : Function properties for head_logits
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 40 registers, used 0 barriers
+ptxas info    : Compile time = 3.009 ms
+ptxas info    : Compiling entry function 'gn_partial' for 'sm_120'
+ptxas info    : Function properties for gn_partial
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 40 registers, used 1 barriers, 2048 bytes smem
+ptxas info    : Compile time = 6.777 ms
+ptxas info    : Compiling entry function 'gn_finalize' for 'sm_120'
+ptxas info    : Function properties for gn_finalize
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 34 registers, used 0 barriers
+ptxas info    : Compile time = 7.216 ms
+ptxas info    : Compiling entry function 'depth_pool' for 'sm_120'
+ptxas info    : Function properties for depth_pool
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 56 registers, used 0 barriers
+ptxas info    : Compile time = 33.756 ms
+ptxas info    : Compiling entry function 'conv_s2_p8x16_n64' for 'sm_120'
+ptxas info    : Function properties for conv_s2_p8x16_n64
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 238 registers, used 1 barriers, 38400 bytes smem
+ptxas info    : Compile time = 30.721 ms
+ptxas info    : Compiling entry function 'conv_s2_p8_n64' for 'sm_120'
+ptxas info    : Function properties for conv_s2_p8_n64
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 242 registers, used 1 barriers, 38400 bytes smem
+ptxas info    : Compile time = 41.590 ms
+ptxas info    : Compiling entry function 'conv_s2_p4x1_n32' for 'sm_120'
+ptxas info    : Function properties for conv_s2_p4x1_n32
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 164 registers, used 1 barriers, 10752 bytes smem
+ptxas info    : Compile time = 24.883 ms
+ptxas info    : Compiling entry function 'conv_s2_p4_n32' for 'sm_120'
+ptxas info    : Function properties for conv_s2_p4_n32
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 166 registers, used 1 barriers, 42496 bytes smem
+ptxas info    : Compile time = 25.227 ms
+ptxas info    : Compiling entry function 'conv_s1_p8_n64_m4' for 'sm_120'
+ptxas info    : Function properties for conv_s1_p8_n64_m4
+    8 bytes stack frame, 8 bytes spill stores, 8 bytes spill loads
+ptxas info    : Used 128 registers, used 1 barriers, 8 bytes cumulative stack size, 20480 bytes smem
+ptxas info    : Compile time = 50.407 ms
+ptxas info    : Compiling entry function 'conv_s1_p8_n64' for 'sm_120'
+ptxas info    : Function properties for conv_s1_p8_n64
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 242 registers, used 1 barriers, 20480 bytes smem
+ptxas info    : Compile time = 42.992 ms
+ptxas info    : Compiling entry function 'conv_s1_p8_n32' for 'sm_120'
+ptxas info    : Function properties for conv_s1_p8_n32
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 162 registers, used 1 barriers, 19840 bytes smem
+ptxas info    : Compile time = 27.007 ms
+ptxas info    : Compiling entry function 'conv_s1_p4x1_n32' for 'sm_120'
+ptxas info    : Function properties for conv_s1_p4x1_n32
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 160 registers, used 1 barriers, 7168 bytes smem
+ptxas info    : Compile time = 26.490 ms
+ptxas info    : Compiling entry function 'conv_s1_p4_n32' for 'sm_120'
+ptxas info    : Function properties for conv_s1_p4_n32
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 160 registers, used 1 barriers, 28672 bytes smem
+ptxas info    : Compile time = 27.876 ms
+ptxas info    : Compiling entry function 'conv_s1_p4_n16' for 'sm_120'
+ptxas info    : Function properties for conv_s1_p4_n16
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 123 registers, used 1 barriers, 28160 bytes smem
+ptxas info    : Compile time = 19.520 ms
+ptxas info    : Compiling entry function 'conv_s1_p16_n64' for 'sm_120'
+ptxas info    : Function properties for conv_s1_p16_n64
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 255 registers, used 1 barriers, 43776 bytes smem
+ptxas info    : Compile time = 81.216 ms
+ptxas info    : Compiling entry function 'conv_s1_p16_n32_m2' for 'sm_120'
+ptxas info    : Function properties for conv_s1_p16_n32_m2
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 128 registers, used 1 barriers, 42624 bytes smem
+ptxas info    : Compile time = 43.419 ms
+ptxas info    : Compiling entry function 'conv_s1_p16_n32' for 'sm_120'
+ptxas info    : Function properties for conv_s1_p16_n32
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 198 registers, used 1 barriers, 42624 bytes smem
+ptxas info    : Compile time = 36.058 ms
+ptxas info    : Compiling entry function 'conv_k1_p8_n64' for 'sm_120'
+ptxas info    : Function properties for conv_k1_p8_n64
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 144 registers, used 1 barriers, 13568 bytes smem
+ptxas info    : Compile time = 24.062 ms
+ptxas info    : Compiling entry function 'conv_k1_p16_n64' for 'sm_120'
+ptxas info    : Function properties for conv_k1_p16_n64
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 228 registers, used 1 barriers, 35072 bytes smem
+ptxas info    : Compile time = 30.909 ms
+ptxas info    : Compiling entry function 'conv_in_merge' for 'sm_120'
+ptxas info    : Function properties for conv_in_merge
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 40 registers, used 0 barriers
+ptxas info    : Compile time = 12.476 ms
+ptxas info    : Compiling entry function 'cat_up' for 'sm_120'
+ptxas info    : Function properties for cat_up
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 16 registers, used 0 barriers
+ptxas info    : Compile time = 3.034 ms
+ptxas info    : Compiling entry function 'blend_finish_384' for 'sm_120'
+ptxas info    : Function properties for blend_finish_384
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 37 registers, used 0 barriers
+ptxas info    : Compile time = 7.759 ms
+ptxas info    : Compiling entry function 'blend_finish' for 'sm_120'
+ptxas info    : Function properties for blend_finish
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 37 registers, used 0 barriers
+ptxas info    : Compile time = 7.712 ms
+ptxas info    : Compiling entry function 'avgpool2' for 'sm_120'
+ptxas info    : Function properties for avgpool2
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 18 registers, used 0 barriers
+ptxas info    : Compile time = 2.386 ms
