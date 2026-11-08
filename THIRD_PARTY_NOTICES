@@ -1,0 +1,158 @@
+Third-party notices for inkrs
+
+inkrs's own licence does not cover the material below. Each entry names the upstream work, says which
+files here carry or port it, and reproduces its licence.
+
+========================================================================================================
+1. pherc343-first-letters, Erwin Nieuwlaar (MIT)
+   https://github.com/Nieuwlaar/pherc343-first-letters, commit e8370f1
+
+   Covers: scripts/c_letters.py. It transcribes the per-model reading of ink/scripts/ensemble_maps.py
+   (u = clip((v - 64) / 128), the valid-pixel mask, stats pooled over the reading-side maps, the p1 and
+   p99.5 stretch from the 129-bin histogram, the per-model 8-bit image and the z-score) for one model,
+   and imports read_map, pct_hist and to8 from that file at run time. The letter boxes the script reads
+   come from the same repository and are not included here.
+
+MIT License
+
+Copyright (c) 2026 Erwin Nieuwlaar
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+========================================================================================================
+2. villa, Vesuvius Challenge (MIT), commit 0fb38c45
+   https://github.com/ScrollPrize/villa
+
+   Covers: the Rust ports of villa's ink inference (vesuvius/src/vesuvius/ink_detection):
+   - src/model.rs, inkrs-kernels/src/stem.rs, inkrs-kernels/src/inorm.rs, inkrs-kernels/src/layout.rs:
+     the Local3DStem2DUNet network and its LocalDepthFusionStem, layer for layer, under PyTorch's FP16
+     autocast semantics
+   - src/sched.rs, inkrs-kernels/src/blend.rs: infer.py's tile positions (_sliding_positions_1d,
+     iter_blocks), its empty-tile skips and occupancy-level choice, the floored Hann blend window,
+     the accumulation order and the uint8 finish
+   - inkrs-kernels/src/tiles.rs: normalize_robust
+   - src/zarr.rs, src/main.rs: the input level, layer selection and output naming villa uses
+   The scripts p0_torch.py, export_weights.py and villa_coverage.py import villa at run time to build
+   references; they do not copy its code.
+
+MIT License
+
+Copyright (c) 2024 Vesuvius Challenge
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+========================================================================================================
+3. NVIDIA libdevice (CUDA Toolkit 13.2, NVIDIA CUDA Toolkit End User License Agreement)
+
+   Covers: ptx/inkrs.sm80.ptx and ptx/inkrs.sm120.ptx. scripts/build-ptx.sh links libdevice.10.bc
+   (its SHA-256 is in ptx/tools.txt) into the kernels of both, so the PTX contains compiled code from
+   libdevice's __nv_dsqrt_rn, __nv_expf, __nv_sqrtf, __nv_fmaxf, __nv_fminf, __nv_logf, __nv_rintf and __nv_rsqrtf.
+   libdevice is listed as distributable in Attachment A of the CUDA EULA, and that code is
+   distributed under the EULA's terms, not under inkrs's licence. The EULA is at
+   https://docs.nvidia.com/cuda/eula/ and in each CUDA Toolkit as EULA.txt.
+
+========================================================================================================
+4. cuda-oxide device crate, NVIDIA (Apache License 2.0), from github.com/NVIDIA/cuda-rust at
+   8d825486993f806903d8968232214ddafa8ed7da
+
+   Covers: ptx/inkrs.sm80.ptx and ptx/inkrs.sm120.ptx. The kernels in inkrs-kernels/ call the
+   cuda-device crate's intrinsics and conversions, which are compiled into the PTX. The crate itself is
+   a build dependency and is not included here. Its licence, with NVIDIA's copyright line, is in
+   licenses/cuda-rust-LICENSE.
+
+   Copyright (c) 2024-2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+   Licensed under the Apache License, Version 2.0 (licenses/cuda-rust-LICENSE).
+
+========================================================================================================
+5. reader-v2, Domenico Russo (MIT), github.com/DomRusso2/reader-v2 at 02c7b46
+
+   Covers: scripts/make_hecate_inputs.py, which carries resample_96 from scripts/infer_with_hecate.py
+   unchanged, to build the 9.6 um input the published Hecate maps were made from. The reader-v2 weights
+   (huggingface.co/domenicor046/reader-v2) are not included here.
+
+MIT License
+
+Copyright (c) 2026 Domenico Russo
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+========================================================================================================
+6. Hecate, Vesuvius Challenge (MIT), huggingface.co/scrollprize/hecate at
+   9cb86e500e944b11a06a7020403cde5dffb5bcb2
+
+   Covers: the Rust port of hecate.py (sha256 c232c18a...8da59) for the 9.6 um release:
+   - src/hecate.rs, src/hecate/model.rs, src/hecate/engine.rs, inkrs-kernels/src/hecate.rs: the
+     network (ResNet-152 3D encoder, U-Net decoder, depth-attention head) under PyTorch's fp32 and bf16
+     autocast semantics, and predict's tiling, empty-tile skip, Hann blend, uint8 finish, PNG and JSON
+   scripts/export_hecate.py and scripts/p0_hecate.py import hecate.py at run time to build the export
+   and references; they do not copy its code. The weights are not included here.
+
+MIT License
+
+Copyright (c) 2026 Vesuvius Challenge
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

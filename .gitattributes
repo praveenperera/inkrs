@@ -1,0 +1,5 @@
+# LF in every checkout, Windows included: the PTX tiers are embedded byte for byte (include_str!) and checked
+# against hashes, and the villa patches must apply as written, so CRLF would change what a build ships
+* text=auto eol=lf
+# float fixtures are raw little-endian bytes
+*.f32 binary
