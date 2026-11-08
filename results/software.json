@@ -1,0 +1,16 @@
+{
+ "gpu": "NVIDIA GeForce RTX 5090",
+ "driver": "595.99.02",
+ "inkrs": {
+  "rustc": "1.99.1 (58cf8f9c3 2026-10-13)",
+  "cuda_libraries": "13.2",
+  "cudnn": 92700,
+  "source": "cudnn from inkrs-report-*.json; rustc and CUDA from the build record"
+ },
+ "villa_and_inksweep": {
+  "torch": "2.13.0+cu129",
+  "cuda": "12.9",
+  "cudnn": 92000,
+  "source": "inksweep's own run record (software.torch, software.cuda, software.cudnn); villa ran in an environment with the same torch build"
+ }
+}

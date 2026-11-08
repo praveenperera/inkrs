@@ -1,0 +1,78 @@
+{
+ "what": "the PHerc. 343 recipe slice: the plain 66 x 2560 x 6720 render, d 0..1, both sides, dense_native, ink_9um 42 and 43 and Hecate 9.6, then the recipe's ensemble, timed from process start to the ensemble's exit; control: the recipe's run_depth_sweep.sh, experiment: inkrs; 2 warm-up arms and 6 pairs in alternating order, every arm's ensemble through scripts/recipe343_gate.py combine. single_runs: one untimed run each of the recipe's runner and villa main with #2428's flags. per_model: inkrs's GPU time in one run of the slice",
+ "gpu": "RTX 5090, driver 595.99.02",
+ "ab": {
+  "pairs": [
+   {
+    "order": "AB",
+    "control_s": 550.769,
+    "experiment_s": 338.175,
+    "ratio": 1.6286508464552376
+   },
+   {
+    "order": "BA",
+    "control_s": 556.681,
+    "experiment_s": 338.289,
+    "ratio": 1.6455781890631975
+   },
+   {
+    "order": "AB",
+    "control_s": 548.047,
+    "experiment_s": 338.46,
+    "ratio": 1.6192371328960589
+   },
+   {
+    "order": "BA",
+    "control_s": 527.454,
+    "experiment_s": 326.519,
+    "ratio": 1.6153853221405186
+   },
+   {
+    "order": "AB",
+    "control_s": 533.044,
+    "experiment_s": 336.326,
+    "ratio": 1.5849027431718035
+   },
+   {
+    "order": "BA",
+    "control_s": 540.501,
+    "experiment_s": 338.315,
+    "ratio": 1.5976264723704239
+   }
+  ],
+  "median_s": {
+   "control": 544.274,
+   "experiment": 338.23199999999997
+  },
+  "arms_through_gate": 14,
+  "ratio_mean": 1.6152301176828734,
+  "ratio_ci95": [
+   1.592494198666557,
+   1.6379660366991897
+  ]
+ },
+ "inkrs_stage_medians_s": {
+  "sweep-plain": 9.545,
+  "hecate-plain": 283.139,
+  "total": 337.721
+ },
+ "single_runs_s": {
+  "recipe": 550.265,
+  "pr2428": 631.402
+ },
+ "per_model": {
+  "runs": "the median over the logged runs of each (dense_native 1, Hecate several); tiles_per_s is the log's, over the run's wall with reads and uploads, not GPU time alone",
+  "dense_native": {
+   "tiles": 13985,
+   "gpu_s": 2.061,
+   "tiles_per_s": 5545,
+   "gpu_us_per_tile": 147.37218448337507
+  },
+  "hecate_fp32": {
+   "tiles": 8861,
+   "gpu_s": 68.799,
+   "tiles_per_s": 129,
+   "gpu_ms_per_tile": 7.764247827558967
+  }
+ }
+}

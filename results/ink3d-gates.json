@@ -1,0 +1,40 @@
+{
+ "what": "inkrs ink3d with villa's ink_3d_dino_guided v3 (ckpt_78k_fullsup) on a 245-patch crop of a uint8 scan volume, 256^3 patches at villa's overlap 0.5 (and 0.25), against villa eager in bf16 with its GPU blend, written uint8; values in 1/255 steps; sm80 is forced on the RTX 5090. The villa contract is r >= 0.9994, p99.9 <= 4/255 and identical coverage",
+ "gpu": "RTX 5090, driver 595.99.02",
+ "map_sm120": {
+  "voxels": 805306368,
+  "max_abs": 7,
+  "p999_abs": 1,
+  "zero_mismatch_voxels": 99,
+  "villa_covered": 801534680,
+  "new_covered": 801534680,
+  "coverage_mismatch": 0,
+  "r": 0.9999960711692207,
+  "frac_differ": 0.020864245792230007,
+  "frac_differ_gt1": 0.00028937185804049176
+ },
+ "map_sm80": {
+  "voxels": 805306368,
+  "max_abs": 7,
+  "p999_abs": 1,
+  "zero_mismatch_voxels": 99,
+  "villa_covered": 801534680,
+  "new_covered": 801534680,
+  "coverage_mismatch": 0,
+  "r": 0.9999960711692207,
+  "frac_differ": 0.020864245792230007,
+  "frac_differ_gt1": 0.00028937185804049176
+ },
+ "map_overlap_0_25_sm120": {
+  "voxels": 805306368,
+  "max_abs": 8,
+  "p999_abs": 1,
+  "zero_mismatch_voxels": 98,
+  "villa_covered": 798312512,
+  "new_covered": 798312512,
+  "coverage_mismatch": 0,
+  "r": 0.9999962083722157,
+  "frac_differ": 0.022494292507568958,
+  "frac_differ_gt1": 0.0004175702730814616
+ }
+}

@@ -1,0 +1,60 @@
+{
+ "what": "The PHerc. 0306B product rule on its 41 x 1260 x 4410 claim crop, one command per arm: TRACE v3B with the method's 8-fold test-time augmentation over d -1..+1, the three A-hn seeds, then the method's fuse_v7.py; inkrs (scripts/recipe.py 306b-fuse) against the method's own code. 6 pairs in alternating order after 2 warm-up runs, every arm's fused map gated. ratio is the method's wall over inkrs's",
+ "build": "an earlier v0.2 build of inkrs",
+ "gpu": "RTX 5090, driver 595.99.02",
+ "host_load": {
+  "note": "other work loaded the host while it ran; the 1-min load at each arm's start and end is below",
+  "load1_at_arm_edges_min": 3.1,
+  "load1_at_arm_edges_max": 50.43
+ },
+ "ab": {
+  "pairs": [
+   {
+    "order": "AB",
+    "control_s": 650.554,
+    "experiment_s": 410.8,
+    "ratio": 1.5836270691333982
+   },
+   {
+    "order": "BA",
+    "control_s": 654.967,
+    "experiment_s": 379.827,
+    "ratio": 1.7243824162052723
+   },
+   {
+    "order": "AB",
+    "control_s": 650.407,
+    "experiment_s": 411.338,
+    "ratio": 1.5811984304878226
+   },
+   {
+    "order": "BA",
+    "control_s": 649.205,
+    "experiment_s": 422.566,
+    "ratio": 1.5363398853670198
+   },
+   {
+    "order": "AB",
+    "control_s": 616.102,
+    "experiment_s": 341.196,
+    "ratio": 1.8057128454026423
+   },
+   {
+    "order": "BA",
+    "control_s": 606.041,
+    "experiment_s": 326.221,
+    "ratio": 1.857762069272058
+   }
+  ],
+  "median_s": {
+   "control": 649.806,
+   "experiment": 395.3135
+  },
+  "arms_through_gate": 14,
+  "ratio_mean": 1.6815037859780355,
+  "ratio_ci95": [
+   1.541454624924014,
+   1.821552947032057
+  ]
+ }
+}

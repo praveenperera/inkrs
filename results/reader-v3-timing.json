@@ -1,0 +1,146 @@
+{
+ "what": "whole PHerc. 1447 segment, d -2..2, both directions, 10 maps; each time is the whole command from process start to exit. Warm: inksweep 0.1.0 readerv3 fast mode with --compile and --no-raw against inkrs sweep at batch 8, 2 untimed warm-up runs, then 6 pairs in alternating order sharing one compile cache; ratio is inksweep over inkrs. Cold: 3 rounds with every cache empty, villa main with #2428's flags one process per depth; ratios per round over inkrs, 95% t interval",
+ "gpu": "RTX 5090, driver 595.99.02",
+ "warm": {
+  "pairs": [
+   {
+    "order": "AB",
+    "control_s": 68.377,
+    "experiment_s": 5.105,
+    "ratio": 13.394123408423113
+   },
+   {
+    "order": "BA",
+    "control_s": 56.142,
+    "experiment_s": 4.771,
+    "ratio": 11.767344372249005
+   },
+   {
+    "order": "AB",
+    "control_s": 50.259,
+    "experiment_s": 4.768,
+    "ratio": 10.540897651006713
+   },
+   {
+    "order": "BA",
+    "control_s": 36.688,
+    "experiment_s": 4.866,
+    "ratio": 7.539662967529799
+   },
+   {
+    "order": "AB",
+    "control_s": 45.323,
+    "experiment_s": 5.16,
+    "ratio": 8.783527131782945
+   },
+   {
+    "order": "BA",
+    "control_s": 41.741,
+    "experiment_s": 4.873,
+    "ratio": 8.565770572542581
+   }
+  ],
+  "median_s": {
+   "control": 47.791,
+   "experiment": 4.8695
+  },
+  "arms_through_gate": 14,
+  "ratio_mean": 10.098554350589026,
+  "ratio_ci95": [
+   7.777049434586618,
+   12.420059266591434
+  ],
+  "inksweep_first_and_fastest_s": [
+   68.377,
+   36.688
+  ],
+  "inkrs_fastest_s": 4.768,
+  "best_against_best": 7.694630872483223
+ },
+ "cold_s": {
+  "inkrs": [
+   4.865,
+   4.811,
+   4.86
+  ],
+  "inksweep": [
+   139.564,
+   132.155,
+   132.573
+  ],
+  "villa": [
+   57.453,
+   80.956,
+   78.312
+  ]
+ },
+ "cold_range_s": {
+  "inkrs": [
+   4.811,
+   4.865
+  ],
+  "inksweep": [
+   132.155,
+   139.564
+  ],
+  "villa": [
+   57.453,
+   80.956
+  ]
+ },
+ "cold_inksweep_vs_inkrs": {
+  "rounds": [
+   28.687358684480984,
+   27.46934109332779,
+   27.278395061728396
+  ],
+  "mean": 27.811698279845725,
+  "ci95": [
+   25.912996317727227,
+   29.710400241964223
+  ]
+ },
+ "cold_villa_vs_inkrs": {
+  "rounds": [
+   11.809455292908531,
+   16.82727083766369,
+   16.11358024691358
+  ],
+  "mean": 14.916768792495267,
+  "ci95": [
+   8.173404837198314,
+   21.66013274779222
+  ]
+ },
+ "gpu_ms_per_384_tile": 1.8037999999999998,
+ "cold_map_checks": {
+  "inkrs-villa": {
+   "maps": 10,
+   "min_r": 0.9999966699566903,
+   "max_abs": 1.0,
+   "ok": true,
+   "clipped": false
+  },
+  "inksweep-inkrs": {
+   "maps": 10,
+   "min_r": 0.999987162690365,
+   "max_abs": 1.0,
+   "ok": true,
+   "clipped": true
+  },
+  "inksweep-raw": {
+   "maps": 2,
+   "min_r": 0.9999956264988075,
+   "max_abs": 1.0,
+   "ok": true,
+   "clipped": false
+  },
+  "villa-main": {
+   "maps": 2,
+   "min_r": 0.9999973889475775,
+   "max_abs": 1.0,
+   "ok": true,
+   "clipped": false
+  }
+ }
+}

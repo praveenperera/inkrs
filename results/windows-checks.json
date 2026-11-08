@@ -1,0 +1,62 @@
+{
+ "what": "the Windows x86-64 build (x86_64-pc-windows-msvc, static CRT), cross-built on Linux with cargo-xwin, which supplies the MSVC CRT and Windows SDK. clippy on every target with warnings denied, the test binaries, the CLI and the abi3 wheel (maturin) all build; the DLLs the CLI and the wheel's module import at load time, read from their PE import tables; and the unit tests that need no GPU, run under Wine. Nothing here ran on Windows itself or on a GPU under Windows",
+ "target": "x86_64-pc-windows-msvc",
+ "builds": {
+  "clippy_all_targets": true,
+  "test_binaries": true,
+  "cli": true,
+  "wheel": "inkrs-0.2.0-cp39-abi3-win_amd64.whl"
+ },
+ "imports": {
+  "cli": [
+   "api-ms-win-core-synch-l1-2-0.dll",
+   "bcryptprimitives.dll",
+   "KERNEL32.dll",
+   "ntdll.dll"
+  ],
+  "python_module": [
+   "api-ms-win-core-synch-l1-2-0.dll",
+   "bcryptprimitives.dll",
+   "kernel32.dll",
+   "ntdll.dll",
+   "python3.dll"
+  ],
+  "delay_load": []
+ },
+ "wine_unit_tests": {
+  "library": {
+   "passed": 70,
+   "ignored": 4,
+   "filtered_out": 0
+  },
+  "cli": {
+   "passed": 2,
+   "ignored": 0,
+   "filtered_out": 0
+  },
+  "dll_search_alone": {
+   "passed": 9,
+   "ignored": 2,
+   "filtered_out": 63
+  },
+  "passed": 72,
+  "ignored": [
+   {
+    "test": "dll::tests::child_restricts_the_search",
+    "reason": "run by after_startup_a_dll_planted_in_the_current_directory_is_not_opened in a child process"
+   },
+   {
+    "test": "dll::tests::child_searches_the_process_environment",
+    "reason": "run by the_process_search_skips_the_current_directory_and_relative_path in a child process"
+   },
+   {
+    "test": "dnn::algo_cache::tests::proc_and_nvml_name_the_same_release",
+    "reason": "needs an NVIDIA driver"
+   },
+   {
+    "test": "gpu::tests::embedded_ptx_matches_its_sources",
+    "reason": "check-ptx.sh is a bash script; the Linux build runs it"
+   }
+  ]
+ }
+}

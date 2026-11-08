@@ -1,0 +1,77 @@
+{
+ "note": "mapdiff --exact: 'r343-matched-vs-gate' = maps-only run vs the run with coverage and finite check; '*-pass<k>' = pass k vs pass 1; 's1-vs-earlier-build' = this build's S1 maps vs an earlier build of the same engine source, whose maps p1-s1.json gates",
+ "runs": {
+  "r343-gate-pass2": {
+   "maps": 18,
+   "identical": 18,
+   "min_r": 0.9999999999999998,
+   "max_abs": 0.0,
+   "min_equal_share": 1.0,
+   "pass": true
+  },
+  "r343-matched-vs-gate": {
+   "maps": 18,
+   "identical": 18,
+   "min_r": 0.9999999999999998,
+   "max_abs": 0.0,
+   "min_equal_share": 1.0,
+   "pass": true
+  },
+  "r343-pass2": {
+   "maps": 18,
+   "identical": 18,
+   "min_r": 0.9999999999999998,
+   "max_abs": 0.0,
+   "min_equal_share": 1.0,
+   "pass": true
+  },
+  "r343-pass3": {
+   "maps": 18,
+   "identical": 18,
+   "min_r": 0.9999999999999998,
+   "max_abs": 0.0,
+   "min_equal_share": 1.0,
+   "pass": true
+  },
+  "r343-pass4": {
+   "maps": 18,
+   "identical": 18,
+   "min_r": 0.9999999999999998,
+   "max_abs": 0.0,
+   "min_equal_share": 1.0,
+   "pass": true
+  },
+  "s1-vs-earlier-build": {
+   "maps": 18,
+   "identical": 18,
+   "min_r": 0.9999999999999998,
+   "max_abs": 0.0,
+   "min_equal_share": 1.0,
+   "pass": true
+  },
+  "s1-pass2": {
+   "maps": 18,
+   "identical": 18,
+   "min_r": 0.9999999999999998,
+   "max_abs": 0.0,
+   "min_equal_share": 1.0,
+   "pass": true
+  },
+  "s1-pass3": {
+   "maps": 18,
+   "identical": 18,
+   "min_r": 0.9999999999999998,
+   "max_abs": 0.0,
+   "min_equal_share": 1.0,
+   "pass": true
+  },
+  "s1-pass4": {
+   "maps": 18,
+   "identical": 18,
+   "min_r": 0.9999999999999998,
+   "max_abs": 0.0,
+   "min_equal_share": 1.0,
+   "pass": true
+  }
+ }
+}

@@ -1,0 +1,686 @@
+{
+ "what": "inkrs against two other public ink runners, each a whole command (process start to exit) on the same RTX 5090, inputs and model window: UFSM, a C/CUDA port of the readers, Hecate and v8-in with its own fp16 tensor-core convolutions compiled ahead to SASS, and ink-sdk's v8-in lane. speedup is the alternative's wall over inkrs's, above 1 when inkrs is faster. Warm runs share each runner's caches across arms; in the cold runs every inkrs arm starts with empty inkrs and CUDA driver caches, so it compiles its PTX and, for Hecate, times cuDNN's algorithms. Each run is 2 untimed warm-ups then 6 pairs in ABBA order (ink-sdk: three jobs of 2 pairs, no warm-ups); the A/A noise is a run of inkrs against itself on the same model. Parity scores each runner's map against the references the inkrs gates use (villa eager, hecate.py, the v8-in release maps), in 1/255 levels; UFSM writes no coverage mask, so its coverage is checked by value. UFSM implements only v8-in's release convention, so its A-hn map fails against the PHerc. 306B recipe's convention. UFSM has no licence: only these measurements are published, not its code or maps",
+ "gpu": "RTX 5090, driver 595.99.02",
+ "date": "2026-11-11/12",
+ "build": "an earlier v0.2 build; carry gives its A/Bs, through one intermediate build, to this binary, on the reader-v2, Reader V3, Hecate, 3D U-Net and v8-in benches, none slower",
+ "alternatives": {
+  "ufsm": "UFSM ink-ext, built locally for sm_120; fp16 only",
+  "ink-sdk": "ink-sdk's v8-in lane (MIT), with PyTorch 2.13 cu129"
+ },
+ "models": {
+  "s42": "hybrid_3d2d-seed42 (ink_9um), one map (layers 25-41, forward) of S1, stride 64; inkrs batch 64, UFSM batch 64",
+  "v3": "Reader V3, one map (layers 25-41, forward) of S1, stride 192; batch 8 on both",
+  "hec-bf16": "Hecate 9.6 um, one map (forward) of the whole PHerc. 1447 segment at 9.6 um (28 x 2682 x 2916), stride 32; inkrs bf16 at batch 32 against UFSM's fp16 at batch 32",
+  "hec-fp32": "the same Hecate map; inkrs fp32 (TF32 convolutions) at batch 8 against UFSM's fp16 at batch 32",
+  "v8": "v8-in, one map (forward, release convention) of the 41 x 1260 x 4410 PHerc. 306B crop; batch 16 on both",
+  "v8both": "v8-in, both directions of the same crop; inkrs batch 16 against ink-sdk's v8-in lane, which runs the model repository's predict.py at its fixed batch 8"
+ },
+ "runs": {
+  "s42-ufsm": {
+   "model": "s42",
+   "alternative": "ufsm",
+   "inkrs_cold": false,
+   "pairs": [
+    {
+     "order": "AB",
+     "alternative_s": 1.867,
+     "inkrs_s": 0.848,
+     "speedup": 2.2016509433962264
+    },
+    {
+     "order": "BA",
+     "alternative_s": 1.929,
+     "inkrs_s": 0.746,
+     "speedup": 2.5857908847184987
+    },
+    {
+     "order": "AB",
+     "alternative_s": 1.918,
+     "inkrs_s": 0.807,
+     "speedup": 2.376703841387856
+    },
+    {
+     "order": "BA",
+     "alternative_s": 2.0,
+     "inkrs_s": 0.785,
+     "speedup": 2.5477707006369426
+    },
+    {
+     "order": "AB",
+     "alternative_s": 1.871,
+     "inkrs_s": 0.789,
+     "speedup": 2.371356147021546
+    },
+    {
+     "order": "BA",
+     "alternative_s": 1.896,
+     "inkrs_s": 0.941,
+     "speedup": 2.0148777895855474
+    }
+   ],
+   "median_s": {
+    "alternative": 1.907,
+    "inkrs": 0.798
+   },
+   "speedup_mean": 2.349691717791103,
+   "speedup_ci95": [
+    2.124481539221996,
+    2.57490189636021
+   ],
+   "aa_noise_sd": 0.014982342577551652,
+   "verdict": "ACCEPT",
+   "inkrs_startup_s": {
+    "open_gpu": 0.1888339765,
+    "plan": 0.06399811250000001
+   }
+  },
+  "v3-ufsm": {
+   "model": "v3",
+   "alternative": "ufsm",
+   "inkrs_cold": false,
+   "pairs": [
+    {
+     "order": "AB",
+     "alternative_s": 2.002,
+     "inkrs_s": 0.815,
+     "speedup": 2.456441717791411
+    },
+    {
+     "order": "BA",
+     "alternative_s": 1.984,
+     "inkrs_s": 0.769,
+     "speedup": 2.5799739921976594
+    },
+    {
+     "order": "AB",
+     "alternative_s": 1.981,
+     "inkrs_s": 0.878,
+     "speedup": 2.2562642369020502
+    },
+    {
+     "order": "BA",
+     "alternative_s": 1.964,
+     "inkrs_s": 0.78,
+     "speedup": 2.517948717948718
+    },
+    {
+     "order": "AB",
+     "alternative_s": 1.958,
+     "inkrs_s": 0.771,
+     "speedup": 2.5395590142671853
+    },
+    {
+     "order": "BA",
+     "alternative_s": 1.975,
+     "inkrs_s": 0.764,
+     "speedup": 2.5850785340314135
+    }
+   ],
+   "median_s": {
+    "alternative": 1.9780000000000002,
+    "inkrs": 0.7755000000000001
+   },
+   "speedup_mean": 2.489211035523073,
+   "speedup_ci95": [
+    2.3596985391720673,
+    2.6187235318740787
+   ],
+   "aa_noise_sd": 0.10179608109093165,
+   "verdict": "ACCEPT",
+   "inkrs_startup_s": {
+    "open_gpu": 0.18936691449999998,
+    "plan": 0.06439905900000001
+   }
+  },
+  "hec-bf16-ufsm": {
+   "model": "hec-bf16",
+   "alternative": "ufsm",
+   "inkrs_cold": false,
+   "pairs": [
+    {
+     "order": "AB",
+     "alternative_s": 18.511,
+     "inkrs_s": 14.674,
+     "speedup": 1.2614828949161783
+    },
+    {
+     "order": "BA",
+     "alternative_s": 17.686,
+     "inkrs_s": 14.698,
+     "speedup": 1.2032929650292556
+    },
+    {
+     "order": "AB",
+     "alternative_s": 17.69,
+     "inkrs_s": 14.681,
+     "speedup": 1.2049587902731422
+    },
+    {
+     "order": "BA",
+     "alternative_s": 17.696,
+     "inkrs_s": 14.669,
+     "speedup": 1.2063535346649397
+    },
+    {
+     "order": "AB",
+     "alternative_s": 17.714,
+     "inkrs_s": 14.691,
+     "speedup": 1.2057722415084065
+    },
+    {
+     "order": "BA",
+     "alternative_s": 17.673,
+     "inkrs_s": 14.688,
+     "speedup": 1.2032271241830064
+    }
+   ],
+   "median_s": {
+    "alternative": 17.693,
+    "inkrs": 14.6845
+   },
+   "speedup_mean": 1.2141812584291547,
+   "speedup_ci95": [
+    1.1898221061798613,
+    1.2385404106784481
+   ],
+   "aa_noise_sd": 0.0044891941525112234,
+   "verdict": "ACCEPT",
+   "inkrs_startup_s": {
+    "open_gpu": 0.18597843149999999,
+    "plan": 0.8461334444999999
+   }
+  },
+  "v8-ufsm": {
+   "model": "v8",
+   "alternative": "ufsm",
+   "inkrs_cold": false,
+   "pairs": [
+    {
+     "order": "AB",
+     "alternative_s": 99.864,
+     "inkrs_s": 83.658,
+     "speedup": 1.193717277486911
+    },
+    {
+     "order": "BA",
+     "alternative_s": 99.555,
+     "inkrs_s": 83.733,
+     "speedup": 1.1889577585898032
+    },
+    {
+     "order": "AB",
+     "alternative_s": 100.208,
+     "inkrs_s": 83.928,
+     "speedup": 1.1939757887713278
+    },
+    {
+     "order": "BA",
+     "alternative_s": 99.754,
+     "inkrs_s": 83.671,
+     "speedup": 1.1922171361642624
+    },
+    {
+     "order": "AB",
+     "alternative_s": 100.33,
+     "inkrs_s": 84.649,
+     "speedup": 1.1852473153847063
+    },
+    {
+     "order": "BA",
+     "alternative_s": 99.525,
+     "inkrs_s": 83.605,
+     "speedup": 1.1904192332994439
+    }
+   ],
+   "median_s": {
+    "alternative": 99.809,
+    "inkrs": 83.702
+   },
+   "speedup_mean": 1.1907557516160756,
+   "speedup_ci95": [
+    1.187275746558724,
+    1.1942357566734272
+   ],
+   "aa_noise_sd": 0.0011095764708069543,
+   "verdict": "ACCEPT"
+  },
+  "s42-ufsm-cold": {
+   "model": "s42",
+   "alternative": "ufsm",
+   "inkrs_cold": true,
+   "pairs": [
+    {
+     "order": "AB",
+     "alternative_s": 1.975,
+     "inkrs_s": 2.082,
+     "speedup": 0.9486071085494717
+    },
+    {
+     "order": "BA",
+     "alternative_s": 1.885,
+     "inkrs_s": 2.086,
+     "speedup": 0.9036433365292427
+    },
+    {
+     "order": "AB",
+     "alternative_s": 1.866,
+     "inkrs_s": 2.05,
+     "speedup": 0.9102439024390245
+    },
+    {
+     "order": "BA",
+     "alternative_s": 1.857,
+     "inkrs_s": 2.098,
+     "speedup": 0.8851286939942803
+    },
+    {
+     "order": "AB",
+     "alternative_s": 1.863,
+     "inkrs_s": 2.221,
+     "speedup": 0.8388113462404322
+    },
+    {
+     "order": "BA",
+     "alternative_s": 1.872,
+     "inkrs_s": 2.078,
+     "speedup": 0.9008662175168433
+    }
+   ],
+   "median_s": {
+    "alternative": 1.8690000000000002,
+    "inkrs": 2.0839999999999996
+   },
+   "speedup_mean": 0.8978834342115491,
+   "speedup_ci95": [
+    0.8602731201842149,
+    0.9354937482388834
+   ],
+   "aa_noise_sd": 0.014982342577551652,
+   "verdict": "REJECT",
+   "inkrs_startup_s": {
+    "open_gpu": 1.4839800535,
+    "plan": 0.05617246
+   }
+  },
+  "hec-bf16-ufsm-cold": {
+   "model": "hec-bf16",
+   "alternative": "ufsm",
+   "inkrs_cold": true,
+   "pairs": [
+    {
+     "order": "AB",
+     "alternative_s": 17.64,
+     "inkrs_s": 27.022,
+     "speedup": 0.652801421064318
+    },
+    {
+     "order": "BA",
+     "alternative_s": 17.619,
+     "inkrs_s": 26.878,
+     "speedup": 0.6555175236252697
+    },
+    {
+     "order": "AB",
+     "alternative_s": 17.675,
+     "inkrs_s": 27.019,
+     "speedup": 0.6541692882786189
+    },
+    {
+     "order": "BA",
+     "alternative_s": 18.228,
+     "inkrs_s": 27.592,
+     "speedup": 0.6606262684836185
+    },
+    {
+     "order": "AB",
+     "alternative_s": 17.79,
+     "inkrs_s": 28.779,
+     "speedup": 0.6181590743250286
+    },
+    {
+     "order": "BA",
+     "alternative_s": 17.651,
+     "inkrs_s": 27.053,
+     "speedup": 0.6524599859534986
+    }
+   ],
+   "median_s": {
+    "alternative": 17.663,
+    "inkrs": 27.0375
+   },
+   "speedup_mean": 0.6489555936217254,
+   "speedup_ci95": [
+    0.6328179654184157,
+    0.665093221825035
+   ],
+   "aa_noise_sd": 0.0044891941525112234,
+   "verdict": "REJECT",
+   "inkrs_startup_s": {
+    "open_gpu": 1.528745561,
+    "plan": 11.5870276545
+   }
+  },
+  "hec-fp32-ufsm": {
+   "model": "hec-fp32",
+   "alternative": "ufsm",
+   "inkrs_cold": false,
+   "pairs": [
+    {
+     "order": "AB",
+     "alternative_s": 19.59,
+     "inkrs_s": 33.263,
+     "speedup": 0.5889426690316568
+    },
+    {
+     "order": "BA",
+     "alternative_s": 18.08,
+     "inkrs_s": 30.881,
+     "speedup": 0.5854732683527087
+    },
+    {
+     "order": "AB",
+     "alternative_s": 17.723,
+     "inkrs_s": 30.826,
+     "speedup": 0.5749367417115422
+    },
+    {
+     "order": "BA",
+     "alternative_s": 17.718,
+     "inkrs_s": 30.858,
+     "speedup": 0.5741784950418044
+    },
+    {
+     "order": "AB",
+     "alternative_s": 17.717,
+     "inkrs_s": 30.943,
+     "speedup": 0.5725689170410109
+    },
+    {
+     "order": "BA",
+     "alternative_s": 17.693,
+     "inkrs_s": 30.9,
+     "speedup": 0.5725889967637541
+    }
+   ],
+   "median_s": {
+    "alternative": 17.7205,
+    "inkrs": 30.8905
+   },
+   "speedup_mean": 0.5781148479904129,
+   "speedup_ci95": [
+    0.5705711689613514,
+    0.5856585270194744
+   ],
+   "aa_noise_sd": 0.0044891941525112234,
+   "verdict": "REJECT",
+   "inkrs_startup_s": {
+    "open_gpu": 0.187875315,
+    "plan": 0.7706953885000001
+   }
+  },
+  "v8both-inksdk": {
+   "model": "v8both",
+   "alternative": "ink-sdk",
+   "inkrs_cold": false,
+   "pairs": [
+    {
+     "order": "AB",
+     "alternative_s": 398.348,
+     "inkrs_s": 166.743,
+     "speedup": 2.388993840820904
+    },
+    {
+     "order": "BA",
+     "alternative_s": 390.449,
+     "inkrs_s": 165.825,
+     "speedup": 2.3545846524951006
+    },
+    {
+     "order": "AB",
+     "alternative_s": 396.732,
+     "inkrs_s": 165.646,
+     "speedup": 2.3950593434190988
+    },
+    {
+     "order": "BA",
+     "alternative_s": 389.379,
+     "inkrs_s": 165.64,
+     "speedup": 2.3507546486355957
+    },
+    {
+     "order": "AB",
+     "alternative_s": 403.835,
+     "inkrs_s": 166.748,
+     "speedup": 2.4218281478638426
+    },
+    {
+     "order": "BA",
+     "alternative_s": 392.452,
+     "inkrs_s": 165.598,
+     "speedup": 2.3699078491286123
+    }
+   ],
+   "median_s": {
+    "alternative": 394.592,
+    "inkrs": 165.7355
+   },
+   "speedup_mean": 2.380188080393859,
+   "speedup_ci95": [
+    2.3517899269807514,
+    2.408586233806967
+   ],
+   "aa_noise_sd": 0.0011095764708069543,
+   "verdict": "ACCEPT"
+  }
+ },
+ "parity": {
+  "inkrs-ahn0-release": {
+   "r": 0.9999993005763979,
+   "p999_levels": 0.24352438017725644,
+   "max_levels": 0.4817989468574524,
+   "villa_contract": true
+  },
+  "inkrs-hec-bf16-vs-fp32": {
+   "r": 0.9997678324210776,
+   "p999_levels": 7.0,
+   "max_levels": 20.0,
+   "villa_contract": false
+  },
+  "inkrs-hec-bf16": {
+   "r": 0.9999670218237281,
+   "p999_levels": 1.0,
+   "max_levels": 4.0,
+   "villa_contract": true
+  },
+  "inkrs-s42": {
+   "r": 0.9999692725470809,
+   "p999_levels": 1.0,
+   "max_levels": 2.0,
+   "villa_contract": true
+  },
+  "inkrs-v3": {
+   "r": 0.9999896647122516,
+   "p999_levels": 1.0,
+   "max_levels": 1.0,
+   "villa_contract": true
+  },
+  "inkrs-v8": {
+   "r": 0.999997718456895,
+   "p999_levels": 0.35870835185050964,
+   "max_levels": 0.572553277015686,
+   "villa_contract": true
+  },
+  "ref-bf16-vs-fp32": {
+   "r": 0.9997574327432948,
+   "p999_levels": 6.0,
+   "max_levels": 19.0,
+   "villa_contract": false
+  },
+  "ufsm-ahn0-vs-306b": {
+   "r": 0.9805369282175007,
+   "p999_levels": 93.51173894506691,
+   "max_levels": 120.28776812553406,
+   "villa_contract": false
+  },
+  "ufsm-ahn0-vs-release": {
+   "r": 0.9999683733898734,
+   "p999_levels": 0.5395360658466812,
+   "max_levels": 0.6901397705078125,
+   "villa_contract": true
+  },
+  "ufsm-hec-rev-vs-fp32": {
+   "r": 0.9999968053744134,
+   "p999_levels": 1.0,
+   "max_levels": 1.0,
+   "villa_contract": true
+  },
+  "ufsm-hec-vs-bf16": {
+   "r": 0.9997553532228036,
+   "p999_levels": 6.0,
+   "max_levels": 19.0,
+   "villa_contract": false
+  },
+  "ufsm-hec-vs-fp32": {
+   "r": 0.9999969288239583,
+   "p999_levels": 1.0,
+   "max_levels": 2.0,
+   "villa_contract": true
+  },
+  "ufsm-s42-rev": {
+   "r": 0.9998338405453951,
+   "p999_levels": 2.0,
+   "max_levels": 3.0,
+   "villa_contract": true
+  },
+  "ufsm-s42": {
+   "r": 0.9996662229619727,
+   "p999_levels": 2.0,
+   "max_levels": 3.0,
+   "villa_contract": true
+  },
+  "ufsm-v3": {
+   "r": 0.9996147214980948,
+   "p999_levels": 1.0,
+   "max_levels": 1.0,
+   "villa_contract": true
+  },
+  "ufsm-v8": {
+   "r": 0.9999642508321976,
+   "p999_levels": 0.5572932956218697,
+   "max_levels": 0.6914708912372589,
+   "villa_contract": true
+  }
+ },
+ "carry": [
+  {
+   "step": "earlier build to the next",
+   "bench": "rv2-seg",
+   "speedup_mean": 1.0248882196896814,
+   "speedup_ci95": [
+    0.9696410585029724,
+    1.0801353808763903
+   ],
+   "noise_sd": 0.02424183277315013,
+   "slower": false
+  },
+  {
+   "step": "earlier build to the next",
+   "bench": "v3-seg",
+   "speedup_mean": 0.9984852928952325,
+   "speedup_ci95": [
+    0.9868132784086906,
+    1.0101573073817742
+   ],
+   "noise_sd": 0.0121,
+   "slower": false
+  },
+  {
+   "step": "earlier build to the next",
+   "bench": "hec-seg",
+   "speedup_mean": 0.9998663274397773,
+   "speedup_ci95": [
+    0.996390927906081,
+    1.0033417269734737
+   ],
+   "noise_sd": 0.01,
+   "slower": false
+  },
+  {
+   "step": "earlier build to the next",
+   "bench": "ink3d-crop",
+   "speedup_mean": 0.9995236854552537,
+   "speedup_ci95": [
+    0.9987257643896311,
+    1.0003216065208762
+   ],
+   "noise_sd": 0.0016590732689044346,
+   "slower": false
+  },
+  {
+   "step": "earlier build to the next",
+   "bench": "v8in-crop",
+   "speedup_mean": 1.0001822797318425,
+   "speedup_ci95": [
+    0.9997583097095958,
+    1.0006062497540893
+   ],
+   "noise_sd": 0.01,
+   "slower": false
+  },
+  {
+   "step": "the next build to this binary",
+   "bench": "rv2-seg",
+   "speedup_mean": 0.9994307168629922,
+   "speedup_ci95": [
+    0.9940541000115433,
+    1.0048073337144412
+   ],
+   "noise_sd": 0.02424183277315013,
+   "slower": false
+  },
+  {
+   "step": "the next build to this binary",
+   "bench": "v3-seg",
+   "speedup_mean": 1.002323869571859,
+   "speedup_ci95": [
+    0.9995144128840858,
+    1.0051333262596323
+   ],
+   "noise_sd": 0.0121,
+   "slower": false
+  },
+  {
+   "step": "the next build to this binary",
+   "bench": "hec-seg",
+   "speedup_mean": 1.0002418618503557,
+   "speedup_ci95": [
+    0.9986591278110836,
+    1.001824595889628
+   ],
+   "noise_sd": 0.01,
+   "slower": false
+  },
+  {
+   "step": "the next build to this binary",
+   "bench": "ink3d-crop",
+   "speedup_mean": 1.0025000343546508,
+   "speedup_ci95": [
+    0.995059460141456,
+    1.0099406085678457
+   ],
+   "noise_sd": 0.0016590732689044346,
+   "slower": false
+  },
+  {
+   "step": "the next build to this binary",
+   "bench": "v8in-crop",
+   "speedup_mean": 0.9998162849436181,
+   "speedup_ci95": [
+    0.998937517323214,
+    1.0006950525640221
+   ],
+   "noise_sd": 0.01,
+   "slower": false
+  }
+ ]
+}

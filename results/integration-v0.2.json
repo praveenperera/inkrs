@@ -1,0 +1,245 @@
+{
+ "what": "the v0.2 build: villa readers' 2D convolutions on inkrs's own tensor-core kernels by default on compute capability 12.x (cuDNN elsewhere), Hecate's encoder BatchNorm, residual and ReLU fused into the conv epilogue, fast mode, the v8-in and A-hn models, villa's 3D ink U-Net, the further villa readers and the Metal backend; its gates against villa eager and hecate.py on three tiers; and the own convolutions' timing against the build before them. The earlier changes' timings are in integration-v0.1.json",
+ "gpu": "RTX 5090, driver 595.99.02",
+ "date": "2026-11-11",
+ "gates": {
+  "note": "each tier ran with its own empty cuDNN algorithm cache and the default --algo find; sm80 and sm75 are forced on the RTX 5090 with INKRS_PTX_TIER; the reader-v2 inputs are those of reader-v2-p1.json, the hybrid_3d2d-seed42 input is S1. On the 5090 the default conv library is inkrs's own on the sm120 and sm80 tiers; the sm75 tier always runs cuDNN",
+  "sm120": {
+   "reader_v2_p1": {
+    "maps": 10,
+    "checks": 101,
+    "passed": 101,
+    "failed": 0,
+    "min_r": 0.9999969174855253,
+    "max_p999": 1.0,
+    "max_abs": 1.0,
+    "bar": {
+     "min_r": 0.9994,
+     "max_p999": 4.0,
+     "max_abs": 4.0
+    }
+   },
+   "hybrid_3d2d_seed42_p1_s1": {
+    "maps": 18,
+    "checks": 181,
+    "passed": 181,
+    "failed": 0,
+    "min_r": 0.9999898002558318,
+    "max_p999": 1.0,
+    "max_abs": 2.0,
+    "bar": {
+     "min_r": 0.9994,
+     "max_p999": 4.0,
+     "max_abs": 4.0
+    }
+   },
+   "hecate_gates": {
+    "gates": 13,
+    "passed": 13
+   },
+   "p0_per_layer": {
+    "layers": 37,
+    "checks": 222,
+    "passed": 222,
+    "failed": 0
+   },
+   "reader_v2_run_twice": {
+    "maps": 10,
+    "identical": 10,
+    "min_r": 0.9999999999999998,
+    "max_abs": 0.0,
+    "min_equal_share": 1.0,
+    "pass": true
+   }
+  },
+  "sm80": {
+   "reader_v2_p1": {
+    "maps": 10,
+    "checks": 101,
+    "passed": 101,
+    "failed": 0,
+    "min_r": 0.9999969174855253,
+    "max_p999": 1.0,
+    "max_abs": 1.0,
+    "bar": {
+     "min_r": 0.9994,
+     "max_p999": 4.0,
+     "max_abs": 4.0
+    }
+   },
+   "hybrid_3d2d_seed42_p1_s1": {
+    "maps": 18,
+    "checks": 181,
+    "passed": 181,
+    "failed": 0,
+    "min_r": 0.9999898002558318,
+    "max_p999": 1.0,
+    "max_abs": 2.0,
+    "bar": {
+     "min_r": 0.9994,
+     "max_p999": 4.0,
+     "max_abs": 4.0
+    }
+   },
+   "hecate_gates": {
+    "gates": 13,
+    "passed": 13
+   }
+  },
+  "sm75": {
+   "reader_v2_p1": {
+    "maps": 10,
+    "checks": 101,
+    "passed": 101,
+    "failed": 0,
+    "min_r": 0.9999968377750421,
+    "max_p999": 1.0,
+    "max_abs": 1.0,
+    "bar": {
+     "min_r": 0.9994,
+     "max_p999": 4.0,
+     "max_abs": 4.0
+    }
+   },
+   "hybrid_3d2d_seed42_p1_s1": {
+    "maps": 18,
+    "checks": 181,
+    "passed": 181,
+    "failed": 0,
+    "min_r": 0.9999894125401471,
+    "max_p999": 1.0,
+    "max_abs": 2.0,
+    "bar": {
+     "min_r": 0.9994,
+     "max_p999": 4.0,
+     "max_abs": 4.0
+    }
+   },
+   "note": "forced on the RTX 5090 (INKRS_PTX_TIER=sm75), so the sm_75 code path, not a Turing GPU"
+  },
+  "reader_v2_sm80_vs_sm120": {
+   "maps": 10,
+   "identical": 10,
+   "min_r": 0.9999999999999998,
+   "max_abs": 0.0,
+   "min_equal_share": 1.0,
+   "pass": true
+  },
+  "reader_v2_sm75_vs_sm120": {
+   "maps": 10,
+   "identical": 0,
+   "min_r": 0.9999969960859191,
+   "max_abs": 1.0,
+   "min_equal_share": 0.9941272735595703,
+   "pass": true
+  },
+  "own_convs_across_processes": {
+   "what": "reader-v2 with the own convs, three processes on each of the sm120 and sm80 tiers, each process's maps against the first sm120 process's, byte for byte",
+   "gates": 5,
+   "passed": 5
+  }
+ },
+ "own_convs_sweep": {
+  "what": "inkrs sweep of reader-v2 over the whole PHerc. 1447 segment (native, 31 x 2980 x 3240), d -2..2, both directions, batch 64, 10 maps: the first sweep pass with start-up excluded, the build with the own convs against the build before them (cuDNN's convs); 2 untimed warm-up runs, then 6 pairs in alternating order",
+  "pairs": [
+   {
+    "order": "AB",
+    "control_s": 3.43220459,
+    "experiment_s": 2.852353424,
+    "ratio": 1.2032886812416272
+   },
+   {
+    "order": "BA",
+    "control_s": 3.181256467,
+    "experiment_s": 2.825750465,
+    "ratio": 1.1258094111293016
+   },
+   {
+    "order": "AB",
+    "control_s": 3.176026544,
+    "experiment_s": 2.808651602,
+    "ratio": 1.1308011793767507
+   },
+   {
+    "order": "BA",
+    "control_s": 3.205758675,
+    "experiment_s": 2.80126081,
+    "ratio": 1.1443985021159095
+   },
+   {
+    "order": "AB",
+    "control_s": 3.232549043,
+    "experiment_s": 2.999882215,
+    "ratio": 1.0775586544153701
+   },
+   {
+    "order": "BA",
+    "control_s": 3.169644481,
+    "experiment_s": 2.804914926,
+    "ratio": 1.1300323056571735
+   }
+  ],
+  "median_s": {
+   "before": 3.1935075709999996,
+   "after": 2.8172010335
+  },
+  "arms_through_gate": 14,
+  "ratio_mean": 1.1353147889893553,
+  "ratio_ci95": [
+   1.0928745828852138,
+   1.177754995093497
+  ],
+  "same_build_noise_sd": 0.02424183277315013
+ },
+ "own_convs_depth0_process": {
+  "what": "the whole inkrs sweep process at depth 0 (2 maps) on the same segment, timed from outside, the same two builds; 6 pairs in alternating order after 2 warm-up runs",
+  "pairs": [
+   {
+    "order": "AB",
+    "control_s": 1.496634935,
+    "experiment_s": 1.1662516230000002,
+    "ratio": 1.2832864756493463
+   },
+   {
+    "order": "BA",
+    "control_s": 1.5307208300000001,
+    "experiment_s": 1.163899392,
+    "ratio": 1.3151659331737153
+   },
+   {
+    "order": "AB",
+    "control_s": 1.501956024,
+    "experiment_s": 1.2009400940000001,
+    "ratio": 1.250650246006359
+   },
+   {
+    "order": "BA",
+    "control_s": 1.652096967,
+    "experiment_s": 1.3394893410000002,
+    "ratio": 1.2333782109580818
+   },
+   {
+    "order": "AB",
+    "control_s": 1.615230964,
+    "experiment_s": 1.162493687,
+    "ratio": 1.389453536017353
+   },
+   {
+    "order": "BA",
+    "control_s": 1.4599017360000002,
+    "experiment_s": 1.2362483960000001,
+    "ratio": 1.180912946559649
+   }
+  ],
+  "median_s": {
+   "before": 1.516338427,
+   "after": 1.1835958585000002
+  },
+  "arms_through_gate": 14,
+  "ratio_mean": 1.2754745580607507,
+  "ratio_ci95": [
+   1.199859991418626,
+   1.3510891247028753
+  ]
+ }
+}

@@ -1,0 +1,335 @@
+{
+ "what": "inkrs hecate maps against hecate.py@9cb86e5 at batch 8 on the 9.6 um crop (fp32 with TF32 and bf16, both directions) and the 27 x 48 x 2916 edge fixture (fp32); scripts/hecate_mapgate.py, limits fixed before the first run",
+ "gpu": "RTX 5090, driver 595.99.02",
+ "ptx_tier": "sm120",
+ "inputs": {
+  "segment": "PHerc1447 20250702235910-auto_grown_20250702235910292",
+  "voxel_um": 8.64,
+  "arrays": {
+   "native": {
+    "shape": [
+     31,
+     2980,
+     3240
+    ],
+    "sha256": "10a9180b01868a701e1b5041e61111815121558a42993ec4aea4e9f77e954adb"
+   },
+   "native-crop": {
+    "shape": [
+     31,
+     2048,
+     2048
+    ],
+    "sha256": "00c965a97b4d1cdff1daccaa120a16d8ca7038dee497a680b356fa3f6e9e76cc",
+    "origin_yx": [
+     466,
+     596
+    ]
+   },
+   "r96": {
+    "shape": [
+     28,
+     2682,
+     2916
+    ],
+    "sha256": "42da913d562a6bf04f4465fa2b126aa4b0771806f0103e4f1d617dcb54deb841"
+   },
+   "r96-crop": {
+    "shape": [
+     28,
+     2048,
+     2048
+    ],
+    "sha256": "298ad44ee2870b8afcac8e61b8862320d8720aebc6a4cc757135e487004afe87",
+    "origin_yx": [
+     317,
+     434
+    ]
+   },
+   "r96-edge": {
+    "shape": [
+     27,
+     48,
+     2916
+    ],
+    "sha256": "b7305bebff85f06563cef95ab899ac87e56e716689a3e303afc73dbfcdf24d56",
+    "origin_yx": [
+     0,
+     0
+    ],
+    "tiles_kept_skipped": {
+     "forward": [
+      3,
+      88
+     ],
+     "reverse": [
+      3,
+      88
+     ]
+    }
+   }
+  }
+ },
+ "gates": {
+  "fp32-fwd": {
+   "ours": "map.png",
+   "ref": "map.png",
+   "mode": "fp32",
+   "direction": "fwd",
+   "stats": {
+    "r": 0.9999980962105733,
+    "p999": 1.0,
+    "max": 2,
+    "mean": 0.0028913021087646484,
+    "bias": 0.001001119613647461,
+    "identical": 0.9971225261688232,
+    "hist_0_to_9plus": [
+     4182235,
+     12011,
+     58,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "zero_mismatch": 0
+   },
+   "limits": {
+    "min_r": 0.9994,
+    "max_p999": 4.0,
+    "max_abs": 8.0,
+    "max_bias": 0.1
+   },
+   "hecate_spread": null,
+   "checks": 28,
+   "passed": 28,
+   "failures": []
+  },
+  "fp32-rev": {
+   "ours": "map_reverse.png",
+   "ref": "map.png",
+   "mode": "fp32",
+   "direction": "rev",
+   "stats": {
+    "r": 0.9999981245284439,
+    "p999": 1.0,
+    "max": 2,
+    "mean": 0.0029511451721191406,
+    "bias": 0.001033782958984375,
+    "identical": 0.99704909324646,
+    "hist_0_to_9plus": [
+     4181927,
+     12376,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "zero_mismatch": 0
+   },
+   "limits": {
+    "min_r": 0.9994,
+    "max_p999": 4.0,
+    "max_abs": 8.0,
+    "max_bias": 0.1
+   },
+   "hecate_spread": null,
+   "checks": 28,
+   "passed": 28,
+   "failures": []
+  },
+  "bf16-fwd": {
+   "ours": "map.png",
+   "ref": "map.png",
+   "mode": "bf16",
+   "direction": "fwd",
+   "stats": {
+    "r": 0.9999853847876587,
+    "p999": 1.0,
+    "max": 3,
+    "mean": 0.022310256958007812,
+    "bias": -0.0003666877746582031,
+    "identical": 0.9777114391326904,
+    "hist_0_to_9plus": [
+     4100819,
+     93396,
+     87,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "zero_mismatch": 0
+   },
+   "limits": {
+    "min_r": 0.999,
+    "max_p999": 6.0,
+    "max_abs": 32.0,
+    "max_bias": 0.25
+   },
+   "hecate_spread": {
+    "r": 0.9999884089979962,
+    "p999": 1.0,
+    "max": 2,
+    "mean": 0.01772308349609375,
+    "bias": -0.0003199577331542969,
+    "identical": 0.9822793006896973,
+    "hist_0_to_9plus": [
+     4119978,
+     74316,
+     10,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   "checks": 28,
+   "passed": 28,
+   "failures": []
+  },
+  "bf16-rev": {
+   "ours": "map_reverse.png",
+   "ref": "map.png",
+   "mode": "bf16",
+   "direction": "rev",
+   "stats": {
+    "r": 0.9999833602074679,
+    "p999": 1.0,
+    "max": 2,
+    "mean": 0.026014089584350586,
+    "bias": 0.0005843639373779297,
+    "identical": 0.9739980697631836,
+    "hist_0_to_9plus": [
+     4085244,
+     109009,
+     51,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "zero_mismatch": 0
+   },
+   "limits": {
+    "min_r": 0.999,
+    "max_p999": 6.0,
+    "max_abs": 32.0,
+    "max_bias": 0.25
+   },
+   "hecate_spread": {
+    "r": 0.9999884089979962,
+    "p999": 1.0,
+    "max": 2,
+    "mean": 0.01772308349609375,
+    "bias": -0.0003199577331542969,
+    "identical": 0.9822793006896973,
+    "hist_0_to_9plus": [
+     4119978,
+     74316,
+     10,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   "checks": 28,
+   "passed": 28,
+   "failures": []
+  },
+  "edge-fwd": {
+   "ours": "map.png",
+   "ref": "map.png",
+   "mode": "fp32",
+   "direction": "fwd",
+   "stats": {
+    "r": 0.9997236626971111,
+    "p999": 0.0,
+    "max": 1,
+    "mean": 1.4288980338363054e-05,
+    "bias": -1.4288980338363054e-05,
+    "identical": 0.9999857110196616,
+    "hist_0_to_9plus": [
+     139966,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "zero_mismatch": 0
+   },
+   "limits": {
+    "min_r": 0.9994,
+    "max_p999": 4.0,
+    "max_abs": 8.0,
+    "max_bias": 0.1
+   },
+   "hecate_spread": null,
+   "checks": 28,
+   "passed": 28,
+   "failures": []
+  },
+  "edge-rev": {
+   "ours": "map_reverse.png",
+   "ref": "map.png",
+   "mode": "fp32",
+   "direction": "rev",
+   "stats": {
+    "r": 1.0,
+    "p999": 0.0,
+    "max": 0,
+    "mean": 0.0,
+    "bias": 0.0,
+    "identical": 1.0,
+    "hist_0_to_9plus": [
+     139968,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "zero_mismatch": 0
+   },
+   "limits": {
+    "min_r": 0.9994,
+    "max_p999": 4.0,
+    "max_abs": 8.0,
+    "max_bias": 0.1
+   },
+   "hecate_spread": null,
+   "checks": 28,
+   "passed": 28,
+   "failures": []
+  }
+ }
+}

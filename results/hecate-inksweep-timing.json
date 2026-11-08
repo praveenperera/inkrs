@@ -1,0 +1,64 @@
+{
+ "what": "a second job, on the same input, side and stride as hecate-timing.json, adding inksweep's fast mode, which also runs Hecate; each wall is the whole command from process start to exit; two rounds, the second in reverse order; run after a quiet-host check, on a busier host than hecate-timing.json, so ratios are taken within this job",
+ "gpu": "RTX 5090, driver 595.99.02",
+ "date": "2026-11-10",
+ "runs": {
+  "inkrs-bf16-b32": "inkrs hecate --precision bf16 --batch-size 32",
+  "inksweep-fast": "inksweep@c6964929 run --mode fast with its Hecate defaults (hecate.py@9cb86e5, bf16, batch 32, float32 TIFFs), no compile",
+  "inksweep-compile": "the same with --compile; round 1 compiles from an empty Inductor cache, round 2 reuses it",
+  "fast-nocompile": "hecate_fast.py@c73d0dd5 --no-compile, bf16, batch 64"
+ },
+ "walls_s": {
+  "fast-nocompile-r1": 29.465,
+  "fast-nocompile-r2": 29.153,
+  "inkrs-bf16-b32-r1": 20.409,
+  "inkrs-bf16-b32-r2": 19.041,
+  "inksweep-compile-r1": 143.454,
+  "inksweep-compile-r2": 26.554,
+  "inksweep-fast-r1": 29.865,
+  "inksweep-fast-r2": 28.733
+ },
+ "best_round_s": {
+  "fast-nocompile": 29.153,
+  "inkrs-bf16-b32": 19.041,
+  "inksweep-compile": 26.554,
+  "inksweep-fast": 28.733
+ },
+ "ratios": {
+  "inksweep_compile_over_inkrs": 1.39,
+  "inksweep_fast_over_inkrs": 1.51,
+  "fast_nocompile_over_inkrs": 1.53
+ },
+ "inkrs_report": {
+  "precision": "bf16",
+  "stride": 32,
+  "batch": 32,
+  "cudnn": 92700,
+  "stem_channels": 1,
+  "load_weights_s": 0.886047695,
+  "open_gpu_s": 0.207179857,
+  "plan_s": 1.045201241,
+  "read_volume_s": 0.147576572,
+  "schedule_s": 0.017283058,
+  "upload_s": 0.041030916,
+  "run_s": 15.795604261,
+  "gpu_s": 15.794669921875,
+  "finite_check_s": 0.047320896,
+  "write_s": 0.607915679,
+  "total_s": 18.795365406,
+  "shape": [
+   28,
+   2682,
+   2916
+  ],
+  "positions": 7553,
+  "tiles": 4682,
+  "batches": 147,
+  "tiles_per_s": 296.42911331218215,
+  "schema": [
+   817,
+   0,
+   128435399
+  ]
+ }
+}

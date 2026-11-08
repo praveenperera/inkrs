@@ -1,0 +1,56 @@
+{
+ "what": "whole-segment centre slab L31s7 (forward and reverse) against gomyway's published reader-v2 maps (gomyway/vesuvius-ink-maps ink-maps-v1, readerv2_fwd.tif and readerv2_rev.tif); scripts/mapdiff.py; informational, since the published maps came from villa main",
+ "segment": "PHerc1447 20250702235910-auto_grown_20250702235910292",
+ "inkrs": {
+  "summary": {
+   "maps": 2,
+   "identical": 0,
+   "min_r": 0.9999984441053911,
+   "max_abs": 1.0,
+   "min_equal_share": 0.9956173875217499,
+   "pass": true
+  },
+  "maps": [
+   {
+    "map": "ink/L31s7.tif",
+    "identical": false,
+    "equal_share": 0.9956173875217499,
+    "max_abs": 1.0,
+    "r": 0.9999984441053911
+   },
+   {
+    "map": "ink/L31s7_reverse.tif",
+    "identical": false,
+    "equal_share": 0.9963072748363576,
+    "max_abs": 1.0,
+    "r": 0.999998497180155
+   }
+  ]
+ },
+ "villa_main_fast_flags": {
+  "summary": {
+   "maps": 2,
+   "identical": 0,
+   "min_r": 0.9999985199620774,
+   "max_abs": 1.0,
+   "min_equal_share": 0.9960992004308559,
+   "pass": true
+  },
+  "maps": [
+   {
+    "map": "ink/L31s7.tif",
+    "identical": false,
+    "equal_share": 0.9960992004308559,
+    "max_abs": 1.0,
+    "r": 0.9999986150659719
+   },
+   {
+    "map": "ink/L31s7_reverse.tif",
+    "identical": false,
+    "equal_share": 0.9963633068191233,
+    "max_abs": 1.0,
+    "r": 0.9999985199620774
+   }
+  ]
+ }
+}

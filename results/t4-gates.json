@@ -1,0 +1,119 @@
+{
+ "what": "a Tesla T4 (sm75 tier), each map gated on the RTX 5090's host by p1_gate.py (readers) and hecate_mapgate.py (Hecate). seed42: S1, d -4..4, both directions, against villa eager's 5090 maps. reader-v2: the native crop of the PHerc. 1447 segment, d -2..2, both directions. Reader V3: S1, d -2..2, both directions, stride 192. Hecate fp32 on the 2048 x 2048 crop, forward and reverse, and the edge maps; the 5090's hecate.py runs TF32 convolutions, the T4 has no TF32",
+ "gpu": "Tesla T4",
+ "seed42_s1_vs_villa_5090": {
+  "checks": 165,
+  "passed": 165,
+  "min_r": 0.9999895577491101,
+  "max_p999": 1.0,
+  "max_abs": 2.0
+ },
+ "reader_v2_vs_villa_5090": {
+  "maps": 10,
+  "checks": 101,
+  "passed": 101,
+  "failed": 0,
+  "min_r": 0.999996869106279,
+  "max_p999": 1.0,
+  "max_abs": 1.0,
+  "bar": {
+   "min_r": 0.9994,
+   "max_p999": 4.0,
+   "max_abs": 4.0
+  }
+ },
+ "reader_v2_vs_villa_t4": {
+  "maps": 10,
+  "checks": 101,
+  "passed": 101,
+  "failed": 0,
+  "min_r": 0.9999968490385066,
+  "max_p999": 1.0,
+  "max_abs": 1.0,
+  "bar": {
+   "min_r": 0.9994,
+   "max_p999": 4.0,
+   "max_abs": 4.0
+  }
+ },
+ "reader_v3_vs_villa_5090": {
+  "maps": 10,
+  "checks": 101,
+  "passed": 101,
+  "failed": 0,
+  "min_r": 0.9999933948487352,
+  "max_p999": 1.0,
+  "max_abs": 1.0,
+  "bar": {
+   "min_r": 0.9994,
+   "max_p999": 4.0,
+   "max_abs": 4.0
+  }
+ },
+ "reader_v3_vs_villa_t4": {
+  "maps": 10,
+  "checks": 101,
+  "passed": 101,
+  "failed": 0,
+  "min_r": 0.9999932980682329,
+  "max_p999": 1.0,
+  "max_abs": 1.0,
+  "bar": {
+   "min_r": 0.9994,
+   "max_p999": 4.0,
+   "max_abs": 4.0
+  }
+ },
+ "hecate_fp32_crop_vs_hecate_py_5090": {
+  "forward": {
+   "r": 0.9999862458591448,
+   "p999": 1.0,
+   "max": 2
+  },
+  "reverse": {
+   "r": 0.9999859565380487,
+   "p999": 1.0,
+   "max": 2
+  },
+  "min_r": 0.9999859565380487,
+  "max_abs": 2
+ },
+ "hecate_fp32_edge_vs_hecate_py_5090": {
+  "forward": {
+   "r": 0.9998617648002343,
+   "p999": 0.0,
+   "max": 1
+  },
+  "reverse": {
+   "r": 1.0,
+   "p999": 0.0,
+   "max": 0
+  }
+ },
+ "hecate_fp32_crop_vs_hecate_py_t4": {
+  "forward": {
+   "r": 0.9999999961001302,
+   "p999": 0.0,
+   "max": 1
+  },
+  "reverse": {
+   "r": 0.9999999939173122,
+   "p999": 0.0,
+   "max": 1
+  },
+  "min_r": 0.9999999939173122,
+  "max_abs": 1
+ },
+ "hecate_fp32_edge_vs_hecate_py_t4": {
+  "forward": {
+   "r": 1.0,
+   "p999": 0.0,
+   "max": 0
+  },
+  "reverse": {
+   "r": 1.0,
+   "p999": 0.0,
+   "max": 0
+  }
+ }
+}

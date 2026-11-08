@@ -1,0 +1,29 @@
+{
+ "what": "a Tesla T4 (sm75 tier). S1: seed42 sweep, d -4..4, both directions, 18 maps, median of 3 passes' GPU time. reader-v2: the native crop, d -2..2, both directions, 10 maps; inkrs is one warm whole process, villa eager --no-compile at batch 4 is one process per depth. Hecate fp32 on the 2048 x 2048 crop, forward and reverse: one inkrs --both run against two hecate.py runs at batch 8 (the T4 has no TF32)",
+ "gpu": "Tesla T4",
+ "s1": {
+  "tiles": 14724,
+  "gpu_s_median": 19.233798828125,
+  "gpu_ms_per_tile": 1.3062889722986282
+ },
+ "reader_v2": {
+  "tiles": 8130,
+  "gpu_ms_per_tile": 1.3133684559501846,
+  "inkrs_warm_process_s": 15.507,
+  "villa_eager_per_depth_s": [
+   28.181,
+   28.466,
+   31.846,
+   28.874,
+   27.782
+  ],
+  "villa_eager_total_s": 145.149,
+  "villa_eager_mean_s": 29.0298,
+  "villa_eager_sd_s": 1.6240838032564697,
+  "ratio": 9.360224414780422
+ },
+ "hecate_fp32": {
+  "inkrs_both_s": 740.973,
+  "hecate_py_s": 770.635
+ }
+}

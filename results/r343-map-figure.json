@@ -1,0 +1,28 @@
+{
+ "what": "villa's map (top) and inkrs's (middle) of the same segment, depth and side, and where they differ (bottom: each 4 x 4 block's largest |difference| times diff_gain), over the band of the PHerc. 343 render holding the published letter boxes; full_map compares the whole maps",
+ "public_map": "L66s25_reverse.tif",
+ "inkrs_map": "concat_w047-w048__hybrid_3d2d-seed42__L66s25_reverse.tif",
+ "crop_xyxy": [
+  640,
+  576,
+  5568,
+  2112
+ ],
+ "scale": 4,
+ "diff_gain": 64,
+ "png_sha256": "b9cbdafd454c8062983d3f803eeda84a769c8aaa0f777c68b15acd96a55f3d0a",
+ "png_shape": [
+  1168,
+  1232
+ ],
+ "full_map": {
+  "shape": [
+   2560,
+   6720
+  ],
+  "pearson_r": 0.9999950790141393,
+  "p999_abs_diff": 1.0,
+  "max_abs_diff": 1,
+  "identical_share": 0.9826671781994047
+ }
+}

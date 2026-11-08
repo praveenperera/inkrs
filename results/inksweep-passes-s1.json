@@ -1,0 +1,1035 @@
+{
+ "args": [
+  "run",
+  "crop343-2048.zarr",
+  "--name",
+  "crop343-2048",
+  "--voxel-um",
+  "8.64",
+  "--ckpt-dir",
+  "checkpoints",
+  "--no-download",
+  "--no-ensemble",
+  "--orientations",
+  "both",
+  "--depths=-4..4",
+  "--readers",
+  "ink9_s42",
+  "--mode",
+  "fast",
+  "--compile",
+  "--no-raw"
+ ],
+ "summary": {
+  "import_s": 0.8056847548577935,
+  "cold_s": 41.101004453143105,
+  "prepare_s": 0.9709858121350408,
+  "steady_s": [
+   8.17800829000771,
+   8.349522368982434,
+   9.207486639963463
+  ],
+  "steady_median_s": 8.349522368982434
+ },
+ "passes": [
+  {
+   "n": 1,
+   "kind": "cold",
+   "route": "cli.main",
+   "wall_s": 41.101004453143105,
+   "volume_load_s": 0.3378255367279053,
+   "sweep_wall_s": 40.96,
+   "total_s": 41.1,
+   "maps": [
+    {
+     "side": "reading",
+     "depth": 0,
+     "tiles": 818,
+     "seconds": 30.384,
+     "profile": null
+    },
+    {
+     "side": "reading",
+     "depth": -1,
+     "tiles": 818,
+     "seconds": 0.46,
+     "profile": null
+    },
+    {
+     "side": "reading",
+     "depth": 1,
+     "tiles": 818,
+     "seconds": 0.519,
+     "profile": null
+    },
+    {
+     "side": "reading",
+     "depth": -2,
+     "tiles": 818,
+     "seconds": 0.464,
+     "profile": null
+    },
+    {
+     "side": "reading",
+     "depth": 2,
+     "tiles": 818,
+     "seconds": 0.463,
+     "profile": null
+    },
+    {
+     "side": "reading",
+     "depth": -3,
+     "tiles": 818,
+     "seconds": 0.464,
+     "profile": null
+    },
+    {
+     "side": "reading",
+     "depth": 3,
+     "tiles": 818,
+     "seconds": 0.529,
+     "profile": null
+    },
+    {
+     "side": "reading",
+     "depth": -4,
+     "tiles": 818,
+     "seconds": 0.503,
+     "profile": null
+    },
+    {
+     "side": "reading",
+     "depth": 4,
+     "tiles": 818,
+     "seconds": 0.426,
+     "profile": null
+    },
+    {
+     "side": "blind",
+     "depth": 0,
+     "tiles": 818,
+     "seconds": 0.342,
+     "profile": null
+    },
+    {
+     "side": "blind",
+     "depth": -1,
+     "tiles": 818,
+     "seconds": 0.368,
+     "profile": null
+    },
+    {
+     "side": "blind",
+     "depth": 1,
+     "tiles": 818,
+     "seconds": 0.349,
+     "profile": null
+    },
+    {
+     "side": "blind",
+     "depth": -2,
+     "tiles": 818,
+     "seconds": 0.39,
+     "profile": null
+    },
+    {
+     "side": "blind",
+     "depth": 2,
+     "tiles": 818,
+     "seconds": 0.453,
+     "profile": null
+    },
+    {
+     "side": "blind",
+     "depth": -3,
+     "tiles": 818,
+     "seconds": 0.334,
+     "profile": null
+    },
+    {
+     "side": "blind",
+     "depth": 3,
+     "tiles": 818,
+     "seconds": 0.33,
+     "profile": null
+    },
+    {
+     "side": "blind",
+     "depth": -4,
+     "tiles": 818,
+     "seconds": 0.353,
+     "profile": null
+    },
+    {
+     "side": "blind",
+     "depth": 4,
+     "tiles": 818,
+     "seconds": 0.685,
+     "profile": null
+    }
+   ]
+  },
+  {
+   "n": 2,
+   "kind": "steady",
+   "route": "Sweep.run_reader(module=...)",
+   "wall_s": 9.207486639963463,
+   "volume_load_s": 0.7740302085876465,
+   "maps": [
+    {
+     "side": "reading",
+     "depth": 0,
+     "tiles": 818,
+     "seconds": 0.663,
+     "profile": null
+    },
+    {
+     "side": "reading",
+     "depth": -1,
+     "tiles": 818,
+     "seconds": 0.43,
+     "profile": null
+    },
+    {
+     "side": "reading",
+     "depth": 1,
+     "tiles": 818,
+     "seconds": 0.485,
+     "profile": null
+    },
+    {
+     "side": "reading",
+     "depth": -2,
+     "tiles": 818,
+     "seconds": 0.484,
+     "profile": null
+    },
+    {
+     "side": "reading",
+     "depth": 2,
+     "tiles": 818,
+     "seconds": 0.412,
+     "profile": null
+    },
+    {
+     "side": "reading",
+     "depth": -3,
+     "tiles": 818,
+     "seconds": 0.573,
+     "profile": null
+    },
+    {
+     "side": "reading",
+     "depth": 3,
+     "tiles": 818,
+     "seconds": 0.404,
+     "profile": null
+    },
+    {
+     "side": "reading",
+     "depth": -4,
+     "tiles": 818,
+     "seconds": 0.47,
+     "profile": null
+    },
+    {
+     "side": "reading",
+     "depth": 4,
+     "tiles": 818,
+     "seconds": 0.51,
+     "profile": null
+    },
+    {
+     "side": "blind",
+     "depth": 0,
+     "tiles": 818,
+     "seconds": 0.379,
+     "profile": null
+    },
+    {
+     "side": "blind",
+     "depth": -1,
+     "tiles": 818,
+     "seconds": 0.374,
+     "profile": null
+    },
+    {
+     "side": "blind",
+     "depth": 1,
+     "tiles": 818,
+     "seconds": 0.461,
+     "profile": null
+    },
+    {
+     "side": "blind",
+     "depth": -2,
+     "tiles": 818,
+     "seconds": 0.364,
+     "profile": null
+    },
+    {
+     "side": "blind",
+     "depth": 2,
+     "tiles": 818,
+     "seconds": 0.393,
+     "profile": null
+    },
+    {
+     "side": "blind",
+     "depth": -3,
+     "tiles": 818,
+     "seconds": 0.37,
+     "profile": null
+    },
+    {
+     "side": "blind",
+     "depth": 3,
+     "tiles": 818,
+     "seconds": 0.466,
+     "profile": null
+    },
+    {
+     "side": "blind",
+     "depth": -4,
+     "tiles": 818,
+     "seconds": 0.554,
+     "profile": null
+    },
+    {
+     "side": "blind",
+     "depth": 4,
+     "tiles": 818,
+     "seconds": 0.533,
+     "profile": null
+    }
+   ]
+  },
+  {
+   "n": 3,
+   "kind": "steady",
+   "route": "Sweep.run_reader(module=...)",
+   "wall_s": 8.17800829000771,
+   "volume_load_s": 0.2996666431427002,
+   "maps": [
+    {
+     "side": "reading",
+     "depth": 0,
+     "tiles": 818,
+     "seconds": 0.473,
+     "profile": null
+    },
+    {
+     "side": "reading",
+     "depth": -1,
+     "tiles": 818,
+     "seconds": 0.372,
+     "profile": null
+    },
+    {
+     "side": "reading",
+     "depth": 1,
+     "tiles": 818,
+     "seconds": 0.464,
+     "profile": null
+    },
+    {
+     "side": "reading",
+     "depth": -2,
+     "tiles": 818,
+     "seconds": 0.436,
+     "profile": null
+    },
+    {
+     "side": "reading",
+     "depth": 2,
+     "tiles": 818,
+     "seconds": 0.548,
+     "profile": null
+    },
+    {
+     "side": "reading",
+     "depth": -3,
+     "tiles": 818,
+     "seconds": 0.403,
+     "profile": null
+    },
+    {
+     "side": "reading",
+     "depth": 3,
+     "tiles": 818,
+     "seconds": 0.42,
+     "profile": null
+    },
+    {
+     "side": "reading",
+     "depth": -4,
+     "tiles": 818,
+     "seconds": 0.388,
+     "profile": null
+    },
+    {
+     "side": "reading",
+     "depth": 4,
+     "tiles": 818,
+     "seconds": 0.371,
+     "profile": null
+    },
+    {
+     "side": "blind",
+     "depth": 0,
+     "tiles": 818,
+     "seconds": 0.361,
+     "profile": null
+    },
+    {
+     "side": "blind",
+     "depth": -1,
+     "tiles": 818,
+     "seconds": 0.469,
+     "profile": null
+    },
+    {
+     "side": "blind",
+     "depth": 1,
+     "tiles": 818,
+     "seconds": 0.631,
+     "profile": null
+    },
+    {
+     "side": "blind",
+     "depth": -2,
+     "tiles": 818,
+     "seconds": 0.396,
+     "profile": null
+    },
+    {
+     "side": "blind",
+     "depth": 2,
+     "tiles": 818,
+     "seconds": 0.439,
+     "profile": null
+    },
+    {
+     "side": "blind",
+     "depth": -3,
+     "tiles": 818,
+     "seconds": 0.395,
+     "profile": null
+    },
+    {
+     "side": "blind",
+     "depth": 3,
+     "tiles": 818,
+     "seconds": 0.407,
+     "profile": null
+    },
+    {
+     "side": "blind",
+     "depth": -4,
+     "tiles": 818,
+     "seconds": 0.442,
+     "profile": null
+    },
+    {
+     "side": "blind",
+     "depth": 4,
+     "tiles": 818,
+     "seconds": 0.413,
+     "profile": null
+    }
+   ]
+  },
+  {
+   "n": 4,
+   "kind": "steady",
+   "route": "Sweep.run_reader(module=...)",
+   "wall_s": 8.349522368982434,
+   "volume_load_s": 0.342374324798584,
+   "maps": [
+    {
+     "side": "reading",
+     "depth": 0,
+     "tiles": 818,
+     "seconds": 0.384,
+     "profile": null
+    },
+    {
+     "side": "reading",
+     "depth": -1,
+     "tiles": 818,
+     "seconds": 0.36,
+     "profile": null
+    },
+    {
+     "side": "reading",
+     "depth": 1,
+     "tiles": 818,
+     "seconds": 0.429,
+     "profile": null
+    },
+    {
+     "side": "reading",
+     "depth": -2,
+     "tiles": 818,
+     "seconds": 0.43,
+     "profile": null
+    },
+    {
+     "side": "reading",
+     "depth": 2,
+     "tiles": 818,
+     "seconds": 0.546,
+     "profile": null
+    },
+    {
+     "side": "reading",
+     "depth": -3,
+     "tiles": 818,
+     "seconds": 0.352,
+     "profile": null
+    },
+    {
+     "side": "reading",
+     "depth": 3,
+     "tiles": 818,
+     "seconds": 0.374,
+     "profile": null
+    },
+    {
+     "side": "reading",
+     "depth": -4,
+     "tiles": 818,
+     "seconds": 0.421,
+     "profile": null
+    },
+    {
+     "side": "reading",
+     "depth": 4,
+     "tiles": 818,
+     "seconds": 0.398,
+     "profile": null
+    },
+    {
+     "side": "blind",
+     "depth": 0,
+     "tiles": 818,
+     "seconds": 0.453,
+     "profile": null
+    },
+    {
+     "side": "blind",
+     "depth": -1,
+     "tiles": 818,
+     "seconds": 0.449,
+     "profile": null
+    },
+    {
+     "side": "blind",
+     "depth": 1,
+     "tiles": 818,
+     "seconds": 0.487,
+     "profile": null
+    },
+    {
+     "side": "blind",
+     "depth": -2,
+     "tiles": 818,
+     "seconds": 0.426,
+     "profile": null
+    },
+    {
+     "side": "blind",
+     "depth": 2,
+     "tiles": 818,
+     "seconds": 0.386,
+     "profile": null
+    },
+    {
+     "side": "blind",
+     "depth": -3,
+     "tiles": 818,
+     "seconds": 0.46,
+     "profile": null
+    },
+    {
+     "side": "blind",
+     "depth": 3,
+     "tiles": 818,
+     "seconds": 0.451,
+     "profile": null
+    },
+    {
+     "side": "blind",
+     "depth": -4,
+     "tiles": 818,
+     "seconds": 0.612,
+     "profile": null
+    },
+    {
+     "side": "blind",
+     "depth": 4,
+     "tiles": 818,
+     "seconds": 0.54,
+     "profile": null
+    }
+   ]
+  },
+  {
+   "n": 5,
+   "kind": "profile",
+   "route": "Sweep.run_reader(module=...)",
+   "wall_s": 8.970851361984387,
+   "volume_load_s": 0.43492746353149414,
+   "maps": [
+    {
+     "side": "reading",
+     "depth": 0,
+     "tiles": 818,
+     "seconds": 0.445,
+     "profile": {
+      "seconds": {
+       "read": 0.002789,
+       "schedule": 0.001653,
+       "normalise": 0.17811,
+       "forward": 0.189182,
+       "blend": 0.001398,
+       "storage": 0.071331
+      },
+      "calls": {
+       "read": 3,
+       "schedule": 1,
+       "normalise": 2,
+       "forward": 13,
+       "blend": 15,
+       "storage": 1
+      }
+     }
+    },
+    {
+     "side": "reading",
+     "depth": -1,
+     "tiles": 818,
+     "seconds": 0.413,
+     "profile": {
+      "seconds": {
+       "read": 0.00274,
+       "schedule": 0.001489,
+       "normalise": 0.143754,
+       "forward": 0.188812,
+       "blend": 0.001326,
+       "storage": 0.074597
+      },
+      "calls": {
+       "read": 3,
+       "schedule": 1,
+       "normalise": 2,
+       "forward": 13,
+       "blend": 15,
+       "storage": 1
+      }
+     }
+    },
+    {
+     "side": "reading",
+     "depth": 1,
+     "tiles": 818,
+     "seconds": 0.432,
+     "profile": {
+      "seconds": {
+       "read": 0.002739,
+       "schedule": 0.001504,
+       "normalise": 0.177373,
+       "forward": 0.187011,
+       "blend": 0.001387,
+       "storage": 0.060957
+      },
+      "calls": {
+       "read": 3,
+       "schedule": 1,
+       "normalise": 2,
+       "forward": 13,
+       "blend": 15,
+       "storage": 1
+      }
+     }
+    },
+    {
+     "side": "reading",
+     "depth": -2,
+     "tiles": 818,
+     "seconds": 0.383,
+     "profile": {
+      "seconds": {
+       "read": 0.002742,
+       "schedule": 0.001511,
+       "normalise": 0.135086,
+       "forward": 0.187574,
+       "blend": 0.00141,
+       "storage": 0.054112
+      },
+      "calls": {
+       "read": 3,
+       "schedule": 1,
+       "normalise": 2,
+       "forward": 13,
+       "blend": 15,
+       "storage": 1
+      }
+     }
+    },
+    {
+     "side": "reading",
+     "depth": 2,
+     "tiles": 818,
+     "seconds": 0.514,
+     "profile": {
+      "seconds": {
+       "read": 0.002763,
+       "schedule": 0.001541,
+       "normalise": 0.248326,
+       "forward": 0.188834,
+       "blend": 0.001494,
+       "storage": 0.069996
+      },
+      "calls": {
+       "read": 3,
+       "schedule": 1,
+       "normalise": 2,
+       "forward": 13,
+       "blend": 15,
+       "storage": 1
+      }
+     }
+    },
+    {
+     "side": "reading",
+     "depth": -3,
+     "tiles": 818,
+     "seconds": 0.387,
+     "profile": {
+      "seconds": {
+       "read": 0.002729,
+       "schedule": 0.001524,
+       "normalise": 0.120365,
+       "forward": 0.18788,
+       "blend": 0.001441,
+       "storage": 0.07189
+      },
+      "calls": {
+       "read": 3,
+       "schedule": 1,
+       "normalise": 2,
+       "forward": 13,
+       "blend": 15,
+       "storage": 1
+      }
+     }
+    },
+    {
+     "side": "reading",
+     "depth": 3,
+     "tiles": 818,
+     "seconds": 0.45,
+     "profile": {
+      "seconds": {
+       "read": 0.002763,
+       "schedule": 0.001564,
+       "normalise": 0.148842,
+       "forward": 0.188965,
+       "blend": 0.001505,
+       "storage": 0.105623
+      },
+      "calls": {
+       "read": 3,
+       "schedule": 1,
+       "normalise": 2,
+       "forward": 13,
+       "blend": 15,
+       "storage": 1
+      }
+     }
+    },
+    {
+     "side": "reading",
+     "depth": -4,
+     "tiles": 818,
+     "seconds": 0.452,
+     "profile": {
+      "seconds": {
+       "read": 0.002766,
+       "schedule": 0.001543,
+       "normalise": 0.180037,
+       "forward": 0.189082,
+       "blend": 0.001474,
+       "storage": 0.076112
+      },
+      "calls": {
+       "read": 3,
+       "schedule": 1,
+       "normalise": 2,
+       "forward": 13,
+       "blend": 15,
+       "storage": 1
+      }
+     }
+    },
+    {
+     "side": "reading",
+     "depth": 4,
+     "tiles": 818,
+     "seconds": 0.457,
+     "profile": {
+      "seconds": {
+       "read": 0.002731,
+       "schedule": 0.001479,
+       "normalise": 0.132007,
+       "forward": 0.189299,
+       "blend": 0.001475,
+       "storage": 0.128947
+      },
+      "calls": {
+       "read": 3,
+       "schedule": 1,
+       "normalise": 2,
+       "forward": 13,
+       "blend": 15,
+       "storage": 1
+      }
+     }
+    },
+    {
+     "side": "blind",
+     "depth": 0,
+     "tiles": 818,
+     "seconds": 0.43,
+     "profile": {
+      "seconds": {
+       "read": 0.002733,
+       "schedule": 0.001501,
+       "normalise": 0.13148,
+       "forward": 0.18882,
+       "blend": 0.001461,
+       "storage": 0.102784
+      },
+      "calls": {
+       "read": 3,
+       "schedule": 1,
+       "normalise": 2,
+       "forward": 13,
+       "blend": 15,
+       "storage": 1
+      }
+     }
+    },
+    {
+     "side": "blind",
+     "depth": -1,
+     "tiles": 818,
+     "seconds": 0.602,
+     "profile": {
+      "seconds": {
+       "read": 0.002735,
+       "schedule": 0.001522,
+       "normalise": 0.319816,
+       "forward": 0.19035,
+       "blend": 0.001606,
+       "storage": 0.085129
+      },
+      "calls": {
+       "read": 3,
+       "schedule": 1,
+       "normalise": 2,
+       "forward": 13,
+       "blend": 15,
+       "storage": 1
+      }
+     }
+    },
+    {
+     "side": "blind",
+     "depth": 1,
+     "tiles": 818,
+     "seconds": 0.492,
+     "profile": {
+      "seconds": {
+       "read": 0.002787,
+       "schedule": 0.001621,
+       "normalise": 0.242308,
+       "forward": 0.189942,
+       "blend": 0.0017,
+       "storage": 0.05294
+      },
+      "calls": {
+       "read": 3,
+       "schedule": 1,
+       "normalise": 2,
+       "forward": 13,
+       "blend": 15,
+       "storage": 1
+      }
+     }
+    },
+    {
+     "side": "blind",
+     "depth": -2,
+     "tiles": 818,
+     "seconds": 0.465,
+     "profile": {
+      "seconds": {
+       "read": 0.00275,
+       "schedule": 0.001552,
+       "normalise": 0.203408,
+       "forward": 0.188355,
+       "blend": 0.001466,
+       "storage": 0.067054
+      },
+      "calls": {
+       "read": 3,
+       "schedule": 1,
+       "normalise": 2,
+       "forward": 13,
+       "blend": 15,
+       "storage": 1
+      }
+     }
+    },
+    {
+     "side": "blind",
+     "depth": 2,
+     "tiles": 818,
+     "seconds": 0.605,
+     "profile": {
+      "seconds": {
+       "read": 0.002748,
+       "schedule": 0.001552,
+       "normalise": 0.305873,
+       "forward": 0.189302,
+       "blend": 0.001577,
+       "storage": 0.103275
+      },
+      "calls": {
+       "read": 3,
+       "schedule": 1,
+       "normalise": 2,
+       "forward": 13,
+       "blend": 15,
+       "storage": 1
+      }
+     }
+    },
+    {
+     "side": "blind",
+     "depth": -3,
+     "tiles": 818,
+     "seconds": 0.455,
+     "profile": {
+      "seconds": {
+       "read": 0.002745,
+       "schedule": 0.001502,
+       "normalise": 0.151396,
+       "forward": 0.190691,
+       "blend": 0.001702,
+       "storage": 0.106211
+      },
+      "calls": {
+       "read": 3,
+       "schedule": 1,
+       "normalise": 2,
+       "forward": 13,
+       "blend": 15,
+       "storage": 1
+      }
+     }
+    },
+    {
+     "side": "blind",
+     "depth": 3,
+     "tiles": 818,
+     "seconds": 0.526,
+     "profile": {
+      "seconds": {
+       "read": 0.002742,
+       "schedule": 0.00152,
+       "normalise": 0.158797,
+       "forward": 0.189451,
+       "blend": 0.001551,
+       "storage": 0.170774
+      },
+      "calls": {
+       "read": 3,
+       "schedule": 1,
+       "normalise": 2,
+       "forward": 13,
+       "blend": 15,
+       "storage": 1
+      }
+     }
+    },
+    {
+     "side": "blind",
+     "depth": -4,
+     "tiles": 818,
+     "seconds": 0.422,
+     "profile": {
+      "seconds": {
+       "read": 0.002781,
+       "schedule": 0.001637,
+       "normalise": 0.165753,
+       "forward": 0.19028,
+       "blend": 0.001564,
+       "storage": 0.058567
+      },
+      "calls": {
+       "read": 3,
+       "schedule": 1,
+       "normalise": 2,
+       "forward": 13,
+       "blend": 15,
+       "storage": 1
+      }
+     }
+    },
+    {
+     "side": "blind",
+     "depth": 4,
+     "tiles": 818,
+     "seconds": 0.557,
+     "profile": {
+      "seconds": {
+       "read": 0.002731,
+       "schedule": 0.001493,
+       "normalise": 0.177651,
+       "forward": 0.189749,
+       "blend": 0.001533,
+       "storage": 0.183439
+      },
+      "calls": {
+       "read": 3,
+       "schedule": 1,
+       "normalise": 2,
+       "forward": 13,
+       "blend": 15,
+       "storage": 1
+      }
+     }
+    }
+   ],
+   "stage_s": {
+    "read": 0.049513999999999996,
+    "schedule": 0.027708000000000003,
+    "normalise": 3.320382,
+    "forward": 3.403579,
+    "blend": 0.027069999999999997,
+    "storage": 1.643738
+   },
+   "stage_share": {
+    "read": 0.005844434915004041,
+    "schedule": 0.0032705417179975764,
+    "normalise": 0.39192463731370825,
+    "forward": 0.4017448790963069,
+    "blend": 0.0031952347447016883,
+    "storage": 0.19402027221228163
+   }
+  }
+ ]
+}

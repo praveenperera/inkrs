@@ -1,0 +1,51 @@
+{
+ "gpu": "RTX 5090",
+ "what": "villa's flat ink inference with the faster flags from villa's documentation PR #2428, one process per depth as the PHerc. 343 recipe runs it, against inkrs on the same input",
+ "villa": {
+  "commit": "7e6b82164; its ink_detection inference code is identical to villa main 740f0103 (2026-11-09)",
+  "flags": "--batch-size 8 --no-compile --loader-threads 8 --chunk-cache-size 64 --overlap 0.5 --blend-mode hann --direction both",
+  "torch": "2.14.1+cu130",
+  "cudnn": 92400
+ },
+ "settings": "hybrid_3d2d-seed42 (ink9_s42), d -4..4, both directions (18 maps; villa writes both sides of a depth in one process), uint8 TIFFs",
+ "r343": {
+  "date": "2026-11-10",
+  "input": "PHerc. 343 concat_w047-w048_R5B2_z9500-11000 render, level 0, 66 x 2560 x 6720",
+  "villa_seconds_per_depth": {
+   "-4": 20.718,
+   "-3": 20.594,
+   "-2": 23.011,
+   "-1": 20.334,
+   "0": 25.22,
+   "1": 22.916,
+   "2": 22.987,
+   "3": 18.578,
+   "4": 20.917
+  },
+  "villa_total_s": 195.275,
+  "inkrs_same_job": {
+   "cold_s": 12.335,
+   "passes_s": [
+    10.858,
+    11.409,
+    10.863,
+    11.258
+   ],
+   "steady_median_passes_2_4_s": 11.258
+  },
+  "note": "inkrs ran right after villa in the same session and script; host load1 4.2 at the start",
+  "villa_over_inkrs_cold": 15.8,
+  "villa_over_inkrs_steady": 17.3
+ },
+ "s1": {
+  "date": "2026-11-07",
+  "input": "2048 x 2048 crop of the same render",
+  "villa_total_s": 68.7,
+  "villa_seconds_per_depth_range": [
+   6.6,
+   8.7
+  ],
+  "max_abs_diff_vs_villa_eager": "1/255",
+  "note": "an earlier session than inkrs's matched S1 run (cold 4.0 s); wall time including process start and TIFF writes"
+ }
+}

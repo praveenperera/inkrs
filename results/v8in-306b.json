@@ -1,0 +1,230 @@
+{
+ "what": "v8-in (both conventions) and the three A-hn seeds (306b) on a 1260 x 4410 claim crop and a 1260 x 1260 edge crop of the PHerc. 0306B segment, on the sm120 tier and the sm80 tier forced on the RTX 5090, against ink8um's predict_stack and the 306B runner (probabilities in 1/255 steps). Timing: the claim crop end to end; inkrs warm, 3 runs; inksweep fast mode compiled with a warm cache, rounds 1 and 2 (round 3 took 260.4 s and is left out of the pairs); inksweep fast without compile, 3 runs",
+ "gpu": "RTX 5090, driver 595.99.02",
+ "map_checks": {
+  "crop-ahn0-306b-sm120": {
+   "pass": true,
+   "coverage_identical": true,
+   "coverage_mismatch": 0,
+   "pixels": 5443600,
+   "r": 0.9999990741498948,
+   "p999_255": 0.4489033596217602,
+   "max_255": 0.6953474879264832
+  },
+  "crop-ahn0-306b-sm80": {
+   "pass": true,
+   "coverage_identical": true,
+   "coverage_mismatch": 0,
+   "pixels": 5443600,
+   "r": 0.9999990741498948,
+   "p999_255": 0.4489033596217602,
+   "max_255": 0.6953474879264832
+  },
+  "crop-ahn1-306b-sm120": {
+   "pass": true,
+   "coverage_identical": true,
+   "coverage_mismatch": 0,
+   "pixels": 5443600,
+   "r": 0.99999851024109,
+   "p999_255": 0.6343714454769909,
+   "max_255": 1.1247928440570831
+  },
+  "crop-ahn1-306b-sm80": {
+   "pass": true,
+   "coverage_identical": true,
+   "coverage_mismatch": 0,
+   "pixels": 5443600,
+   "r": 0.99999851024109,
+   "p999_255": 0.6343714454769909,
+   "max_255": 1.1247928440570831
+  },
+  "crop-ahn2-306b-sm120": {
+   "pass": true,
+   "coverage_identical": true,
+   "coverage_mismatch": 0,
+   "pixels": 5443600,
+   "r": 0.9999985866654597,
+   "p999_255": 0.603848397731781,
+   "max_255": 1.1003601551055908
+  },
+  "crop-ahn2-306b-sm80": {
+   "pass": true,
+   "coverage_identical": true,
+   "coverage_mismatch": 0,
+   "pixels": 5443600,
+   "r": 0.9999985866654597,
+   "p999_255": 0.603848397731781,
+   "max_255": 1.1003601551055908
+  },
+  "crop-base-306b-sm120": {
+   "pass": true,
+   "coverage_identical": true,
+   "coverage_mismatch": 0,
+   "pixels": 5443600,
+   "r": 0.9999971057667519,
+   "p999_255": 0.6380952456593334,
+   "max_255": 0.9913972020149231
+  },
+  "crop-base-306b-sm80": {
+   "pass": true,
+   "coverage_identical": true,
+   "coverage_mismatch": 0,
+   "pixels": 5443600,
+   "r": 0.9999971057667519,
+   "p999_255": 0.6380952456593334,
+   "max_255": 0.9913972020149231
+  },
+  "crop-base-release-sm120": {
+   "pass": true,
+   "coverage_identical": true,
+   "coverage_mismatch": 0,
+   "pixels": 5443600,
+   "r": 0.9999977184569078,
+   "p999_255": 0.35870835185050964,
+   "max_255": 0.572553277015686
+  },
+  "crop-base-release-sm80": {
+   "pass": true,
+   "coverage_identical": true,
+   "coverage_mismatch": 0,
+   "pixels": 5443600,
+   "r": 0.9999977184569078,
+   "p999_255": 0.35870835185050964,
+   "max_255": 0.572553277015686
+  },
+  "edge-ahn0-306b-sm120": {
+   "pass": true,
+   "coverage_identical": true,
+   "coverage_mismatch": 0,
+   "pixels": 982402,
+   "r": 0.9999951825068618,
+   "p999_255": 0.3203105458617259,
+   "max_255": 0.4870844632387161
+  },
+  "edge-ahn0-306b-sm80": {
+   "pass": true,
+   "coverage_identical": true,
+   "coverage_mismatch": 0,
+   "pixels": 982402,
+   "r": 0.9999951825068618,
+   "p999_255": 0.3203105458617259,
+   "max_255": 0.4870844632387161
+  },
+  "edge-ahn1-306b-sm120": {
+   "pass": true,
+   "coverage_identical": true,
+   "coverage_mismatch": 0,
+   "pixels": 982402,
+   "r": 0.9999953710664211,
+   "p999_255": 0.2681734295189481,
+   "max_255": 0.5687154829502106
+  },
+  "edge-ahn1-306b-sm80": {
+   "pass": true,
+   "coverage_identical": true,
+   "coverage_mismatch": 0,
+   "pixels": 982402,
+   "r": 0.9999953710664211,
+   "p999_255": 0.2681734295189481,
+   "max_255": 0.5687154829502106
+  },
+  "edge-ahn2-306b-sm120": {
+   "pass": true,
+   "coverage_identical": true,
+   "coverage_mismatch": 0,
+   "pixels": 982402,
+   "r": 0.9999931101106229,
+   "p999_255": 0.5399996524304157,
+   "max_255": 0.8372926712036133
+  },
+  "edge-ahn2-306b-sm80": {
+   "pass": true,
+   "coverage_identical": true,
+   "coverage_mismatch": 0,
+   "pixels": 982402,
+   "r": 0.9999931101106229,
+   "p999_255": 0.5399996524304157,
+   "max_255": 0.8372926712036133
+  },
+  "edge-base-306b-sm120": {
+   "pass": true,
+   "coverage_identical": true,
+   "coverage_mismatch": 0,
+   "pixels": 982402,
+   "r": 0.9999970316833314,
+   "p999_255": 0.5286853833496574,
+   "max_255": 0.7611903548240662
+  },
+  "edge-base-306b-sm80": {
+   "pass": true,
+   "coverage_identical": true,
+   "coverage_mismatch": 0,
+   "pixels": 982402,
+   "r": 0.9999970316833314,
+   "p999_255": 0.5286853833496574,
+   "max_255": 0.7611903548240662
+  },
+  "edge-base-release-sm120": {
+   "pass": true,
+   "coverage_identical": true,
+   "coverage_mismatch": 0,
+   "pixels": 908692,
+   "r": 0.9999972591794766,
+   "p999_255": 0.3244681763648992,
+   "max_255": 0.48705026507377625
+  },
+  "edge-base-release-sm80": {
+   "pass": true,
+   "coverage_identical": true,
+   "coverage_mismatch": 0,
+   "pixels": 908692,
+   "r": 0.9999972591794766,
+   "p999_255": 0.3244681763648992,
+   "max_255": 0.48705026507377625
+  }
+ },
+ "worst": {
+  "min_r": 0.9999931101106229,
+  "max_p999_255": 0.6380952456593334,
+  "max_255": 1.1247928440570831,
+  "checks": 20
+ },
+ "timing": {
+  "inkrs_s": [
+   83.931,
+   83.948,
+   83.991
+  ],
+  "inkrs_mean_s": 83.95666666666666,
+  "inksweep_compiled_s": [
+   153.124,
+   152.065
+  ],
+  "inksweep_compiled_mean_s": 152.59449999999998,
+  "inksweep_compiled_third_round_s": 260.366,
+  "compiled_vs_inkrs": {
+   "rounds": [
+    1.8244033789660554,
+    1.8114189736503552
+   ],
+   "mean": 1.8179111763082054,
+   "ci95": [
+    1.7354199201488245,
+    1.9004024324675863
+   ]
+  },
+  "inksweep_eager_s": [
+   193.994,
+   193.702,
+   192.841
+  ],
+  "eager_vs_inkrs": 2.3049072934450314,
+  "tiles": 11799,
+  "gpu_ms_per_tile": [
+   6.987845897957454,
+   6.990599706542928,
+   6.992033885286888
+  ],
+  "gpu_ms_per_tile_median": 6.990599706542928
+ }
+}

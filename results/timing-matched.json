@@ -1,0 +1,324 @@
+{
+ "gpu": "RTX 5090",
+ "inputs": {
+  "s1": {
+   "desc": "2048 x 2048 crop of the PHerc. 343 concat render (rows 256:2304, cols 2048:4096), 66 layers",
+   "tiles_per_map": 818
+  },
+  "r343": {
+   "desc": "PHerc. 343 concat_w047-w048_R5B2_z9500-11000 render, level 0 only, 66 x 2560 x 6720",
+   "tiles_per_map": 2797,
+   "area_cm2_raster": 12.8421199872,
+   "area_cm2_valid": 7.9728833433599995,
+   "area_px_raster": 17203200,
+   "area_px_valid": 10680410,
+   "pixel_um": 8.64,
+   "area_note": "valid = CT nonzero in all 66 layers (count from letters-r343-multiscale.json); areas unrounded"
+  }
+ },
+ "settings": "hybrid_3d2d-seed42 (ink9_s42), d -4..4, both directions (18 maps), stride 64, Hann blend, one tile phase",
+ "matched": "each tool writes only its own contract map per (depth, side): inkrs uint8 LZW TIFF (no coverage masks, no finite check), inksweep its calibrated float32 TIFF (--no-raw). Cold: a fresh process to pass 1's last map. Steady: passes 2-4 in the same process, model loaded and prepared once before them; each steady pass reads the volume to the GPU again and writes all 18 maps. Steady figure: the median of passes 2-4",
+ "runs": {
+  "s1": {
+   "inkrs": {
+    "cold_s": 4.000984236,
+    "cold_def": "top of main to pass 1's last map",
+    "load_weights_s": 0.124157709,
+    "open_gpu_s": 0.189877588,
+    "plan_s": 0.546373945,
+    "passes": [
+     {
+      "n": 1,
+      "total_s": 3.139391613,
+      "gpu_s": 2.704813232421875,
+      "read_volume_s": 0.16912935,
+      "schedule_s": 0.195683963,
+      "upload_s": 0.059413515,
+      "run_s": 2.715147447,
+      "tiles": 14724
+     },
+     {
+      "n": 2,
+      "total_s": 4.329895311,
+      "gpu_s": 2.706312744140625,
+      "read_volume_s": 0.128367684,
+      "schedule_s": 0.201888479,
+      "upload_s": 0.03298456,
+      "run_s": 3.9666422089999998,
+      "tiles": 14724
+     },
+     {
+      "n": 3,
+      "total_s": 3.821066676,
+      "gpu_s": 2.707871337890625,
+      "read_volume_s": 0.138505846,
+      "schedule_s": 0.20518012,
+      "upload_s": 0.039285047,
+      "run_s": 3.438084311,
+      "tiles": 14724
+     },
+     {
+      "n": 4,
+      "total_s": 3.829833155,
+      "gpu_s": 2.711160888671875,
+      "read_volume_s": 0.141107763,
+      "schedule_s": 0.187743414,
+      "upload_s": 0.051844665,
+      "run_s": 3.449124381,
+      "tiles": 14724
+     }
+    ],
+    "steady_median_s": 3.829833155,
+    "process_wall_s": 16.193,
+    "process_wall_covers": "exec to exit, 4 passes"
+   },
+   "inksweep": {
+    "version": "inksweep c696492, fast mode, --compile, warm on-disk Inductor cache at start",
+    "import_s": 0.8056847548577935,
+    "cold_s": 41.101004453143105,
+    "cold_def": "pass 1 through inksweep.cli.main in a fresh process",
+    "prepare_s": 0.9709858121350408,
+    "passes": [
+     {
+      "n": 1,
+      "kind": "cold",
+      "route": "cli.main",
+      "wall_s": 41.101004453143105,
+      "volume_load_s": 0.3378255367279053,
+      "first_map_s": 30.384,
+      "map_s_sum": 37.816
+     },
+     {
+      "n": 2,
+      "kind": "steady",
+      "route": "Sweep.run_reader(module=...)",
+      "wall_s": 9.207486639963463,
+      "volume_load_s": 0.7740302085876465,
+      "first_map_s": 0.663,
+      "map_s_sum": 8.325
+     },
+     {
+      "n": 3,
+      "kind": "steady",
+      "route": "Sweep.run_reader(module=...)",
+      "wall_s": 8.17800829000771,
+      "volume_load_s": 0.2996666431427002,
+      "first_map_s": 0.473,
+      "map_s_sum": 7.828
+     },
+     {
+      "n": 4,
+      "kind": "steady",
+      "route": "Sweep.run_reader(module=...)",
+      "wall_s": 8.349522368982434,
+      "volume_load_s": 0.342374324798584,
+      "first_map_s": 0.384,
+      "map_s_sum": 7.958
+     },
+     {
+      "n": 5,
+      "kind": "profile",
+      "route": "Sweep.run_reader(module=...)",
+      "wall_s": 8.970851361984387,
+      "volume_load_s": 0.43492746353149414,
+      "first_map_s": 0.445,
+      "map_s_sum": 8.487,
+      "stage_s": {
+       "read": 0.049513999999999996,
+       "schedule": 0.027708000000000003,
+       "normalise": 3.320382,
+       "forward": 3.403579,
+       "blend": 0.027069999999999997,
+       "storage": 1.643738
+      },
+      "stage_share": {
+       "read": 0.005844434915004041,
+       "schedule": 0.0032705417179975764,
+       "normalise": 0.39192463731370825,
+       "forward": 0.4017448790963069,
+       "blend": 0.0031952347447016883,
+       "storage": 0.19402027221228163
+      }
+     }
+    ],
+    "steady_median_s": 8.349522368982434,
+    "process_wall_s": 79.349,
+    "process_wall_covers": "exec to exit: cold, 3 steady, 1 profiled pass"
+   },
+   "steady_ratio": 2.1801269222607775,
+   "cold_ratio": 10.272723417234456
+  },
+  "r343": {
+   "inkrs": {
+    "cold_s": 11.581470069,
+    "cold_def": "top of main to pass 1's last map",
+    "load_weights_s": 0.131847656,
+    "open_gpu_s": 0.183886826,
+    "plan_s": 0.580399319,
+    "passes": [
+     {
+      "n": 1,
+      "total_s": 10.681687735,
+      "gpu_s": 9.3928193359375,
+      "read_volume_s": 0.410873157,
+      "schedule_s": 0.607531843,
+      "upload_s": 0.217601636,
+      "run_s": 9.445659027,
+      "tiles": 50346
+     },
+     {
+      "n": 2,
+      "total_s": 10.896423465,
+      "gpu_s": 9.4149736328125,
+      "read_volume_s": 0.425706938,
+      "schedule_s": 0.735842393,
+      "upload_s": 0.170778186,
+      "run_s": 9.564085745,
+      "tiles": 50346
+     },
+     {
+      "n": 3,
+      "total_s": 11.66887419,
+      "gpu_s": 9.432826171875,
+      "read_volume_s": 0.500736563,
+      "schedule_s": 0.565274742,
+      "upload_s": 0.140058454,
+      "run_s": 10.462793144,
+      "tiles": 50346
+     },
+     {
+      "n": 4,
+      "total_s": 10.8420577,
+      "gpu_s": 9.4394951171875,
+      "read_volume_s": 0.408867161,
+      "schedule_s": 0.603985801,
+      "upload_s": 0.127190389,
+      "run_s": 9.702000296,
+      "tiles": 50346
+     }
+    ],
+    "steady_median_s": 10.896423465,
+    "process_wall_s": 45.203,
+    "process_wall_covers": "exec to exit, 4 passes"
+   },
+   "inksweep": {
+    "version": "inksweep c696492, fast mode, --compile, warm on-disk Inductor cache at start",
+    "import_s": 0.755882317898795,
+    "cold_s": 79.39985883492045,
+    "cold_def": "pass 1 through inksweep.cli.main in a fresh process",
+    "prepare_s": 0.9124095940496773,
+    "passes": [
+     {
+      "n": 1,
+      "kind": "cold",
+      "route": "cli.main",
+      "wall_s": 79.39985883492045,
+      "volume_load_s": 1.8976223468780518,
+      "first_map_s": 39.549,
+      "map_s_sum": 74.444
+     },
+     {
+      "n": 2,
+      "kind": "steady",
+      "route": "Sweep.run_reader(module=...)",
+      "wall_s": 35.1724598989822,
+      "volume_load_s": 1.3788669109344482,
+      "first_map_s": 2.11,
+      "map_s_sum": 33.689
+     },
+     {
+      "n": 3,
+      "kind": "steady",
+      "route": "Sweep.run_reader(module=...)",
+      "wall_s": 43.88813171093352,
+      "volume_load_s": 1.8023741245269775,
+      "first_map_s": 2.567,
+      "map_s_sum": 41.953
+     },
+     {
+      "n": 4,
+      "kind": "steady",
+      "route": "Sweep.run_reader(module=...)",
+      "wall_s": 41.520928715122864,
+      "volume_load_s": 1.7920119762420654,
+      "first_map_s": 2.164,
+      "map_s_sum": 39.611000000000004
+     },
+     {
+      "n": 5,
+      "kind": "profile",
+      "route": "Sweep.run_reader(module=...)",
+      "wall_s": 43.81183840800077,
+      "volume_load_s": 2.3656957149505615,
+      "first_map_s": 2.551,
+      "map_s_sum": 41.324,
+      "stage_s": {
+       "read": 0.16109099999999998,
+       "schedule": 0.09298300000000001,
+       "normalise": 11.851430999999998,
+       "forward": 11.509717999999998,
+       "blend": 0.09247999999999999,
+       "storage": 17.584480000000003
+      },
+      "stage_share": {
+       "read": 0.0039012468776475195,
+       "schedule": 0.002251830570449618,
+       "normalise": 0.2870139125364236,
+       "forward": 0.2787384236866333,
+       "blend": 0.00223964908806105,
+       "storage": 0.4258549372407848
+      }
+     },
+     {
+      "n": 6,
+      "kind": "raw",
+      "route": "Sweep.run_reader(module=...)",
+      "wall_s": 40.5621802888345,
+      "volume_load_s": 1.5800223350524902,
+      "first_map_s": 2.199,
+      "map_s_sum": 38.861000000000004
+     }
+    ],
+    "steady_median_s": 41.520928715122864,
+    "process_wall_s": 289.411,
+    "process_wall_covers": "exec to exit: cold, 3 steady, 1 profiled, 1 raw-map pass pass"
+   },
+   "steady_ratio": 3.8105098290728794,
+   "cold_ratio": 6.8557668725880685,
+   "area_cm2_per_hour": {
+    "inkrs": {
+     "raster": 4242.826290885163,
+     "valid": 2634.1101856301616
+    },
+    "inksweep": {
+     "raster": 1113.4537059880693,
+     "valid": 691.2750009284339
+    }
+   },
+   "inkrs_gate_run": {
+    "flags": "--passes 2 --check-finite --coverage",
+    "cold_s": 12.618141766,
+    "pass_total_s": [
+     11.19174227,
+     10.797536294
+    ],
+    "process_wall_s": 25.839
+   },
+   "villa_eager_reference": {
+    "note": "villa 0fb38c45 --no-compile, batch 4, one process per depth (the parity reference, not a speed path)",
+    "per_depth_s": {
+     "0": 44.822,
+     "-1": 39.563,
+     "1": 37.918,
+     "-2": 40.386,
+     "2": 39.024,
+     "-3": 40.95,
+     "3": 39.244,
+     "-4": 39.532,
+     "4": 38.207
+    },
+    "total_s": 359.646
+   }
+  }
+ }
+}

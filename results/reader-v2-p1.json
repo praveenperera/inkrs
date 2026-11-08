@@ -1,0 +1,308 @@
+{
+ "what": "inkrs reader-v2 maps against villa 0fb38c45 eager on the 2048 x 2048 native crop, d -2..2, both directions, stride 64; scripts/p1_gate.py checks",
+ "gpu": "RTX 5090, driver 595.99.02",
+ "ptx_tier": "sm120",
+ "input": "native-crop",
+ "inputs": {
+  "segment": "PHerc1447 20250702235910-auto_grown_20250702235910292",
+  "voxel_um": 8.64,
+  "arrays": {
+   "native": {
+    "shape": [
+     31,
+     2980,
+     3240
+    ],
+    "sha256": "10a9180b01868a701e1b5041e61111815121558a42993ec4aea4e9f77e954adb"
+   },
+   "native-crop": {
+    "shape": [
+     31,
+     2048,
+     2048
+    ],
+    "sha256": "00c965a97b4d1cdff1daccaa120a16d8ca7038dee497a680b356fa3f6e9e76cc",
+    "origin_yx": [
+     466,
+     596
+    ]
+   },
+   "r96": {
+    "shape": [
+     28,
+     2682,
+     2916
+    ],
+    "sha256": "42da913d562a6bf04f4465fa2b126aa4b0771806f0103e4f1d617dcb54deb841"
+   },
+   "r96-crop": {
+    "shape": [
+     28,
+     2048,
+     2048
+    ],
+    "sha256": "298ad44ee2870b8afcac8e61b8862320d8720aebc6a4cc757135e487004afe87",
+    "origin_yx": [
+     317,
+     434
+    ]
+   },
+   "r96-edge": {
+    "shape": [
+     27,
+     48,
+     2916
+    ],
+    "sha256": "b7305bebff85f06563cef95ab899ac87e56e716689a3e303afc73dbfcdf24d56",
+    "origin_yx": [
+     0,
+     0
+    ],
+    "tiles_kept_skipped": {
+     "forward": [
+      3,
+      88
+     ],
+     "reverse": [
+      3,
+      88
+     ]
+    }
+   }
+  }
+ },
+ "gate": {
+  "summary": {
+   "maps": 10,
+   "checks": 101,
+   "passed": 101,
+   "failed": 0,
+   "min_r": 0.9999969622382388,
+   "max_p999": 1.0,
+   "max_abs": 1.0,
+   "occupancy_level": "0",
+   "occupancy_scale": [
+    1,
+    1
+   ],
+   "bar": {
+    "min_r": 0.9994,
+    "max_p999": 4.0,
+    "max_abs": 4.0
+   }
+  },
+  "maps": [
+   {
+    "map": "native-crop__reader-v2__L31s5.tif",
+    "r": 0.9999972512802385,
+    "p999": 1.0,
+    "max": 1.0,
+    "equal_share": 0.9942355155944824,
+    "covered": 3633152,
+    "engine_covered": 3633152,
+    "coverage_mismatch": 0,
+    "kept_tiles": 813,
+    "ours_nonzero_uncovered": 0,
+    "ref_nonzero_uncovered": 0,
+    "reported_tiles": 813
+   },
+   {
+    "map": "native-crop__reader-v2__L31s5_reverse.tif",
+    "r": 0.9999972990312055,
+    "p999": 1.0,
+    "max": 1.0,
+    "equal_share": 0.9947953224182129,
+    "covered": 3633152,
+    "engine_covered": 3633152,
+    "coverage_mismatch": 0,
+    "kept_tiles": 813,
+    "ours_nonzero_uncovered": 0,
+    "ref_nonzero_uncovered": 0,
+    "reported_tiles": 813
+   },
+   {
+    "map": "native-crop__reader-v2__L31s6.tif",
+    "r": 0.9999972783779144,
+    "p999": 1.0,
+    "max": 1.0,
+    "equal_share": 0.9940826892852783,
+    "covered": 3633152,
+    "engine_covered": 3633152,
+    "coverage_mismatch": 0,
+    "kept_tiles": 813,
+    "ours_nonzero_uncovered": 0,
+    "ref_nonzero_uncovered": 0,
+    "reported_tiles": 813
+   },
+   {
+    "map": "native-crop__reader-v2__L31s6_reverse.tif",
+    "r": 0.999997302878812,
+    "p999": 1.0,
+    "max": 1.0,
+    "equal_share": 0.9951095581054688,
+    "covered": 3633152,
+    "engine_covered": 3633152,
+    "coverage_mismatch": 0,
+    "kept_tiles": 813,
+    "ours_nonzero_uncovered": 0,
+    "ref_nonzero_uncovered": 0,
+    "reported_tiles": 813
+   },
+   {
+    "map": "native-crop__reader-v2__L31s7.tif",
+    "r": 0.9999973730970098,
+    "p999": 1.0,
+    "max": 1.0,
+    "equal_share": 0.9941997528076172,
+    "covered": 3633152,
+    "engine_covered": 3633152,
+    "coverage_mismatch": 0,
+    "kept_tiles": 813,
+    "ours_nonzero_uncovered": 0,
+    "ref_nonzero_uncovered": 0,
+    "reported_tiles": 813
+   },
+   {
+    "map": "native-crop__reader-v2__L31s7_reverse.tif",
+    "r": 0.9999971743822926,
+    "p999": 1.0,
+    "max": 1.0,
+    "equal_share": 0.9952642917633057,
+    "covered": 3633152,
+    "engine_covered": 3633152,
+    "coverage_mismatch": 0,
+    "kept_tiles": 813,
+    "ours_nonzero_uncovered": 0,
+    "ref_nonzero_uncovered": 0,
+    "reported_tiles": 813
+   },
+   {
+    "map": "native-crop__reader-v2__L31s8.tif",
+    "r": 0.999997382038216,
+    "p999": 1.0,
+    "max": 1.0,
+    "equal_share": 0.9942107200622559,
+    "covered": 3633152,
+    "engine_covered": 3633152,
+    "coverage_mismatch": 0,
+    "kept_tiles": 813,
+    "ours_nonzero_uncovered": 0,
+    "ref_nonzero_uncovered": 0,
+    "reported_tiles": 813
+   },
+   {
+    "map": "native-crop__reader-v2__L31s8_reverse.tif",
+    "r": 0.9999970100999754,
+    "p999": 1.0,
+    "max": 1.0,
+    "equal_share": 0.9954433441162109,
+    "covered": 3633152,
+    "engine_covered": 3633152,
+    "coverage_mismatch": 0,
+    "kept_tiles": 813,
+    "ours_nonzero_uncovered": 0,
+    "ref_nonzero_uncovered": 0,
+    "reported_tiles": 813
+   },
+   {
+    "map": "native-crop__reader-v2__L31s9.tif",
+    "r": 0.9999973000181184,
+    "p999": 1.0,
+    "max": 1.0,
+    "equal_share": 0.994091272354126,
+    "covered": 3633152,
+    "engine_covered": 3633152,
+    "coverage_mismatch": 0,
+    "kept_tiles": 813,
+    "ours_nonzero_uncovered": 0,
+    "ref_nonzero_uncovered": 0,
+    "reported_tiles": 813
+   },
+   {
+    "map": "native-crop__reader-v2__L31s9_reverse.tif",
+    "r": 0.9999969622382388,
+    "p999": 1.0,
+    "max": 1.0,
+    "equal_share": 0.9957025051116943,
+    "covered": 3633152,
+    "engine_covered": 3633152,
+    "coverage_mismatch": 0,
+    "kept_tiles": 813,
+    "ours_nonzero_uncovered": 0,
+    "ref_nonzero_uncovered": 0,
+    "reported_tiles": 813
+   }
+  ],
+  "failures": []
+ },
+ "inkrs_report": {
+  "stride": 64,
+  "batch": 64,
+  "cudnn": 92700,
+  "load_weights_s": 0.439298836,
+  "open_gpu_s": 0.36555694,
+  "plan_s": 1.02441804,
+  "cold_s": 4.197262222,
+  "passes": [
+   {
+    "shape": [
+     31,
+     2048,
+     2048
+    ],
+    "maps": 10,
+    "tiles": 8130,
+    "batches": 128,
+    "read_volume_s": 0.232083741,
+    "schedule_s": 0.2860526,
+    "upload_s": 0.073590398,
+    "run_s": 1.601067767,
+    "total_s": 2.192828836,
+    "gpu_s": 1.5535843505859375,
+    "tiles_per_s": 5077.861267067779
+   }
+  ],
+  "map_tiles": [
+   [
+    "native-crop__reader-v2__L31s5.tif",
+    813
+   ],
+   [
+    "native-crop__reader-v2__L31s5_reverse.tif",
+    813
+   ],
+   [
+    "native-crop__reader-v2__L31s6.tif",
+    813
+   ],
+   [
+    "native-crop__reader-v2__L31s6_reverse.tif",
+    813
+   ],
+   [
+    "native-crop__reader-v2__L31s7.tif",
+    813
+   ],
+   [
+    "native-crop__reader-v2__L31s7_reverse.tif",
+    813
+   ],
+   [
+    "native-crop__reader-v2__L31s8.tif",
+    813
+   ],
+   [
+    "native-crop__reader-v2__L31s8_reverse.tif",
+    813
+   ],
+   [
+    "native-crop__reader-v2__L31s9.tif",
+    813
+   ],
+   [
+    "native-crop__reader-v2__L31s9_reverse.tif",
+    813
+   ]
+  ]
+ }
+}

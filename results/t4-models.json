@@ -1,0 +1,436 @@
+{
+ "what": "the prize recipes' models on a rented Tesla T4 (sm75 tier, compute capability 7.5), each map gated on the RTX 5090's host. Six villa models by p1_gate.py against villa 0fb38c45 eager's 5090 maps: S1 (18 maps, d -4..4, both sides) and the whole plain PHerc. 343 render (5 maps, d -2..2, reading side). The 343 combine through scripts/recipe343_gate.py against the recipe's own runners on the 5090, and its 10 Hecate fp32 maps through scripts/hecate_mapgate.py. v8-in in both conventions and its three A-hn seeds on the 306B claim and edge crops by scripts/v8_mapdiff.py against the reference runners' maps, and against the 5090's sm120 maps; inkrs.Engine's map against the CLI's on the edge crop",
+ "gpu": "Tesla T4",
+ "models": {
+  "dense_native_16000": {
+   "s1": {
+    "maps": 18,
+    "checks": 181,
+    "passed": 181,
+    "failed": 0,
+    "min_r": 0.9999939539851506,
+    "max_p999": 1.0,
+    "max_abs": 1.0,
+    "bar": {
+     "min_r": 0.9994,
+     "max_p999": 4.0,
+     "max_abs": 4.0
+    }
+   },
+   "whole": {
+    "maps": 5,
+    "checks": 51,
+    "passed": 51,
+    "failed": 0,
+    "min_r": 0.9999971680825614,
+    "max_p999": 1.0,
+    "max_abs": 1.0,
+    "bar": {
+     "min_r": 0.9994,
+     "max_p999": 4.0,
+     "max_abs": 4.0
+    }
+   }
+  },
+  "ink_9um_seed43": {
+   "s1": {
+    "maps": 18,
+    "checks": 181,
+    "passed": 181,
+    "failed": 0,
+    "min_r": 0.9999895667178953,
+    "max_p999": 1.0,
+    "max_abs": 2.0,
+    "bar": {
+     "min_r": 0.9994,
+     "max_p999": 4.0,
+     "max_abs": 4.0
+    }
+   },
+   "whole": {
+    "maps": 5,
+    "checks": 51,
+    "passed": 51,
+    "failed": 0,
+    "min_r": 0.9999950712999589,
+    "max_p999": 1.0,
+    "max_abs": 2.0,
+    "bar": {
+     "min_r": 0.9994,
+     "max_p999": 4.0,
+     "max_abs": 4.0
+    }
+   }
+  },
+  "trace_v3b": {
+   "s1": {
+    "maps": 18,
+    "checks": 181,
+    "passed": 181,
+    "failed": 0,
+    "min_r": 0.9999940139762952,
+    "max_p999": 1.0,
+    "max_abs": 1.0,
+    "bar": {
+     "min_r": 0.9994,
+     "max_p999": 4.0,
+     "max_abs": 4.0
+    }
+   },
+   "whole": {
+    "maps": 5,
+    "checks": 51,
+    "passed": 51,
+    "failed": 0,
+    "min_r": 0.9999977720467689,
+    "max_p999": 1.0,
+    "max_abs": 1.0,
+    "bar": {
+     "min_r": 0.9994,
+     "max_p999": 4.0,
+     "max_abs": 4.0
+    }
+   }
+  },
+  "rectina_m1": {
+   "s1": {
+    "maps": 18,
+    "checks": 181,
+    "passed": 181,
+    "failed": 0,
+    "min_r": 0.9999975828528966,
+    "max_p999": 1.0,
+    "max_abs": 1.0,
+    "bar": {
+     "min_r": 0.9994,
+     "max_p999": 4.0,
+     "max_abs": 4.0
+    }
+   },
+   "whole": {
+    "maps": 5,
+    "checks": 51,
+    "passed": 51,
+    "failed": 0,
+    "min_r": 0.9999990147286847,
+    "max_p999": 1.0,
+    "max_abs": 1.0,
+    "bar": {
+     "min_r": 0.9994,
+     "max_p999": 4.0,
+     "max_abs": 4.0
+    }
+   }
+  },
+  "rectina_m2": {
+   "s1": {
+    "maps": 18,
+    "checks": 181,
+    "passed": 181,
+    "failed": 0,
+    "min_r": 0.9999965044682172,
+    "max_p999": 1.0,
+    "max_abs": 1.0,
+    "bar": {
+     "min_r": 0.9994,
+     "max_p999": 4.0,
+     "max_abs": 4.0
+    }
+   },
+   "whole": {
+    "maps": 5,
+    "checks": 51,
+    "passed": 51,
+    "failed": 0,
+    "min_r": 0.999998858639669,
+    "max_p999": 1.0,
+    "max_abs": 1.0,
+    "bar": {
+     "min_r": 0.9994,
+     "max_p999": 4.0,
+     "max_abs": 4.0
+    }
+   }
+  },
+  "rectina_m4": {
+   "s1": {
+    "maps": 18,
+    "checks": 181,
+    "passed": 181,
+    "failed": 0,
+    "min_r": 0.9999947833939484,
+    "max_p999": 1.0,
+    "max_abs": 1.0,
+    "bar": {
+     "min_r": 0.9994,
+     "max_p999": 4.0,
+     "max_abs": 4.0
+    }
+   },
+   "whole": {
+    "maps": 5,
+    "checks": 51,
+    "passed": 51,
+    "failed": 0,
+    "min_r": 0.9999986729628056,
+    "max_p999": 1.0,
+    "max_abs": 1.0,
+    "bar": {
+     "min_r": 0.9994,
+     "max_p999": 4.0,
+     "max_abs": 4.0
+    }
+   }
+  }
+ },
+ "combine_343": {
+  "checks": 63,
+  "images": {
+   "ensemble": {
+    "r": 0.9999923158988492,
+    "p999": 1.0,
+    "max": 2.0
+   },
+   "dnative": {
+    "r": 0.9999905851803449,
+    "p999": 2.0,
+    "max": 3.0
+   },
+   "hecate": {
+    "r": 0.9999982341676157,
+    "p999": 1.0,
+    "max": 2.0
+   },
+   "ink9-42": {
+    "r": 0.9999829450044869,
+    "p999": 2.0,
+    "max": 3.0
+   },
+   "ink9-43": {
+    "r": 0.999984756915144,
+    "p999": 2.0,
+    "max": 4.0
+   }
+  },
+  "worst_r": 0.9999829450044869,
+  "max_p999": 2.0,
+  "max_abs": 4.0,
+  "hecate_maps": 10,
+  "hecate_checks": 280
+ },
+ "v8in": {
+  "maps": {
+   "crop_base_release": {
+    "vs_ref": {
+     "pass": true,
+     "coverage_identical": true,
+     "coverage_mismatch": 0,
+     "r": 0.9999977356723302,
+     "p999_255": 0.35541772842407227,
+     "max_255": 0.5682823061943054
+    },
+    "vs_5090_sm120": {
+     "pass": true,
+     "coverage_identical": true,
+     "coverage_mismatch": 0,
+     "r": 0.9999999660330581,
+     "p999_255": 0.041964948177337646,
+     "max_255": 0.10944932699203491
+    },
+    "batch": 16,
+    "gpu_ms_per_tile": 64.03989744893634
+   },
+   "crop_base_306b": {
+    "vs_ref": {
+     "pass": true,
+     "coverage_identical": true,
+     "coverage_mismatch": 0,
+     "r": 0.9999971328121866,
+     "p999_255": 0.6312707738578289,
+     "max_255": 0.9725198149681091
+    },
+    "vs_5090_sm120": {
+     "pass": true,
+     "coverage_identical": true,
+     "coverage_mismatch": 0,
+     "r": 0.9999999713916472,
+     "p999_255": 0.054124295711517334,
+     "max_255": 0.09295821189880371
+    },
+    "batch": 16,
+    "gpu_ms_per_tile": 64.15120984829223
+   },
+   "crop_ahn0_306b": {
+    "vs_ref": {
+     "pass": true,
+     "coverage_identical": true,
+     "coverage_mismatch": 0,
+     "r": 0.9999990802090307,
+     "p999_255": 0.4465702848136395,
+     "max_255": 0.7294772565364838
+    },
+    "vs_5090_sm120": {
+     "pass": true,
+     "coverage_identical": true,
+     "coverage_mismatch": 0,
+     "r": 0.9999999829470513,
+     "p999_255": 0.04728011056780515,
+     "max_255": 0.09421974420547485
+    },
+    "batch": 16,
+    "gpu_ms_per_tile": 64.12265869988983
+   },
+   "crop_ahn1_306b": {
+    "vs_ref": {
+     "pass": true,
+     "coverage_identical": true,
+     "coverage_mismatch": 0,
+     "r": 0.9999984853713754,
+     "p999_255": 0.6358989255130261,
+     "max_255": 1.0985058546066284
+    },
+    "vs_5090_sm120": {
+     "pass": true,
+     "coverage_identical": true,
+     "coverage_mismatch": 0,
+     "r": 0.9999999836580126,
+     "p999_255": 0.04679828882217407,
+     "max_255": 0.0902983546257019
+    },
+    "batch": 16,
+    "gpu_ms_per_tile": 64.15984935163996
+   },
+   "crop_ahn2_306b": {
+    "vs_ref": {
+     "pass": true,
+     "coverage_identical": true,
+     "coverage_mismatch": 0,
+     "r": 0.9999985559135429,
+     "p999_255": 0.6068882346153259,
+     "max_255": 1.1037343740463257
+    },
+    "vs_5090_sm120": {
+     "pass": true,
+     "coverage_identical": true,
+     "coverage_mismatch": 0,
+     "r": 0.9999999829857327,
+     "p999_255": 0.047269463539123535,
+     "max_255": 0.08765369653701782
+    },
+    "batch": 16,
+    "gpu_ms_per_tile": 64.18084689380456
+   },
+   "edge_base_release": {
+    "vs_ref": {
+     "pass": true,
+     "coverage_identical": true,
+     "coverage_mismatch": 0,
+     "r": 0.9999972905632875,
+     "p999_255": 0.3190929163992409,
+     "max_255": 0.4612952470779419
+    },
+    "vs_5090_sm120": {
+     "pass": true,
+     "coverage_identical": true,
+     "coverage_mismatch": 0,
+     "r": 0.999999939100389,
+     "p999_255": 0.04933655261993408,
+     "max_255": 0.10818019509315491
+    },
+    "batch": 16,
+    "gpu_ms_per_tile": 64.06596340240641
+   },
+   "edge_base_306b": {
+    "vs_ref": {
+     "pass": true,
+     "coverage_identical": true,
+     "coverage_mismatch": 0,
+     "r": 0.9999970709074284,
+     "p999_255": 0.5187071187794212,
+     "max_255": 0.726536214351654
+    },
+    "vs_5090_sm120": {
+     "pass": true,
+     "coverage_identical": true,
+     "coverage_mismatch": 0,
+     "r": 0.9999999554048715,
+     "p999_255": 0.05343423753976891,
+     "max_255": 0.09497970342636108
+    },
+    "batch": 16,
+    "gpu_ms_per_tile": 64.00309268833088
+   },
+   "edge_ahn0_306b": {
+    "vs_ref": {
+     "pass": true,
+     "coverage_identical": true,
+     "coverage_mismatch": 0,
+     "r": 0.9999952019747317,
+     "p999_255": 0.31888872675597857,
+     "max_255": 0.4835696518421173
+    },
+    "vs_5090_sm120": {
+     "pass": true,
+     "coverage_identical": true,
+     "coverage_mismatch": 0,
+     "r": 0.9999998556018815,
+     "p999_255": 0.040870606899261475,
+     "max_255": 0.07878117263317108
+    },
+    "batch": 16,
+    "gpu_ms_per_tile": 63.963726304775975
+   },
+   "edge_ahn1_306b": {
+    "vs_ref": {
+     "pass": true,
+     "coverage_identical": true,
+     "coverage_mismatch": 0,
+     "r": 0.9999953677147789,
+     "p999_255": 0.2707520813494971,
+     "max_255": 0.5687154829502106
+    },
+    "vs_5090_sm120": {
+     "pass": true,
+     "coverage_identical": true,
+     "coverage_mismatch": 0,
+     "r": 0.9999998122972584,
+     "p999_255": 0.035534921810031456,
+     "max_255": 0.05561761558055878
+    },
+    "batch": 16,
+    "gpu_ms_per_tile": 63.99476858690301
+   },
+   "edge_ahn2_306b": {
+    "vs_ref": {
+     "pass": true,
+     "coverage_identical": true,
+     "coverage_mismatch": 0,
+     "r": 0.9999930859483405,
+     "p999_255": 0.5388672751933359,
+     "max_255": 0.8333864808082581
+    },
+    "vs_5090_sm120": {
+     "pass": true,
+     "coverage_identical": true,
+     "coverage_mismatch": 0,
+     "r": 0.9999998977345835,
+     "p999_255": 0.0437250061333183,
+     "max_255": 0.09052634239196777
+    },
+    "batch": 16,
+    "gpu_ms_per_tile": 63.960325886262915
+   }
+  },
+  "worst_vs_ref": {
+   "min_r": 0.9999930859483405,
+   "max_p999_255": 0.6358989255130261,
+   "max_255": 1.1037343740463257
+  },
+  "worst_vs_5090_sm120": {
+   "min_r": 0.9999998122972584,
+   "max_255": 0.10944932699203491
+  },
+  "python_equals_cli": true,
+  "gpu_ms_per_tile_median": 64.05293042567138
+ }
+}

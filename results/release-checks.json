@@ -1,0 +1,235 @@
+{
+ "what": "The release build's kernels under compute-sanitizer on an RTX 5090: on the sm120 tier, and on the sm80 and sm75 tiers forced with INKRS_PTX_TIER (this GPU is not their hardware). memcheck, racecheck and synccheck are filtered to the tier's own PTX entries; initcheck runs unfiltered and counts errors in those entries only. Racecheck runs p0 on one of its tiles and Hecate; on the other workloads it outgrew its host-memory cap or ran past 40 minutes (not_run). Then which of each tier's PTX entries the workloads launched (nsys), reader-v2's peak device memory at batch 64 (the rise in memory.used, PHerc. 1447 native crop, d -2..2, both directions, stride 64), and Hecate bf16 batch 32 on the whole PHerc. 1447 segment twice in a row from an empty cache: run 1 compiles the PTX and times cuDNN's algorithms, run 2 replays both",
+ "build": "inkrs 0.2.0, the release build",
+ "gpu": "RTX 5090, driver 595.99.02",
+ "workloads": {
+  "p0": "the per-layer check of hybrid_3d2d-seed42 on S1 tiles",
+  "rv2": "reader-v2 sweep, PHerc. 1447 native crop",
+  "v3": "Reader V3 sweep, S1",
+  "hec-fp32": "Hecate fp32, edge strip, both sides",
+  "hec-bf16": "Hecate bf16, edge strip, both sides",
+  "v8": "v8-in A-hn, PHerc. 0306B edge crop",
+  "u3": "villa's 3D U-Net, 384^3 voxels",
+  "tta": "TRACE v3B with --tta 8, PHerc. 1447 native crop"
+ },
+ "not_run": [
+  {
+   "tier": "sm120",
+   "workload": "rv2",
+   "tool": "racecheck",
+   "reason": "racecheck needs more than 24 GB of host memory, even on one 256 px chunk at batch 1"
+  },
+  {
+   "tier": "sm120",
+   "workload": "v3",
+   "tool": "racecheck",
+   "reason": "racecheck needs more than 50 GB of host memory on this input"
+  },
+  {
+   "tier": "sm120",
+   "workload": "v8",
+   "tool": "racecheck",
+   "reason": "racecheck did not finish within 40 minutes"
+  },
+  {
+   "tier": "sm120",
+   "workload": "u3",
+   "tool": "racecheck",
+   "reason": "racecheck needs more than 50 GB of host memory on this input"
+  },
+  {
+   "tier": "sm120",
+   "workload": "tta",
+   "tool": "racecheck",
+   "reason": "racecheck needs more than 24 GB of host memory, even on one 256 px chunk at batch 1"
+  },
+  {
+   "tier": "sm80",
+   "workload": "rv2",
+   "tool": "racecheck",
+   "reason": "racecheck needs more than 24 GB of host memory, even on one 256 px chunk at batch 1"
+  },
+  {
+   "tier": "sm80",
+   "workload": "v3",
+   "tool": "racecheck",
+   "reason": "racecheck needs more than 50 GB of host memory on this input"
+  },
+  {
+   "tier": "sm80",
+   "workload": "v8",
+   "tool": "racecheck",
+   "reason": "racecheck did not finish within 40 minutes"
+  },
+  {
+   "tier": "sm80",
+   "workload": "u3",
+   "tool": "racecheck",
+   "reason": "racecheck needs more than 50 GB of host memory on this input"
+  },
+  {
+   "tier": "sm80",
+   "workload": "tta",
+   "tool": "racecheck",
+   "reason": "racecheck needs more than 24 GB of host memory, even on one 256 px chunk at batch 1"
+  },
+  {
+   "tier": "sm75",
+   "workload": "rv2",
+   "tool": "racecheck",
+   "reason": "racecheck needs more than 24 GB of host memory, even on one 256 px chunk at batch 1"
+  },
+  {
+   "tier": "sm75",
+   "workload": "v3",
+   "tool": "racecheck",
+   "reason": "racecheck needs more than 50 GB of host memory on this input"
+  },
+  {
+   "tier": "sm75",
+   "workload": "v8",
+   "tool": "racecheck",
+   "reason": "racecheck did not finish within 40 minutes"
+  },
+  {
+   "tier": "sm75",
+   "workload": "tta",
+   "tool": "racecheck",
+   "reason": "racecheck needs more than 24 GB of host memory, even on one 256 px chunk at batch 1"
+  }
+ ],
+ "sanitizers": {
+  "sm120": {
+   "workloads": [
+    "p0",
+    "rv2",
+    "v3",
+    "hec-fp32",
+    "hec-bf16",
+    "v8",
+    "u3",
+    "tta"
+   ],
+   "units": 27,
+   "units_per_tool": {
+    "memcheck": 8,
+    "racecheck": 3,
+    "initcheck": 8,
+    "synccheck": 8
+   },
+   "errors_in_inkrs_kernels": 0,
+   "initcheck_errors_in_other_kernels_max": 0
+  },
+  "sm80": {
+   "workloads": [
+    "p0",
+    "rv2",
+    "v3",
+    "hec-fp32",
+    "hec-bf16",
+    "v8",
+    "u3",
+    "tta"
+   ],
+   "units": 27,
+   "units_per_tool": {
+    "memcheck": 8,
+    "racecheck": 3,
+    "initcheck": 8,
+    "synccheck": 8
+   },
+   "errors_in_inkrs_kernels": 0,
+   "initcheck_errors_in_other_kernels_max": 0
+  },
+  "sm75": {
+   "workloads": [
+    "p0",
+    "rv2",
+    "v3",
+    "hec-fp32",
+    "v8",
+    "tta"
+   ],
+   "units": 20,
+   "units_per_tool": {
+    "memcheck": 6,
+    "racecheck": 2,
+    "initcheck": 6,
+    "synccheck": 6
+   },
+   "errors_in_inkrs_kernels": 0,
+   "initcheck_errors_in_other_kernels_max": 0
+  }
+ },
+ "coverage": {
+  "sm120": {
+   "ptx_entries": 73,
+   "launched": 62,
+   "not_launched": [
+    "conv_s1_p16_n32",
+    "conv_s1_p16_n64",
+    "conv_s1_p4_n32",
+    "conv_s1_p4x1_n32",
+    "conv_s1_p8_n64_m4",
+    "conv_s2_p4x1_n32",
+    "conv_s2_p8x16_n64",
+    "in_finalize",
+    "in_partial",
+    "u3_pool2",
+    "v8_epilogue"
+   ],
+   "launched_by_racecheck_workloads": 30
+  },
+  "sm80": {
+   "ptx_entries": 73,
+   "launched": 62,
+   "not_launched": [
+    "conv_s1_p16_n32",
+    "conv_s1_p16_n64",
+    "conv_s1_p4_n32",
+    "conv_s1_p4x1_n32",
+    "conv_s1_p8_n64_m4",
+    "conv_s2_p4x1_n32",
+    "conv_s2_p8x16_n64",
+    "in_finalize",
+    "in_partial",
+    "u3_pool2",
+    "v8_epilogue"
+   ],
+   "launched_by_racecheck_workloads": 30
+  },
+  "sm75": {
+   "ptx_entries": 46,
+   "launched": 45,
+   "not_launched": [
+    "v8_epilogue"
+   ],
+   "launched_by_racecheck_workloads": 23
+  }
+ },
+ "peak_device_memory_mib_reader_v2_b64": 3634,
+ "hecate_first_run": {
+  "run_1": {
+   "wall_s": 27.409,
+   "total_s": 26.923570995,
+   "plan_s": 11.717160518,
+   "run_s": 12.238768032,
+   "load_weights_s": 0.527949208,
+   "open_gpu_s": 1.590513197,
+   "ptx_tier": "sm120",
+   "algo_cache": "on",
+   "algo_cache_hits": 0
+  },
+  "run_2": {
+   "wall_s": 14.599,
+   "total_s": 14.393566183,
+   "plan_s": 0.859047874,
+   "run_s": 12.282905888,
+   "load_weights_s": 0.226759216,
+   "open_gpu_s": 0.185212456,
+   "ptx_tier": "sm120",
+   "algo_cache": "on",
+   "algo_cache_hits": 37
+  }
+ }
+}

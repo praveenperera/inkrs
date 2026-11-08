@@ -1,0 +1,4 @@
+{
+ "norm-s1": "check-norm norm-s1.jsonl: 3272 tiles (236 MAD fallback), 3272 identical to villa in FP16, 0 differ (0 of them fallback)",
+ "norm-w048": "check-norm norm-w048.jsonl: 1890 tiles (213 MAD fallback), 1890 identical to villa in FP16, 0 differ (0 of them fallback)"
+}

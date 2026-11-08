@@ -1,0 +1,29 @@
+{
+ "what": "the GPU normaliser's FP16 tiles against villa's normalised tiles, bit for bit, on every tile of 6 maps of PHerc. 343's S1 crop and 4 maps of the PHerc. 1447 segment, on the sm120 tier and the sm80 tier forced on the RTX 5090; mad_fallback counts the tiles that take villa's MAD fallback",
+ "gpu": "RTX 5090, driver 595.99.02",
+ "s1": {
+  "maps": 6,
+  "tiles": 564,
+  "mad_fallback": 84,
+  "identical": 564,
+  "tiers": [
+   "sm120",
+   "sm80"
+  ]
+ },
+ "1447": {
+  "maps": 4,
+  "tiles": 816,
+  "mad_fallback": 244,
+  "identical": 816,
+  "tiers": [
+   "sm120",
+   "sm80"
+  ]
+ },
+ "total": {
+  "tiles": 1380,
+  "mad_fallback": 328,
+  "identical": 1380
+ }
+}

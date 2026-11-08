@@ -1,0 +1,82 @@
+{
+ "what": "Reader V3 maps against villa eager at stride 192 (scripts/p1_gate.py): s1 is the S1 crop at d -2..2, both directions; 1447 is the native PHerc. 1447 segment at d 0, both directions; sm80 is forced on the RTX 5090; tiers compares the two tiers' maps byte for byte",
+ "gpu": "RTX 5090, driver 595.99.02",
+ "s1": {
+  "sm120": {
+   "maps": 10,
+   "checks": 101,
+   "passed": 101,
+   "failed": 0,
+   "min_r": 0.9999935891280829,
+   "max_p999": 1.0,
+   "max_abs": 1.0,
+   "bar": {
+    "min_r": 0.9994,
+    "max_p999": 4.0,
+    "max_abs": 4.0
+   }
+  },
+  "sm80": {
+   "maps": 10,
+   "checks": 101,
+   "passed": 101,
+   "failed": 0,
+   "min_r": 0.9999935891280829,
+   "max_p999": 1.0,
+   "max_abs": 1.0,
+   "bar": {
+    "min_r": 0.9994,
+    "max_p999": 4.0,
+    "max_abs": 4.0
+   }
+  }
+ },
+ "native_1447": {
+  "sm120": {
+   "maps": 2,
+   "checks": 21,
+   "passed": 21,
+   "failed": 0,
+   "min_r": 0.9999969003246416,
+   "max_p999": 1.0,
+   "max_abs": 1.0,
+   "bar": {
+    "min_r": 0.9994,
+    "max_p999": 4.0,
+    "max_abs": 4.0
+   }
+  },
+  "sm80": {
+   "maps": 2,
+   "checks": 21,
+   "passed": 21,
+   "failed": 0,
+   "min_r": 0.9999969003246416,
+   "max_p999": 1.0,
+   "max_abs": 1.0,
+   "bar": {
+    "min_r": 0.9994,
+    "max_p999": 4.0,
+    "max_abs": 4.0
+   }
+  }
+ },
+ "tiers": {
+  "s1": {
+   "maps": 10,
+   "identical": 10,
+   "min_r": 0.9999999999999998,
+   "max_abs": 0.0,
+   "min_equal_share": 1.0,
+   "pass": true
+  },
+  "native_1447": {
+   "maps": 2,
+   "identical": 2,
+   "min_r": 1.0,
+   "max_abs": 0.0,
+   "min_equal_share": 1.0,
+   "pass": true
+  }
+ }
+}

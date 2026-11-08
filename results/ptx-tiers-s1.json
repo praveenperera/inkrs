@@ -1,0 +1,228 @@
+{
+ "what": "the sm80 PTX tier against the sm120 tier on S1, both on the RTX 5090 (sm80 forced with INKRS_PTX_TIER=sm80): P1 against villa eager per tier, pass 2 against pass 1, the maps of both tiers with --algo heuristic, and the time per sweep over six processes in the order sm80, sm120, sm120, sm80, sm80, sm120",
+ "gpu": "RTX 5090, driver 595.99.02",
+ "p1": {
+  "sm80": {
+   "maps": 18,
+   "checks": 181,
+   "passed": 181,
+   "failed": 0,
+   "min_r": 0.999989521942865,
+   "max_p999": 1.0,
+   "max_abs": 2.0,
+   "occupancy_level": "0",
+   "occupancy_scale": [
+    1,
+    1
+   ],
+   "bar": {
+    "min_r": 0.9994,
+    "max_p999": 4.0,
+    "max_abs": 4.0
+   }
+  },
+  "sm120": {
+   "maps": 18,
+   "checks": 181,
+   "passed": 181,
+   "failed": 0,
+   "min_r": 0.9999895273075681,
+   "max_p999": 1.0,
+   "max_abs": 2.0,
+   "occupancy_level": "0",
+   "occupancy_scale": [
+    1,
+    1
+   ],
+   "bar": {
+    "min_r": 0.9994,
+    "max_p999": 4.0,
+    "max_abs": 4.0
+   }
+  }
+ },
+ "pass2_vs_pass1": {
+  "sm80": {
+   "maps": 18,
+   "identical": 18,
+   "min_r": 0.9999999999999998,
+   "max_abs": 0.0,
+   "min_equal_share": 1.0,
+   "pass": true
+  },
+  "sm120": {
+   "maps": 18,
+   "identical": 18,
+   "min_r": 0.9999999999999998,
+   "max_abs": 0.0,
+   "min_equal_share": 1.0,
+   "pass": true
+  }
+ },
+ "sm80_vs_sm120_heuristic": {
+  "maps": 18,
+  "identical": 18,
+  "min_r": 0.9999999999999998,
+  "max_abs": 0.0,
+  "min_equal_share": 1.0,
+  "pass": true
+ },
+ "timing": {
+  "sm80": {
+   "passes": [
+    {
+     "round": "time-1-sm80",
+     "pass": 1,
+     "gpu_s": 2.71815087890625,
+     "total_s": 3.20160989
+    },
+    {
+     "round": "time-1-sm80",
+     "pass": 2,
+     "gpu_s": 2.7230654296875,
+     "total_s": 3.542214897
+    },
+    {
+     "round": "time-1-sm80",
+     "pass": 3,
+     "gpu_s": 2.725778076171875,
+     "total_s": 3.191254907
+    },
+    {
+     "round": "time-1-sm80",
+     "pass": 4,
+     "gpu_s": 2.72851513671875,
+     "total_s": 3.465376578
+    },
+    {
+     "round": "time-4-sm80",
+     "pass": 1,
+     "gpu_s": 2.752669677734375,
+     "total_s": 3.222114565
+    },
+    {
+     "round": "time-4-sm80",
+     "pass": 2,
+     "gpu_s": 2.755966064453125,
+     "total_s": 3.200403069
+    },
+    {
+     "round": "time-4-sm80",
+     "pass": 3,
+     "gpu_s": 2.760288330078125,
+     "total_s": 3.207557218
+    },
+    {
+     "round": "time-4-sm80",
+     "pass": 4,
+     "gpu_s": 2.762091552734375,
+     "total_s": 3.215752401
+    },
+    {
+     "round": "time-5-sm80",
+     "pass": 1,
+     "gpu_s": 2.75011279296875,
+     "total_s": 3.227856934
+    },
+    {
+     "round": "time-5-sm80",
+     "pass": 2,
+     "gpu_s": 2.75122265625,
+     "total_s": 3.192660577
+    },
+    {
+     "round": "time-5-sm80",
+     "pass": 3,
+     "gpu_s": 2.752187255859375,
+     "total_s": 3.219241228
+    },
+    {
+     "round": "time-5-sm80",
+     "pass": 4,
+     "gpu_s": 2.7557080078125,
+     "total_s": 3.189565231
+    }
+   ],
+   "median_gpu_s": 2.7517049560546876,
+   "median_total_s": 3.2116548094999997
+  },
+  "sm120": {
+   "passes": [
+    {
+     "round": "time-2-sm120",
+     "pass": 1,
+     "gpu_s": 2.7175498046875,
+     "total_s": 3.300246793
+    },
+    {
+     "round": "time-2-sm120",
+     "pass": 2,
+     "gpu_s": 2.721445556640625,
+     "total_s": 3.188168961
+    },
+    {
+     "round": "time-2-sm120",
+     "pass": 3,
+     "gpu_s": 2.7244814453125,
+     "total_s": 3.176788131
+    },
+    {
+     "round": "time-2-sm120",
+     "pass": 4,
+     "gpu_s": 2.727104248046875,
+     "total_s": 3.305391336
+    },
+    {
+     "round": "time-3-sm120",
+     "pass": 1,
+     "gpu_s": 2.72812353515625,
+     "total_s": 3.210356101
+    },
+    {
+     "round": "time-3-sm120",
+     "pass": 2,
+     "gpu_s": 2.7339921875,
+     "total_s": 3.2463862
+    },
+    {
+     "round": "time-3-sm120",
+     "pass": 3,
+     "gpu_s": 2.737926025390625,
+     "total_s": 3.199684313
+    },
+    {
+     "round": "time-3-sm120",
+     "pass": 4,
+     "gpu_s": 2.740034423828125,
+     "total_s": 3.329180386
+    },
+    {
+     "round": "time-6-sm120",
+     "pass": 1,
+     "gpu_s": 2.7504130859375,
+     "total_s": 3.244900824
+    },
+    {
+     "round": "time-6-sm120",
+     "pass": 2,
+     "gpu_s": 2.753268798828125,
+     "total_s": 3.1899263270000002
+    },
+    {
+     "round": "time-6-sm120",
+     "pass": 3,
+     "gpu_s": 2.75454443359375,
+     "total_s": 3.200773221
+    },
+    {
+     "round": "time-6-sm120",
+     "pass": 4,
+     "gpu_s": 2.75641552734375,
+     "total_s": 3.211370208
+    }
+   ],
+   "median_gpu_s": 2.7359591064453124,
+   "median_total_s": 3.2108631545
+  }
+ }
+}

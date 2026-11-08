@@ -1,0 +1,179 @@
+{
+ "what": "whole segment (native, 31 x 2980 x 3240), d -2..2, both directions, 10 maps; each wall is the whole command from process start to exit; two rounds; run after a quiet-host check",
+ "gpu": "RTX 5090, driver 595.99.02",
+ "date": "2026-11-10",
+ "villa_flags": "--batch-size 8 --no-compile --loader-threads 8 --chunk-cache-size 64 (villa PR #2428), one process per depth, forward and reverse in one call",
+ "walls_s": {
+  "villa_main_fast_flags": {
+   "r1": 53.977,
+   "r2": 50.44
+  },
+  "inkrs_sweep_b64": {
+   "r1": 4.793,
+   "r2": 6.216
+  }
+ },
+ "villa_per_depth_s": {
+  "r1": {
+   "-2": 10.855,
+   "-1": 10.78,
+   "0": 11.439,
+   "1": 10.287,
+   "2": 10.582
+  },
+  "r2": {
+   "-2": 10.251,
+   "-1": 10.577,
+   "0": 9.874,
+   "1": 9.116,
+   "2": 10.589
+  }
+ },
+ "best_round_s": {
+  "villa": 50.44,
+  "inkrs": 4.793
+ },
+ "ratio_best_round": 10.52,
+ "inkrs_reports": {
+  "r1": {
+   "stride": 64,
+   "batch": 64,
+   "cudnn": 92700,
+   "load_weights_s": 0.34286632,
+   "open_gpu_s": 0.196865885,
+   "plan_s": 0.560282913,
+   "cold_s": 4.610793503,
+   "passes": [
+    {
+     "shape": [
+      31,
+      2980,
+      3240
+     ],
+     "maps": 10,
+     "tiles": 15830,
+     "batches": 248,
+     "read_volume_s": 0.161322456,
+     "schedule_s": 0.238578969,
+     "upload_s": 0.061020575,
+     "run_s": 2.963645433,
+     "total_s": 3.424590781,
+     "gpu_s": 2.9280654296875,
+     "tiles_per_s": 5341.394697130087
+    }
+   ],
+   "map_tiles": [
+    [
+     "native__reader-v2__L31s5.tif",
+     1583
+    ],
+    [
+     "native__reader-v2__L31s5_reverse.tif",
+     1583
+    ],
+    [
+     "native__reader-v2__L31s6.tif",
+     1583
+    ],
+    [
+     "native__reader-v2__L31s6_reverse.tif",
+     1583
+    ],
+    [
+     "native__reader-v2__L31s7.tif",
+     1583
+    ],
+    [
+     "native__reader-v2__L31s7_reverse.tif",
+     1583
+    ],
+    [
+     "native__reader-v2__L31s8.tif",
+     1583
+    ],
+    [
+     "native__reader-v2__L31s8_reverse.tif",
+     1583
+    ],
+    [
+     "native__reader-v2__L31s9.tif",
+     1583
+    ],
+    [
+     "native__reader-v2__L31s9_reverse.tif",
+     1583
+    ]
+   ]
+  },
+  "r2": {
+   "stride": 64,
+   "batch": 64,
+   "cudnn": 92700,
+   "load_weights_s": 0.224606224,
+   "open_gpu_s": 0.197132792,
+   "plan_s": 0.589349609,
+   "cold_s": 6.019286438,
+   "passes": [
+    {
+     "shape": [
+      31,
+      2980,
+      3240
+     ],
+     "maps": 10,
+     "tiles": 15830,
+     "batches": 248,
+     "read_volume_s": 0.181157968,
+     "schedule_s": 0.251546697,
+     "upload_s": 0.064180953,
+     "run_s": 4.421961367,
+     "total_s": 4.918863097,
+     "gpu_s": 2.93780517578125,
+     "tiles_per_s": 3579.859407668136
+    }
+   ],
+   "map_tiles": [
+    [
+     "native__reader-v2__L31s5.tif",
+     1583
+    ],
+    [
+     "native__reader-v2__L31s5_reverse.tif",
+     1583
+    ],
+    [
+     "native__reader-v2__L31s6.tif",
+     1583
+    ],
+    [
+     "native__reader-v2__L31s6_reverse.tif",
+     1583
+    ],
+    [
+     "native__reader-v2__L31s7.tif",
+     1583
+    ],
+    [
+     "native__reader-v2__L31s7_reverse.tif",
+     1583
+    ],
+    [
+     "native__reader-v2__L31s8.tif",
+     1583
+    ],
+    [
+     "native__reader-v2__L31s8_reverse.tif",
+     1583
+    ],
+    [
+     "native__reader-v2__L31s9.tif",
+     1583
+    ],
+    [
+     "native__reader-v2__L31s9_reverse.tif",
+     1583
+    ]
+   ]
+  }
+ }
+}

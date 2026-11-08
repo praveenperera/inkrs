@@ -1,0 +1,337 @@
+{
+ "what": "fast mode's interleaved A/B on the RTX 5090 in one GPU job after a load gate, each arm a whole process from start to exit, after an untimed warm-up of every configuration. Hecate: the whole PHerc. 1447 segment resampled to 9.6 \u00b5m, forward, parity (fp32 with TF32 convolutions, stride 32, batch 8) against --fast (bf16, stride 32, batch 32) and bf16 stride 40 at batch 32, 3 rounds. reader-v2: inkrs sweep on the R343 render, windows 21 to 29 in both directions, 18 maps per process, at strides 64 to 128, 3 rounds. villa with the inkrs engine on the same render: one --layer-starts 21:30 process against one process per window, 2 rounds. The arms are rotated in each round; each speed-up is the mean of the per-round ratios with a 95% t-interval",
+ "gpu": "RTX 5090, driver 595.99.02",
+ "date": "2026-11-10",
+ "hecate": {
+  "shape": [
+   28,
+   2682,
+   2916
+  ],
+  "parity": {
+   "precision": "fp32",
+   "stride": 32,
+   "batch": 8,
+   "fast": false,
+   "tiles": 4682,
+   "gpu_s": [
+    35.06795703125,
+    35.10852734375,
+    35.11139453125
+   ],
+   "gpu_median_s": 35.10852734375,
+   "gpu_us_per_tile": 7498.617544585646,
+   "walls_s": [
+    37.575,
+    37.789,
+    37.623
+   ],
+   "median_s": 37.623,
+   "outside_gpu_s": 2.5144726562499997
+  },
+  "fast": {
+   "precision": "bf16",
+   "stride": 32,
+   "batch": 32,
+   "fast": true,
+   "tiles": 4682,
+   "gpu_s": [
+    15.9477421875,
+    15.9758525390625,
+    15.9819853515625
+   ],
+   "gpu_median_s": 15.9758525390625,
+   "gpu_us_per_tile": 3412.1855059936993,
+   "rounds": 3,
+   "control_walls_s": [
+    37.575,
+    37.789,
+    37.623
+   ],
+   "walls_s": [
+    18.408,
+    19.123,
+    18.637
+   ],
+   "ratios": [
+    2.041232073011734,
+    1.976102076034095,
+    2.01872618983742
+   ],
+   "control_median_s": 37.623,
+   "median_s": 18.637,
+   "speedup_mean": 2.0120201129610833,
+   "speedup_ci95": [
+    1.9298411592944253,
+    2.0941990666277412
+   ],
+   "outside_gpu_s": 2.661147460937501
+  },
+  "bf16_s40": {
+   "precision": "bf16",
+   "stride": 40,
+   "batch": 32,
+   "fast": false,
+   "tiles": 2990,
+   "gpu_s": [
+    10.1948505859375,
+    10.1909013671875,
+    10.2043291015625
+   ],
+   "gpu_median_s": 10.1948505859375,
+   "gpu_us_per_tile": 3409.6490253971574,
+   "rounds": 3,
+   "control_walls_s": [
+    37.575,
+    37.789,
+    37.623
+   ],
+   "walls_s": [
+    12.978,
+    13.02,
+    12.926
+   ],
+   "ratios": [
+    2.8952843273231625,
+    2.9023809523809527,
+    2.910645211202228
+   ],
+   "control_median_s": 37.623,
+   "median_s": 12.978,
+   "speedup_mean": 2.9027701636354473,
+   "speedup_ci95": [
+    2.8836709821408713,
+    2.9218693451300233
+   ],
+   "outside_gpu_s": 2.7831494140624997
+  },
+  "gpu_speedup_fast_vs_parity": 2.1975996121588044
+ },
+ "reader_v2": {
+  "shape": [
+   66,
+   2560,
+   6720
+  ],
+  "layer_starts": [
+   21,
+   29
+  ],
+  "depths": [
+   -4,
+   4
+  ],
+  "maps_per_run": 18,
+  "s64": {
+   "stride": 64,
+   "overlap": 0.5,
+   "tiles": 50346,
+   "maps": 18,
+   "gpu_s": [
+    7.61016259765625,
+    7.5616015625,
+    7.55511279296875
+   ],
+   "gpu_median_s": 7.5616015625,
+   "gpu_us_per_tile": 150.19269778135305,
+   "walls_s": [
+    9.708,
+    9.594,
+    9.586
+   ],
+   "median_s": 9.594
+  },
+  "s72": {
+   "stride": 72,
+   "overlap": 0.4375,
+   "tiles": 39924,
+   "maps": 18,
+   "gpu_s": [
+    5.9974482421875,
+    5.98560595703125,
+    5.9858857421875
+   ],
+   "gpu_median_s": 5.9858857421875,
+   "gpu_us_per_tile": 149.93201438201334,
+   "rounds": 3,
+   "control_walls_s": [
+    9.708,
+    9.594,
+    9.586
+   ],
+   "walls_s": [
+    8.063,
+    8.057,
+    8.072
+   ],
+   "ratios": [
+    1.2040183554508246,
+    1.1907657937197467,
+    1.187561942517344
+   ],
+   "control_median_s": 9.594,
+   "median_s": 8.063,
+   "speedup_mean": 1.1941153638959718,
+   "speedup_ci95": [
+    1.1724405848178028,
+    1.215790142974141
+   ]
+  },
+  "s80": {
+   "stride": 80,
+   "overlap": 0.375,
+   "tiles": 32400,
+   "maps": 18,
+   "gpu_s": [
+    4.8633427734375,
+    4.87119775390625,
+    4.87000244140625
+   ],
+   "gpu_median_s": 4.87000244140625,
+   "gpu_us_per_tile": 150.3087173273534,
+   "rounds": 3,
+   "control_walls_s": [
+    9.708,
+    9.594,
+    9.586
+   ],
+   "walls_s": [
+    6.948,
+    6.858,
+    7.032
+   ],
+   "ratios": [
+    1.3972366148531952,
+    1.3989501312335957,
+    1.3631968145620024
+   ],
+   "control_median_s": 9.594,
+   "median_s": 6.948,
+   "speedup_mean": 1.386461186882931,
+   "speedup_ci95": [
+    1.3363626543673064,
+    1.4365597193985558
+   ]
+  },
+  "s96": {
+   "stride": 96,
+   "overlap": 0.25,
+   "tiles": 22572,
+   "maps": 18,
+   "gpu_s": [
+    3.395438720703125,
+    3.38960400390625,
+    3.383040771484375
+   ],
+   "gpu_median_s": 3.38960400390625,
+   "gpu_us_per_tile": 150.16852755211102,
+   "rounds": 3,
+   "control_walls_s": [
+    9.708,
+    9.594,
+    9.586
+   ],
+   "walls_s": [
+    5.26,
+    5.256,
+    5.398
+   ],
+   "ratios": [
+    1.8456273764258557,
+    1.8253424657534245,
+    1.775842904779548
+   ],
+   "control_median_s": 9.594,
+   "median_s": 5.26,
+   "speedup_mean": 1.8156042489862763,
+   "speedup_ci95": [
+    1.7264240239551703,
+    1.9047844740173823
+   ]
+  },
+  "s128": {
+   "stride": 128,
+   "overlap": 0.0,
+   "tiles": 12924,
+   "maps": 18,
+   "gpu_s": [
+    1.9450736083984375,
+    1.9438280029296875,
+    1.9439439697265626
+   ],
+   "gpu_median_s": 1.9439439697265626,
+   "gpu_us_per_tile": 150.4134919317984,
+   "rounds": 3,
+   "control_walls_s": [
+    9.708,
+    9.594,
+    9.586
+   ],
+   "walls_s": [
+    3.69,
+    3.675,
+    3.819
+   ],
+   "ratios": [
+    2.6308943089430894,
+    2.610612244897959,
+    2.5100811730819585
+   ],
+   "control_median_s": 9.594,
+   "median_s": 3.69,
+   "speedup_mean": 2.5838625756410023,
+   "speedup_ci95": [
+    2.4231350698799097,
+    2.744590081402095
+   ]
+  }
+ },
+ "villa_layer_starts": {
+  "rounds": 2,
+  "control_walls_s": [
+   92.011,
+   104.297
+  ],
+  "walls_s": [
+   70.006,
+   81.765
+  ],
+  "ratios": [
+   1.3143302002685484,
+   1.275570231761756
+  ],
+  "control_median_s": 98.154,
+  "median_s": 75.88550000000001,
+  "speedup_mean": 1.2949502160151523,
+  "speedup_ci95": [
+   1.0487081360915007,
+   1.5411922959388038
+  ],
+  "windows": 9,
+  "layer_starts": [
+   21,
+   29
+  ],
+  "depths": [
+   -4,
+   4
+  ],
+  "maps_per_run": 18,
+  "saved_s": [
+   22.004999999999995,
+   22.531999999999996
+  ],
+  "drift_s": {
+   "per_window": 12.286000000000001,
+   "layer_starts": 11.759
+  },
+  "single_window_median_s": 10.8945,
+  "saving_per_extra_window_s": 2.7835624999999986,
+  "maps_byte_identical": {
+   "runs": 2,
+   "maps": 18,
+   "distinct": 18
+  },
+  "saving_share_of_single_window": 0.2555016292624717
+ }
+}

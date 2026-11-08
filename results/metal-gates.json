@@ -1,0 +1,190 @@
+{
+ "what": "inkrs's Metal backend on a Mac mini (M4 Pro, 20-core GPU), against the CUDA references the CUDA gates use: seed42's S1 sweep (d -4..4, both directions) and Reader V3 on S1 (d -2..2, both directions) and on the whole PHerc. 1447 segment (d 0, both directions) against villa eager's maps under villa's per-map contract (r, p99.9 and max |diff| in 1/255 steps, coverage and tiles equal), and Hecate 9.6 um against hecate.py's maps on the 2048 x 2048 crop (fp32, bf16) and the edge strip (fp32, both sides) under the CUDA Hecate gates' limits, and v8-in's five configurations on the edge strip against the CUDA maps (the 41-layer crop was not run on the Mac). Each map ran once; seed42's sweep ran twice in one process and the second pass equals the first",
+ "gpu": "Apple M4 Pro, 20-core GPU",
+ "build": "v0.2, the release build",
+ "seed42_s1": {
+  "maps": 18,
+  "min_r": 0.9999896,
+  "max_p999": 1,
+  "max_abs": 2,
+  "tiles_per_map": 818,
+  "coverage_mismatch": 0,
+  "second_pass_identical": true,
+  "bar": {
+   "min_r": 0.9994,
+   "max_p999": 4.0,
+   "max_abs": 4.0
+  }
+ },
+ "reader_v3": {
+  "s1": {
+   "maps": 10,
+   "checks": 101,
+   "passed": 101,
+   "failed": 0,
+   "min_r": 0.9999933176068617,
+   "max_p999": 1.0,
+   "max_abs": 1.0,
+   "bar": {
+    "min_r": 0.9994,
+    "max_p999": 4.0,
+    "max_abs": 4.0
+   }
+  },
+  "pherc1447": {
+   "maps": 2,
+   "checks": 21,
+   "passed": 21,
+   "failed": 0,
+   "min_r": 0.9999968486748203,
+   "max_p999": 1.0,
+   "max_abs": 1.0,
+   "bar": {
+    "min_r": 0.9994,
+    "max_p999": 4.0,
+    "max_abs": 4.0
+   }
+  }
+ },
+ "hecate": {
+  "crop-bf16-fwd": {
+   "precision": "bf16",
+   "direction": "fwd",
+   "checks": 28,
+   "stats": {
+    "r": 0.9999828807988901,
+    "p999": 1.0,
+    "max": 3,
+    "bias": -0.0018219947814941406,
+    "identical": 0.9740242958068848
+   },
+   "limits": {
+    "min_r": 0.999,
+    "max_p999": 6.0,
+    "max_abs": 32.0,
+    "max_bias": 0.25
+   },
+   "rule": "r"
+  },
+  "crop-fp32-fwd": {
+   "precision": "fp32",
+   "direction": "fwd",
+   "checks": 28,
+   "stats": {
+    "r": 0.9999862470577299,
+    "p999": 1.0,
+    "max": 2,
+    "bias": -0.01254892349243164,
+    "identical": 0.9783775806427002
+   },
+   "limits": {
+    "min_r": 0.9994,
+    "max_p999": 4.0,
+    "max_abs": 8.0,
+    "max_bias": 0.1
+   },
+   "rule": "r"
+  },
+  "edge-fp32-fwd": {
+   "precision": "fp32",
+   "direction": "fwd",
+   "checks": 29,
+   "stats": {
+    "r": 0.9998617648002411,
+    "p999": 0.0,
+    "max": 1,
+    "bias": -7.144490169181527e-06,
+    "identical": 0.9999928555098309
+   },
+   "limits": {
+    "min_r": 0.9994,
+    "max_p999": 4.0,
+    "max_abs": 8.0,
+    "max_bias": 0.1
+   },
+   "rule": "pixels_off",
+   "pixels_off": {
+    "off": 1,
+    "allowed": 14,
+    "max_step": 1
+   }
+  },
+  "edge-fp32-rev": {
+   "precision": "fp32",
+   "direction": "rev",
+   "checks": 29,
+   "stats": {
+    "r": 1.0,
+    "p999": 0.0,
+    "max": 0,
+    "bias": 0.0,
+    "identical": 1.0
+   },
+   "limits": {
+    "min_r": 0.9994,
+    "max_p999": 4.0,
+    "max_abs": 8.0,
+    "max_bias": 0.1
+   },
+   "rule": "pixels_off",
+   "pixels_off": {
+    "off": 0,
+    "allowed": 14,
+    "max_step": 0
+   }
+  }
+ },
+ "v8in_edge": {
+  "runs": {
+   "base-release": {
+    "r": 0.9999976259462643,
+    "p999_255": 0.2675857834517959,
+    "max_255": 0.4417186975479126,
+    "coverage_mismatch": 0,
+    "pixels": 908692,
+    "empty_or_nonfinite_bad": 0
+   },
+   "base-306b": {
+    "r": 0.9999974385274879,
+    "p999_255": 0.44048602089285954,
+    "max_255": 0.6095404922962189,
+    "coverage_mismatch": 0,
+    "pixels": 982402,
+    "empty_or_nonfinite_bad": 0
+   },
+   "ahn0-306b": {
+    "r": 0.9999963594901864,
+    "p999_255": 0.28394047826528757,
+    "max_255": 0.42011305689811707,
+    "coverage_mismatch": 0,
+    "pixels": 982402,
+    "empty_or_nonfinite_bad": 0
+   },
+   "ahn1-306b": {
+    "r": 0.9999960810743126,
+    "p999_255": 0.2294529448449622,
+    "max_255": 0.4643198847770691,
+    "coverage_mismatch": 0,
+    "pixels": 982402,
+    "empty_or_nonfinite_bad": 0
+   },
+   "ahn2-306b": {
+    "r": 0.9999961581308217,
+    "p999_255": 0.39324089884757996,
+    "max_255": 0.5647902935743332,
+    "coverage_mismatch": 0,
+    "pixels": 982402,
+    "empty_or_nonfinite_bad": 0
+   }
+  },
+  "min_r": 0.9999960810743126,
+  "max_p999_255": 0.44048602089285954,
+  "max_abs_255": 0.6095404922962189,
+  "bar": {
+   "min_r": 0.9994,
+   "max_p999": 4.0,
+   "max_abs": 4.0
+  },
+  "not_run": "the 41-layer claim crop; no Metal v8-in timing"
+ }
+}

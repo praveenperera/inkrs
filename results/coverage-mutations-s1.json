@@ -1,0 +1,50 @@
+{
+ "control": {
+  "rc": 0,
+  "ok": true,
+  "tail": [
+   "crop343-2048__hybrid_3d2d-seed42__L66s21.tif         r 0.9999897 p99.9 1 max 1 equal 0.9802 tiles 818 coverage 3608576 mismatch 0 uncovered-nonzero 0/0",
+   "{\"maps\": 1, \"checks\": 10, \"passed\": 10, \"failed\": 0, \"min_r\": 0.9999897089176695, \"max_p999\": 1.0, \"max_abs\": 1.0, \"occupancy_level\": \"0\", \"occupancy_scale\": [1, 1], \"bar\": {\"min_r\": 0.9994, \"max_p999\": 4.0, \"max_abs\": 4.0}}",
+   "Requested occupancy scan level 3 was not found; using level 0 instead"
+  ]
+ },
+ "zeroed-4x4": {
+  "rc": 1,
+  "ok": true,
+  "expected": "max |diff|",
+  "failures": [
+   "FAIL crop343-2048__hybrid_3d2d-seed42__L66s21.tif: max |diff| 205 > 4"
+  ]
+ },
+ "coverage-drop-1px": {
+  "rc": 1,
+  "ok": true,
+  "expected": "engine coverage differs from villa's on 1 pixels",
+  "failures": [
+   "FAIL crop343-2048__hybrid_3d2d-seed42__L66s21.tif: engine coverage differs from villa's on 1 pixels"
+  ]
+ },
+ "coverage-add-1px": {
+  "rc": 1,
+  "ok": true,
+  "expected": "engine coverage differs from villa's on 1 pixels",
+  "failures": [
+   "FAIL crop343-2048__hybrid_3d2d-seed42__L66s21.tif: engine coverage differs from villa's on 1 pixels"
+  ]
+ },
+ "uncovered-nonzero-1px": {
+  "rc": 1,
+  "ok": true,
+  "expected": "ours nonzero on 1 pixels villa leaves uncovered",
+  "failures": [
+   "FAIL crop343-2048__hybrid_3d2d-seed42__L66s21.tif: ours nonzero on 1 pixels villa leaves uncovered"
+  ]
+ },
+ "map": "crop343-2048__hybrid_3d2d-seed42__L66s21.tif",
+ "zeroed_block": {
+  "y0": 704,
+  "x0": 1096,
+  "min_value": 201
+ },
+ "ok": true
+}

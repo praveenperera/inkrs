@@ -1,0 +1,494 @@
+{
+ "what": "reader-v2 and Hecate with the sm80 tier forced on the RTX 5090, from the merged build: reader-v2 P1 against villa eager on the native crop; Hecate P0-H and the crop and edge map gates against hecate.py; the whole-segment bf16 maps of the two tiers against each other",
+ "gpu": "RTX 5090, driver 595.99.02",
+ "reader_v2_p1": {
+  "sm80": {
+   "maps": 10,
+   "checks": 101,
+   "passed": 101,
+   "failed": 0,
+   "min_r": 0.9999969126467686,
+   "max_p999": 1.0,
+   "max_abs": 1.0,
+   "occupancy_level": "0",
+   "occupancy_scale": [
+    1,
+    1
+   ],
+   "bar": {
+    "min_r": 0.9994,
+    "max_p999": 4.0,
+    "max_abs": 4.0
+   }
+  },
+  "sm120": {
+   "maps": 10,
+   "checks": 101,
+   "passed": 101,
+   "failed": 0,
+   "min_r": 0.9999969126467686,
+   "max_p999": 1.0,
+   "max_abs": 1.0,
+   "occupancy_level": "0",
+   "occupancy_scale": [
+    1,
+    1
+   ],
+   "bar": {
+    "min_r": 0.9994,
+    "max_p999": 4.0,
+    "max_abs": 4.0
+   }
+  }
+ },
+ "hecate_gates": {
+  "sm80": {
+   "hec-bf16-fwd": {
+    "mode": "bf16",
+    "direction": "fwd",
+    "stats": {
+     "r": 0.9999853847876587,
+     "p999": 1.0,
+     "max": 3,
+     "mean": 0.022310256958007812,
+     "bias": -0.0003666877746582031,
+     "identical": 0.9777114391326904,
+     "hist_0_to_9plus": [
+      4100819,
+      93396,
+      87,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "zero_mismatch": 0,
+     "zero_one_side": 614
+    },
+    "checks": 28,
+    "passed": 28,
+    "failures": []
+   },
+   "hec-bf16-rev": {
+    "mode": "bf16",
+    "direction": "rev",
+    "stats": {
+     "r": 0.9999833602074679,
+     "p999": 1.0,
+     "max": 2,
+     "mean": 0.026014089584350586,
+     "bias": 0.0005843639373779297,
+     "identical": 0.9739980697631836,
+     "hist_0_to_9plus": [
+      4085244,
+      109009,
+      51,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "zero_mismatch": 0,
+     "zero_one_side": 961
+    },
+    "checks": 28,
+    "passed": 28,
+    "failures": []
+   },
+   "hec-edge-fwd": {
+    "mode": "fp32",
+    "direction": "fwd",
+    "stats": {
+     "r": 0.9997236626971111,
+     "p999": 0.0,
+     "max": 1,
+     "mean": 1.4288980338363054e-05,
+     "bias": -1.4288980338363054e-05,
+     "identical": 0.9999857110196616,
+     "hist_0_to_9plus": [
+      139966,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "zero_mismatch": 0,
+     "zero_one_side": 1
+    },
+    "checks": 28,
+    "passed": 28,
+    "failures": []
+   },
+   "hec-edge-rev": {
+    "mode": "fp32",
+    "direction": "rev",
+    "stats": {
+     "r": 1.0,
+     "p999": 0.0,
+     "max": 0,
+     "mean": 0.0,
+     "bias": 0.0,
+     "identical": 1.0,
+     "hist_0_to_9plus": [
+      139968,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "zero_mismatch": 0,
+     "zero_one_side": 0
+    },
+    "checks": 28,
+    "passed": 28,
+    "failures": []
+   },
+   "hec-fp32-fwd": {
+    "mode": "fp32",
+    "direction": "fwd",
+    "stats": {
+     "r": 0.9999980962105733,
+     "p999": 1.0,
+     "max": 2,
+     "mean": 0.0028913021087646484,
+     "bias": 0.001001119613647461,
+     "identical": 0.9971225261688232,
+     "hist_0_to_9plus": [
+      4182235,
+      12011,
+      58,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "zero_mismatch": 0,
+     "zero_one_side": 26
+    },
+    "checks": 28,
+    "passed": 28,
+    "failures": []
+   },
+   "hec-fp32-rev": {
+    "mode": "fp32",
+    "direction": "rev",
+    "stats": {
+     "r": 0.9999981245284439,
+     "p999": 1.0,
+     "max": 2,
+     "mean": 0.0029511451721191406,
+     "bias": 0.001033782958984375,
+     "identical": 0.99704909324646,
+     "hist_0_to_9plus": [
+      4181927,
+      12376,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "zero_mismatch": 0,
+     "zero_one_side": 63
+    },
+    "checks": 28,
+    "passed": 28,
+    "failures": []
+   },
+   "p0h-bf16": {
+    "mode": "bf16",
+    "checks": 110,
+    "passed": 110,
+    "failures": []
+   },
+   "p0h-fp32": {
+    "mode": "fp32",
+    "checks": 105,
+    "passed": 105,
+    "failures": []
+   },
+   "p0h-tf32": {
+    "mode": "tf32",
+    "checks": 105,
+    "passed": 105,
+    "failures": []
+   }
+  },
+  "sm120": {
+   "hec-bf16-fwd": {
+    "mode": "bf16",
+    "direction": "fwd",
+    "stats": {
+     "r": 0.9999853847876587,
+     "p999": 1.0,
+     "max": 3,
+     "mean": 0.022310256958007812,
+     "bias": -0.0003666877746582031,
+     "identical": 0.9777114391326904,
+     "hist_0_to_9plus": [
+      4100819,
+      93396,
+      87,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "zero_mismatch": 0,
+     "zero_one_side": 614
+    },
+    "checks": 28,
+    "passed": 28,
+    "failures": []
+   },
+   "hec-bf16-rev": {
+    "mode": "bf16",
+    "direction": "rev",
+    "stats": {
+     "r": 0.9999833602074679,
+     "p999": 1.0,
+     "max": 2,
+     "mean": 0.026014089584350586,
+     "bias": 0.0005843639373779297,
+     "identical": 0.9739980697631836,
+     "hist_0_to_9plus": [
+      4085244,
+      109009,
+      51,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "zero_mismatch": 0,
+     "zero_one_side": 961
+    },
+    "checks": 28,
+    "passed": 28,
+    "failures": []
+   },
+   "hec-edge-fwd": {
+    "mode": "fp32",
+    "direction": "fwd",
+    "stats": {
+     "r": 0.9997236626971111,
+     "p999": 0.0,
+     "max": 1,
+     "mean": 1.4288980338363054e-05,
+     "bias": -1.4288980338363054e-05,
+     "identical": 0.9999857110196616,
+     "hist_0_to_9plus": [
+      139966,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "zero_mismatch": 0,
+     "zero_one_side": 1
+    },
+    "checks": 28,
+    "passed": 28,
+    "failures": []
+   },
+   "hec-edge-rev": {
+    "mode": "fp32",
+    "direction": "rev",
+    "stats": {
+     "r": 1.0,
+     "p999": 0.0,
+     "max": 0,
+     "mean": 0.0,
+     "bias": 0.0,
+     "identical": 1.0,
+     "hist_0_to_9plus": [
+      139968,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "zero_mismatch": 0,
+     "zero_one_side": 0
+    },
+    "checks": 28,
+    "passed": 28,
+    "failures": []
+   },
+   "hec-fp32-fwd": {
+    "mode": "fp32",
+    "direction": "fwd",
+    "stats": {
+     "r": 0.9999980962105733,
+     "p999": 1.0,
+     "max": 2,
+     "mean": 0.0028913021087646484,
+     "bias": 0.001001119613647461,
+     "identical": 0.9971225261688232,
+     "hist_0_to_9plus": [
+      4182235,
+      12011,
+      58,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "zero_mismatch": 0,
+     "zero_one_side": 26
+    },
+    "checks": 28,
+    "passed": 28,
+    "failures": []
+   },
+   "hec-fp32-rev": {
+    "mode": "fp32",
+    "direction": "rev",
+    "stats": {
+     "r": 0.9999981245284439,
+     "p999": 1.0,
+     "max": 2,
+     "mean": 0.0029511451721191406,
+     "bias": 0.001033782958984375,
+     "identical": 0.99704909324646,
+     "hist_0_to_9plus": [
+      4181927,
+      12376,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+     ],
+     "zero_mismatch": 0,
+     "zero_one_side": 63
+    },
+    "checks": 28,
+    "passed": 28,
+    "failures": []
+   },
+   "p0h-bf16": {
+    "mode": "bf16",
+    "checks": 110,
+    "passed": 110,
+    "failures": []
+   },
+   "p0h-fp32": {
+    "mode": "fp32",
+    "checks": 105,
+    "passed": 105,
+    "failures": []
+   },
+   "p0h-tf32": {
+    "mode": "tf32",
+    "checks": 105,
+    "passed": 105,
+    "failures": []
+   }
+  }
+ },
+ "hecate_whole_sm80_vs_sm120": {
+  "fwd": {
+   "mode": "bf16",
+   "direction": "fwd",
+   "stats": {
+    "r": 1.0,
+    "p999": 0.0,
+    "max": 0,
+    "mean": 0.0,
+    "bias": 0.0,
+    "identical": 1.0,
+    "hist_0_to_9plus": [
+     7820712,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "zero_mismatch": 0,
+    "zero_one_side": 0
+   },
+   "checks": 28,
+   "passed": 28,
+   "failures": []
+  },
+  "rev": {
+   "mode": "bf16",
+   "direction": "rev",
+   "stats": {
+    "r": 0.9999999999999999,
+    "p999": 0.0,
+    "max": 0,
+    "mean": 0.0,
+    "bias": 0.0,
+    "identical": 1.0,
+    "hist_0_to_9plus": [
+     7820712,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "zero_mismatch": 0,
+    "zero_one_side": 0
+   },
+   "checks": 28,
+   "passed": 28,
+   "failures": []
+  }
+ }
+}

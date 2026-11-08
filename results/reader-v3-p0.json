@@ -1,0 +1,16 @@
+{
+ "what": "four S1 tiles, two on the volume's edge and one read in reverse: every layer against villa's model in FP32 and under autocast (scripts/p0_compare.py)",
+ "gpu": "RTX 5090, driver 595.99.02",
+ "sm120": {
+  "layers": 37,
+  "checks": 222,
+  "passed": 222,
+  "failed": 0
+ },
+ "sm80": {
+  "layers": 37,
+  "checks": 222,
+  "passed": 222,
+  "failed": 0
+ }
+}

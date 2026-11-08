@@ -1,0 +1,56 @@
+{
+ "what": "Hecate 9.6 um, forward, bf16, batch 32, on the whole PHerc. 1447 segment, one command per arm, on an RTX 5090: the build with Hecate's encoder-epilogue kernels against the build before them, 6 ABBA pairs after 2 warm-up runs. The time is the report's total_s: weight load, cuDNN planning, read, every batch and the map write, after process start. Every arm wrote its map, map JSON and report. ratio is control over experiment",
+ "control": "the v0.2 integration build before the encoder-epilogue kernels",
+ "experiment": "the same build with the encoder-epilogue kernels",
+ "gpu": "RTX 5090, driver 595.99.02",
+ "ab": {
+  "pairs": [
+   {
+    "order": "AB",
+    "control_s": 18.070885753,
+    "experiment_s": 15.030371445,
+    "ratio": 1.20229136180207
+   },
+   {
+    "order": "BA",
+    "control_s": 18.228805727,
+    "experiment_s": 15.101218384,
+    "ratio": 1.207108278515708
+   },
+   {
+    "order": "AB",
+    "control_s": 18.199619163,
+    "experiment_s": 16.251077987,
+    "ratio": 1.1199022721790353
+   },
+   {
+    "order": "BA",
+    "control_s": 18.292859009,
+    "experiment_s": 15.110210643,
+    "ratio": 1.2106289873248328
+   },
+   {
+    "order": "AB",
+    "control_s": 18.442214026,
+    "experiment_s": 15.134893471,
+    "ratio": 1.2185228829880541
+   },
+   {
+    "order": "BA",
+    "control_s": 18.245442931,
+    "experiment_s": 15.077579692,
+    "ratio": 1.2101042278477117
+   }
+  ],
+  "median_s": {
+   "control": 18.237124329,
+   "experiment": 15.1057145135
+  },
+  "arms_through_gate": 14,
+  "ratio_mean": 1.194759668442902,
+  "ratio_ci95": [
+   1.1558743591054101,
+   1.233644977780394
+  ]
+ }
+}

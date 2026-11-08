@@ -1,0 +1,2231 @@
+{
+ "what": "inkrs v0.2 on four rented cloud GPUs: an A100-SXM4-40GB (compute capability 8.0), an A10 (8.6), an L4 (8.9) and an RTX 4090 (8.9), all on the sm80 PTX tier. Per GPU: its software; the parity gates of reader-v2, hybrid_3d2d-seed42 and Reader V3 against villa eager's maps from an RTX 5090 with the default conv library and with each library forced; Hecate's parity gates against hecate.py's 5090 maps; inkrs's own 2D convolutions timed against cuDNN's (gpu-ab: 2 untimed warm-up runs, then 6 pairs in alternating order, speedup = cuDNN time / own time, so above 1 means the own convs are faster, with a 95% CI over the pairs and the noise sd of a cuDNN-against-cuDNN run with the same settings; every arm's maps were gated against the first cuDNN arm's at the villa contract); Hecate's first-run cost; and on the RTX 4090 inkrs against villa eager on the same card. Each container ran every unit in sequence on 4 vCPUs, on 2026-11-11",
+ "cudnn_algorithm_cache": {
+  "note": "inkrs's cuDNN algorithm cache did not load in these containers: the build these runs used keyed it on the driver release from /proc/driver/nvidia/version only, which the containers did not expose (v0.2 also asks NVML; cached_cudnn_depth0_a10 is a container where it does). Every process therefore timed cuDNN's algorithms afresh, so the cuDNN depth-0 times include a full planning in every process, and a host whose cache works replays it instead",
+  "cudnn_processes_checked": 336,
+  "cudnn_processes_with_cached_algorithms": 0
+ },
+ "summary": {
+  "what": "figures across the four GPUs, from the records below",
+  "parity": {
+   "reader_v2": {
+    "gpus_passed": 4,
+    "checks_per_run": [
+     101
+    ],
+    "min_r": 0.9999967956205328,
+    "max_abs": 1.0
+   },
+   "seed42": {
+    "gpus_passed": 4,
+    "checks_per_run": [
+     181
+    ],
+    "min_r": 0.9999892193941096,
+    "max_abs": 2.0
+   },
+   "reader_v3": {
+    "gpus_passed": 4,
+    "checks_per_run": [
+     101
+    ],
+    "min_r": 0.9999931023115094,
+    "max_abs": 1.0
+   }
+  },
+  "own_convs_warm_pass": {
+   "slower_gpus": [
+    "a10",
+    "a100",
+    "l4"
+   ],
+   "faster_gpus": [
+    "rtx4090"
+   ],
+   "own_slower_share_range": [
+    0.05409332000708722,
+    0.08197288931907809
+   ],
+   "own_faster_share_range": [
+    0.03281886307616744,
+    0.05252587467354708
+   ]
+  },
+  "own_convs_depth0": {
+   "speedup_range": [
+    1.2632648774186885,
+    1.5571121445039449
+   ]
+  },
+  "reader_v2_default_vs_cudnn": {
+   "gpus": 4,
+   "maps": 10,
+   "identical_min": 10
+  },
+  "hecate_parity": {
+   "gpus_passed": 4,
+   "gates_per_gpu": 6,
+   "min_r_by_r_rule": 0.9999641935740199,
+   "max_abs": 5,
+   "pixels_off_rule_gates": [
+    "edge_forward",
+    "edge_reverse"
+   ],
+   "max_pixels_off_by_pixels_off_rule": 5,
+   "max_off_step_by_pixels_off_rule": 1,
+   "zero_mismatch_total": 0,
+   "max_zero_one_side_edge": 2
+  },
+  "hecate_first_run": {
+   "run_1_wall_s_range": [
+    45.794,
+    96.8
+   ],
+   "run_1_plan_s_range": [
+    21.738964886,
+    31.434524981
+   ],
+   "run_2_wall_s_range": [
+    26.675,
+    71.56
+   ],
+   "run_2_plan_s_range": [
+    9.492692619,
+    13.4714823
+   ]
+  }
+ },
+ "cached_cudnn_depth0_a10": {
+  "what": "an A10 container of the build whose cuDNN algorithm cache keys on NVML where /proc/driver/nvidia/version is hidden; the same depth-0 benches, with every timed cuDNN arm replaying its whole plan from the cache",
+  "gpu": "NVIDIA A10",
+  "reader_v2_depth0": {
+   "what": "reader-v2 on the same segment at depth 0, both directions, 2 maps: the whole process wall, timed from outside",
+   "cudnn_median_s": 2.8264155105000004,
+   "own_median_s": 2.6988275980000003,
+   "speedup_mean": 1.0473435181498691,
+   "speedup_ci95": [
+    1.0319056014701071,
+    1.0627814348296312
+   ],
+   "speedup_median_pair": 1.046739477925101,
+   "pairs": 6,
+   "aa_noise_sd": 0.010147042548529746,
+   "aa_noise_share": 0.010147042548529746,
+   "own_faster_share": 0.047343518149869146,
+   "pair_records": [
+    {
+     "order": "AB",
+     "cudnn_s": 2.8221154210000003,
+     "own_s": 2.7004454690000004,
+     "speedup": 1.0450555115430846
+    },
+    {
+     "order": "BA",
+     "cudnn_s": 2.8232398520000004,
+     "own_s": 2.7507594930000003,
+     "speedup": 1.0263492170742097
+    },
+    {
+     "order": "AB",
+     "cudnn_s": 2.8465248780000003,
+     "own_s": 2.672620255,
+     "speedup": 1.0650689609474653
+    },
+    {
+     "order": "BA",
+     "cudnn_s": 2.827817912,
+     "own_s": 2.697209727,
+     "speedup": 1.0484234443071174
+    },
+    {
+     "order": "AB",
+     "cudnn_s": 2.8250131090000004,
+     "own_s": 2.7239042020000004,
+     "speedup": 1.0371191126786918
+    },
+    {
+     "order": "BA",
+     "cudnn_s": 2.834929342,
+     "own_s": 2.6693122320000002,
+     "speedup": 1.0620448623486471
+    }
+   ]
+  },
+  "reader_v3_depth0": {
+   "what": "Reader V3 on S1 at depth 0, both directions, 2 maps: the whole process wall, timed from outside",
+   "cudnn_median_s": 2.1104624975000004,
+   "own_median_s": 1.9399200205000002,
+   "speedup_mean": 1.0892969810431052,
+   "speedup_ci95": [
+    1.0778749326173929,
+    1.1007190294688176
+   ],
+   "speedup_median_pair": 1.08931972255616,
+   "pairs": 6,
+   "aa_noise_sd": 0.008865357215360862,
+   "aa_noise_share": 0.008865357215360862,
+   "own_faster_share": 0.08929698104310524,
+   "pair_records": [
+    {
+     "order": "AB",
+     "cudnn_s": 2.124165758,
+     "own_s": 1.954221277,
+     "speedup": 1.0869627626104288
+    },
+    {
+     "order": "BA",
+     "cudnn_s": 2.076333221,
+     "own_s": 1.937771184,
+     "speedup": 1.0715058816768945
+    },
+    {
+     "order": "AB",
+     "cudnn_s": 2.1201112870000003,
+     "own_s": 1.9420688570000002,
+     "speedup": 1.0916766825018913
+    },
+    {
+     "order": "BA",
+     "cudnn_s": 2.098582905,
+     "own_s": 1.9021222210000002,
+     "speedup": 1.1032849949551164
+    },
+    {
+     "order": "AB",
+     "cudnn_s": 2.125182146,
+     "own_s": 1.957591942,
+     "speedup": 1.0856103871314362
+    },
+    {
+     "order": "BA",
+     "cudnn_s": 2.100813708,
+     "own_s": 1.9155054550000001,
+     "speedup": 1.0967411773828648
+    }
+   ]
+  }
+ },
+ "a100": {
+  "gpu": {
+   "name": "NVIDIA A100-SXM4-40GB",
+   "compute_capability": "8.0",
+   "memory_mib": 40960,
+   "driver": "610.57.04",
+   "cuda_driver_api": "13.3",
+   "cudnn": "9.20.0",
+   "ptx_tier": "sm80"
+  },
+  "parity": {
+   "what": "inkrs maps against villa eager's maps from an RTX 5090, by p1_gate.py (per map: Pearson r, p99.9 and max |diff| in 1/255 steps, identical coverage). reader-v2 on the native crop of the PHerc. 1447 segment at d -2..2, hybrid_3d2d-seed42 on S1 at d -4..4, Reader V3 on S1 at d -2..2 and stride 192 (tile 384), both directions; default means no --conv flag, inkrs and cudnn are --conv inkrs and --conv cudnn",
+   "reader_v2": {
+    "default": {
+     "maps": 10,
+     "checks": 101,
+     "passed": 101,
+     "failed": 0,
+     "min_r": 0.9999968772184434,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "inkrs": {
+     "maps": 10,
+     "checks": 101,
+     "passed": 101,
+     "failed": 0,
+     "min_r": 0.9999967957892414,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "cudnn": {
+     "maps": 10,
+     "checks": 101,
+     "passed": 101,
+     "failed": 0,
+     "min_r": 0.9999968772184434,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    }
+   },
+   "default_conv": {
+    "reader_v2": {
+     "conv": "cudnn",
+     "conv_reason": "default for compute capability 8.0"
+    },
+    "reader_v3": {
+     "conv": "cudnn",
+     "conv_reason": "default for compute capability 8.0"
+    }
+   },
+   "seed42": {
+    "inkrs": {
+     "maps": 18,
+     "checks": 181,
+     "passed": 181,
+     "failed": 0,
+     "min_r": 0.9999892193941096,
+     "max_p999": 1.0,
+     "max_abs": 2.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "cudnn": {
+     "maps": 18,
+     "checks": 181,
+     "passed": 181,
+     "failed": 0,
+     "min_r": 0.9999896318744418,
+     "max_p999": 1.0,
+     "max_abs": 2.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    }
+   },
+   "reader_v3": {
+    "default": {
+     "maps": 10,
+     "checks": 101,
+     "passed": 101,
+     "failed": 0,
+     "min_r": 0.9999931023115094,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "inkrs": {
+     "maps": 10,
+     "checks": 101,
+     "passed": 101,
+     "failed": 0,
+     "min_r": 0.9999932797426789,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "cudnn": {
+     "maps": 10,
+     "checks": 101,
+     "passed": 101,
+     "failed": 0,
+     "min_r": 0.9999931023115094,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    }
+   },
+   "reader_v2_default_vs_cudnn": {
+    "what": "the default run's reader-v2 maps against the --conv cudnn run's, byte for byte",
+    "maps": 10,
+    "identical": 10,
+    "min_r": 0.9999999999999998,
+    "max_abs": 0.0,
+    "min_equal_share": 1.0,
+    "pass": true
+   }
+  },
+  "own_convs_vs_cudnn": {
+   "reader_v2_pass": {
+    "what": "reader-v2 over the whole PHerc. 1447 segment (native, 31 x 2980 x 3240), d -2..2, both directions, stride 64, batch 64, 10 maps: the warm second sweep pass in one process",
+    "cudnn_median_s": 4.59892702,
+    "own_median_s": 4.9130123885,
+    "speedup_mean": 0.9426522963652332,
+    "speedup_ci95": [
+     0.9303581376857624,
+     0.954946455044704
+    ],
+    "speedup_median_pair": 0.9394228058985914,
+    "pairs": 6,
+    "aa_noise_sd": 0.004687187259370604,
+    "aa_noise_share": 0.004687187259370604,
+    "own_slower_share": 0.06083653947048506,
+    "pair_records": [
+     {
+      "order": "AB",
+      "cudnn_s": 4.762772495,
+      "own_s": 4.936008201,
+      "speedup": 0.964903683513957
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 4.59023037,
+      "own_s": 4.889709306,
+      "speedup": 0.9387532228894425
+     },
+     {
+      "order": "AB",
+      "cudnn_s": 4.585357404,
+      "own_s": 4.892168634,
+      "speedup": 0.9372852301395136
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 4.596705691,
+      "own_s": 4.869371581,
+      "speedup": 0.944003885210994
+     },
+     {
+      "order": "AB",
+      "cudnn_s": 4.601148349,
+      "own_s": 4.942818888,
+      "speedup": 0.930875367529752
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 4.638280608,
+      "own_s": 4.933856143,
+      "speedup": 0.9400923889077404
+     }
+    ]
+   },
+   "reader_v3_pass": {
+    "what": "Reader V3 on S1, d -2..2, both directions, stride 192, batch 8, 10 maps: the warm second sweep pass in one process",
+    "cudnn_median_s": 2.711575678,
+    "own_median_s": 2.9899785315000003,
+    "speedup_mean": 0.9242375755175655,
+    "speedup_ci95": [
+     0.774678322069946,
+     1.073796828965185
+    ],
+    "speedup_median_pair": 0.9045578263742359,
+    "pairs": 6,
+    "aa_noise_sd": 0.053651918088012694,
+    "aa_noise_share": 0.053651918088012694,
+    "own_slower_share": 0.08197288931907809,
+    "pair_records": [
+     {
+      "order": "AB",
+      "cudnn_s": 2.724750966,
+      "own_s": 3.032393155,
+      "speedup": 0.8985480532124471
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 2.680009969,
+      "own_s": 2.983595562,
+      "speedup": 0.8982484097822907
+     },
+     {
+      "order": "AB",
+      "cudnn_s": 2.693474128,
+      "own_s": 3.62386867,
+      "speedup": 0.7432593102221886
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 3.5455959740000003,
+      "own_s": 2.996361501,
+      "speedup": 1.1833004705262364
+     },
+     {
+      "order": "AB",
+      "cudnn_s": 2.705346709,
+      "own_s": 2.971055318,
+      "speedup": 0.9105675995360246
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 2.717804647,
+      "own_s": 2.981678384,
+      "speedup": 0.9115016098262059
+     }
+    ]
+   },
+   "reader_v2_depth0": {
+    "what": "reader-v2 on the same segment at depth 0, both directions, 2 maps: the whole process wall, timed from outside",
+    "cudnn_median_s": 3.1689026410000003,
+    "own_median_s": 2.181093357,
+    "speedup_mean": 1.4187534507361148,
+    "speedup_ci95": [
+     1.3469425917139837,
+     1.490564309758246
+    ],
+    "speedup_median_pair": 1.4247924351083419,
+    "pairs": 6,
+    "aa_noise_sd": 0.05628761589041111,
+    "aa_noise_share": 0.05628761589041111,
+    "own_faster_share": 0.4187534507361148,
+    "pair_records": [
+     {
+      "order": "AB",
+      "cudnn_s": 3.1930330440000003,
+      "own_s": 2.101939654,
+      "speedup": 1.519088827276104
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 3.210594362,
+      "own_s": 2.3832414930000003,
+      "speedup": 1.3471544413061292
+     },
+     {
+      "order": "AB",
+      "cudnn_s": 3.542430163,
+      "own_s": 2.4881265580000003,
+      "speedup": 1.4237339140206227
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 3.1447722380000003,
+      "own_s": 2.155719234,
+      "speedup": 1.458804183958958
+     },
+     {
+      "order": "AB",
+      "cudnn_s": 2.952007206,
+      "own_s": 2.20646748,
+      "speedup": 1.3378883816588134
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 3.039749386,
+      "own_s": 2.131884383,
+      "speedup": 1.4258509561960613
+     }
+    ]
+   },
+   "reader_v3_depth0": {
+    "what": "Reader V3 on S1 at depth 0, both directions, 2 maps: the whole process wall, timed from outside",
+    "cudnn_median_s": 2.757022503,
+    "own_median_s": 1.7871544545,
+    "speedup_mean": 1.5571121445039449,
+    "speedup_ci95": [
+     1.4955212226727144,
+     1.6187030663351754
+    ],
+    "speedup_median_pair": 1.5602829319549145,
+    "pairs": 6,
+    "aa_noise_sd": 0.06913933121894393,
+    "aa_noise_share": 0.06913933121894393,
+    "own_faster_share": 0.5571121445039449,
+    "pair_records": [
+     {
+      "order": "AB",
+      "cudnn_s": 2.8859214910000004,
+      "own_s": 1.799034567,
+      "speedup": 1.6041501058050542
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 2.6929985370000002,
+      "own_s": 1.8187133000000002,
+      "speedup": 1.4807163597473005
+     },
+     {
+      "order": "AB",
+      "cudnn_s": 2.7361404150000004,
+      "own_s": 1.711094294,
+      "speedup": 1.5990588155161016
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 2.688462001,
+      "own_s": 1.7752743420000001,
+      "speedup": 1.5143924166510598
+     },
+     {
+      "order": "AB",
+      "cudnn_s": 2.777904591,
+      "own_s": 1.7117465,
+      "speedup": 1.6228481209104269
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 2.977298625,
+      "own_s": 1.95680896,
+      "speedup": 1.5215070483937276
+     }
+    ]
+   }
+  },
+  "hecate_first_run": {
+   "what": "Hecate bf16, batch 32, over the whole PHerc. 1447 segment at 9.6 um (4682 tiles in 147 batches), two processes in a row in a fresh container. Run 1 started with empty inkrs, cuDNN algorithm and CUDA driver (compiled PTX) caches; run 2 reused the driver's compiled PTX. The cuDNN algorithm cache did not load in these containers, so run 2 timed cuDNN's algorithms again. wall_s is the whole process, timed from outside; plan_s is cuDNN planning inside it",
+   "run_1": {
+    "wall_s": 49.825,
+    "plan_s": 27.405009717,
+    "gpu_s": 13.8586796875,
+    "driver_ptx_cache_bytes_after": 12287806
+   },
+   "run_2": {
+    "wall_s": 26.675,
+    "plan_s": 10.072202959,
+    "gpu_s": 13.84284765625,
+    "driver_ptx_cache_bytes_after": 12287806
+   }
+  },
+  "hecate_parity": {
+   "what": "inkrs maps against hecate.py's maps from an RTX 5090, by hecate_mapgate.py at bounds fixed before any run (fp32: r >= 0.9994, p99.9 <= 4, max <= 8 steps; bf16: r >= 0.999, p99.9 <= 6, max <= 32; mean diff on both, and no pixel 0 on one map and above 1 step on the other, while a 0 against a 1 is counted, not gated). A map whose reference has variance below 1 step squared is gated by pixels off in place of r: at most max(5, 0.01% of pixels) differ, each by 1 step. fp32 and bf16 on the 2048 x 2048 crop of the PHerc. 1447 segment, and fp32 on the edge fixture, forward and reverse",
+   "fp32_forward": {
+    "checks": 28,
+    "passed": 28,
+    "rule": "r",
+    "ref_variance": 765.781,
+    "r": 0.9999791307588527,
+    "pixels_off": 129149,
+    "allowed_off": 420,
+    "max_off_step": 5,
+    "p999": 1.0,
+    "max_abs": 5,
+    "bias": -0.016490459442138672,
+    "zero_mismatch": 0,
+    "zero_one_side": 543
+   },
+   "fp32_reverse": {
+    "checks": 28,
+    "passed": 28,
+    "rule": "r",
+    "ref_variance": 785.5394,
+    "r": 0.9999809652010293,
+    "pixels_off": 128645,
+    "allowed_off": 420,
+    "max_off_step": 2,
+    "p999": 1.0,
+    "max_abs": 2,
+    "bias": -0.010962486267089844,
+    "zero_mismatch": 0,
+    "zero_one_side": 667
+   },
+   "bf16_forward": {
+    "checks": 28,
+    "passed": 28,
+    "rule": "r",
+    "ref_variance": 764.7243,
+    "r": 0.9999687712841782,
+    "pixels_off": 191265,
+    "allowed_off": 420,
+    "max_off_step": 4,
+    "p999": 1.0,
+    "max_abs": 4,
+    "bias": 0.003648996353149414,
+    "zero_mismatch": 0,
+    "zero_one_side": 887
+   },
+   "bf16_reverse": {
+    "checks": 28,
+    "passed": 28,
+    "rule": "r",
+    "ref_variance": 781.6759,
+    "r": 0.9999641935740199,
+    "pixels_off": 217867,
+    "allowed_off": 420,
+    "max_off_step": 5,
+    "p999": 2.0,
+    "max_abs": 5,
+    "bias": 0.007325410842895508,
+    "zero_mismatch": 0,
+    "zero_one_side": 1481
+   },
+   "edge_forward": {
+    "checks": 29,
+    "passed": 29,
+    "rule": "pixels_off",
+    "ref_variance": 0.0258,
+    "r": 0.9997241172060768,
+    "pixels_off": 2,
+    "allowed_off": 14,
+    "max_off_step": 1,
+    "p999": 0.0,
+    "max_abs": 1,
+    "bias": 1.4288980338363054e-05,
+    "zero_mismatch": 0,
+    "zero_one_side": 1
+   },
+   "edge_reverse": {
+    "checks": 29,
+    "passed": 29,
+    "rule": "pixels_off",
+    "ref_variance": 0.0199,
+    "r": 0.9992863015178408,
+    "pixels_off": 4,
+    "allowed_off": 14,
+    "max_off_step": 1,
+    "p999": 0.0,
+    "max_abs": 1,
+    "bias": 1.4288980338363054e-05,
+    "zero_mismatch": 0,
+    "zero_one_side": 0
+   },
+   "edge_tiles": {
+    "kept_forward": 3,
+    "kept_reverse": 3,
+    "positions": 91,
+    "same_as_hecate_py": true
+   }
+  }
+ },
+ "a10": {
+  "gpu": {
+   "name": "NVIDIA A10",
+   "compute_capability": "8.6",
+   "memory_mib": 23028,
+   "driver": "610.57.04",
+   "cuda_driver_api": "13.3",
+   "cudnn": "9.20.0",
+   "ptx_tier": "sm80"
+  },
+  "parity": {
+   "what": "inkrs maps against villa eager's maps from an RTX 5090, by p1_gate.py (per map: Pearson r, p99.9 and max |diff| in 1/255 steps, identical coverage). reader-v2 on the native crop of the PHerc. 1447 segment at d -2..2, hybrid_3d2d-seed42 on S1 at d -4..4, Reader V3 on S1 at d -2..2 and stride 192 (tile 384), both directions; default means no --conv flag, inkrs and cudnn are --conv inkrs and --conv cudnn",
+   "reader_v2": {
+    "default": {
+     "maps": 10,
+     "checks": 101,
+     "passed": 101,
+     "failed": 0,
+     "min_r": 0.9999968674246228,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "inkrs": {
+     "maps": 10,
+     "checks": 101,
+     "passed": 101,
+     "failed": 0,
+     "min_r": 0.9999967956205328,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "cudnn": {
+     "maps": 10,
+     "checks": 101,
+     "passed": 101,
+     "failed": 0,
+     "min_r": 0.9999968674246228,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    }
+   },
+   "default_conv": {
+    "reader_v2": {
+     "conv": "cudnn",
+     "conv_reason": "default for compute capability 8.6"
+    },
+    "reader_v3": {
+     "conv": "cudnn",
+     "conv_reason": "default for compute capability 8.6"
+    }
+   },
+   "seed42": {
+    "inkrs": {
+     "maps": 18,
+     "checks": 181,
+     "passed": 181,
+     "failed": 0,
+     "min_r": 0.9999892204482401,
+     "max_p999": 1.0,
+     "max_abs": 2.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "cudnn": {
+     "maps": 18,
+     "checks": 181,
+     "passed": 181,
+     "failed": 0,
+     "min_r": 0.9999898001929032,
+     "max_p999": 1.0,
+     "max_abs": 2.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    }
+   },
+   "reader_v3": {
+    "default": {
+     "maps": 10,
+     "checks": 101,
+     "passed": 101,
+     "failed": 0,
+     "min_r": 0.9999932223316439,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "inkrs": {
+     "maps": 10,
+     "checks": 101,
+     "passed": 101,
+     "failed": 0,
+     "min_r": 0.9999932817660027,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "cudnn": {
+     "maps": 10,
+     "checks": 101,
+     "passed": 101,
+     "failed": 0,
+     "min_r": 0.9999932223316439,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    }
+   },
+   "reader_v2_default_vs_cudnn": {
+    "what": "the default run's reader-v2 maps against the --conv cudnn run's, byte for byte",
+    "maps": 10,
+    "identical": 10,
+    "min_r": 1.0,
+    "max_abs": 0.0,
+    "min_equal_share": 1.0,
+    "pass": true
+   }
+  },
+  "own_convs_vs_cudnn": {
+   "reader_v2_pass": {
+    "what": "reader-v2 over the whole PHerc. 1447 segment (native, 31 x 2980 x 3240), d -2..2, both directions, stride 64, batch 64, 10 maps: the warm second sweep pass in one process",
+    "cudnn_median_s": 8.7760612075,
+    "own_median_s": 9.357004946,
+    "speedup_mean": 0.9380732995454815,
+    "speedup_ci95": [
+     0.9367368337142328,
+     0.9394097653767302
+    ],
+    "speedup_median_pair": 0.9381267391081061,
+    "pairs": 6,
+    "aa_noise_sd": 0.0030264677615427756,
+    "aa_noise_share": 0.0030264677615427756,
+    "own_slower_share": 0.06601477782655518,
+    "pair_records": [
+     {
+      "order": "AB",
+      "cudnn_s": 8.775315255,
+      "own_s": 9.369785292,
+      "speedup": 0.9365545721194314
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 8.787082915,
+      "own_s": 9.357900636,
+      "speedup": 0.9390015193360725
+     },
+     {
+      "order": "AB",
+      "cudnn_s": 8.77680716,
+      "own_s": 9.36314102,
+      "speedup": 0.9373785080511369
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 8.766255371,
+      "own_s": 9.356109256,
+      "speedup": 0.9369552162271159
+     },
+     {
+      "order": "AB",
+      "cudnn_s": 8.774168339,
+      "own_s": 9.345406596,
+      "speedup": 0.9388749701650754
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 8.777740524,
+      "own_s": 9.341251409,
+      "speedup": 0.939675011374057
+     }
+    ]
+   },
+   "reader_v3_pass": {
+    "what": "Reader V3 on S1, d -2..2, both directions, stride 192, batch 8, 10 maps: the warm second sweep pass in one process",
+    "cudnn_median_s": 4.891155188,
+    "own_median_s": 5.1582247255,
+    "speedup_mean": 0.9486826080951509,
+    "speedup_ci95": [
+     0.9440579338475419,
+     0.95330728234276
+    ],
+    "speedup_median_pair": 0.9486674194190499,
+    "pairs": 6,
+    "aa_noise_sd": 0.005732391858120506,
+    "aa_noise_share": 0.005732391858120506,
+    "own_slower_share": 0.05409332000708722,
+    "pair_records": [
+     {
+      "order": "AB",
+      "cudnn_s": 4.909699507,
+      "own_s": 5.146282144,
+      "speedup": 0.9540284363779337
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 4.876113706,
+      "own_s": 5.159626232,
+      "speedup": 0.9450517318014907
+     },
+     {
+      "order": "AB",
+      "cudnn_s": 4.896103393,
+      "own_s": 5.156823219,
+      "speedup": 0.9494417755025238
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 4.9170514480000005,
+      "own_s": 5.159688116,
+      "speedup": 0.9529745475801934
+     },
+     {
+      "order": "AB",
+      "cudnn_s": 4.886206983,
+      "own_s": 5.15480825,
+      "speedup": 0.947893063335576
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 4.883452113,
+      "own_s": 5.180248801,
+      "speedup": 0.9427060939731878
+     }
+    ]
+   },
+   "reader_v2_depth0": {
+    "what": "reader-v2 on the same segment at depth 0, both directions, 2 maps: the whole process wall, timed from outside",
+    "cudnn_median_s": 3.4722543330000004,
+    "own_median_s": 2.672537202,
+    "speedup_mean": 1.2966722565537983,
+    "speedup_ci95": [
+     1.2767278995697464,
+     1.31661661353785
+    ],
+    "speedup_median_pair": 1.300641127969208,
+    "pairs": 6,
+    "aa_noise_sd": 0.0075393914863181215,
+    "aa_noise_share": 0.0075393914863181215,
+    "own_faster_share": 0.29667225655379825,
+    "pair_records": [
+     {
+      "order": "AB",
+      "cudnn_s": 3.467293455,
+      "own_s": 2.658590824,
+      "speedup": 1.3041846920178792
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 3.456250899,
+      "own_s": 2.7108414,
+      "speedup": 1.2749734820340282
+     },
+     {
+      "order": "AB",
+      "cudnn_s": 3.4772152110000003,
+      "own_s": 2.659911256,
+      "speedup": 1.3072673771188403
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 3.482918578,
+      "own_s": 2.685163148,
+      "speedup": 1.2970975639205369
+     },
+     {
+      "order": "AB",
+      "cudnn_s": 3.5078190090000003,
+      "own_s": 2.652714345,
+      "speedup": 1.3223508274125912
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 3.4350673720000002,
+      "own_s": 2.6959474940000003,
+      "speedup": 1.2741595968189134
+     }
+    ]
+   },
+   "reader_v3_depth0": {
+    "what": "Reader V3 on S1 at depth 0, both directions, 2 maps: the whole process wall, timed from outside",
+    "cudnn_median_s": 2.7901719145,
+    "own_median_s": 1.8977365175000003,
+    "speedup_mean": 1.4798442400372254,
+    "speedup_ci95": [
+     1.4584089753105043,
+     1.5012795047639464
+    ],
+    "speedup_median_pair": 1.4742815522534753,
+    "pairs": 6,
+    "aa_noise_sd": 0.0121049928212176,
+    "aa_noise_share": 0.0121049928212176,
+    "own_faster_share": 0.47984424003722537,
+    "pair_records": [
+     {
+      "order": "AB",
+      "cudnn_s": 2.817853131,
+      "own_s": 1.9049789090000002,
+      "speedup": 1.4792043721256758
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 2.7984786230000003,
+      "own_s": 1.904557792,
+      "speedup": 1.469358732381275
+     },
+     {
+      "order": "AB",
+      "cudnn_s": 2.807229645,
+      "own_s": 1.867762614,
+      "speedup": 1.5029905963199668
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 2.781865206,
+      "own_s": 1.847242432,
+      "speedup": 1.5059556654878747
+     },
+     {
+      "order": "AB",
+      "cudnn_s": 2.780057095,
+      "own_s": 1.8980147440000001,
+      "speedup": 1.4647183873509468
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 2.764288747,
+      "own_s": 1.8974582910000002,
+      "speedup": 1.456837686557612
+     }
+    ]
+   }
+  },
+  "hecate_first_run": {
+   "what": "Hecate bf16, batch 32, over the whole PHerc. 1447 segment at 9.6 um (4682 tiles in 147 batches), two processes in a row in a fresh container. Run 1 started with empty inkrs, cuDNN algorithm and CUDA driver (compiled PTX) caches; run 2 reused the driver's compiled PTX. The cuDNN algorithm cache did not load in these containers, so run 2 timed cuDNN's algorithms again. wall_s is the whole process, timed from outside; plan_s is cuDNN planning inside it",
+   "run_1": {
+    "wall_s": 68.488,
+    "plan_s": 23.632515761,
+    "gpu_s": 39.43490234375,
+    "driver_ptx_cache_bytes_after": 11864966
+   },
+   "run_2": {
+    "wall_s": 51.733,
+    "plan_s": 9.752844542,
+    "gpu_s": 39.61794140625,
+    "driver_ptx_cache_bytes_after": 11864966
+   }
+  },
+  "hecate_parity": {
+   "what": "inkrs maps against hecate.py's maps from an RTX 5090, by hecate_mapgate.py at bounds fixed before any run (fp32: r >= 0.9994, p99.9 <= 4, max <= 8 steps; bf16: r >= 0.999, p99.9 <= 6, max <= 32; mean diff on both, and no pixel 0 on one map and above 1 step on the other, while a 0 against a 1 is counted, not gated). A map whose reference has variance below 1 step squared is gated by pixels off in place of r: at most max(5, 0.01% of pixels) differ, each by 1 step. fp32 and bf16 on the 2048 x 2048 crop of the PHerc. 1447 segment, and fp32 on the edge fixture, forward and reverse",
+   "fp32_forward": {
+    "checks": 28,
+    "passed": 28,
+    "rule": "r",
+    "ref_variance": 765.781,
+    "r": 0.9999791477351483,
+    "pixels_off": 129231,
+    "allowed_off": 420,
+    "max_off_step": 5,
+    "p999": 1.0,
+    "max_abs": 5,
+    "bias": -0.016566991806030273,
+    "zero_mismatch": 0,
+    "zero_one_side": 538
+   },
+   "fp32_reverse": {
+    "checks": 28,
+    "passed": 28,
+    "rule": "r",
+    "ref_variance": 785.5394,
+    "r": 0.9999809650137639,
+    "pixels_off": 128706,
+    "allowed_off": 420,
+    "max_off_step": 2,
+    "p999": 1.0,
+    "max_abs": 2,
+    "bias": -0.011075019836425781,
+    "zero_mismatch": 0,
+    "zero_one_side": 660
+   },
+   "bf16_forward": {
+    "checks": 28,
+    "passed": 28,
+    "rule": "r",
+    "ref_variance": 764.7243,
+    "r": 0.9999687321190399,
+    "pixels_off": 192238,
+    "allowed_off": 420,
+    "max_off_step": 3,
+    "p999": 1.0,
+    "max_abs": 3,
+    "bias": 0.0040776729583740234,
+    "zero_mismatch": 0,
+    "zero_one_side": 863
+   },
+   "bf16_reverse": {
+    "checks": 28,
+    "passed": 28,
+    "rule": "r",
+    "ref_variance": 781.6759,
+    "r": 0.9999646099233225,
+    "pixels_off": 216777,
+    "allowed_off": 420,
+    "max_off_step": 5,
+    "p999": 2.0,
+    "max_abs": 5,
+    "bias": 0.007377147674560547,
+    "zero_mismatch": 0,
+    "zero_one_side": 1500
+   },
+   "edge_forward": {
+    "checks": 29,
+    "passed": 29,
+    "rule": "pixels_off",
+    "ref_variance": 0.0258,
+    "r": 0.9995861859435705,
+    "pixels_off": 3,
+    "allowed_off": 14,
+    "max_off_step": 1,
+    "p999": 0.0,
+    "max_abs": 1,
+    "bias": 2.143347050754458e-05,
+    "zero_mismatch": 0,
+    "zero_one_side": 2
+   },
+   "edge_reverse": {
+    "checks": 29,
+    "passed": 29,
+    "rule": "pixels_off",
+    "ref_variance": 0.0199,
+    "r": 0.999104285278941,
+    "pixels_off": 5,
+    "allowed_off": 14,
+    "max_off_step": 1,
+    "p999": 0.0,
+    "max_abs": 1,
+    "bias": 7.144490169181527e-06,
+    "zero_mismatch": 0,
+    "zero_one_side": 0
+   },
+   "edge_tiles": {
+    "kept_forward": 3,
+    "kept_reverse": 3,
+    "positions": 91,
+    "same_as_hecate_py": true
+   }
+  }
+ },
+ "l4": {
+  "gpu": {
+   "name": "NVIDIA L4",
+   "compute_capability": "8.9",
+   "memory_mib": 23034,
+   "driver": "610.57.04",
+   "cuda_driver_api": "13.3",
+   "cudnn": "9.20.0",
+   "ptx_tier": "sm80"
+  },
+  "parity": {
+   "what": "inkrs maps against villa eager's maps from an RTX 5090, by p1_gate.py (per map: Pearson r, p99.9 and max |diff| in 1/255 steps, identical coverage). reader-v2 on the native crop of the PHerc. 1447 segment at d -2..2, hybrid_3d2d-seed42 on S1 at d -4..4, Reader V3 on S1 at d -2..2 and stride 192 (tile 384), both directions; default means no --conv flag, inkrs and cudnn are --conv inkrs and --conv cudnn",
+   "reader_v2": {
+    "default": {
+     "maps": 10,
+     "checks": 101,
+     "passed": 101,
+     "failed": 0,
+     "min_r": 0.9999968288533382,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "inkrs": {
+     "maps": 10,
+     "checks": 101,
+     "passed": 101,
+     "failed": 0,
+     "min_r": 0.9999967957892414,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "cudnn": {
+     "maps": 10,
+     "checks": 101,
+     "passed": 101,
+     "failed": 0,
+     "min_r": 0.9999968288533382,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    }
+   },
+   "default_conv": {
+    "reader_v2": {
+     "conv": "cudnn",
+     "conv_reason": "default for compute capability 8.9"
+    },
+    "reader_v3": {
+     "conv": "cudnn",
+     "conv_reason": "default for compute capability 8.9"
+    }
+   },
+   "seed42": {
+    "inkrs": {
+     "maps": 18,
+     "checks": 181,
+     "passed": 181,
+     "failed": 0,
+     "min_r": 0.9999892193941096,
+     "max_p999": 1.0,
+     "max_abs": 2.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "cudnn": {
+     "maps": 18,
+     "checks": 181,
+     "passed": 181,
+     "failed": 0,
+     "min_r": 0.9999896194026631,
+     "max_p999": 1.0,
+     "max_abs": 2.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    }
+   },
+   "reader_v3": {
+    "default": {
+     "maps": 10,
+     "checks": 101,
+     "passed": 101,
+     "failed": 0,
+     "min_r": 0.9999932032192389,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "inkrs": {
+     "maps": 10,
+     "checks": 101,
+     "passed": 101,
+     "failed": 0,
+     "min_r": 0.9999932797426789,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "cudnn": {
+     "maps": 10,
+     "checks": 101,
+     "passed": 101,
+     "failed": 0,
+     "min_r": 0.9999932032192389,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    }
+   },
+   "reader_v2_default_vs_cudnn": {
+    "what": "the default run's reader-v2 maps against the --conv cudnn run's, byte for byte",
+    "maps": 10,
+    "identical": 10,
+    "min_r": 0.9999999999999998,
+    "max_abs": 0.0,
+    "min_equal_share": 1.0,
+    "pass": true
+   }
+  },
+  "own_convs_vs_cudnn": {
+   "reader_v2_pass": {
+    "what": "reader-v2 over the whole PHerc. 1447 segment (native, 31 x 2980 x 3240), d -2..2, both directions, stride 64, batch 64, 10 maps: the warm second sweep pass in one process",
+    "cudnn_median_s": 11.663759528,
+    "own_median_s": 12.3607553735,
+    "speedup_mean": 0.9442054644460779,
+    "speedup_ci95": [
+     0.9378338704115279,
+     0.9505770584806279
+    ],
+    "speedup_median_pair": 0.9430085984846359,
+    "pairs": 6,
+    "aa_noise_sd": 0.0018345253042134065,
+    "aa_noise_share": 0.0018345253042134065,
+    "own_slower_share": 0.05909151943603108,
+    "pair_records": [
+     {
+      "order": "AB",
+      "cudnn_s": 11.619011492,
+      "own_s": 12.4041741,
+      "speedup": 0.936701742359453
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 11.650832374,
+      "own_s": 12.398059388,
+      "speedup": 0.9397303246729697
+     },
+     {
+      "order": "AB",
+      "cudnn_s": 11.676686682,
+      "own_s": 12.284710913,
+      "speedup": 0.9505056134160574
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 11.735350495,
+      "own_s": 12.323451359,
+      "speedup": 0.9522779092587158
+     },
+     {
+      "order": "AB",
+      "cudnn_s": 11.610309734,
+      "own_s": 12.307295352,
+      "speedup": 0.9433680920083927
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 11.693153618,
+      "own_s": 12.404566616,
+      "speedup": 0.9426491049608791
+     }
+    ]
+   },
+   "reader_v3_pass": {
+    "what": "Reader V3 on S1, d -2..2, both directions, stride 192, batch 8, 10 maps: the warm second sweep pass in one process",
+    "cudnn_median_s": 6.6214102265,
+    "own_median_s": 6.9914315385000005,
+    "speedup_mean": 0.9471539127010811,
+    "speedup_ci95": [
+     0.9353781494623608,
+     0.9589296759398014
+    ],
+    "speedup_median_pair": 0.9429379801892959,
+    "pairs": 6,
+    "aa_noise_sd": 0.005775361198978618,
+    "aa_noise_share": 0.005775361198978618,
+    "own_slower_share": 0.05579461436020794,
+    "pair_records": [
+     {
+      "order": "AB",
+      "cudnn_s": 6.624195961,
+      "own_s": 7.001288759,
+      "speedup": 0.9461395164547018
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 6.560374227,
+      "own_s": 6.981574318,
+      "speedup": 0.9396697547265155
+     },
+     {
+      "order": "AB",
+      "cudnn_s": 6.586026234,
+      "own_s": 7.040321239,
+      "speedup": 0.9354724039460837
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 6.63948993,
+      "own_s": 7.065268111,
+      "speedup": 0.93973644392389
+     },
+     {
+      "order": "AB",
+      "cudnn_s": 6.618624492,
+      "own_s": 6.889992301,
+      "speedup": 0.9606142072233355
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 6.704614557,
+      "own_s": 6.974593033,
+      "speedup": 0.9612911499319591
+     }
+    ]
+   },
+   "reader_v2_depth0": {
+    "what": "reader-v2 on the same segment at depth 0, both directions, 2 maps: the whole process wall, timed from outside",
+    "cudnn_median_s": 4.5058611075,
+    "own_median_s": 3.5627957145,
+    "speedup_mean": 1.2632648774186885,
+    "speedup_ci95": [
+     1.2556323718869449,
+     1.2708973829504322
+    ],
+    "speedup_median_pair": 1.2629584125738953,
+    "pairs": 6,
+    "aa_noise_sd": 0.016417174538487497,
+    "aa_noise_share": 0.016417174538487497,
+    "own_faster_share": 0.26326487741868854,
+    "pair_records": [
+     {
+      "order": "AB",
+      "cudnn_s": 4.470858426,
+      "own_s": 3.537689706,
+      "speedup": 1.263779132018652
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 4.484557609,
+      "own_s": 3.559380344,
+      "speedup": 1.2599264971948163
+     },
+     {
+      "order": "AB",
+      "cudnn_s": 4.512478027,
+      "own_s": 3.5752660360000004,
+      "speedup": 1.2621376931291386
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 4.4992441880000005,
+      "own_s": 3.5921156560000003,
+      "speedup": 1.2525332196597847
+     },
+     {
+      "order": "AB",
+      "cudnn_s": 4.519796809000001,
+      "own_s": 3.5465978660000004,
+      "speedup": 1.2744035212815412
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 4.517709016,
+      "own_s": 3.5662110850000004,
+      "speedup": 1.2668092012281993
+     }
+    ]
+   },
+   "reader_v3_depth0": {
+    "what": "Reader V3 on S1 at depth 0, both directions, 2 maps: the whole process wall, timed from outside",
+    "cudnn_median_s": 3.8517693960000003,
+    "own_median_s": 2.6253599385,
+    "speedup_mean": 1.4546614499026596,
+    "speedup_ci95": [
+     1.4344008400477155,
+     1.4749220597576036
+    ],
+    "speedup_median_pair": 1.4525533246257294,
+    "pairs": 6,
+    "aa_noise_sd": 0.03227770212974914,
+    "aa_noise_share": 0.03227770212974914,
+    "own_faster_share": 0.45466144990265955,
+    "pair_records": [
+     {
+      "order": "AB",
+      "cudnn_s": 3.8439923690000004,
+      "own_s": 2.6391287020000003,
+      "speedup": 1.4565384272797772
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 3.864379491,
+      "own_s": 2.6275465980000003,
+      "speedup": 1.4707177767813653
+     },
+     {
+      "order": "AB",
+      "cudnn_s": 3.8595464230000003,
+      "own_s": 2.603519377,
+      "speedup": 1.4824342991628905
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 3.7471529040000005,
+      "own_s": 2.6154439010000003,
+      "speedup": 1.4327024573409117
+     },
+     {
+      "order": "AB",
+      "cudnn_s": 3.859599338,
+      "own_s": 2.6644235870000004,
+      "speedup": 1.4485682219716816
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 3.7695197200000004,
+      "own_s": 2.623173279,
+      "speedup": 1.43700751687933
+     }
+    ]
+   }
+  },
+  "hecate_first_run": {
+   "what": "Hecate bf16, batch 32, over the whole PHerc. 1447 segment at 9.6 um (4682 tiles in 147 batches), two processes in a row in a fresh container. Run 1 started with empty inkrs, cuDNN algorithm and CUDA driver (compiled PTX) caches; run 2 reused the driver's compiled PTX. The cuDNN algorithm cache did not load in these containers, so run 2 timed cuDNN's algorithms again. wall_s is the whole process, timed from outside; plan_s is cuDNN planning inside it",
+   "run_1": {
+    "wall_s": 96.8,
+    "plan_s": 31.434524981,
+    "gpu_s": 55.27308984375,
+    "driver_ptx_cache_bytes_after": 10783639
+   },
+   "run_2": {
+    "wall_s": 71.56,
+    "plan_s": 13.4714823,
+    "gpu_s": 55.09044921875,
+    "driver_ptx_cache_bytes_after": 10783639
+   }
+  },
+  "hecate_parity": {
+   "what": "inkrs maps against hecate.py's maps from an RTX 5090, by hecate_mapgate.py at bounds fixed before any run (fp32: r >= 0.9994, p99.9 <= 4, max <= 8 steps; bf16: r >= 0.999, p99.9 <= 6, max <= 32; mean diff on both, and no pixel 0 on one map and above 1 step on the other, while a 0 against a 1 is counted, not gated). A map whose reference has variance below 1 step squared is gated by pixels off in place of r: at most max(5, 0.01% of pixels) differ, each by 1 step. fp32 and bf16 on the 2048 x 2048 crop of the PHerc. 1447 segment, and fp32 on the edge fixture, forward and reverse",
+   "fp32_forward": {
+    "checks": 28,
+    "passed": 28,
+    "rule": "r",
+    "ref_variance": 765.781,
+    "r": 0.9999791279467944,
+    "pixels_off": 129298,
+    "allowed_off": 420,
+    "max_off_step": 5,
+    "p999": 1.0,
+    "max_abs": 5,
+    "bias": -0.016544342041015625,
+    "zero_mismatch": 0,
+    "zero_one_side": 540
+   },
+   "fp32_reverse": {
+    "checks": 28,
+    "passed": 28,
+    "rule": "r",
+    "ref_variance": 785.5394,
+    "r": 0.9999809559822379,
+    "pixels_off": 128771,
+    "allowed_off": 420,
+    "max_off_step": 2,
+    "p999": 1.0,
+    "max_abs": 2,
+    "bias": -0.011085748672485352,
+    "zero_mismatch": 0,
+    "zero_one_side": 667
+   },
+   "bf16_forward": {
+    "checks": 28,
+    "passed": 28,
+    "rule": "r",
+    "ref_variance": 764.7243,
+    "r": 0.9999687372539725,
+    "pixels_off": 191543,
+    "allowed_off": 420,
+    "max_off_step": 4,
+    "p999": 1.0,
+    "max_abs": 4,
+    "bias": 0.0036313533782958984,
+    "zero_mismatch": 0,
+    "zero_one_side": 887
+   },
+   "bf16_reverse": {
+    "checks": 28,
+    "passed": 28,
+    "rule": "r",
+    "ref_variance": 781.6759,
+    "r": 0.9999642180968746,
+    "pixels_off": 217888,
+    "allowed_off": 420,
+    "max_off_step": 5,
+    "p999": 2.0,
+    "max_abs": 5,
+    "bias": 0.0073621273040771484,
+    "zero_mismatch": 0,
+    "zero_one_side": 1477
+   },
+   "edge_forward": {
+    "checks": 29,
+    "passed": 29,
+    "rule": "pixels_off",
+    "ref_variance": 0.0258,
+    "r": 0.9997241172060768,
+    "pixels_off": 2,
+    "allowed_off": 14,
+    "max_off_step": 1,
+    "p999": 0.0,
+    "max_abs": 1,
+    "bias": 1.4288980338363054e-05,
+    "zero_mismatch": 0,
+    "zero_one_side": 1
+   },
+   "edge_reverse": {
+    "checks": 29,
+    "passed": 29,
+    "rule": "pixels_off",
+    "ref_variance": 0.0199,
+    "r": 0.9992863015178408,
+    "pixels_off": 4,
+    "allowed_off": 14,
+    "max_off_step": 1,
+    "p999": 0.0,
+    "max_abs": 1,
+    "bias": 1.4288980338363054e-05,
+    "zero_mismatch": 0,
+    "zero_one_side": 0
+   },
+   "edge_tiles": {
+    "kept_forward": 3,
+    "kept_reverse": 3,
+    "positions": 91,
+    "same_as_hecate_py": true
+   }
+  }
+ },
+ "rtx4090": {
+  "gpu": {
+   "name": "NVIDIA GeForce RTX 4090",
+   "compute_capability": "8.9",
+   "memory_mib": 24564,
+   "driver": "580.126.18",
+   "cuda_driver_api": "13.0",
+   "cudnn": "9.20.0",
+   "ptx_tier": "sm80"
+  },
+  "parity": {
+   "what": "inkrs maps against villa eager's maps from an RTX 5090, by p1_gate.py (per map: Pearson r, p99.9 and max |diff| in 1/255 steps, identical coverage). reader-v2 on the native crop of the PHerc. 1447 segment at d -2..2, hybrid_3d2d-seed42 on S1 at d -4..4, Reader V3 on S1 at d -2..2 and stride 192 (tile 384), both directions; default means no --conv flag, inkrs and cudnn are --conv inkrs and --conv cudnn",
+   "reader_v2": {
+    "default": {
+     "maps": 10,
+     "checks": 101,
+     "passed": 101,
+     "failed": 0,
+     "min_r": 0.9999968288533382,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "inkrs": {
+     "maps": 10,
+     "checks": 101,
+     "passed": 101,
+     "failed": 0,
+     "min_r": 0.9999967957892414,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "cudnn": {
+     "maps": 10,
+     "checks": 101,
+     "passed": 101,
+     "failed": 0,
+     "min_r": 0.9999968288533382,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    }
+   },
+   "default_conv": {
+    "reader_v2": {
+     "conv": "cudnn",
+     "conv_reason": "default for compute capability 8.9"
+    },
+    "reader_v3": {
+     "conv": "cudnn",
+     "conv_reason": "default for compute capability 8.9"
+    }
+   },
+   "seed42": {
+    "inkrs": {
+     "maps": 18,
+     "checks": 181,
+     "passed": 181,
+     "failed": 0,
+     "min_r": 0.9999892193941096,
+     "max_p999": 1.0,
+     "max_abs": 2.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "cudnn": {
+     "maps": 18,
+     "checks": 181,
+     "passed": 181,
+     "failed": 0,
+     "min_r": 0.9999896194026631,
+     "max_p999": 1.0,
+     "max_abs": 2.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    }
+   },
+   "reader_v3": {
+    "default": {
+     "maps": 10,
+     "checks": 101,
+     "passed": 101,
+     "failed": 0,
+     "min_r": 0.9999932032192389,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "inkrs": {
+     "maps": 10,
+     "checks": 101,
+     "passed": 101,
+     "failed": 0,
+     "min_r": 0.9999932797426789,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "cudnn": {
+     "maps": 10,
+     "checks": 101,
+     "passed": 101,
+     "failed": 0,
+     "min_r": 0.9999932032192389,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    }
+   },
+   "reader_v2_default_vs_cudnn": {
+    "what": "the default run's reader-v2 maps against the --conv cudnn run's, byte for byte",
+    "maps": 10,
+    "identical": 10,
+    "min_r": 0.9999999999999998,
+    "max_abs": 0.0,
+    "min_equal_share": 1.0,
+    "pass": true
+   }
+  },
+  "own_convs_vs_cudnn": {
+   "reader_v2_pass": {
+    "what": "reader-v2 over the whole PHerc. 1447 segment (native, 31 x 2980 x 3240), d -2..2, both directions, stride 64, batch 64, 10 maps: the warm second sweep pass in one process",
+    "cudnn_median_s": 4.2048550415,
+    "own_median_s": 4.073826260000001,
+    "speedup_mean": 1.0328188630761674,
+    "speedup_ci95": [
+     1.0195857566351656,
+     1.0460519695171693
+    ],
+    "speedup_median_pair": 1.034197402818028,
+    "pairs": 6,
+    "aa_noise_sd": 0.005640848294826211,
+    "aa_noise_share": 0.005640848294826211,
+    "own_faster_share": 0.03281886307616744,
+    "pair_records": [
+     {
+      "order": "AB",
+      "cudnn_s": 4.192178839,
+      "own_s": 4.080010309,
+      "speedup": 1.0274922172996892
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 4.188591988,
+      "own_s": 4.101670988,
+      "speedup": 1.0211916070924019
+     },
+     {
+      "order": "AB",
+      "cudnn_s": 4.217531244,
+      "own_s": 4.147763972,
+      "speedup": 1.0168204537362715
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 4.254507437,
+      "own_s": 4.067642211,
+      "speedup": 1.0459394450904915
+     },
+     {
+      "order": "AB",
+      "cudnn_s": 4.218856049,
+      "own_s": 4.053074799,
+      "speedup": 1.040902588336367
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 4.172275901,
+      "own_s": 3.994264066,
+      "speedup": 1.0445668669017838
+     }
+    ]
+   },
+   "reader_v3_pass": {
+    "what": "Reader V3 on S1, d -2..2, both directions, stride 192, batch 8, 10 maps: the warm second sweep pass in one process",
+    "cudnn_median_s": 2.7790956825,
+    "own_median_s": 2.6473513950000003,
+    "speedup_mean": 1.052525874673547,
+    "speedup_ci95": [
+     1.0281117656265069,
+     1.0769399837205873
+    ],
+    "speedup_median_pair": 1.0494655895140688,
+    "pairs": 6,
+    "aa_noise_sd": 0.012946446920038957,
+    "aa_noise_share": 0.012946446920038957,
+    "own_faster_share": 0.05252587467354708,
+    "pair_records": [
+     {
+      "order": "AB",
+      "cudnn_s": 2.790897794,
+      "own_s": 2.653803587,
+      "speedup": 1.0516595152978063
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 2.7578670990000003,
+      "own_s": 2.689230585,
+      "speedup": 1.0255227329269723
+     },
+     {
+      "order": "AB",
+      "cudnn_s": 2.788885242,
+      "own_s": 2.596874888,
+      "speedup": 1.073939008339319
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 2.769306123,
+      "own_s": 2.644305407,
+      "speedup": 1.047271663730331
+     },
+     {
+      "order": "AB",
+      "cudnn_s": 2.734472373,
+      "own_s": 2.650397383,
+      "speedup": 1.0317216544731247
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 2.826538075,
+      "own_s": 2.605006563,
+      "speedup": 1.085040673273728
+     }
+    ]
+   },
+   "reader_v2_depth0": {
+    "what": "reader-v2 on the same segment at depth 0, both directions, 2 maps: the whole process wall, timed from outside",
+    "cudnn_median_s": 3.1430220525,
+    "own_median_s": 2.336132267,
+    "speedup_mean": 1.3466102929514439,
+    "speedup_ci95": [
+     1.3247610450785232,
+     1.3684595408243645
+    ],
+    "speedup_median_pair": 1.3517264107861138,
+    "pairs": 6,
+    "aa_noise_sd": 0.009120737245528192,
+    "aa_noise_share": 0.009120737245528192,
+    "own_faster_share": 0.34661029295144385,
+    "pair_records": [
+     {
+      "order": "AB",
+      "cudnn_s": 3.2893480810000004,
+      "own_s": 2.4112989110000003,
+      "speedup": 1.364139495934936
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 3.0535923940000003,
+      "own_s": 2.3372830230000003,
+      "speedup": 1.3064709596361108
+     },
+     {
+      "order": "AB",
+      "cudnn_s": 3.1659046870000003,
+      "own_s": 2.351630202,
+      "speedup": 1.3462595795493189
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 3.1394763780000003,
+      "own_s": 2.309561196,
+      "speedup": 1.35933890101607
+     },
+     {
+      "order": "AB",
+      "cudnn_s": 3.081547205,
+      "own_s": 2.272735817,
+      "speedup": 1.3558756728125256
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 3.1465677270000003,
+      "own_s": 2.334981511,
+      "speedup": 1.3475771487597017
+     }
+    ]
+   },
+   "reader_v3_depth0": {
+    "what": "Reader V3 on S1 at depth 0, both directions, 2 maps: the whole process wall, timed from outside",
+    "cudnn_median_s": 2.9585033700000003,
+    "own_median_s": 2.149682725,
+    "speedup_mean": 1.3770107396512807,
+    "speedup_ci95": [
+     1.3508382073403453,
+     1.4031832719622161
+    ],
+    "speedup_median_pair": 1.3636566373406307,
+    "pairs": 6,
+    "aa_noise_sd": 0.0069375708446134075,
+    "aa_noise_share": 0.0069375708446134075,
+    "own_faster_share": 0.37701073965128074,
+    "pair_records": [
+     {
+      "order": "AB",
+      "cudnn_s": 3.0412659740000003,
+      "own_s": 2.141739377,
+      "speedup": 1.4199981597480804
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 2.973032919,
+      "own_s": 2.1794771390000003,
+      "speedup": 1.364103741122104
+     },
+     {
+      "order": "AB",
+      "cudnn_s": 2.9471533560000003,
+      "own_s": 2.161922495,
+      "speedup": 1.3632095335591574
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 2.9698533840000003,
+      "own_s": 2.12908447,
+      "speedup": 1.3948969267527465
+     },
+     {
+      "order": "AB",
+      "cudnn_s": 2.918131954,
+      "own_s": 2.1444844350000003,
+      "speedup": 1.3607615454667545
+     },
+     {
+      "order": "BA",
+      "cudnn_s": 2.9286870030000003,
+      "own_s": 2.154881015,
+      "speedup": 1.3590945312588407
+     }
+    ]
+   }
+  },
+  "hecate_first_run": {
+   "what": "Hecate bf16, batch 32, over the whole PHerc. 1447 segment at 9.6 um (4682 tiles in 147 batches), two processes in a row in a fresh container. Run 1 started with empty inkrs, cuDNN algorithm and CUDA driver (compiled PTX) caches; run 2 reused the driver's compiled PTX. The cuDNN algorithm cache did not load in these containers, so run 2 timed cuDNN's algorithms again. wall_s is the whole process, timed from outside; plan_s is cuDNN planning inside it",
+   "run_1": {
+    "wall_s": 45.794,
+    "plan_s": 21.738964886,
+    "gpu_s": 17.31352734375,
+    "driver_ptx_cache_bytes_after": 10915134
+   },
+   "run_2": {
+    "wall_s": 29.989,
+    "plan_s": 9.492692619,
+    "gpu_s": 17.330044921875,
+    "driver_ptx_cache_bytes_after": 10915134
+   }
+  },
+  "hecate_parity": {
+   "what": "inkrs maps against hecate.py's maps from an RTX 5090, by hecate_mapgate.py at bounds fixed before any run (fp32: r >= 0.9994, p99.9 <= 4, max <= 8 steps; bf16: r >= 0.999, p99.9 <= 6, max <= 32; mean diff on both, and no pixel 0 on one map and above 1 step on the other, while a 0 against a 1 is counted, not gated). A map whose reference has variance below 1 step squared is gated by pixels off in place of r: at most max(5, 0.01% of pixels) differ, each by 1 step. fp32 and bf16 on the 2048 x 2048 crop of the PHerc. 1447 segment, and fp32 on the edge fixture, forward and reverse",
+   "fp32_forward": {
+    "checks": 28,
+    "passed": 28,
+    "rule": "r",
+    "ref_variance": 765.781,
+    "r": 0.9999791550751403,
+    "pixels_off": 129194,
+    "allowed_off": 420,
+    "max_off_step": 5,
+    "p999": 1.0,
+    "max_abs": 5,
+    "bias": -0.01653313636779785,
+    "zero_mismatch": 0,
+    "zero_one_side": 541
+   },
+   "fp32_reverse": {
+    "checks": 28,
+    "passed": 28,
+    "rule": "r",
+    "ref_variance": 785.5394,
+    "r": 0.9999809670022718,
+    "pixels_off": 128696,
+    "allowed_off": 420,
+    "max_off_step": 2,
+    "p999": 1.0,
+    "max_abs": 2,
+    "bias": -0.011071920394897461,
+    "zero_mismatch": 0,
+    "zero_one_side": 661
+   },
+   "bf16_forward": {
+    "checks": 28,
+    "passed": 28,
+    "rule": "r",
+    "ref_variance": 764.7243,
+    "r": 0.9999687519979763,
+    "pixels_off": 191339,
+    "allowed_off": 420,
+    "max_off_step": 4,
+    "p999": 1.0,
+    "max_abs": 4,
+    "bias": 0.003657102584838867,
+    "zero_mismatch": 0,
+    "zero_one_side": 885
+   },
+   "bf16_reverse": {
+    "checks": 28,
+    "passed": 28,
+    "rule": "r",
+    "ref_variance": 781.6759,
+    "r": 0.9999642206319467,
+    "pixels_off": 217726,
+    "allowed_off": 420,
+    "max_off_step": 5,
+    "p999": 2.0,
+    "max_abs": 5,
+    "bias": 0.007323503494262695,
+    "zero_mismatch": 0,
+    "zero_one_side": 1459
+   },
+   "edge_forward": {
+    "checks": 29,
+    "passed": 29,
+    "rule": "pixels_off",
+    "ref_variance": 0.0258,
+    "r": 0.9997241172060768,
+    "pixels_off": 2,
+    "allowed_off": 14,
+    "max_off_step": 1,
+    "p999": 0.0,
+    "max_abs": 1,
+    "bias": 1.4288980338363054e-05,
+    "zero_mismatch": 0,
+    "zero_one_side": 1
+   },
+   "edge_reverse": {
+    "checks": 29,
+    "passed": 29,
+    "rule": "pixels_off",
+    "ref_variance": 0.0199,
+    "r": 0.999104285278941,
+    "pixels_off": 5,
+    "allowed_off": 14,
+    "max_off_step": 1,
+    "p999": 0.0,
+    "max_abs": 1,
+    "bias": 7.144490169181527e-06,
+    "zero_mismatch": 0,
+    "zero_one_side": 0
+   },
+   "edge_tiles": {
+    "kept_forward": 3,
+    "kept_reverse": 3,
+    "positions": 91,
+    "same_as_hecate_py": true
+   }
+  },
+  "vs_villa_eager": {
+   "what": "the same RTX 4090 in the same container, S1 at d -2..2, both directions, 10 maps. This is against villa eager (villa 0fb38c45's infer with --no-compile, batch 4, one process per depth), not villa's fastest settings. inkrs is the whole process with its default conv (cuDNN here), three processes, and its median is compared; villa's figure is the sum of its five per-depth process walls. Parity is the first inkrs process's maps against villa's maps from this card",
+   "reader_v2": {
+    "inkrs_process_walls_s": [
+     7.19,
+     4.696,
+     4.72
+    ],
+    "inkrs_median_s": 4.72,
+    "villa_eager_depth_walls_s": [
+     {
+      "depth": -2,
+      "wall_s": 32.326
+     },
+     {
+      "depth": -1,
+      "wall_s": 32.505
+     },
+     {
+      "depth": 0,
+      "wall_s": 38.714
+     },
+     {
+      "depth": 1,
+      "wall_s": 32.624
+     },
+     {
+      "depth": 2,
+      "wall_s": 32.823
+     }
+    ],
+    "villa_eager_total_s": 168.99200000000002,
+    "villa_eager_depth_mean_s": 33.7984,
+    "villa_eager_depth_sd_s": 2.7538422794343167,
+    "speedup": 35.80338983050848,
+    "parity_vs_villa_same_gpu": {
+     "maps": 10,
+     "checks": 101,
+     "passed": 101,
+     "failed": 0,
+     "min_r": 0.9999969655148261,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    }
+   },
+   "reader_v3": {
+    "inkrs_process_walls_s": [
+     4.891,
+     4.823,
+     4.892
+    ],
+    "inkrs_median_s": 4.891,
+    "villa_eager_depth_walls_s": [
+     {
+      "depth": -2,
+      "wall_s": 25.978
+     },
+     {
+      "depth": -1,
+      "wall_s": 27.001
+     },
+     {
+      "depth": 0,
+      "wall_s": 25.992
+     },
+     {
+      "depth": 1,
+      "wall_s": 27.67
+     },
+     {
+      "depth": 2,
+      "wall_s": 26.89
+     }
+    ],
+    "villa_eager_total_s": 133.531,
+    "villa_eager_depth_mean_s": 26.706200000000003,
+    "villa_eager_depth_sd_s": 0.7228341441852344,
+    "speedup": 27.3013698630137,
+    "parity_vs_villa_same_gpu": {
+     "maps": 10,
+     "checks": 101,
+     "passed": 101,
+     "failed": 0,
+     "min_r": 0.9999934572059016,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "villa_this_gpu_vs_villa_rtx5090": {
+     "maps": 10,
+     "identical": 0,
+     "min_r": 0.9999939596553821,
+     "max_abs": 1.0,
+     "min_equal_share": 0.992455005645752,
+     "pass": true
+    }
+   }
+  }
+ }
+}

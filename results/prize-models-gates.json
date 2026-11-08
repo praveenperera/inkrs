@@ -1,0 +1,594 @@
+{
+ "what": "the PHerc. 343 recipe's further villa models in inkrs against villa 0fb38c45 eager: S1 (18 maps, d -4..4, both sides) and the whole plain 66 x 2560 x 6720 render (5 maps, d -2..2, reading side), on the sm120 tier and forced sm80, with each tier's maps against the other's; the recipe's combine (merge_tile_phase.py and ensemble_maps.py on each side, then scripts/recipe343_gate.py combine on the pooled statistics and the five d = +1 images) on each tier; and the recipe's Hecate maps through scripts/hecate_mapgate.py",
+ "gpu": "RTX 5090, driver 595.99.02",
+ "models": {
+  "dense_native_16000": {
+   "s1": {
+    "sm120": {
+     "maps": 18,
+     "checks": 181,
+     "passed": 181,
+     "failed": 0,
+     "min_r": 0.9999938905829842,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "sm80": {
+     "maps": 18,
+     "checks": 181,
+     "passed": 181,
+     "failed": 0,
+     "min_r": 0.9999938905829842,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "tiers_identical": {
+     "maps": 18,
+     "identical": 18,
+     "min_r": 0.9999999999999998,
+     "max_abs": 0.0,
+     "min_equal_share": 1.0,
+     "pass": true
+    },
+    "min_r": 0.9999938905829842,
+    "max_p999": 1.0,
+    "max_abs": 1.0
+   },
+   "whole": {
+    "sm120": {
+     "maps": 5,
+     "checks": 51,
+     "passed": 51,
+     "failed": 0,
+     "min_r": 0.9999971872346051,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "sm80": {
+     "maps": 5,
+     "checks": 51,
+     "passed": 51,
+     "failed": 0,
+     "min_r": 0.9999971872346051,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "tiers_identical": {
+     "maps": 5,
+     "identical": 5,
+     "min_r": 0.9999999999999999,
+     "max_abs": 0.0,
+     "min_equal_share": 1.0,
+     "pass": true
+    },
+    "min_r": 0.9999971872346051,
+    "max_p999": 1.0,
+    "max_abs": 1.0
+   }
+  },
+  "ink_9um_seed43": {
+   "s1": {
+    "sm120": {
+     "maps": 18,
+     "checks": 181,
+     "passed": 181,
+     "failed": 0,
+     "min_r": 0.9999901641861353,
+     "max_p999": 1.0,
+     "max_abs": 2.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "sm80": {
+     "maps": 18,
+     "checks": 181,
+     "passed": 181,
+     "failed": 0,
+     "min_r": 0.9999901641861353,
+     "max_p999": 1.0,
+     "max_abs": 2.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "tiers_identical": {
+     "maps": 18,
+     "identical": 18,
+     "min_r": 0.9999999999999998,
+     "max_abs": 0.0,
+     "min_equal_share": 1.0,
+     "pass": true
+    },
+    "min_r": 0.9999901641861353,
+    "max_p999": 1.0,
+    "max_abs": 2.0
+   },
+   "whole": {
+    "sm120": {
+     "maps": 5,
+     "checks": 51,
+     "passed": 51,
+     "failed": 0,
+     "min_r": 0.9999951668974175,
+     "max_p999": 1.0,
+     "max_abs": 2.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "sm80": {
+     "maps": 5,
+     "checks": 51,
+     "passed": 51,
+     "failed": 0,
+     "min_r": 0.9999951668974175,
+     "max_p999": 1.0,
+     "max_abs": 2.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "tiers_identical": {
+     "maps": 5,
+     "identical": 5,
+     "min_r": 0.9999999999999998,
+     "max_abs": 0.0,
+     "min_equal_share": 1.0,
+     "pass": true
+    },
+    "min_r": 0.9999951668974175,
+    "max_p999": 1.0,
+    "max_abs": 2.0
+   }
+  },
+  "trace_v3b": {
+   "s1": {
+    "sm120": {
+     "maps": 18,
+     "checks": 181,
+     "passed": 181,
+     "failed": 0,
+     "min_r": 0.9999940120134259,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "sm80": {
+     "maps": 18,
+     "checks": 181,
+     "passed": 181,
+     "failed": 0,
+     "min_r": 0.9999940120134259,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "tiers_identical": {
+     "maps": 18,
+     "identical": 18,
+     "min_r": 0.9999999999999998,
+     "max_abs": 0.0,
+     "min_equal_share": 1.0,
+     "pass": true
+    },
+    "min_r": 0.9999940120134259,
+    "max_p999": 1.0,
+    "max_abs": 1.0
+   },
+   "whole": {
+    "sm120": {
+     "maps": 5,
+     "checks": 51,
+     "passed": 51,
+     "failed": 0,
+     "min_r": 0.9999977851039219,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "sm80": {
+     "maps": 5,
+     "checks": 51,
+     "passed": 51,
+     "failed": 0,
+     "min_r": 0.9999977851039219,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "tiers_identical": {
+     "maps": 5,
+     "identical": 5,
+     "min_r": 0.9999999999999999,
+     "max_abs": 0.0,
+     "min_equal_share": 1.0,
+     "pass": true
+    },
+    "min_r": 0.9999977851039219,
+    "max_p999": 1.0,
+    "max_abs": 1.0
+   }
+  },
+  "rectina_m4": {
+   "s1": {
+    "sm120": {
+     "maps": 18,
+     "checks": 181,
+     "passed": 181,
+     "failed": 0,
+     "min_r": 0.9999949128333432,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "sm80": {
+     "maps": 18,
+     "checks": 181,
+     "passed": 181,
+     "failed": 0,
+     "min_r": 0.9999949128333432,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "tiers_identical": {
+     "maps": 18,
+     "identical": 18,
+     "min_r": 0.9999999999999998,
+     "max_abs": 0.0,
+     "min_equal_share": 1.0,
+     "pass": true
+    },
+    "min_r": 0.9999949128333432,
+    "max_p999": 1.0,
+    "max_abs": 1.0
+   },
+   "whole": {
+    "sm120": {
+     "maps": 5,
+     "checks": 51,
+     "passed": 51,
+     "failed": 0,
+     "min_r": 0.9999987129350347,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "sm80": {
+     "maps": 5,
+     "checks": 51,
+     "passed": 51,
+     "failed": 0,
+     "min_r": 0.9999987129350347,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "tiers_identical": {
+     "maps": 5,
+     "identical": 5,
+     "min_r": 0.9999999999999998,
+     "max_abs": 0.0,
+     "min_equal_share": 1.0,
+     "pass": true
+    },
+    "min_r": 0.9999987129350347,
+    "max_p999": 1.0,
+    "max_abs": 1.0
+   }
+  },
+  "rectina_m1": {
+   "s1": {
+    "sm120": {
+     "maps": 18,
+     "checks": 181,
+     "passed": 181,
+     "failed": 0,
+     "min_r": 0.9999975824071811,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "sm80": {
+     "maps": 18,
+     "checks": 181,
+     "passed": 181,
+     "failed": 0,
+     "min_r": 0.9999975824071811,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "tiers_identical": {
+     "maps": 18,
+     "identical": 18,
+     "min_r": 0.9999999999999998,
+     "max_abs": 0.0,
+     "min_equal_share": 1.0,
+     "pass": true
+    },
+    "min_r": 0.9999975824071811,
+    "max_p999": 1.0,
+    "max_abs": 1.0
+   },
+   "whole": {
+    "sm120": {
+     "maps": 5,
+     "checks": 51,
+     "passed": 51,
+     "failed": 0,
+     "min_r": 0.9999990458968605,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "sm80": {
+     "maps": 5,
+     "checks": 51,
+     "passed": 51,
+     "failed": 0,
+     "min_r": 0.9999990458968605,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "tiers_identical": {
+     "maps": 5,
+     "identical": 5,
+     "min_r": 0.9999999999999999,
+     "max_abs": 0.0,
+     "min_equal_share": 1.0,
+     "pass": true
+    },
+    "min_r": 0.9999990458968605,
+    "max_p999": 1.0,
+    "max_abs": 1.0
+   }
+  },
+  "rectina_m2": {
+   "s1": {
+    "sm120": {
+     "maps": 18,
+     "checks": 181,
+     "passed": 181,
+     "failed": 0,
+     "min_r": 0.9999965728585375,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "sm80": {
+     "maps": 18,
+     "checks": 181,
+     "passed": 181,
+     "failed": 0,
+     "min_r": 0.9999965728585375,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "tiers_identical": {
+     "maps": 18,
+     "identical": 18,
+     "min_r": 0.9999999999999998,
+     "max_abs": 0.0,
+     "min_equal_share": 1.0,
+     "pass": true
+    },
+    "min_r": 0.9999965728585375,
+    "max_p999": 1.0,
+    "max_abs": 1.0
+   },
+   "whole": {
+    "sm120": {
+     "maps": 5,
+     "checks": 51,
+     "passed": 51,
+     "failed": 0,
+     "min_r": 0.999998876171213,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "sm80": {
+     "maps": 5,
+     "checks": 51,
+     "passed": 51,
+     "failed": 0,
+     "min_r": 0.999998876171213,
+     "max_p999": 1.0,
+     "max_abs": 1.0,
+     "bar": {
+      "min_r": 0.9994,
+      "max_p999": 4.0,
+      "max_abs": 4.0
+     }
+    },
+    "tiers_identical": {
+     "maps": 5,
+     "identical": 5,
+     "min_r": 0.9999999999999999,
+     "max_abs": 0.0,
+     "min_equal_share": 1.0,
+     "pass": true
+    },
+    "min_r": 0.999998876171213,
+    "max_p999": 1.0,
+    "max_abs": 1.0
+   }
+  }
+ },
+ "combine_343": {
+  "sm120": {
+   "checks": 63,
+   "passed": 63,
+   "images": {
+    "ensemble": {
+     "r": 0.9999894686815264,
+     "p999": 1.0,
+     "max": 2.0,
+     "identical": 0.9672580101376488
+    },
+    "dnative": {
+     "r": 0.9999904980939085,
+     "p999": 2.0,
+     "max": 3.0,
+     "identical": 0.98735107421875
+    },
+    "hecate": {
+     "r": 0.99999125523254,
+     "p999": 1.0,
+     "max": 3.0,
+     "identical": 0.9766961379278274
+    },
+    "ink9-42": {
+     "r": 0.999982962717124,
+     "p999": 2.0,
+     "max": 3.0,
+     "identical": 0.9859634835379464
+    },
+    "ink9-43": {
+     "r": 0.999984529234998,
+     "p999": 2.0,
+     "max": 4.0,
+     "identical": 0.9871868024553572
+    }
+   },
+   "worst_r": 0.999982962717124,
+   "max_p999": 2.0,
+   "max_abs": 4.0
+  },
+  "sm80": {
+   "checks": 63,
+   "passed": 63,
+   "images": {
+    "ensemble": {
+     "r": 0.9999894686815264,
+     "p999": 1.0,
+     "max": 2.0,
+     "identical": 0.9672580101376488
+    },
+    "dnative": {
+     "r": 0.9999904980939085,
+     "p999": 2.0,
+     "max": 3.0,
+     "identical": 0.98735107421875
+    },
+    "hecate": {
+     "r": 0.99999125523254,
+     "p999": 1.0,
+     "max": 3.0,
+     "identical": 0.9766961379278274
+    },
+    "ink9-42": {
+     "r": 0.999982962717124,
+     "p999": 2.0,
+     "max": 3.0,
+     "identical": 0.9859634835379464
+    },
+    "ink9-43": {
+     "r": 0.999984529234998,
+     "p999": 2.0,
+     "max": 4.0,
+     "identical": 0.9871868024553572
+    }
+   },
+   "worst_r": 0.999982962717124,
+   "max_p999": 2.0,
+   "max_abs": 4.0
+  }
+ },
+ "hecate_343_maps": {
+  "maps": 20,
+  "passed": 20
+ }
+}

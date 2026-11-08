@@ -1,0 +1,698 @@
+{
+ "stride": 64,
+ "batch": 64,
+ "cudnn": 92700,
+ "load_weights_s": 0.131847656,
+ "open_gpu_s": 0.183886826,
+ "plan_s": 0.580399319,
+ "cold_s": 11.581470069,
+ "passes": [
+  {
+   "volume": "0",
+   "shape": [
+    66,
+    2560,
+    6720
+   ],
+   "maps": 18,
+   "tiles": 50346,
+   "batches": 787,
+   "padded_tiles": 22,
+   "read_volume_s": 0.410873157,
+   "schedule_s": 0.607531843,
+   "upload_s": 0.217601636,
+   "run_s": 9.445659027,
+   "total_s": 10.681687735,
+   "gpu_s": 9.3928193359375,
+   "tiles_per_s": 5330.067479260915,
+   "map_tiles": [
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s21.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s21_reverse.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s22.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s22_reverse.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s23.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s23_reverse.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s24.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s24_reverse.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s25.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s25_reverse.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s26.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s26_reverse.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s27.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s27_reverse.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s28.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s28_reverse.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s29.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s29_reverse.tif",
+     2797
+    ]
+   ],
+   "occupancy": {
+    "level": "0",
+    "shape": [
+     2560,
+     6720
+    ],
+    "scale": [
+     1,
+     1
+    ],
+    "nonempty": 10683400
+   },
+   "scheduled_positions": 2797
+  },
+  {
+   "volume": "0",
+   "shape": [
+    66,
+    2560,
+    6720
+   ],
+   "maps": 18,
+   "tiles": 50346,
+   "batches": 787,
+   "padded_tiles": 22,
+   "read_volume_s": 0.425706938,
+   "schedule_s": 0.735842393,
+   "upload_s": 0.170778186,
+   "run_s": 9.564085745,
+   "total_s": 10.896423465,
+   "gpu_s": 9.4149736328125,
+   "tiles_per_s": 5264.068238443005,
+   "map_tiles": [
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s21.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s21_reverse.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s22.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s22_reverse.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s23.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s23_reverse.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s24.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s24_reverse.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s25.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s25_reverse.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s26.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s26_reverse.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s27.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s27_reverse.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s28.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s28_reverse.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s29.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s29_reverse.tif",
+     2797
+    ]
+   ],
+   "occupancy": {
+    "level": "0",
+    "shape": [
+     2560,
+     6720
+    ],
+    "scale": [
+     1,
+     1
+    ],
+    "nonempty": 10683400
+   },
+   "scheduled_positions": 2797
+  },
+  {
+   "volume": "0",
+   "shape": [
+    66,
+    2560,
+    6720
+   ],
+   "maps": 18,
+   "tiles": 50346,
+   "batches": 787,
+   "padded_tiles": 22,
+   "read_volume_s": 0.500736563,
+   "schedule_s": 0.565274742,
+   "upload_s": 0.140058454,
+   "run_s": 10.462793144,
+   "total_s": 11.66887419,
+   "gpu_s": 9.432826171875,
+   "tiles_per_s": 4811.908188099031,
+   "map_tiles": [
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s21.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s21_reverse.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s22.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s22_reverse.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s23.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s23_reverse.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s24.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s24_reverse.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s25.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s25_reverse.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s26.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s26_reverse.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s27.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s27_reverse.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s28.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s28_reverse.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s29.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s29_reverse.tif",
+     2797
+    ]
+   ],
+   "occupancy": {
+    "level": "0",
+    "shape": [
+     2560,
+     6720
+    ],
+    "scale": [
+     1,
+     1
+    ],
+    "nonempty": 10683400
+   },
+   "scheduled_positions": 2797
+  },
+  {
+   "volume": "0",
+   "shape": [
+    66,
+    2560,
+    6720
+   ],
+   "maps": 18,
+   "tiles": 50346,
+   "batches": 787,
+   "padded_tiles": 22,
+   "read_volume_s": 0.408867161,
+   "schedule_s": 0.603985801,
+   "upload_s": 0.127190389,
+   "run_s": 9.702000296,
+   "total_s": 10.8420577,
+   "gpu_s": 9.4394951171875,
+   "tiles_per_s": 5189.239173777078,
+   "map_tiles": [
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s21.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s21_reverse.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s22.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s22_reverse.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s23.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s23_reverse.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s24.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s24_reverse.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s25.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s25_reverse.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s26.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s26_reverse.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s27.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s27_reverse.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s28.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s28_reverse.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s29.tif",
+     2797
+    ],
+    [
+     "concat_w047-w048__hybrid_3d2d-seed42__L66s29_reverse.tif",
+     2797
+    ]
+   ],
+   "occupancy": {
+    "level": "0",
+    "shape": [
+     2560,
+     6720
+    ],
+    "scale": [
+     1,
+     1
+    ],
+    "nonempty": 10683400
+   },
+   "scheduled_positions": 2797
+  }
+ ],
+ "algos": [
+  [
+   "stem.conv1",
+   "conv3d n64 1->16 in[17, 128, 128] k[3, 3, 3] s[1, 1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.437 ms ws 64 B"
+  ],
+  [
+   "stem.conv2",
+   "conv3d n64 16->16 in[17, 128, 128] k[3, 3, 3] s[1, 1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 1.417 ms ws 64 B"
+  ],
+  [
+   "enc.stem",
+   "conv2d n64 32->32 in[128, 128] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.148 ms ws 128 B"
+  ],
+  [
+   "enc.0.0.conv1",
+   "conv2d n64 32->32 in[128, 128] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.134 ms ws 128 B"
+  ],
+  [
+   "enc.0.0.conv2",
+   "conv2d n64 32->32 in[128, 128] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.134 ms ws 128 B"
+  ],
+  [
+   "enc.1.0.conv1",
+   "conv2d n64 32->64 in[128, 128] k[3, 3] s[2, 2] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.121 ms ws 256 B"
+  ],
+  [
+   "enc.1.0.conv2",
+   "conv2d n64 64->64 in[64, 64] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.138 ms ws 256 B"
+  ],
+  [
+   "enc.1.0.skip",
+   "conv2d n64 32->64 in[64, 64] k[1, 1] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.053 ms ws 256 B"
+  ],
+  [
+   "enc.1.1.conv1",
+   "conv2d n64 64->64 in[64, 64] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.125 ms ws 256 B"
+  ],
+  [
+   "enc.1.1.conv2",
+   "conv2d n64 64->64 in[64, 64] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.122 ms ws 256 B"
+  ],
+  [
+   "enc.1.2.conv1",
+   "conv2d n64 64->64 in[64, 64] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.123 ms ws 256 B"
+  ],
+  [
+   "enc.1.2.conv2",
+   "conv2d n64 64->64 in[64, 64] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.123 ms ws 256 B"
+  ],
+  [
+   "enc.2.0.conv1",
+   "conv2d n64 64->128 in[64, 64] k[3, 3] s[2, 2] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.093 ms ws 512 B"
+  ],
+  [
+   "enc.2.0.conv2",
+   "conv2d n64 128->128 in[32, 32] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.117 ms ws 512 B"
+  ],
+  [
+   "enc.2.0.skip",
+   "conv2d n64 64->128 in[32, 32] k[1, 1] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.026 ms ws 512 B"
+  ],
+  [
+   "enc.2.1.conv1",
+   "conv2d n64 128->128 in[32, 32] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.116 ms ws 512 B"
+  ],
+  [
+   "enc.2.1.conv2",
+   "conv2d n64 128->128 in[32, 32] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.119 ms ws 512 B"
+  ],
+  [
+   "enc.2.2.conv1",
+   "conv2d n64 128->128 in[32, 32] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.122 ms ws 512 B"
+  ],
+  [
+   "enc.2.2.conv2",
+   "conv2d n64 128->128 in[32, 32] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.120 ms ws 512 B"
+  ],
+  [
+   "enc.2.3.conv1",
+   "conv2d n64 128->128 in[32, 32] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.123 ms ws 512 B"
+  ],
+  [
+   "enc.2.3.conv2",
+   "conv2d n64 128->128 in[32, 32] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.122 ms ws 512 B"
+  ],
+  [
+   "enc.3.0.conv1",
+   "conv2d n64 128->256 in[32, 32] k[3, 3] s[2, 2] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.075 ms ws 1024 B"
+  ],
+  [
+   "enc.3.0.conv2",
+   "conv2d n64 256->256 in[16, 16] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.130 ms ws 1024 B"
+  ],
+  [
+   "enc.3.0.skip",
+   "conv2d n64 128->256 in[16, 16] k[1, 1] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.043 ms ws 1024 B"
+  ],
+  [
+   "enc.3.1.conv1",
+   "conv2d n64 256->256 in[16, 16] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.127 ms ws 1024 B"
+  ],
+  [
+   "enc.3.1.conv2",
+   "conv2d n64 256->256 in[16, 16] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.125 ms ws 1024 B"
+  ],
+  [
+   "enc.3.2.conv1",
+   "conv2d n64 256->256 in[16, 16] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.126 ms ws 1024 B"
+  ],
+  [
+   "enc.3.2.conv2",
+   "conv2d n64 256->256 in[16, 16] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.129 ms ws 1024 B"
+  ],
+  [
+   "enc.3.3.conv1",
+   "conv2d n64 256->256 in[16, 16] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.167 ms ws 1024 B"
+  ],
+  [
+   "enc.3.3.conv2",
+   "conv2d n64 256->256 in[16, 16] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.148 ms ws 1024 B"
+  ],
+  [
+   "enc.3.4.conv1",
+   "conv2d n64 256->256 in[16, 16] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.142 ms ws 1024 B"
+  ],
+  [
+   "enc.3.4.conv2",
+   "conv2d n64 256->256 in[16, 16] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.136 ms ws 1024 B"
+  ],
+  [
+   "enc.3.5.conv1",
+   "conv2d n64 256->256 in[16, 16] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.136 ms ws 1024 B"
+  ],
+  [
+   "enc.3.5.conv2",
+   "conv2d n64 256->256 in[16, 16] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.135 ms ws 1024 B"
+  ],
+  [
+   "enc.4.0.conv1",
+   "conv2d n64 256->320 in[16, 16] k[3, 3] s[2, 2] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.110 ms ws 1280 B"
+  ],
+  [
+   "enc.4.0.conv2",
+   "conv2d n64 320->320 in[8, 8] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.062 ms ws 1280 B"
+  ],
+  [
+   "enc.4.0.skip",
+   "conv2d n64 256->320 in[8, 8] k[1, 1] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.040 ms ws 1728 B"
+  ],
+  [
+   "enc.4.1.conv1",
+   "conv2d n64 320->320 in[8, 8] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.062 ms ws 1280 B"
+  ],
+  [
+   "enc.4.1.conv2",
+   "conv2d n64 320->320 in[8, 8] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.064 ms ws 1280 B"
+  ],
+  [
+   "enc.4.2.conv1",
+   "conv2d n64 320->320 in[8, 8] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.062 ms ws 1280 B"
+  ],
+  [
+   "enc.4.2.conv2",
+   "conv2d n64 320->320 in[8, 8] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.070 ms ws 1280 B"
+  ],
+  [
+   "enc.4.3.conv1",
+   "conv2d n64 320->320 in[8, 8] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.065 ms ws 1280 B"
+  ],
+  [
+   "enc.4.3.conv2",
+   "conv2d n64 320->320 in[8, 8] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.063 ms ws 1280 B"
+  ],
+  [
+   "enc.4.4.conv1",
+   "conv2d n64 320->320 in[8, 8] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.061 ms ws 1280 B"
+  ],
+  [
+   "enc.4.4.conv2",
+   "conv2d n64 320->320 in[8, 8] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.061 ms ws 1280 B"
+  ],
+  [
+   "enc.4.5.conv1",
+   "conv2d n64 320->320 in[8, 8] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.062 ms ws 1280 B"
+  ],
+  [
+   "enc.4.5.conv2",
+   "conv2d n64 320->320 in[8, 8] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.064 ms ws 1280 B"
+  ],
+  [
+   "enc.5.0.conv1",
+   "conv2d n64 320->320 in[8, 8] k[3, 3] s[2, 2] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.060 ms ws 1280 B"
+  ],
+  [
+   "enc.5.0.conv2",
+   "conv2d n64 320->320 in[4, 4] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.050 ms ws 1280 B"
+  ],
+  [
+   "enc.5.1.conv1",
+   "conv2d n64 320->320 in[4, 4] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.047 ms ws 1280 B"
+  ],
+  [
+   "enc.5.1.conv2",
+   "conv2d n64 320->320 in[4, 4] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.043 ms ws 1280 B"
+  ],
+  [
+   "enc.5.2.conv1",
+   "conv2d n64 320->320 in[4, 4] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.045 ms ws 1280 B"
+  ],
+  [
+   "enc.5.2.conv2",
+   "conv2d n64 320->320 in[4, 4] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.045 ms ws 1280 B"
+  ],
+  [
+   "enc.5.3.conv1",
+   "conv2d n64 320->320 in[4, 4] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.046 ms ws 1280 B"
+  ],
+  [
+   "enc.5.3.conv2",
+   "conv2d n64 320->320 in[4, 4] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.045 ms ws 1280 B"
+  ],
+  [
+   "enc.5.4.conv1",
+   "conv2d n64 320->320 in[4, 4] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.044 ms ws 1280 B"
+  ],
+  [
+   "enc.5.4.conv2",
+   "conv2d n64 320->320 in[4, 4] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.044 ms ws 1280 B"
+  ],
+  [
+   "enc.5.5.conv1",
+   "conv2d n64 320->320 in[4, 4] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.045 ms ws 1280 B"
+  ],
+  [
+   "enc.5.5.conv2",
+   "conv2d n64 320->320 in[4, 4] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.045 ms ws 1280 B"
+  ],
+  [
+   "dec.0.conv",
+   "conv2d n64 640->320 in[8, 8] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.082 ms ws 1280 B"
+  ],
+  [
+   "dec.1.conv",
+   "conv2d n64 512->256 in[16, 16] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.227 ms ws 1024 B"
+  ],
+  [
+   "dec.2.conv",
+   "conv2d n64 256->128 in[32, 32] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.243 ms ws 512 B"
+  ],
+  [
+   "dec.3.conv",
+   "conv2d n64 128->64 in[64, 64] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.208 ms ws 256 B"
+  ],
+  [
+   "dec.4.conv",
+   "conv2d n64 64->32 in[128, 128] k[3, 3] s[1, 1] | IMPLICIT_PRECOMP_GEMM TENSOR_OP_MATH 0.228 ms ws 128 B"
+  ]
+ ],
+ "schema": [
+  264,
+  244,
+  34546498
+ ]
+}

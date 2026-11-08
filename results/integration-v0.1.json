@@ -1,0 +1,259 @@
+{
+ "what": "this release's build: the reader stem's two 3D convolutions as inkrs tensor-core kernels with their InstanceNorm fused, and four host-side fixes (the cuDNN algorithm cache, the CLI's first read overlapped with start-up, and in the villa adapter a lazy PyTorch model, one read per window and the first read overlapped with the engine's start); its gates against villa eager and hecate.py; and two timings, each against the build before that change. No end-to-end timing of this build is in results/; the README's headline timings come from the earlier build",
+ "gpu": "RTX 5090, driver 595.99.02",
+ "date": "2026-11-10",
+ "gates": {
+  "note": "each tier ran with its own empty cuDNN algorithm cache and the default --algo find; sm80 is INKRS_PTX_TIER=sm80 forced on the RTX 5090; the reader-v2 inputs are those of reader-v2-p1.json, the hybrid_3d2d-seed42 input is S1",
+  "sm120": {
+   "reader_v2_p1": {
+    "maps": 10,
+    "checks": 101,
+    "passed": 101,
+    "failed": 0,
+    "min_r": 0.9999969398527734,
+    "max_p999": 1.0,
+    "max_abs": 1.0,
+    "bar": {
+     "min_r": 0.9994,
+     "max_p999": 4.0,
+     "max_abs": 4.0
+    }
+   },
+   "hybrid_3d2d_seed42_p1_s1": {
+    "maps": 18,
+    "checks": 181,
+    "passed": 181,
+    "failed": 0,
+    "min_r": 0.9999895565043689,
+    "max_p999": 1.0,
+    "max_abs": 1.0,
+    "bar": {
+     "min_r": 0.9994,
+     "max_p999": 4.0,
+     "max_abs": 4.0
+    }
+   },
+   "hecate_gates": "13/13 pass",
+   "compute_sanitizer": "0 errors (memcheck, racecheck, initcheck, synccheck)",
+   "p0_per_layer": {
+    "layers": 37,
+    "checks": 222,
+    "passed": 222,
+    "failed": 0
+   },
+   "reader_v2_run_twice": {
+    "maps": 10,
+    "identical": 10,
+    "min_r": 1.0,
+    "max_abs": 0.0,
+    "min_equal_share": 1.0,
+    "pass": true
+   }
+  },
+  "sm80": {
+   "reader_v2_p1": {
+    "maps": 10,
+    "checks": 101,
+    "passed": 101,
+    "failed": 0,
+    "min_r": 0.9999969398527734,
+    "max_p999": 1.0,
+    "max_abs": 1.0,
+    "bar": {
+     "min_r": 0.9994,
+     "max_p999": 4.0,
+     "max_abs": 4.0
+    }
+   },
+   "hybrid_3d2d_seed42_p1_s1": {
+    "maps": 18,
+    "checks": 181,
+    "passed": 181,
+    "failed": 0,
+    "min_r": 0.9999895565043689,
+    "max_p999": 1.0,
+    "max_abs": 1.0,
+    "bar": {
+     "min_r": 0.9994,
+     "max_p999": 4.0,
+     "max_abs": 4.0
+    }
+   },
+   "hecate_gates": "13/13 pass",
+   "compute_sanitizer": "0 errors (memcheck, racecheck, initcheck, synccheck)"
+  },
+  "reader_v2_sm80_vs_sm120": {
+   "maps": 10,
+   "identical": 10,
+   "min_r": 1.0,
+   "max_abs": 0.0,
+   "min_equal_share": 1.0,
+   "pass": true
+  },
+  "against_stem_kernels_only": {
+   "note": "the same maps from the build with the stem kernels but not the host fixes, run in the same job; -h is --algo heuristic",
+   "rv2-b64": {
+    "maps": 10,
+    "identical": 10,
+    "min_r": 1.0,
+    "max_abs": 0.0,
+    "min_equal_share": 1.0,
+    "pass": true
+   },
+   "rv2-b64-h": {
+    "maps": 10,
+    "identical": 10,
+    "min_r": 1.0,
+    "max_abs": 0.0,
+    "min_equal_share": 1.0,
+    "pass": true
+   },
+   "rv2-b8": {
+    "maps": 10,
+    "identical": 10,
+    "min_r": 1.0,
+    "max_abs": 0.0,
+    "min_equal_share": 1.0,
+    "pass": true
+   },
+   "rv2-b8-h": {
+    "maps": 10,
+    "identical": 10,
+    "min_r": 1.0,
+    "max_abs": 0.0,
+    "min_equal_share": 1.0,
+    "pass": true
+   },
+   "s42-b64": {
+    "maps": 18,
+    "identical": 18,
+    "min_r": 0.9999999999999998,
+    "max_abs": 0.0,
+    "min_equal_share": 1.0,
+    "pass": true
+   },
+   "s42-b64-h": {
+    "maps": 18,
+    "identical": 18,
+    "min_r": 0.9999999999999998,
+    "max_abs": 0.0,
+    "min_equal_share": 1.0,
+    "pass": true
+   }
+  }
+ },
+ "kernel_time_us_per_slot": {
+  "note": "nsys kernel time per tile slot, reader-v2 at batch 64, 50 forwards, one traced run",
+  "this_build": 147.3,
+  "stem_kernels_only": 146.2,
+  "before_stem_kernels": 185.7,
+  "cudnn_2d_convs": 73.3,
+  "cudnn_2d_convs_floor": 50.7
+ },
+ "peak_device_memory_mib_reader_v2_b64": 3638,
+ "stem_kernels_sweep": {
+  "what": "inkrs sweep of reader-v2 over the whole PHerc. 1447 segment (native, 31 x 2980 x 3240), d -2..2, both directions, batch 64, 10 maps: passes[0].total_s, the first sweep pass with start-up excluded, one pass per process, the build with the stem kernels against the build before them; 2 untimed warm-up runs, then 6 pairs in alternating order; each run's maps checked against the first control run's",
+  "pairs": [
+   {
+    "order": "AB",
+    "control": 3.475482543,
+    "experiment": 2.881479549,
+    "ratio": 1.2061451361701128
+   },
+   {
+    "order": "BA",
+    "control": 3.511078674,
+    "experiment": 2.800202872,
+    "ratio": 1.253865821333248
+   },
+   {
+    "order": "AB",
+    "control": 3.504745103,
+    "experiment": 2.7939787430000003,
+    "ratio": 1.2543921859751956
+   },
+   {
+    "order": "BA",
+    "control": 3.45327364,
+    "experiment": 2.834162886,
+    "ratio": 1.2184457206246824
+   },
+   {
+    "order": "AB",
+    "control": 3.438977765,
+    "experiment": 2.828231351,
+    "ratio": 1.2159464125111454
+   },
+   {
+    "order": "BA",
+    "control": 3.40334022,
+    "experiment": 2.833266637,
+    "ratio": 1.2012071774521094
+   }
+  ],
+  "median_s": {
+   "before": 3.4643780915,
+   "after": 2.830748994
+  },
+  "ratio_mean": 1.2250004090110822,
+  "ratio_ci95": [
+   1.2004173189758423,
+   1.2495834990463222
+  ],
+  "same_build_noise_sd": 0.05545389673416067
+ },
+ "host_walls": {
+  "what": "whole processes timed from outside, before and after the four host fixes, 4 rounds in alternating order; one depth (17 layers), both directions, stride 64, Hann. cli is inkrs sweep at depth 0; villa is villa's infer with the --engine inkrs adapter. s1_pyramid is S1 with a 3-level mean pyramid (scripts/make_pyramid.py), hybrid_3d2d-seed42; native is the PHerc. 1447 segment, reader-v2. Means of 4 pairs; ci95 is the paired saving's 95% t interval. The after arms shared one warm algorithm cache; the before builds had no algorithm cache, so each before figure includes cuDNN's timed algorithm search",
+  "cli_native": {
+   "before_s": 2.4147499999999997,
+   "after_s": 1.7457500000000001,
+   "pairs": 4,
+   "saving_s": 0.6689999999999999,
+   "ci95": [
+    0.47957520770677,
+    0.8584247922932299
+   ]
+  },
+  "cli_s1_pyramid": {
+   "before_s": 2.0955,
+   "after_s": 1.393,
+   "pairs": 4,
+   "saving_s": 0.7024999999999999,
+   "ci95": [
+    0.04526292605407578,
+    1.359737073945924
+   ]
+  },
+  "villa_native": {
+   "before_s": 6.33325,
+   "after_s": 5.55325,
+   "pairs": 4,
+   "saving_s": 0.78,
+   "ci95": [
+    -0.038984410314791385,
+    1.5989844103147914
+   ]
+  },
+  "villa_s1_pyramid": {
+   "before_s": 4.18875,
+   "after_s": 3.2887500000000003,
+   "pairs": 4,
+   "saving_s": 0.9,
+   "ci95": [
+    0.578793950805198,
+    1.221206049194802
+   ]
+  },
+  "villa_s1_pyramid_adapter_only": {
+   "what": "the same rounds' B arm (villa base with this build's wheel, warm cache) against E (with the adapter's three start-up commits): the commits' own share",
+   "before_s": 3.98225,
+   "after_s": 3.2887500000000003,
+   "pairs": 4,
+   "saving_s": 0.6935,
+   "ci95": [
+    0.544487523547346,
+    0.842512476452654
+   ]
+  }
+ }
+}

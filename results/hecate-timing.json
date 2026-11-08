@@ -1,0 +1,812 @@
+{
+ "what": "whole segment resampled to 9.6 um (28 x 2682 x 2916), forward side, stride 32; each wall is the whole command from process start to exit; two rounds; run after a quiet-host check",
+ "gpu": "RTX 5090, driver 595.99.02",
+ "date": "2026-11-10",
+ "runs": {
+  "hecpy-default": "hecate.py@9cb86e5 at its defaults: fp32 with TF32, batch 1",
+  "hecpy-bf16-b8": "hecate.py --precision bf16 --batch-size 8",
+  "fast": "hecate_fast.py@c73d0dd5 (ArcheyChen/vesuvius-eligible-scouting) at its defaults: bf16, batch 64, torch.compile; round 1 is a first run",
+  "fast-nocompile": "hecate_fast.py --no-compile, bf16, batch 64",
+  "inkrs-default": "inkrs hecate at its defaults: fp32 with TF32, batch 8",
+  "inkrs-fp32-b1": "inkrs hecate, fp32 with TF32, batch 1",
+  "inkrs-bf16-b8": "inkrs hecate --precision bf16 --batch-size 8",
+  "inkrs-bf16-b32": "inkrs hecate --precision bf16 --batch-size 32",
+  "inkrs-bf16-both": "inkrs hecate --precision bf16 --batch-size 8 --both (forward and reverse)"
+ },
+ "walls_s": {
+  "fast-nocompile-r1": 26.861,
+  "fast-nocompile-r2": 27.643,
+  "fast-r1": 48.134,
+  "fast-r2": 36.576,
+  "hecpy-bf16-b8-r1": 44.867,
+  "hecpy-bf16-b8-r2": 43.13,
+  "hecpy-default-r1": 83.088,
+  "hecpy-default-r2": 78.62,
+  "inkrs-bf16-b32-r1": 18.574,
+  "inkrs-bf16-b32-r2": 19.048,
+  "inkrs-bf16-b8-r1": 19.568,
+  "inkrs-bf16-b8-r2": 19.619,
+  "inkrs-bf16-both-r1": 36.566,
+  "inkrs-bf16-both-r2": 36.82,
+  "inkrs-default-r1": 37.539,
+  "inkrs-default-r2": 37.858,
+  "inkrs-fp32-b1-r1": 59.178,
+  "inkrs-fp32-b1-r2": 59.623
+ },
+ "best_round_s": {
+  "fast": 36.576,
+  "fast-nocompile": 26.861,
+  "hecpy-bf16-b8": 43.13,
+  "hecpy-default": 78.62,
+  "inkrs-bf16-b32": 18.574,
+  "inkrs-bf16-b8": 19.568,
+  "inkrs-bf16-both": 36.566,
+  "inkrs-default": 37.539,
+  "inkrs-fp32-b1": 59.178
+ },
+ "ratios": {
+  "fast_nocompile_over_inkrs_bf16_b32": 1.45,
+  "fast_nocompile_over_inkrs_bf16_b8": 1.37,
+  "hecpy_bf16_b8_over_inkrs_bf16_b8": 2.2,
+  "hecpy_bf16_b8_over_inkrs_bf16_b32": 2.32,
+  "hecpy_default_over_inkrs_default": 2.09
+ },
+ "map_diffs": {
+  "fast-nocompile-r1-vs-hecpy-bf16-b8-r1": {
+   "mode": "bf16",
+   "direction": "fwd",
+   "stats": {
+    "r": 0.9999936066092758,
+    "p999": 1.0,
+    "max": 2,
+    "mean": 0.00752015928984471,
+    "bias": 2.1737151297733506e-06,
+    "identical": 0.992480096441347,
+    "hist_0_to_9plus": [
+     7761901,
+     58809,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "zero_mismatch": 0,
+    "zero_one_side": 477
+   },
+   "checks": 28,
+   "passed": 26,
+   "failures": [
+    "JSON probabilities missing: ours False, ref True",
+    "JSON probabilities: None vs 'uint8 = round(255 * probability); no min-max scaling'"
+   ]
+  },
+  "fast-nocompile-r2-vs-hecpy-bf16-b8-r1": {
+   "mode": "bf16",
+   "direction": "fwd",
+   "stats": {
+    "r": 0.9999936066092758,
+    "p999": 1.0,
+    "max": 2,
+    "mean": 0.00752015928984471,
+    "bias": 2.1737151297733506e-06,
+    "identical": 0.992480096441347,
+    "hist_0_to_9plus": [
+     7761901,
+     58809,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "zero_mismatch": 0,
+    "zero_one_side": 477
+   },
+   "checks": 28,
+   "passed": 26,
+   "failures": [
+    "JSON probabilities missing: ours False, ref True",
+    "JSON probabilities: None vs 'uint8 = round(255 * probability); no min-max scaling'"
+   ]
+  },
+  "fast-r1-vs-hecpy-bf16-b8-r1": {
+   "mode": "bf16",
+   "direction": "fwd",
+   "stats": {
+    "r": 0.999973153955943,
+    "p999": 1.0,
+    "max": 4,
+    "mean": 0.03152321681197313,
+    "bias": -0.008527356588504986,
+    "identical": 0.968588921315604,
+    "hist_0_to_9plus": [
+     7575055,
+     244801,
+     836,
+     19,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "zero_mismatch": 0,
+    "zero_one_side": 1510
+   },
+   "checks": 28,
+   "passed": 26,
+   "failures": [
+    "JSON probabilities missing: ours False, ref True",
+    "JSON probabilities: None vs 'uint8 = round(255 * probability); no min-max scaling'"
+   ]
+  },
+  "fast-r2-vs-hecpy-bf16-b8-r1": {
+   "mode": "bf16",
+   "direction": "fwd",
+   "stats": {
+    "r": 0.999973153955943,
+    "p999": 1.0,
+    "max": 4,
+    "mean": 0.03152321681197313,
+    "bias": -0.008527356588504986,
+    "identical": 0.968588921315604,
+    "hist_0_to_9plus": [
+     7575055,
+     244801,
+     836,
+     19,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "zero_mismatch": 0,
+    "zero_one_side": 1510
+   },
+   "checks": 28,
+   "passed": 26,
+   "failures": [
+    "JSON probabilities missing: ours False, ref True",
+    "JSON probabilities: None vs 'uint8 = round(255 * probability); no min-max scaling'"
+   ]
+  },
+  "hecpy-bf16-b8-r1-vs-published": {
+   "mode": "bf16",
+   "direction": "fwd",
+   "stats": {
+    "r": 0.9999879955920128,
+    "p999": 1.0,
+    "max": 4,
+    "mean": 0.014119558423836602,
+    "bias": -0.00041211081548585347,
+    "identical": 0.9858842775440395,
+    "hist_0_to_9plus": [
+     7710317,
+     110367,
+     27,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "zero_mismatch": 0,
+    "zero_one_side": 776
+   },
+   "checks": 9,
+   "passed": 8,
+   "failures": [
+    "a map has no JSON next to it"
+   ]
+  },
+  "hecpy-bf16-b8-r2-vs-hecpy-bf16-b8-r1": {
+   "mode": "bf16",
+   "direction": "fwd",
+   "stats": {
+    "r": 1.0,
+    "p999": 0.0,
+    "max": 0,
+    "mean": 0.0,
+    "bias": 0.0,
+    "identical": 1.0,
+    "hist_0_to_9plus": [
+     7820712,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "zero_mismatch": 0,
+    "zero_one_side": 0
+   },
+   "checks": 28,
+   "passed": 28,
+   "failures": []
+  },
+  "hecpy-default-r2-vs-hecpy-default-r1": {
+   "mode": "fp32",
+   "direction": "fwd",
+   "stats": {
+    "r": 0.9999999999999999,
+    "p999": 0.0,
+    "max": 0,
+    "mean": 0.0,
+    "bias": 0.0,
+    "identical": 1.0,
+    "hist_0_to_9plus": [
+     7820712,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "zero_mismatch": 0,
+    "zero_one_side": 0
+   },
+   "checks": 28,
+   "passed": 28,
+   "failures": []
+  },
+  "inkrs-bf16-b32-r1-vs-hecpy-bf16-b8-r1": {
+   "mode": "bf16",
+   "direction": "fwd",
+   "stats": {
+    "r": 0.9999865249828085,
+    "p999": 1.0,
+    "max": 3,
+    "mean": 0.015841140806617096,
+    "bias": 0.0007092704602854573,
+    "identical": 0.9841692163066483,
+    "hist_0_to_9plus": [
+     7696904,
+     123729,
+     77,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "zero_mismatch": 0,
+    "zero_one_side": 795
+   },
+   "checks": 28,
+   "passed": 28,
+   "failures": []
+  },
+  "inkrs-bf16-b32-r2-vs-hecpy-bf16-b8-r1": {
+   "mode": "bf16",
+   "direction": "fwd",
+   "stats": {
+    "r": 0.9999865249828085,
+    "p999": 1.0,
+    "max": 3,
+    "mean": 0.015841140806617096,
+    "bias": 0.0007092704602854573,
+    "identical": 0.9841692163066483,
+    "hist_0_to_9plus": [
+     7696904,
+     123729,
+     77,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "zero_mismatch": 0,
+    "zero_one_side": 795
+   },
+   "checks": 28,
+   "passed": 28,
+   "failures": []
+  },
+  "inkrs-bf16-b8-r1-vs-hecpy-bf16-b8-r1": {
+   "mode": "bf16",
+   "direction": "fwd",
+   "stats": {
+    "r": 0.9999865013776975,
+    "p999": 1.0,
+    "max": 3,
+    "mean": 0.015867353253770245,
+    "bias": 0.0006789663140644995,
+    "identical": 0.9841432595906869,
+    "hist_0_to_9plus": [
+     7696701,
+     123930,
+     79,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "zero_mismatch": 0,
+    "zero_one_side": 790
+   },
+   "checks": 28,
+   "passed": 28,
+   "failures": []
+  },
+  "inkrs-bf16-b8-r1-vs-published": {
+   "mode": "bf16",
+   "direction": "fwd",
+   "stats": {
+    "r": 0.9999863888398485,
+    "p999": 1.0,
+    "max": 3,
+    "mean": 0.01598511746756561,
+    "bias": 0.000266855498578646,
+    "identical": 0.9840290756135759,
+    "hist_0_to_9plus": [
+     7695808,
+     124798,
+     101,
+     5,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "zero_mismatch": 0,
+    "zero_one_side": 804
+   },
+   "checks": 9,
+   "passed": 8,
+   "failures": [
+    "a map has no JSON next to it"
+   ]
+  },
+  "inkrs-bf16-b8-r2-vs-hecpy-bf16-b8-r1": {
+   "mode": "bf16",
+   "direction": "fwd",
+   "stats": {
+    "r": 0.9999865013776975,
+    "p999": 1.0,
+    "max": 3,
+    "mean": 0.015867353253770245,
+    "bias": 0.0006789663140644995,
+    "identical": 0.9841432595906869,
+    "hist_0_to_9plus": [
+     7696701,
+     123930,
+     79,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "zero_mismatch": 0,
+    "zero_one_side": 790
+   },
+   "checks": 28,
+   "passed": 28,
+   "failures": []
+  },
+  "inkrs-bf16-b8-r2-vs-published": {
+   "mode": "bf16",
+   "direction": "fwd",
+   "stats": {
+    "r": 0.9999863888398485,
+    "p999": 1.0,
+    "max": 3,
+    "mean": 0.01598511746756561,
+    "bias": 0.000266855498578646,
+    "identical": 0.9840290756135759,
+    "hist_0_to_9plus": [
+     7695808,
+     124798,
+     101,
+     5,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "zero_mismatch": 0,
+    "zero_one_side": 804
+   },
+   "checks": 9,
+   "passed": 8,
+   "failures": [
+    "a map has no JSON next to it"
+   ]
+  },
+  "inkrs-bf16-both-r1-reverse-vs-published": {
+   "mode": "bf16",
+   "direction": "rev",
+   "stats": {
+    "r": 0.999985997698423,
+    "p999": 1.0,
+    "max": 2,
+    "mean": 0.020919834408938725,
+    "bias": -5.523793741541691e-05,
+    "identical": 0.9790887325859845,
+    "hist_0_to_9plus": [
+     7657171,
+     163474,
+     67,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "zero_mismatch": 0,
+    "zero_one_side": 1470
+   },
+   "checks": 28,
+   "passed": 28,
+   "failures": []
+  },
+  "inkrs-bf16-both-r1-vs-hecpy-bf16-b8-r1": {
+   "mode": "bf16",
+   "direction": "fwd",
+   "stats": {
+    "r": 0.9999865013776975,
+    "p999": 1.0,
+    "max": 3,
+    "mean": 0.015867353253770245,
+    "bias": 0.0006789663140644995,
+    "identical": 0.9841432595906869,
+    "hist_0_to_9plus": [
+     7696701,
+     123930,
+     79,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "zero_mismatch": 0,
+    "zero_one_side": 790
+   },
+   "checks": 28,
+   "passed": 28,
+   "failures": []
+  },
+  "inkrs-bf16-both-r1-vs-published": {
+   "mode": "bf16",
+   "direction": "fwd",
+   "stats": {
+    "r": 0.9999863888398485,
+    "p999": 1.0,
+    "max": 3,
+    "mean": 0.01598511746756561,
+    "bias": 0.000266855498578646,
+    "identical": 0.9840290756135759,
+    "hist_0_to_9plus": [
+     7695808,
+     124798,
+     101,
+     5,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "zero_mismatch": 0,
+    "zero_one_side": 804
+   },
+   "checks": 9,
+   "passed": 8,
+   "failures": [
+    "a map has no JSON next to it"
+   ]
+  },
+  "inkrs-bf16-both-r2-reverse-vs-published": {
+   "mode": "bf16",
+   "direction": "rev",
+   "stats": {
+    "r": 0.999985997698423,
+    "p999": 1.0,
+    "max": 2,
+    "mean": 0.020919834408938725,
+    "bias": -5.523793741541691e-05,
+    "identical": 0.9790887325859845,
+    "hist_0_to_9plus": [
+     7657171,
+     163474,
+     67,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "zero_mismatch": 0,
+    "zero_one_side": 1470
+   },
+   "checks": 28,
+   "passed": 28,
+   "failures": []
+  },
+  "inkrs-bf16-both-r2-vs-hecpy-bf16-b8-r1": {
+   "mode": "bf16",
+   "direction": "fwd",
+   "stats": {
+    "r": 0.9999865013776975,
+    "p999": 1.0,
+    "max": 3,
+    "mean": 0.015867353253770245,
+    "bias": 0.0006789663140644995,
+    "identical": 0.9841432595906869,
+    "hist_0_to_9plus": [
+     7696701,
+     123930,
+     79,
+     2,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "zero_mismatch": 0,
+    "zero_one_side": 790
+   },
+   "checks": 28,
+   "passed": 28,
+   "failures": []
+  },
+  "inkrs-default-r1-vs-hecpy-default-r1": {
+   "mode": "fp32",
+   "direction": "fwd",
+   "stats": {
+    "r": 0.9999860192927476,
+    "p999": 1.0,
+    "max": 4,
+    "mean": 0.016982469115343974,
+    "bias": 0.009636846363860477,
+    "identical": 0.9831654713790765,
+    "hist_0_to_9plus": [
+     7689054,
+     130521,
+     1122,
+     10,
+     5,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "zero_mismatch": 0,
+    "zero_one_side": 416
+   },
+   "checks": 28,
+   "passed": 28,
+   "failures": []
+  },
+  "inkrs-default-r2-vs-hecpy-default-r1": {
+   "mode": "fp32",
+   "direction": "fwd",
+   "stats": {
+    "r": 0.9999860192927476,
+    "p999": 1.0,
+    "max": 4,
+    "mean": 0.016982469115343974,
+    "bias": 0.009636846363860477,
+    "identical": 0.9831654713790765,
+    "hist_0_to_9plus": [
+     7689054,
+     130521,
+     1122,
+     10,
+     5,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "zero_mismatch": 0,
+    "zero_one_side": 416
+   },
+   "checks": 28,
+   "passed": 28,
+   "failures": []
+  },
+  "inkrs-fp32-b1-r1-vs-hecpy-default-r1": {
+   "mode": "fp32",
+   "direction": "fwd",
+   "stats": {
+    "r": 0.9999859879612887,
+    "p999": 1.0,
+    "max": 4,
+    "mean": 0.017031185907370072,
+    "bias": 0.00973185050159116,
+    "identical": 0.9831184168397967,
+    "hist_0_to_9plus": [
+     7688686,
+     130876,
+     1135,
+     10,
+     5,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "zero_mismatch": 0,
+    "zero_one_side": 414
+   },
+   "checks": 28,
+   "passed": 28,
+   "failures": []
+  },
+  "inkrs-fp32-b1-r2-vs-hecpy-default-r1": {
+   "mode": "fp32",
+   "direction": "fwd",
+   "stats": {
+    "r": 0.9999859879612887,
+    "p999": 1.0,
+    "max": 4,
+    "mean": 0.017031185907370072,
+    "bias": 0.00973185050159116,
+    "identical": 0.9831184168397967,
+    "hist_0_to_9plus": [
+     7688686,
+     130876,
+     1135,
+     10,
+     5,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "zero_mismatch": 0,
+    "zero_one_side": 414
+   },
+   "checks": 28,
+   "passed": 28,
+   "failures": []
+  }
+ },
+ "inkrs_reports": {
+  "inkrs-bf16-b32-r1": {
+   "precision": "bf16",
+   "stride": 32,
+   "batch": 32,
+   "cudnn": 92700,
+   "stem_channels": 1,
+   "load_weights_s": 0.718087708,
+   "open_gpu_s": 0.195057692,
+   "plan_s": 0.793817221,
+   "read_volume_s": 0.118704315,
+   "schedule_s": 0.017448109,
+   "upload_s": 0.033167421,
+   "run_s": 15.824350167,
+   "gpu_s": 15.82393359375,
+   "finite_check_s": 0.034943519,
+   "write_s": 0.58435915,
+   "total_s": 18.32013036,
+   "shape": [
+    28,
+    2682,
+    2916
+   ],
+   "positions": 7553,
+   "tiles": 4682,
+   "batches": 147,
+   "tiles_per_s": 295.88091812071656,
+   "schema": [
+    817,
+    0,
+    128435399
+   ]
+  },
+  "inkrs-bf16-b8-r1": {
+   "precision": "bf16",
+   "stride": 32,
+   "batch": 8,
+   "cudnn": 92700,
+   "stem_channels": 1,
+   "load_weights_s": 1.183469815,
+   "open_gpu_s": 0.185357908,
+   "plan_s": 0.638673572,
+   "read_volume_s": 0.157772179,
+   "schedule_s": 0.024297231,
+   "upload_s": 0.019354888,
+   "run_s": 16.549119858,
+   "gpu_s": 16.548703125,
+   "finite_check_s": 0.034514803,
+   "write_s": 0.586712733,
+   "total_s": 19.379459062,
+   "shape": [
+    28,
+    2682,
+    2916
+   ],
+   "positions": 7553,
+   "tiles": 4682,
+   "batches": 586,
+   "tiles_per_s": 282.92247221034125,
+   "schema": [
+    817,
+    0,
+    128435399
+   ]
+  },
+  "inkrs-default-r1": {
+   "precision": "fp32",
+   "stride": 32,
+   "batch": 8,
+   "cudnn": 92700,
+   "stem_channels": 1,
+   "load_weights_s": 0.869952931,
+   "open_gpu_s": 0.178975041,
+   "plan_s": 0.479675567,
+   "read_volume_s": 0.113073352,
+   "schedule_s": 0.016764981,
+   "upload_s": 0.021212842,
+   "run_s": 35.040269692,
+   "gpu_s": 35.0398046875,
+   "finite_check_s": 0.037162208,
+   "write_s": 0.59411675,
+   "total_s": 37.354302343,
+   "shape": [
+    28,
+    2682,
+    2916
+   ],
+   "positions": 7553,
+   "tiles": 4682,
+   "batches": 586,
+   "tiles_per_s": 133.61946625433796,
+   "schema": [
+    817,
+    0,
+    128435399
+   ]
+  }
+ }
+}
