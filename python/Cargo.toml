@@ -1,0 +1,19 @@
+[package]
+name = "inkrs-python"
+version = "0.2.0"
+edition = "2024"
+publish = false
+license = "MIT OR Apache-2.0"
+description = "Python bindings for inkrs"
+
+[lib]
+name = "_inkrs"
+crate-type = ["cdylib"]
+
+[dependencies]
+inkrs = { path = ".." }
+color-eyre = "0.6"
+numpy = "0.30"
+# abi3 for CPython 3.9 and newer: one wheel for every supported Python
+pyo3 = { version = "0.30", features = ["abi3-py39", "extension-module"] }
+serde_json = "1"
