@@ -1,0 +1,199 @@
+# Builds and checks inkrs on Linux and Windows x86_64: formatting, clippy, the CPU tests, the CLI, and the Python
+# wheel with its CPU tests. A GitHub runner has no GPU, so nothing here runs a model; the GPU checks are in
+# REPRODUCE.md. CUDA loads at run time, so no job installs a CUDA toolkit
+
+name: CI
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+permissions:
+  contents: read
+
+# a new push to a pull request supersedes its running checks
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  rust:
+    name: Rust (${{ matrix.name }})
+    # MSVC links slower
+    timeout-minutes: ${{ matrix.os == 'windows-2025' && 45 || 30 }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Linux x86_64
+            os: ubuntu-24.04
+            rustflags: -D warnings
+          # the C runtime is linked statically, so inkrs.exe runs without the Visual C++ redistributable. RUSTFLAGS
+          # replaces the per-target flags rather than adding to them, so each target spells out its full set
+          - name: Windows x86_64
+            os: windows-2025
+            rustflags: -D warnings -C target-feature=+crt-static
+    runs-on: ${{ matrix.os }}
+    env:
+      RUSTFLAGS: ${{ matrix.rustflags }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec # stable
+        with:
+          toolchain: stable
+          components: rustfmt, clippy
+
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
+
+      # the PTX tiers are embedded byte for byte, so a checkout must not change a line ending; .gitattributes keeps
+      # every file LF, and renormalising must find nothing to change
+      - name: Line endings
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add --renormalize .
+          git diff --cached --exit-code
+
+      - name: Format
+        if: runner.os == 'Linux'
+        run: cargo fmt --all -- --check
+
+      # hashes and file lists only; the PTX itself is built with cuda-oxide and the CUDA toolkit
+      - name: Committed PTX matches the kernel sources
+        if: runner.os == 'Linux'
+        run: scripts/check-ptx.sh
+
+      - name: Clippy
+        run: cargo clippy --workspace --all-targets --locked -- -D warnings
+
+      # the tests that need a GPU open one and fail without it, so only the CPU tests run here; the Windows leg also
+      # runs the DLL search's own tests
+      - name: Tests
+        run: cargo test --workspace --exclude inkrs-python --release --locked
+
+      - name: Build the CLI
+        run: cargo build --release --locked --bin inkrs
+
+      # a static C runtime keeps vcruntime140.dll and the UCRT out of the imports, and CUDA must load at run time,
+      # so the binary may import only Windows system DLLs
+      - name: Check the CLI's imports and that it starts
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          set -euo pipefail
+          bin=target/release/inkrs.exe
+          rustup component add llvm-tools
+          readobj="$(cygpath -u "$(rustc --print sysroot)")/lib/rustlib/x86_64-pc-windows-msvc/bin/llvm-readobj.exe"
+          # a Windows tool's output ends lines with CRLF
+          imports="$("$readobj" --coff-imports "$bin" | tr -d '\r' | sed -n 's/^ *Name: //p' | sort -u)"
+          echo "$imports"
+          if grep -Eiv '^(kernel32|ntdll|advapi32|bcrypt|bcryptprimitives|ws2_32|userenv|secur32|crypt32|ole32|oleaut32|shell32|user32|synchronization|api-ms-win-core-[a-z0-9-]+)\.dll$' <<< "$imports"; then
+            echo "the binary imports a DLL outside Windows itself" >&2
+            exit 1
+          fi
+          "$bin" --help
+          # the runner has no NVIDIA driver, so opening the GPU must fail naming the Windows driver, not panic
+          if out="$("$bin" probe 2>&1)"; then
+            echo "probe succeeded without a GPU" >&2
+            exit 1
+          fi
+          echo "$out"
+          grep -q 'nvcuda.dll' <<< "$out"
+
+  python:
+    name: Python wheel (${{ matrix.name }})
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Linux x86_64
+            os: ubuntu-24.04
+            target: x86_64-unknown-linux-gnu
+            manylinux: "2_28"
+            rustflags: -D warnings
+          # the C runtime is linked statically, so the extension runs without the Visual C++ redistributable whichever
+          # Python loads it
+          - name: Windows x86_64
+            os: windows-2025
+            target: x86_64-pc-windows-msvc
+            manylinux: "off"
+            rustflags: -D warnings -C target-feature=+crt-static
+    runs-on: ${{ matrix.os }}
+    env:
+      RUSTFLAGS: ${{ matrix.rustflags }}
+    steps:
+      - uses: actions/checkout@v6
+
+      # a Windows checkout without symlink support writes each licence symlink in python/ as a text file holding its
+      # target, which maturin would ship in the wheel as the licence; removing it first keeps cp from writing through
+      # a real symlink onto itself
+      - name: Resolve the licence symlinks
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          set -euo pipefail
+          for f in LICENSE-MIT LICENSE-APACHE THIRD_PARTY_NOTICES; do
+            rm -f "python/$f"
+            cp "$f" "python/$f"
+          done
+
+      - name: Build wheel
+        uses: PyO3/maturin-action@e83996d129638aa358a18fbd1dfb82f0b0fb5d3b # v1.51.0
+        with:
+          command: build
+          target: ${{ matrix.target }}
+          manylinux: ${{ matrix.manylinux }}
+          args: --release --locked --out dist -m python/Cargo.toml
+
+      # CUDA must load at run time and the C runtime is static, so the extension may import only Python's stable ABI
+      # and Windows system DLLs
+      - name: Check the extension's imports
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          set -euo pipefail
+          unpacked="$RUNNER_TEMP/wheel"
+          mkdir -p "$unpacked"
+          # 7-Zip ships on the runner image, and a wheel is a zip
+          7z x -y dist/*.whl -o"$unpacked" > /dev/null
+          ext="$(find "$unpacked" -name '_inkrs*.pyd' -print -quit)"
+          test -n "$ext"
+          rustup component add llvm-tools
+          readobj="$(cygpath -u "$(rustc --print sysroot)")/lib/rustlib/x86_64-pc-windows-msvc/bin/llvm-readobj.exe"
+          # a Windows tool's output ends lines with CRLF
+          imports="$("$readobj" --coff-imports "$ext" | tr -d '\r' | sed -n 's/^ *Name: //p' | sort -u)"
+          echo "$imports"
+          if grep -Eiv '^(python3|kernel32|ntdll|advapi32|bcrypt|bcryptprimitives|ws2_32|userenv|secur32|crypt32|ole32|oleaut32|shell32|user32|synchronization|api-ms-win-core-[a-z0-9-]+)\.dll$' <<< "$imports"; then
+            echo "the extension imports a DLL outside Python and Windows itself" >&2
+            exit 1
+          fi
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+
+      # the oldest and a current CPython, since the wheel is abi3; the tests need no GPU, cuDNN or checkpoint
+      - name: Install the wheel and run its CPU tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          for python in 3.9 3.13; do
+            venv="$RUNNER_TEMP/venv-$python"
+            uv venv --python "$python" "$venv"
+            # Windows venvs keep the interpreter in Scripts, not bin
+            py="$venv/bin/python"
+            if [ "$RUNNER_OS" = Windows ]; then py="$venv/Scripts/python.exe"; fi
+            uv pip install --python "$py" dist/*.whl pytest tifffile imagecodecs
+            "$py" -c "import inkrs; print(inkrs.__version__, inkrs.build_info())"
+            "$py" -m pytest -q -rs python/tests/test_api.py
+          done
