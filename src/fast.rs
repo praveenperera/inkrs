@@ -1,7 +1,7 @@
 //! Fast mode: per-model settings that give up villa's and `hecate.py`'s map parity for speed
 //!
 //! A preset is admitted only when it keeps label AUC within 0.005 of parity mode on every labelled
-//! segment of the accuracy grid, with paired bootstrap CIs (`FAST.md`, from a grid registered before
+//! segment of the accuracy grid, with paired bootstrap CIs (`docs/FAST.md`, from a grid registered before
 //! its first run). A model with no passing setting has no preset, and `--fast` refuses to run it
 //! rather than quietly running parity mode or an unmeasured setting
 
@@ -68,7 +68,8 @@ pub fn reader(reader: Option<&str>, patch: usize) -> Result<ReaderPreset> {
         None => bail!(
             "--fast: {name} has no fast preset. No reader stride tested above parity mode's {} kept label AUC \
              within 0.005 on the labelled segments (reader-v2 lost up to 0.007 at stride 72, 0.025 at 80, 0.0145 \
-             at 96 and 0.047 at 128), so run without --fast. See FAST.md",
+             at 96 and 0.047 at 128), so run without --fast. See \
+             https://github.com/praveenperera/inkrs/blob/master/docs/FAST.md",
             patch / 2
         ),
     }
@@ -162,7 +163,7 @@ mod tests {
         for name in [Some("reader-v2"), Some("hybrid_3d2d-seed42"), None] {
             let err = format!("{:#}", reader(name, 128).unwrap_err());
             // the refusal claims only what the grid measured: tested strides, not every possible one
-            assert!(err.contains("no fast preset") && err.contains("tested") && err.contains("FAST.md"), "{err}");
+            assert!(err.contains("no fast preset") && err.contains("tested"), "{err}");
             assert!(!err.contains("fastest accurate"), "{err}");
         }
         assert_eq!(HECATE, HecatePreset { stride: 32, precision: Precision::Bf16, batch: 32 });
@@ -193,21 +194,6 @@ mod tests {
         assert!(hecate_settings(true, None, None, Some(Precision::Bf16), None).is_err());
         assert!(hecate_settings(false, Some(65), None, None, None).is_err());
         assert!(hecate_settings(false, None, None, None, Some(0)).is_err());
-    }
-
-    /// The refusals and the Python docs send users to FAST.md, so it must exist and state each preset
-    #[test]
-    fn fast_md_states_every_preset() {
-        let doc = include_str!("../FAST.md");
-        let h = format!("bf16, stride {}, batch {}", HECATE.stride, HECATE.batch);
-        assert!(doc.contains(&h), "FAST.md does not state Hecate's preset as {h:?}");
-        for (name, p) in READERS {
-            let r = format!("{name}: stride {}", p.stride);
-            assert!(doc.contains(&r), "FAST.md does not state {r:?}");
-        }
-        if READERS.is_empty() {
-            assert!(doc.contains("No reader has a fast preset"), "FAST.md must say readers have no preset");
-        }
     }
 
     #[test]

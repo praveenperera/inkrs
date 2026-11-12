@@ -187,7 +187,7 @@ def _metal_device_index(device: Any) -> int:
 def fast_presets() -> dict[str, Any]:
     """Every model's fast preset: {"readers": [[name, {"stride", "precision"}], ...], "hecate": {"stride", "precision", "batch"}}
 
-    A reader that is not listed has no fast preset (FAST.md in the source tree has the measured accuracy behind each)
+    A reader that is not listed has no fast preset (docs/FAST.md in the source tree has the measured accuracy behind each)
     """
     return json.loads(_fast_presets())
 

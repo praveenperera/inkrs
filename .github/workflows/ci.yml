@@ -1,6 +1,6 @@
 # Builds and checks inkrs on Linux and Windows x86_64: formatting, clippy, the CPU tests, the CLI, and the Python
 # wheel with its CPU tests. A GitHub runner has no GPU, so nothing here runs a model; the GPU checks are in
-# REPRODUCE.md. CUDA loads at run time, so no job installs a CUDA toolkit
+# results/README.md. CUDA loads at run time, so no job installs a CUDA toolkit
 
 name: CI
 

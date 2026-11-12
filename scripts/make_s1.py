@@ -4,7 +4,8 @@ render's level 0 at rows 256:2304 and columns 2048:4096, all 66 layers, as a zar
     python -I scripts/make_s1.py RENDER.zarr S1.zarr
 
 RENDER.zarr is the concat_w047-w048_R5B2_z9500-11000 render (a group with array `0`, or the array itself).
-scripts/fingerprint.py prints the SHA-256 REPRODUCE.md lists for both
+scripts/fingerprint.py should print, for S1,
+a5181baf5bd4c5f0537e9bc9c3909b91fd72bbffd8c3d5d808f02ca3debf3b9d  [66, 2048, 2048] uint8
 """
 
 import sys
