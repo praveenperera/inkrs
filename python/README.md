@@ -10,12 +10,12 @@ On Linux x86-64:
 pip install "inkrs[cu12]"
 ```
 
-The wheel is for CPython 3.9 and newer, on glibc 2.28 or newer. It doesn't need Rust or a CUDA toolkit, because the kernels ship inside it as PTX. You do need:
+The wheel is for CPython 3.9 and newer, on glibc 2.28 or newer. It doesn't need Rust or a CUDA toolkit, because the kernels ship inside it, compiled for the common NVIDIA GPUs and as PTX. You do need:
 
 - **An NVIDIA GPU of compute capability 7.5 or above** (T4 and RTX 20, RTX 30, 40 and 50, A100, H100) **and a driver of r525 or newer**.
 - **cuDNN 9 and cuBLAS 12.** The `cu12` extra installs them from pip (`nvidia-cudnn-cu12`, `nvidia-cublas-cu12`). Without it, inkrs uses the copies already on the system, or the ones a CUDA 12 build of PyTorch installed. A CUDA 13 PyTorch ships cuBLAS 13 under a name inkrs doesn't look for, so there add `pip install nvidia-cublas-cu12`.
 
-The wheel has three PTX tiers, which the driver compiles on first use: sm_75 for Turing, sm_80 for every GPU from 8.0 up, and sm_120 (r570 or newer) for the RTX 50 series. The engine loads the highest tier the GPU runs, and `INKRS_PTX_TIER=sm80` or `sm75` forces a lower one. `inkrs.build_info()` reports each tier and its minimum driver. Hecate in bf16 and the 3D ink U-Net need 8.0 or above, so they're refused on Turing. It's tested on an RTX 5090 (every tier), a Tesla T4 (sm75), and an A100, an A10, an L4 and an RTX 4090 (sm80, the readers).
+The wheel has three PTX tiers: sm_75 for Turing, sm_80 for every GPU from 8.0 up, and sm_120 (r570 or newer) for the RTX 50 series. The engine loads the highest tier the GPU runs, and `INKRS_PTX_TIER=sm80` or `sm75` forces a lower one. Each tier also ships compiled for the GPU families it serves: sm_75; sm_80, sm_86, sm_89, sm_90 and sm_100; and sm_120. On those GPUs the engine loads the compiled kernels and skips the driver's PTX compile, which takes over a second on a machine's first run. A GPU outside those families (compute capability 11.x), a tier forced below the GPU's own, or a driver that refuses the compiled kernels gets the PTX instead, the last with a warning on stderr. `load_report["kernels"]` says which loaded. `inkrs.build_info()` reports each tier and its minimum driver. Hecate in bf16 and the 3D ink U-Net need 8.0 or above, so they're refused on Turing. It's tested on an RTX 5090 (every tier), a Tesla T4 (sm75), and an A100, an A10, an L4 and an RTX 4090 (sm80, the readers).
 
 ### Which cuDNN and cuBLAS it loads
 
@@ -95,4 +95,4 @@ Input, a model or a GPU outside these limits raises `inkrs.UnsupportedError`, a 
 
 The maps match villa eager's to within 2/255, with the same covered pixels. Two processes can differ from each other by 1/255 on a few pixels when `algo="find"` (the default) times cuDNN's algorithms and picks differently. The timed picks are cached on disk (see [API.md](API.md)), so later processes on the same setup reuse them; `algo="heuristic"` makes the choice repeatable without the cache.
 
-Either the Apache License, Version 2.0 or the MIT licence, at your option. The embedded PTX includes NVIDIA libdevice code; see `THIRD_PARTY_NOTICES`.
+Either the Apache License, Version 2.0 or the MIT licence, at your option. The embedded kernels include NVIDIA libdevice code; see `THIRD_PARTY_NOTICES`.

@@ -76,8 +76,9 @@ SOFTWARE.
 ========================================================================================================
 3. NVIDIA libdevice (CUDA Toolkit 13.2, NVIDIA CUDA Toolkit End User License Agreement)
 
-   Covers: ptx/inkrs.sm80.ptx and ptx/inkrs.sm120.ptx. scripts/build-ptx.sh links libdevice.10.bc
-   (its SHA-256 is in ptx/tools.txt) into the kernels of both, so the PTX contains compiled code from
+   Covers: ptx/inkrs.sm80.ptx and ptx/inkrs.sm120.ptx, and the cubins scripts/build-cubin.sh compiles
+   from them (ptx/inkrs.sm80.*.cubin and ptx/inkrs.sm120.*.cubin). scripts/build-ptx.sh links libdevice.10.bc
+   (its SHA-256 is in ptx/tools.txt) into the kernels of both, so the PTX and cubins contain compiled code from
    libdevice's __nv_dsqrt_rn, __nv_expf, __nv_sqrtf, __nv_fmaxf, __nv_fminf, __nv_logf, __nv_rintf and __nv_rsqrtf.
    libdevice is listed as distributable in Attachment A of the CUDA EULA, and that code is
    distributed under the EULA's terms, not under inkrs's licence. The EULA is at
@@ -87,10 +88,10 @@ SOFTWARE.
 4. cuda-oxide device crate, NVIDIA (Apache License 2.0), from github.com/NVIDIA/cuda-rust at
    8d825486993f806903d8968232214ddafa8ed7da
 
-   Covers: ptx/inkrs.sm80.ptx and ptx/inkrs.sm120.ptx. The kernels in inkrs-kernels/ call the
-   cuda-device crate's intrinsics and conversions, which are compiled into the PTX. The crate itself is
-   a build dependency and is not included here. Its licence, with NVIDIA's copyright line, is in
-   licenses/cuda-rust-LICENSE.
+   Covers: ptx/inkrs.sm80.ptx and ptx/inkrs.sm120.ptx, and the cubins compiled from them. The kernels
+   in inkrs-kernels/ call the cuda-device crate's intrinsics and conversions, which are compiled into
+   the PTX. The crate itself is a build dependency and is not included here. Its licence, with
+   NVIDIA's copyright line, is in licenses/cuda-rust-LICENSE.
 
    Copyright (c) 2024-2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
    Licensed under the Apache License, Version 2.0 (licenses/cuda-rust-LICENSE).

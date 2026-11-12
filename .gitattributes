@@ -3,3 +3,5 @@
 * text=auto eol=lf
 # float fixtures are raw little-endian bytes
 *.f32 binary
+# compiled kernels, embedded byte for byte (include_bytes!)
+*.cubin binary

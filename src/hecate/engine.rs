@@ -66,6 +66,9 @@ pub struct Report {
     /// The device's compute capability and the PTX tier loaded on it
     pub compute_capability: String,
     pub ptx_tier: String,
+    /// How the kernels were loaded: a cubin compiled ahead (`sm_120 SASS`) or the PTX through the
+    /// driver's JIT (`PTX, JIT-compiled`); `metal` on Metal
+    pub kernels: String,
     pub stem_channels: usize,
     pub load_weights_s: f64,
     pub open_gpu_s: f64,
@@ -143,6 +146,7 @@ pub fn run(input: &Path, ckpt: &Path, maps: &[MapSpec], opts: &Options) -> Resul
     rep.cudnn = Dnn::version();
     rep.compute_capability = gpu.inner.compute_capability().to_string();
     rep.ptx_tier = gpu.inner.ptx_tier().to_string();
+    rep.kernels = gpu.kernels().to_string();
 
     let t = Instant::now();
     let ctx = Ctx { gpu: &gpu, dnn: &dnn, pick: opts.pick, max_workspace: opts.max_workspace };

@@ -1,0 +1,238 @@
+{
+ "what": "the first run on a machine (empty inkrs and CUDA driver caches) and a warm run right after it, the PTX-only build against the build with compiled kernels; each a whole command, process start to exit",
+ "gpu": "RTX 5090",
+ "driver": "595.99.02",
+ "builds": {
+  "ptx": "inkrs with PTX only, which the driver JIT-compiles on first use",
+  "cubin": "this inkrs: compiled kernels (sm_120 SASS on this GPU), PTX as the fallback"
+ },
+ "models": {
+  "s42": "hybrid_3d2d-seed42, one map (d 0, forward) of S1, stride 64, batch 64 (inkrs sweep)",
+  "hec": "Hecate 9.6 um --fast (bf16, stride 32, batch 32), one forward map of the PHerc. 1447 crop at 9.6 um (r96-crop)"
+ },
+ "order": "three rounds per model; the builds alternate which goes first, and each build's first run starts with fresh caches",
+ "runs": {
+  "s42-ptx": [
+   {
+    "round": 1,
+    "run": "first",
+    "wall_s": 3.262,
+    "open_gpu_s": 1.983910409,
+    "plan_s": 0.060176926,
+    "kernels": "PTX, JIT-compiled"
+   },
+   {
+    "round": 1,
+    "run": "warm",
+    "wall_s": 1.534,
+    "open_gpu_s": 0.218578709,
+    "plan_s": 0.069036783,
+    "kernels": "PTX, JIT-compiled"
+   },
+   {
+    "round": 2,
+    "run": "first",
+    "wall_s": 2.131,
+    "open_gpu_s": 1.586507801,
+    "plan_s": 0.059452682,
+    "kernels": "PTX, JIT-compiled"
+   },
+   {
+    "round": 2,
+    "run": "warm",
+    "wall_s": 0.724,
+    "open_gpu_s": 0.203666768,
+    "plan_s": 0.069830602,
+    "kernels": "PTX, JIT-compiled"
+   },
+   {
+    "round": 3,
+    "run": "first",
+    "wall_s": 2.104,
+    "open_gpu_s": 1.5735802429999999,
+    "plan_s": 0.057533322,
+    "kernels": "PTX, JIT-compiled"
+   },
+   {
+    "round": 3,
+    "run": "warm",
+    "wall_s": 1.717,
+    "open_gpu_s": 0.21280206,
+    "plan_s": 0.067264233,
+    "kernels": "PTX, JIT-compiled"
+   }
+  ],
+  "s42-cubin": [
+   {
+    "round": 1,
+    "run": "first",
+    "wall_s": 0.789,
+    "open_gpu_s": 0.221877019,
+    "plan_s": 0.085912232,
+    "kernels": "sm_120 SASS"
+   },
+   {
+    "round": 1,
+    "run": "warm",
+    "wall_s": 0.836,
+    "open_gpu_s": 0.235938894,
+    "plan_s": 0.080406772,
+    "kernels": "sm_120 SASS"
+   },
+   {
+    "round": 2,
+    "run": "first",
+    "wall_s": 0.987,
+    "open_gpu_s": 0.215335669,
+    "plan_s": 0.070231543,
+    "kernels": "sm_120 SASS"
+   },
+   {
+    "round": 2,
+    "run": "warm",
+    "wall_s": 0.843,
+    "open_gpu_s": 0.211734071,
+    "plan_s": 0.079250152,
+    "kernels": "sm_120 SASS"
+   },
+   {
+    "round": 3,
+    "run": "first",
+    "wall_s": 0.861,
+    "open_gpu_s": 0.210851577,
+    "plan_s": 0.069838546,
+    "kernels": "sm_120 SASS"
+   },
+   {
+    "round": 3,
+    "run": "warm",
+    "wall_s": 0.734,
+    "open_gpu_s": 0.197773357,
+    "plan_s": 0.065440925,
+    "kernels": "sm_120 SASS"
+   }
+  ],
+  "hec-ptx": [
+   {
+    "round": 1,
+    "run": "first",
+    "wall_s": 25.286,
+    "open_gpu_s": 1.5409613119999999,
+    "plan_s": 13.377807639,
+    "kernels": "PTX, JIT-compiled"
+   },
+   {
+    "round": 1,
+    "run": "warm",
+    "wall_s": 10.634,
+    "open_gpu_s": 0.245450925,
+    "plan_s": 1.040372779,
+    "kernels": "PTX, JIT-compiled"
+   },
+   {
+    "round": 2,
+    "run": "first",
+    "wall_s": 22.322,
+    "open_gpu_s": 1.5057021320000001,
+    "plan_s": 11.530467759,
+    "kernels": "PTX, JIT-compiled"
+   },
+   {
+    "round": 2,
+    "run": "warm",
+    "wall_s": 10.272,
+    "open_gpu_s": 0.19468048,
+    "plan_s": 0.837144778,
+    "kernels": "PTX, JIT-compiled"
+   },
+   {
+    "round": 3,
+    "run": "first",
+    "wall_s": 22.832,
+    "open_gpu_s": 1.561199698,
+    "plan_s": 11.980225165,
+    "kernels": "PTX, JIT-compiled"
+   },
+   {
+    "round": 3,
+    "run": "warm",
+    "wall_s": 10.296,
+    "open_gpu_s": 0.183044878,
+    "plan_s": 0.853594217,
+    "kernels": "PTX, JIT-compiled"
+   }
+  ],
+  "hec-cubin": [
+   {
+    "round": 1,
+    "run": "first",
+    "wall_s": 23.597,
+    "open_gpu_s": 0.193121317,
+    "plan_s": 14.123962151,
+    "kernels": "sm_120 SASS"
+   },
+   {
+    "round": 1,
+    "run": "warm",
+    "wall_s": 10.354,
+    "open_gpu_s": 0.19181117,
+    "plan_s": 0.86374522,
+    "kernels": "sm_120 SASS"
+   },
+   {
+    "round": 2,
+    "run": "first",
+    "wall_s": 21.739,
+    "open_gpu_s": 0.194588448,
+    "plan_s": 12.223304686,
+    "kernels": "sm_120 SASS"
+   },
+   {
+    "round": 2,
+    "run": "warm",
+    "wall_s": 10.427,
+    "open_gpu_s": 0.180100548,
+    "plan_s": 0.934339945,
+    "kernels": "sm_120 SASS"
+   },
+   {
+    "round": 3,
+    "run": "first",
+    "wall_s": 21.318,
+    "open_gpu_s": 0.192653166,
+    "plan_s": 11.826305635,
+    "kernels": "sm_120 SASS"
+   },
+   {
+    "round": 3,
+    "run": "warm",
+    "wall_s": 10.286,
+    "open_gpu_s": 0.18070935,
+    "plan_s": 0.849201778,
+    "kernels": "sm_120 SASS"
+   }
+  ]
+ },
+ "median_s": {
+  "s42-ptx": {
+   "first": 2.131,
+   "warm": 1.534
+  },
+  "s42-cubin": {
+   "first": 0.861,
+   "warm": 0.836
+  },
+  "hec-ptx": {
+   "first": 22.832,
+   "warm": 10.296
+  },
+  "hec-cubin": {
+   "first": 21.739,
+   "warm": 10.354
+  }
+ },
+ "maps_identical": {
+  "s42": true,
+  "hec": true
+ }
+}

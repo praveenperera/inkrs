@@ -103,6 +103,9 @@ pub struct Report {
     pub compute_capability: String,
     /// The PTX tier, or `metal`
     pub ptx_tier: String,
+    /// How the kernels were loaded: a cubin compiled ahead (`sm_120 SASS`) or the PTX through the
+    /// driver's JIT (`PTX, JIT-compiled`); `metal` on Metal
+    pub kernels: String,
     pub load_weights_s: f64,
     pub open_gpu_s: f64,
     pub plan_s: f64,

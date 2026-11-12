@@ -53,6 +53,7 @@ impl Engine {
         report.cudnn = Dnn::version();
         report.compute_capability = gpu.inner.compute_capability().to_string();
         report.ptx_tier = gpu.inner.ptx_tier().to_string();
+        report.kernels = gpu.kernels().to_string();
 
         let t = Instant::now();
         let model = {
@@ -179,6 +180,7 @@ impl Engine {
         rep.cudnn = base.cudnn;
         rep.compute_capability = base.compute_capability.clone();
         rep.ptx_tier = base.ptx_tier.clone();
+        rep.kernels = base.kernels.clone();
         rep.load_weights_s = base.load_weights_s;
         rep.open_gpu_s = base.open_gpu_s;
         rep.plan_s = base.plan_s;

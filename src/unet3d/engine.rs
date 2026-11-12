@@ -59,6 +59,9 @@ pub struct Report {
     pub algo_cache: algo_cache::Status,
     pub stem_padded: bool,
     pub ptx_tier: String,
+    /// How the kernels were loaded: a cubin compiled ahead (`sm_120 SASS`) or the PTX through the
+    /// driver's JIT (`PTX, JIT-compiled`); `metal` on Metal
+    pub kernels: String,
 }
 
 /// villa's `_global_patch_starts_for_interval`
@@ -437,6 +440,7 @@ pub fn run(input: &Path, ckpt: &Path, out: &Path, opts: &Options) -> Result<Repo
         algo_cache: algo_cache::status(),
         stem_padded: model.in_c != 1,
         ptx_tier: gpu.inner.ptx_tier().to_string(),
+        kernels: gpu.kernels().to_string(),
     })
 }
 

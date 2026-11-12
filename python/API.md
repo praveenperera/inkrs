@@ -1,6 +1,6 @@
 # inkrs Python API
 
-The `inkrs` module runs the inkrs engine in-process. It runs villa's `hybrid_3d2d-seed42` ink reader and the readers with its architecture (`reader-v2`, Reader V3, ink_9um seed 43, dense_native, TRACE v3B, Rectina M4) with the model resident on the GPU, and returns or writes the maps villa's `infer` writes. It also runs the v8-in exports, Hecate 9.6 µm (`inkrs.hecate`) and villa's 3D ink models (`inkrs.ink3d`). The Linux wheel embeds the kernels as PTX, so it needs no Rust or CUDA toolkit, only an NVIDIA driver plus cuDNN 9 and cuBLAS 12 at run time ([Install](README.md#install)). The macOS arm64 wheel runs the villa readers, Hecate and the v8-in exports on Metal; there `inkrs.ink3d` and `tta=8` raise `UnsupportedError`.
+The `inkrs` module runs the inkrs engine in-process. It runs villa's `hybrid_3d2d-seed42` ink reader and the readers with its architecture (`reader-v2`, Reader V3, ink_9um seed 43, dense_native, TRACE v3B, Rectina M4) with the model resident on the GPU, and returns or writes the maps villa's `infer` writes. It also runs the v8-in exports, Hecate 9.6 µm (`inkrs.hecate`) and villa's 3D ink models (`inkrs.ink3d`). The Linux wheel embeds the kernels compiled for the common NVIDIA GPUs, with PTX as the fallback for any other, so it needs no Rust or CUDA toolkit, only an NVIDIA driver plus cuDNN 9 and cuBLAS 12 at run time ([Install](README.md#install)). The macOS arm64 wheel runs the villa readers, Hecate and the v8-in exports on Metal; there `inkrs.ink3d` and `tta=8` raise `UnsupportedError`.
 
 ## Where it plugs into villa
 
@@ -70,9 +70,10 @@ eng.weights                   # Path: the safetensors export loaded
 eng.reader                    # str: the reader name its sidecar records ("hybrid_3d2d-seed42", "reader-v2"),
                               # or None without a sidecar
 eng.load_report               # dict: reader, cudnn, compute_capability, ptx_tier (the tier loaded, "sm80" or
-                              # "sm120"), load_weights_s, open_gpu_s, plan_s, algo_cache_hits, algo_cache, algos,
+                              # "sm120"), kernels ("sm_120 SASS" when a cubin compiled ahead loaded, "PTX,
+                              # JIT-compiled" otherwise), load_weights_s, open_gpu_s, plan_s, algo_cache_hits, algo_cache, algos,
                               # schema, weights, cuda_libraries (the files the engine calls), mapped_libraries; on
-                              # macOS compute_capability is the GPU's name, ptx_tier is "metal", cudnn 0 and algo_cache null
+                              # macOS compute_capability is the GPU's name, ptx_tier and kernels are "metal", cudnn 0 and algo_cache null
 eng.batch_size, eng.device
 ```
 

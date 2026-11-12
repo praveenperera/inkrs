@@ -1,6 +1,6 @@
 # inkrs: villa's ink reader, GPU-resident, in Rust
 
-inkrs runs villa's `hybrid_3d2d-seed42` ink model (ink_9um, seed 42, step 75,000) and writes the same maps villa's `infer` writes for the PHerc. 343 recipe: same tiles, normalisation, network numerics, blend and uint8 TIFFs. One process loads the volume and the model onto the GPU once, then produces all 18 maps of a depth sweep (d −4..4, both directions). Most convolutions run in cuDNN at FP16. Everything else, including the stem's two 3D convolutions, runs in my own kernels, written in Rust with cuda-oxide and committed as PTX, so you don't need the CUDA toolkit to build it. TIFFs get encoded on writer threads while the next maps compute.
+inkrs runs villa's `hybrid_3d2d-seed42` ink model (ink_9um, seed 42, step 75,000) and writes the same maps villa's `infer` writes for the PHerc. 343 recipe: same tiles, normalisation, network numerics, blend and uint8 TIFFs. One process loads the volume and the model onto the GPU once, then produces all 18 maps of a depth sweep (d −4..4, both directions). Most convolutions run in cuDNN at FP16. Everything else, including the stem's two 3D convolutions, runs in my own kernels, written in Rust with cuda-oxide and committed both compiled for the common NVIDIA GPUs and as PTX, so you don't need the CUDA toolkit to build it. TIFFs get encoded on writer threads while the next maps compute.
 
 A map only counts if it's within villa's own bar against villa eager: r ≥ 0.9994, p99.9 and largest |difference| at most 4/255, and the same covered pixels. Every speed number below is for maps that pass.
 
@@ -8,7 +8,7 @@ A map only counts if it's within villa's own bar against villa eager: r ≥ 0.99
 
 The depth sweep is the recipe's slowest stage. The recipe calls villa once per depth, and every call reloads the model. villa has got faster lately, and has a set of faster flags, but it still runs one PyTorch process per depth.
 
-The fastest public PyTorch path I timed for this reader is inksweep's fast mode, which runs every depth in one process with `torch.compile`. UFSM (`SuperOptimizer/ufsm`) is a public C/CUDA port with its own fp16 kernels, compiled ahead of time. Warm, inkrs is 2.35× faster than UFSM on one S1 map (95% CI 2.12× to 2.57×, `results/public-ports.json`). A single run on a fresh machine, where inkrs first has to compile its GPU code, is slower than UFSM's.
+The fastest public PyTorch path I timed for this reader is inksweep's fast mode, which runs every depth in one process with `torch.compile`. UFSM (`SuperOptimizer/ufsm`) is a public C/CUDA port with its own fp16 kernels, compiled ahead of time. Warm, inkrs is 2.35× faster than UFSM on one S1 map (95% CI 2.12× to 2.57×, `results/public-ports.json`). A single run on a fresh machine, with every cache empty, takes inkrs 0.86 s (`results/first-run.json`) against UFSM's 1.87 s (`results/public-ports.json`), because inkrs's kernels come compiled for this GPU too.
 
 inkrs replaces the whole pipeline for one reader and keeps the output contract.
 
@@ -22,7 +22,7 @@ On one RTX 5090, each tool writing its usual output: villa's uint8 LZW TIFFs for
 | | every cache empty | 9.73 s | 164.2 s | 16.9× |
 | PHerc. 1447, Reader V3, 10 maps (d −2..2, both directions) | warm | 3.33 s | 52.4 s | 14.5× (11.9× to 17.0×) |
 
-Warm means every compile and algorithm cache is already filled. With every cache empty, inksweep compiles its graphs and inkrs compiles its GPU code and times cuDNN's algorithms.
+Warm means every compile and algorithm cache is already filled. With every cache empty, inksweep compiles its graphs and inkrs times cuDNN's algorithms. The empty-cache inkrs time in the table also includes 1.5 to 2 s for the driver to compile inkrs's PTX. On the RTX 5090 inkrs loads kernels compiled ahead instead and skips that step, with byte-identical maps (`results/first-run.json`).
 
 villa main with the faster flags (`--batch-size 8 --no-compile --loader-threads 8 --chunk-cache-size 64`), one process per depth the way the recipe runs it, takes 161.7 s for the same 18 maps. Inside villa, through the inkrs adapter a villa PR adds (`--engine inkrs`), one depth in both directions on S1 takes 2.46 s against 14.0 s for villa's own PyTorch path, compiled and warm (5.68×, 95% CI 5.26× to 6.09×).
 

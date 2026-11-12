@@ -7,7 +7,7 @@ use std::ffi::c_void;
 use std::sync::Arc;
 
 use color_eyre::eyre::{Result, WrapErr, bail, ensure, eyre};
-use cudakit::{ExtraSymbols, Library, LibraryPolicy, Profile, PtxTier, TierSet};
+use cudakit::{ComputeCapability, ExtraSymbols, Library, LibraryPolicy, Profile, PtxTier, TierSet};
 use cudarc::driver::CudaModule;
 use cudarc::driver::result as cur;
 use cudarc::driver::sys as cu;
@@ -24,6 +24,59 @@ pub const PTX: &[(PtxTier, &str)] = &[
     (PtxTier::Sm80, include_str!("../ptx/inkrs.sm80.ptx")),
     (PtxTier::Sm120, include_str!("../ptx/inkrs.sm120.ptx")),
 ];
+
+/// One tier's PTX compiled ahead to SASS for one GPU family by `scripts/build-cubin.sh`
+pub struct Cubin {
+    /// The tier whose PTX it was compiled from
+    pub tier: PtxTier,
+    /// The family it was compiled for; it also runs on later minor versions of the same major
+    pub arch: ComputeCapability,
+    pub bytes: &'static [u8],
+}
+
+/// The cubins each tier ships, so a GPU of these families loads its kernels without the driver's
+/// JIT, which costs over a second on a machine's first run. A GPU with none here, such as 11.x, or a
+/// tier forced below the device's, JITs the PTX instead
+pub const CUBINS: &[Cubin] = &[
+    cubin(PtxTier::Sm75, 7, 5, include_bytes!("../ptx/inkrs.sm75.sm_75.cubin")),
+    cubin(PtxTier::Sm80, 8, 0, include_bytes!("../ptx/inkrs.sm80.sm_80.cubin")),
+    cubin(PtxTier::Sm80, 8, 6, include_bytes!("../ptx/inkrs.sm80.sm_86.cubin")),
+    cubin(PtxTier::Sm80, 8, 9, include_bytes!("../ptx/inkrs.sm80.sm_89.cubin")),
+    cubin(PtxTier::Sm80, 9, 0, include_bytes!("../ptx/inkrs.sm80.sm_90.cubin")),
+    cubin(PtxTier::Sm80, 10, 0, include_bytes!("../ptx/inkrs.sm80.sm_100.cubin")),
+    cubin(PtxTier::Sm120, 12, 0, include_bytes!("../ptx/inkrs.sm120.sm_120.cubin")),
+];
+
+const fn cubin(tier: PtxTier, major: u32, minor: u32, bytes: &'static [u8]) -> Cubin {
+    Cubin { tier, arch: ComputeCapability::new(major, minor), bytes }
+}
+
+/// The cubin of `tier` a device of `capability` runs: the same major version, and the highest minor
+/// version at or below the device's
+fn cubin_for(tier: PtxTier, capability: ComputeCapability) -> Option<&'static Cubin> {
+    CUBINS
+        .iter()
+        .filter(|c| c.tier == tier && c.arch.major == capability.major && c.arch.minor <= capability.minor)
+        .max_by_key(|c| c.arch.minor)
+}
+
+/// How the loaded kernels reached the GPU
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Kernels {
+    /// A cubin compiled ahead for this family
+    Sass(ComputeCapability),
+    /// The tier's PTX, compiled by the driver's JIT
+    Ptx,
+}
+
+impl std::fmt::Display for Kernels {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Kernels::Sass(arch) => write!(f, "sm_{}{} SASS", arch.major, arch.minor),
+            Kernels::Ptx => f.write_str("PTX, JIT-compiled"),
+        }
+    }
+}
 
 /// Forces a PTX tier at or below the device's, such as `sm80` to run the RTX 30 kernels on an RTX 50,
 /// or `sm75` to run the Turing kernels on a newer GPU
@@ -176,12 +229,14 @@ pub struct Gpu {
     functions: RefCell<HashMap<&'static str, (cu::CUfunction, Vec<Param>)>>,
     module: Arc<CudaModule>,
     ptx: &'static str,
+    kernels: Kernels,
     pub inner: cudakit::Gpu,
 }
 
 impl Gpu {
-    /// Opens device 0, prepares cuDNN and cuBLAS and loads the embedded PTX of the highest
-    /// shipped tier the device runs, or of the tier `INKRS_PTX_TIER` names
+    /// Opens device 0, prepares cuDNN and cuBLAS and loads the kernels of the highest shipped tier
+    /// the device runs, or of the tier `INKRS_PTX_TIER` names: the tier's cubin for the device's
+    /// family when there is one, else its PTX
     pub fn open() -> Result<Self> {
         Self::open_device(0)
     }
@@ -202,12 +257,31 @@ impl Gpu {
             .wrap_err_with(|| format!("open GPU {ordinal} through cudakit"))?;
         inner.prepare(Library::Cudnn).wrap_err("prepare cuDNN")?;
         inner.prepare(Library::Cublas).wrap_err("prepare cuBLAS")?;
-        let ptx = ptx_for(inner.ptx_tier())?;
-        let module = inner
-            .context()
-            .load_module(Ptx::from_src(ptx))
-            .wrap_err_with(|| format!("load the inkrs {} PTX", inner.ptx_tier()))?;
-        Ok(Self { functions: RefCell::new(HashMap::new()), module, ptx, inner })
+        let tier = inner.ptx_tier();
+        let ptx = ptx_for(tier)?;
+        let (module, kernels) = Self::load_kernels(&inner, tier, ptx)?;
+        Ok(Self { functions: RefCell::new(HashMap::new()), module, ptx, kernels, inner })
+    }
+
+    /// Loads `tier`'s cubin for the device, or its PTX when there is none or the driver refuses the
+    /// cubin, as a driver older than the ptxas that built it may
+    fn load_kernels(inner: &cudakit::Gpu, tier: PtxTier, ptx: &str) -> Result<(Arc<CudaModule>, Kernels)> {
+        if let Some(cubin) = cubin_for(tier, inner.compute_capability()) {
+            match inner.context().load_module(Ptx::from_binary(cubin.bytes.to_vec())) {
+                Ok(module) => return Ok((module, Kernels::Sass(cubin.arch))),
+                // the PTX still runs, only the first run is slower, so this warns rather than fails
+                Err(e) => eprintln!("inkrs: the driver refused the {tier} cubin ({e}); JIT-compiling the PTX"),
+            }
+        }
+
+        let module =
+            inner.context().load_module(Ptx::from_src(ptx)).wrap_err_with(|| format!("load the inkrs {tier} PTX"))?;
+        Ok((module, Kernels::Ptx))
+    }
+
+    /// How the kernels were loaded: a cubin compiled ahead, or the PTX through the driver's JIT
+    pub fn kernels(&self) -> Kernels {
+        self.kernels
     }
 
     /// The raw stream
@@ -404,8 +478,6 @@ fn entry_params(ptx: &str, name: &str) -> Result<Vec<Param>> {
 
 #[cfg(test)]
 mod tests {
-    use cudakit::ComputeCapability;
-
     use super::*;
 
     #[test]
@@ -486,6 +558,53 @@ mod tests {
         assert!(PROFILE.select(cc(7, 5), Some(PtxTier::Sm80)).is_err());
         assert!(PROFILE.select(cc(8, 6), Some(PtxTier::Sm120)).is_err());
         assert!(PROFILE.select(cc(12, 0), Some(PtxTier::Sm90)).is_err());
+    }
+
+    /// Each family loads the cubin of the tier it selects, or JITs where none fits: 8.7 runs the
+    /// sm_86 cubin and 10.3 the sm_100 one, 11.x has none, and a forced lower tier has none either
+    #[test]
+    fn cubin_choice_follows_compute_capability() {
+        let cc = ComputeCapability::new;
+        for (capability, arch) in [
+            (cc(7, 5), Some(cc(7, 5))),
+            (cc(8, 0), Some(cc(8, 0))),
+            (cc(8, 6), Some(cc(8, 6))),
+            (cc(8, 7), Some(cc(8, 6))),
+            (cc(8, 9), Some(cc(8, 9))),
+            (cc(9, 0), Some(cc(9, 0))),
+            (cc(10, 0), Some(cc(10, 0))),
+            (cc(10, 3), Some(cc(10, 0))),
+            (cc(11, 0), None),
+            (cc(12, 0), Some(cc(12, 0))),
+            (cc(12, 1), Some(cc(12, 0))),
+        ] {
+            let tier = PROFILE.select(capability, None).unwrap();
+            assert_eq!(cubin_for(tier, capability).map(|c| c.arch), arch, "cc {capability}");
+        }
+
+        assert!(cubin_for(PtxTier::Sm80, cc(12, 0)).is_none());
+        assert!(cubin_for(PtxTier::Sm75, cc(8, 6)).is_none());
+    }
+
+    /// Each cubin is a CUDA ELF image holding every kernel of the PTX it was compiled from, so a
+    /// cubin left over from an older PTX can't load with kernels missing
+    #[test]
+    fn cubins_hold_their_tier_kernels() {
+        const EM_CUDA: u16 = 190;
+        for c in CUBINS {
+            let name = format!("{} cubin for {}", c.tier, c.arch);
+            assert_eq!(&c.bytes[..4], b"\x7fELF", "{name} is not an ELF image");
+            assert_eq!(u16::from_le_bytes([c.bytes[18], c.bytes[19]]), EM_CUDA, "{name} is not for CUDA");
+            let ptx = ptx_for(c.tier).unwrap();
+            for line in ptx.lines() {
+                let Some(kernel) = line.trim().strip_prefix(".visible .entry ").and_then(|l| l.split('(').next())
+                else {
+                    continue;
+                };
+                let symbol = format!("\0{kernel}\0");
+                assert!(c.bytes.windows(symbol.len()).any(|w| w == symbol.as_bytes()), "{name} lacks {kernel}");
+            }
+        }
     }
 
     /// The embedded PTX was built from the kernel sources as committed: a kernel edited after the

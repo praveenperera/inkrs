@@ -79,6 +79,9 @@ pub struct Report {
     /// The device's compute capability and the PTX tier loaded on it
     pub compute_capability: String,
     pub ptx_tier: String,
+    /// How the kernels were loaded: a cubin compiled ahead (`sm_120 SASS`) or the PTX through the
+    /// driver's JIT (`PTX, JIT-compiled`); `metal` on Metal
+    pub kernels: String,
     /// The library that ran the reader's 2D convs, `inkrs` or `cudnn` ([`ConvBackend::resolve`])
     pub conv: &'static str,
     /// Why that library: requested, the default for this GPU's compute capability, or a tier without
@@ -230,6 +233,9 @@ pub struct LoadReport {
     /// The device's compute capability and the PTX tier loaded on it
     pub compute_capability: String,
     pub ptx_tier: String,
+    /// How the kernels were loaded: a cubin compiled ahead (`sm_120 SASS`) or the PTX through the
+    /// driver's JIT (`PTX, JIT-compiled`); `metal` on Metal
+    pub kernels: String,
     /// The library that runs the reader's 2D convs, as resolved for this GPU
     pub conv: &'static str,
     /// Why that library ([`crate::conv::ConvReason`])
@@ -315,6 +321,7 @@ impl Engine {
         load.cudnn = Dnn::version();
         load.compute_capability = gpu.inner.compute_capability().to_string();
         load.ptx_tier = gpu.inner.ptx_tier().to_string();
+        load.kernels = gpu.kernels().to_string();
 
         let t = Instant::now();
         let ctx = Ctx { gpu: &gpu, dnn: &dnn, pick: opts.pick, max_workspace: opts.max_workspace };
@@ -473,6 +480,7 @@ pub fn run(zarr: &Path, ckpt: &Path, maps: &[MapSpec], opts: &Options) -> Result
         cudnn: load.cudnn,
         compute_capability: load.compute_capability.clone(),
         ptx_tier: load.ptx_tier.clone(),
+        kernels: load.kernels.clone(),
         conv: load.conv,
         conv_reason: load.conv_reason.clone(),
         load_weights_s: load.load_weights_s,

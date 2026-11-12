@@ -4,7 +4,7 @@ The JSON behind the numbers in the README and the docs. To check the main ones y
 
 The inputs: **R343** is the PHerc. 343 `concat_w047-w048_R5B2_z9500-11000` render (66 × 2560 × 6720, level 0 only), **R343 multiscale** is the same level 0 with our 2 × 2 × 2 mean pyramid, and **S1** is its 2048 × 2048 crop. The PHerc. 1447 segment is `20250702235910-auto_grown_20250702235910292`. Everything ran on one RTX 5090 unless the line names another GPU.
 
-The README's timings are in `release-timing.json`, `public-ports.json` and `tta-306b-timing.json`. The other timing files hold older measurements, so their numbers differ from the README's.
+The README's timings are in `release-timing.json`, `public-ports.json`, `first-run.json` and `tta-306b-timing.json`. The other timing files hold older measurements, so their numbers differ from the README's.
 
 ## The README's numbers
 
@@ -18,6 +18,7 @@ The README's timings are in `release-timing.json`, `public-ports.json` and `tta-
 | The 18 timed R343 maps within 2/255 of villa main's | `release-timing.json` `r343_gate` |
 | 98.3% of pixels identical at d 0 | `r343-map-figure.json` `full_map.identical_share` |
 | inkrs against UFSM and ink-sdk, and the first-run and fp32 Hecate losses | `public-ports.json` `runs` |
+| The compiled kernels' 1.3 s off Hecate's first run | `public-ports.json` `runs.hec-bf16-ufsm-cold.inkrs_startup_s.open_gpu` against `first-run.json` `runs.hec-cubin` `open_gpu_s` |
 | inkrs against SurgeFok's MPS path on an M4 Pro | `metal-s1.json` `mean_wall_s`, `speedup` |
 | The PHerc. 0306B recipe: 395 s against 650 s, 1.68× | `tta-306b-timing.json` `ab` |
 
@@ -25,6 +26,7 @@ The README's timings are in `release-timing.json`, `public-ports.json` and `tta-
 
 - `release-timing.json`: inkrs against inksweep, villa and villa's inkrs adapter on R343, the PHerc. 1447 segment and S1, with warm and empty caches.
 - `public-ports.json`: inkrs against UFSM and ink-sdk's v8-in lane, with each runner's maps against the references.
+- `first-run.json`: a machine's first run and the warm run after it, inkrs with PTX only against inkrs with its compiled kernels, on one S1 map and one Hecate map, with each run's GPU start-up and planning time and whether the two builds' maps are byte-identical.
 - `tta-306b-timing.json`: the PHerc. 0306B recipe with TRACE v3B's 8-fold test-time augmentation, inkrs against the method's own code.
 - `timing-matched.json`: inkrs and inksweep on S1 and R343, first and later passes, with villa eager's time per depth on R343.
 - `inkrs-report-s1.json`, `inkrs-report-r343.json`: inkrs's own `inkrs.json` from those runs, with each pass's read, schedule, upload and run times.

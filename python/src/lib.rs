@@ -121,6 +121,7 @@ impl PyEngine {
             "cudnn": l.cudnn,
             "compute_capability": l.compute_capability,
             "ptx_tier": l.ptx_tier,
+            "kernels": l.kernels,
             "conv": l.conv,
             "conv_reason": l.conv_reason,
             "load_weights_s": l.load_weights_s,

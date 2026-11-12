@@ -80,6 +80,9 @@ pub struct Report {
     pub compute_capability: String,
     /// `metal`
     pub ptx_tier: String,
+    /// How the kernels were loaded: a cubin compiled ahead (`sm_120 SASS`) or the PTX through the
+    /// driver's JIT (`PTX, JIT-compiled`); `metal` on Metal
+    pub kernels: String,
     /// The library that ran the reader's 2D convs: always [`CONV`]; the CUDA engine reports `inkrs` or `cudnn`
     pub conv: &'static str,
     pub conv_reason: String,
@@ -206,6 +209,9 @@ pub struct LoadReport {
     pub cudnn: usize,
     pub compute_capability: String,
     pub ptx_tier: String,
+    /// How the kernels were loaded: a cubin compiled ahead (`sm_120 SASS`) or the PTX through the
+    /// driver's JIT (`PTX, JIT-compiled`); `metal` on Metal
+    pub kernels: String,
     /// Always [`CONV`], as in [`Report::conv`]
     pub conv: &'static str,
     pub conv_reason: String,
@@ -259,6 +265,7 @@ impl Engine {
         load.load_weights_s = t.elapsed().as_secs_f64();
         load.compute_capability = gpu.name();
         load.ptx_tier = "metal".into();
+        load.kernels = "metal".into();
         load.conv = CONV;
         load.conv_reason = "the Metal backend's own kernels".into();
 
@@ -348,6 +355,7 @@ pub fn run(zarr: &Path, ckpt: &Path, maps: &[MapSpec], opts: &Options) -> Result
         cudnn: load.cudnn,
         compute_capability: load.compute_capability.clone(),
         ptx_tier: load.ptx_tier.clone(),
+        kernels: load.kernels.clone(),
         conv: load.conv,
         conv_reason: load.conv_reason.clone(),
         load_weights_s: load.load_weights_s,

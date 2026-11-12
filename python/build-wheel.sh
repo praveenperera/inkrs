@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# Builds the inkrs wheel: manylinux_2_28 x86_64, abi3 (CPython 3.9+), the kernels embedded as PTX; on macOS, an
+# Builds the inkrs wheel: manylinux_2_28 x86_64, abi3 (CPython 3.9+), the kernels embedded as cubins and PTX; on macOS, an
 # arm64 wheel for the Metal engine (macOS 26 or later)
 #
 #   python/build-wheel.sh [OUT_DIR]      # default target/wheels
 #
-# Stops when scripts/check-ptx.sh finds the committed PTX stale. Needs Rust and uv; maturin and zig come from
-# PyPI through uvx, and zig links against glibc 2.28, so the wheel installs on any manylinux_2_28 distribution. The wheel embeds the PTX src/gpu.rs embeds, so a change to the
-# PTX set there needs no change here; the build log lists it from the built module
+# Stops when scripts/check-ptx.sh finds the committed PTX or cubins stale. Needs Rust and uv; maturin and zig come from
+# PyPI through uvx, and zig links against glibc 2.28, so the wheel installs on any manylinux_2_28 distribution. The wheel embeds the PTX and cubins src/gpu.rs embeds, so a change to
+# either set there needs no change here; the build log lists it from the built module
 set -euo pipefail
 
 here="$(cd "$(dirname "$0")" && pwd)"
@@ -29,8 +29,8 @@ fi
 
 out="$(realpath -m "${1:-$here/../target/wheels}")"
 
-# maturin runs no Rust tests, so check here that the embedded PTX matches its kernel sources; otherwise a
-# kernel edit or a bad merge would ship stale PTX
+# maturin runs no Rust tests, so check here that the embedded PTX and cubins match their kernel sources; otherwise a
+# kernel edit or a bad merge would ship stale kernels
 "$here/../scripts/check-ptx.sh"
 
 cd "$here"

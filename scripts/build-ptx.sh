@@ -143,4 +143,5 @@ for tier in 75:7.0:sm75 80:7.0: 120:8.7:; do
   fi
 done
 cp "$libdevice" "$root/ptx/libdevice.txt"
-"$root/scripts/check-ptx.sh" --write
+# the cubins come from the PTX just written, and refresh the manifest
+PTXAS="$ptxas" "$root/scripts/build-cubin.sh"

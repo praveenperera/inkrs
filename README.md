@@ -62,7 +62,7 @@ pip install "inkrs[cu12]"
 
 The `cu12` extra pulls in cuDNN 9 and cuBLAS 12 from pip. Leave it off if you already have them, for example from a CUDA 12 PyTorch. For macOS or Windows, build the wheel yourself, see [python/README.md](python/README.md).
 
-Or build the CLI from source. The GPU kernels are committed as PTX, so you don't need the CUDA toolkit:
+Or build the CLI from source. The GPU kernels are committed compiled for the common NVIDIA GPUs, from the T4 to the RTX 50 series, and as PTX that the driver compiles for any other GPU, so you don't need the CUDA toolkit:
 
 ```
 cargo build --release
@@ -100,7 +100,7 @@ Hecate, v8-in and the 3D U-Net have their own commands (`inkrs hecate`, `inkrs i
 ## Where it's not faster
 
 - **No GPU.** There's no CPU path.
-- **The very first run.** inkrs compiles its GPU code on first use, so UFSM, which ships precompiled kernels, wins that one run: 1.87 s against 2.08 s for a `hybrid_3d2d-seed42` map, and 17.7 s against 27.0 s for Hecate.
+- **Hecate's first run on a machine.** inkrs spends about 12 s of it timing cuDNN's convolution algorithms, then keeps its picks for later runs. UFSM's first run is no slower than its others, so it wins that one run: 17.7 s against 27.0 s on the whole PHerc. 1447 segment. The compiled kernels take about 1.3 s off inkrs's side, which still leaves UFSM ahead.
 - **Hecate in fp32.** UFSM's fp16 Hecate takes 17.7 s, inkrs's fp32 takes 30.9 s. Use `--fast` (bf16), which keeps the ink: on the labelled segments I scored, its AUC moved by at most 0.0006 ([docs/FAST.md](docs/FAST.md)).
 - **Training.** inkrs only does inference.
 

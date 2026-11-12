@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 # Fails when the committed PTX is stale: ptx/sources.sha256 records the hashes of the kernel crate's
 # sources, manifest, lockfile and toolchain pin, the build script, the tool versions it built with
-# (ptx/tools.txt), the libdevice functions the kernels link (ptx/libdevice.txt) and the PTX it produced,
-# one file per tier src/gpu.rs embeds. Also fails when THIRD_PARTY_NOTICES names other libdevice
+# (ptx/tools.txt), the libdevice functions the kernels link (ptx/libdevice.txt), the PTX it produced,
+# one file per tier src/gpu.rs embeds, and the cubins build-cubin.sh compiled from it with the ptxas
+# ptx/ptxas.txt names. Also fails when THIRD_PARTY_NOTICES names other libdevice
 # functions than that list. Needs no CUDA toolkit or cuda-oxide
 #
 #   scripts/check-ptx.sh            # check
-#   scripts/check-ptx.sh --write    # record the current files (build-ptx.sh does this)
+#   scripts/check-ptx.sh --write    # record the current files (build-cubin.sh does this)
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
@@ -14,7 +15,7 @@ manifest=ptx/sources.sha256
 crate=inkrs-kernels
 mapfile -t sources < <(find "$crate/src" -name '*.rs' | LC_ALL=C sort)
 files=("${sources[@]}" "$crate/Cargo.toml" "$crate/Cargo.lock" "$crate/rust-toolchain.toml"
-  scripts/build-ptx.sh ptx/tools.txt ptx/libdevice.txt ptx/*.ptx)
+  scripts/build-ptx.sh scripts/build-cubin.sh ptx/tools.txt ptx/libdevice.txt ptx/*.ptx ptx/ptxas.txt ptx/*.cubin)
 
 # the libdevice functions THIRD_PARTY_NOTICES names are exactly the ones build-ptx.sh found linked, so the
 # notice covers what the PTX ships
@@ -32,13 +33,20 @@ if ! diff <(printf '%s\n' ptx/*.ptx | LC_ALL=C sort) \
   exit 1
 fi
 
+# likewise the cubins: each one on disk is embedded, and each embedded one is on disk
+if ! diff <(printf '%s\n' ptx/*.cubin | LC_ALL=C sort) \
+  <(grep -o 'include_bytes!("\.\./ptx/[^"]*\.cubin")' src/gpu.rs | sed 's|include_bytes!("\.\./\(.*\)")|\1|' | LC_ALL=C sort); then
+  echo "ptx/*.cubin and the cubins src/gpu.rs embeds differ" >&2
+  exit 1
+fi
+
 if [[ "${1:-}" == "--write" ]]; then
   sha256sum "${files[@]}" > "$manifest"
   exit 0
 fi
 
 if ! diff <(sha256sum "${files[@]}") "$manifest"; then
-  echo "ptx is stale: run scripts/build-ptx.sh" >&2
+  echo "ptx is stale: run scripts/build-ptx.sh, or scripts/build-cubin.sh when only the cubins are" >&2
   exit 1
 fi
 echo "ptx matches its sources"

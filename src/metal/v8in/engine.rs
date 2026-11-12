@@ -35,7 +35,8 @@ impl Engine {
     /// Loads the export at `ckpt` and allocates the network at `batch`; Metal has one kernel per layer shape, so
     /// `pick` and `max_workspace` (cuDNN's) are ignored
     pub fn new(ckpt: &Path, batch: usize, _pick: Pick, _max_workspace: usize) -> Result<Self> {
-        let mut report = Report { batch, cudnn: 0, ptx_tier: "metal".into(), ..Default::default() };
+        let mut report =
+            Report { batch, cudnn: 0, ptx_tier: "metal".into(), kernels: "metal".into(), ..Default::default() };
         // the kernel library compiles on Gpu::open's thread while the weights load
         let t = Instant::now();
         let gpu = Gpu::open(0)?;
@@ -167,6 +168,7 @@ impl Engine {
         rep.cudnn = base.cudnn;
         rep.compute_capability = base.compute_capability.clone();
         rep.ptx_tier = base.ptx_tier.clone();
+        rep.kernels = base.kernels.clone();
         rep.load_weights_s = base.load_weights_s;
         rep.open_gpu_s = base.open_gpu_s;
         rep.plan_s = base.plan_s;
