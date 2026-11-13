@@ -29,7 +29,7 @@ from typing import Any
 import numpy as np
 
 from . import _cuda
-from ._inkrs import CudaLibraryError, InkrsError, UnsupportedError, _Engine, _V8in, ptx_targets
+from ._inkrs import CudaLibraryError, InkrsError, UnsupportedError, __version__, _Engine, _V8in, ptx_targets
 from ._inkrs import fast_presets as _fast_presets
 from ._inkrs import hecate as _hecate
 from ._inkrs import ink3d as _ink3d
@@ -49,8 +49,6 @@ __all__ = [
     "load_cuda_libraries",
     "write_tiff",
 ]
-
-__version__ = "0.2.0"
 
 #: macOS builds run the engine on Metal: one GPU (device 0, or "mps"), no PTX and no CUDA libraries
 _METAL = sys.platform == "darwin"

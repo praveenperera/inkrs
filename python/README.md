@@ -4,13 +4,15 @@ inkrs runs villa's flat ink readers on the GPU, from Python: `hybrid_3d2d-seed42
 
 ## Install
 
-On Linux x86-64:
+On Linux x86-64 or Windows x86-64:
 
 ```
 pip install "inkrs[cu12]"
 ```
 
-The wheel is for CPython 3.9 and newer, on glibc 2.28 or newer. It doesn't need Rust or a CUDA toolkit, because the kernels ship inside it, compiled for the common NVIDIA GPUs and as PTX. You do need:
+On an Apple silicon Mac, `pip install inkrs` (see [macOS](#macos)).
+
+The Linux wheel is for CPython 3.9 and newer, on glibc 2.28 or newer. It doesn't need Rust or a CUDA toolkit, because the kernels ship inside it, compiled for the common NVIDIA GPUs and as PTX. You do need:
 
 - **An NVIDIA GPU of compute capability 7.5 or above** (T4 and RTX 20, RTX 30, 40 and 50, A100, H100) **and a driver of r525 or newer**.
 - **cuDNN 9 and cuBLAS 12.** The `cu12` extra installs them from pip (`nvidia-cudnn-cu12`, `nvidia-cublas-cu12`). Without it, inkrs uses the copies already on the system, or the ones a CUDA 12 build of PyTorch installed. A CUDA 13 PyTorch ships cuBLAS 13 under a name inkrs doesn't look for, so there add `pip install nvidia-cublas-cu12`.
@@ -23,7 +25,7 @@ inkrs takes the system copies first (the linker path, `LD_LIBRARY_PATH`, or a co
 
 ### Windows
 
-There's an x86-64 Windows wheel too, built with `maturin build --release` in the repo's `python/` directory. It builds, and it imports only Python's stable ABI DLL and Windows system DLLs, but it hasn't been installed or run on Windows.
+The x86-64 Windows wheel is for CPython 3.9 and newer too. It imports only Python's stable ABI DLL and Windows system DLLs, but it hasn't been run on Windows itself yet.
 
 There the libraries are `cudnn64_9.dll` and `cublas64_12.dll`, and the `cu12` extra installs them as well. When the pip packages are installed, inkrs loads them from their `bin` directories before the engine starts, so they win over a CUDA toolkit on `PATH`, and `INKRS_CUDA_LIBS=pip` only makes them required. NVRTC, which cuDNN uses for some of its engines, loads from the `nvidia-cuda-nvrtc-cu12` package's `bin` directory when that's installed. Without the pip packages, the engine looks in the executable's directory, System32, each absolute `PATH` entry, then `%CUDA_PATH%\bin\x64` and `%CUDA_PATH%\bin`.
 
@@ -31,15 +33,19 @@ It never loads a library from the current directory. It raises `inkrs.CudaLibrar
 
 ### macOS
 
-Build the wheel on a Mac with `python/build-wheel.sh`, then:
-
 ```
-pip install inkrs-0.2.0-cp39-abi3-macosx_26_0_arm64.whl
+pip install inkrs
 ```
 
-On Apple silicon with macOS 26 or newer the engine runs on Metal. It needs no CUDA libraries and no Xcode, because the Metal shaders ship as source and compile when the engine opens. Pass `device=0`, `"mps"`, `"mps:0"` or a torch MPS device; the engine uses the system's default GPU. `algo` does nothing there, and `inkrs.build_info()` reports `"backend": "metal"` and no PTX. Only the M4 Pro has been tested.
+The arm64 wheel installs on any Apple silicon Mac, but the engine needs macOS 26 or newer, and on an older macOS it raises `inkrs.UnsupportedError` naming the version. There the engine runs on Metal. It needs no CUDA libraries and no Xcode, because the Metal shaders ship as source and compile when the engine opens. Pass `device=0`, `"mps"`, `"mps:0"` or a torch MPS device; the engine uses the system's default GPU. `algo` does nothing there, and `inkrs.build_info()` reports `"backend": "metal"` and no PTX. Only the M4 Pro has been tested.
 
 Experimental, and reader-v2 only: the engine can run most batches' 2D network on the Neural Engine through Core ML while the GPU runs every batch's 3D stem. Build the Core ML bodies once with `metal/coreml_body.py`, set `INKRS_COREML_ANE` to the `fp16` `.mlmodelc` it prints, and run at `--batch-size 8` (`batch_size=8`). The engine refuses a body built from another checkpoint, batch or precision. The maps stay within villa's parity limits and are the same on every run, but differ from the GPU-only maps by up to a few 1/255 steps. `src/metal/coreml.rs` lists the tuning variables, including an opt-in CPU lane.
+
+## Build from source
+
+pip builds the source distribution where no wheel fits, which needs Rust but no CUDA toolkit, since the kernels ship compiled and as PTX. From a checkout, `python/build-wheel.sh` builds the Linux x86-64 wheel (manylinux_2_28, through zig) or, on a Mac, the arm64 wheel, into `target/wheels`. It needs Rust and uv. On Windows, run `maturin build --release` in `python/`.
+
+The package's version is the one in `python/Cargo.toml`, which CI keeps equal to the engine's in `Cargo.toml`. The Python code is linted with `uvx ruff@0.17.4 check python`.
 
 ## Weights
 

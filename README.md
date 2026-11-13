@@ -54,13 +54,13 @@ Some of these weights are non-commercial (TRACE v3B, Rectina and A-hn). [docs/MO
 
 ## Install
 
-The Python package, on Linux x86-64:
+The Python package, on Linux x86-64 or Windows x86-64:
 
 ```
 pip install "inkrs[cu12]"
 ```
 
-The `cu12` extra pulls in cuDNN 9 and cuBLAS 12 from pip. Leave it off if you already have them, for example from a CUDA 12 PyTorch. For macOS or Windows, build the wheel yourself, see [python/README.md](python/README.md).
+The `cu12` extra pulls in cuDNN 9 and cuBLAS 12 from pip. Leave it off if you already have them, for example from a CUDA 12 PyTorch. On an Apple silicon Mac it's `pip install inkrs`. [python/README.md](python/README.md) has the details.
 
 Or build the CLI from source. The GPU kernels are committed compiled for the common NVIDIA GPUs, from the T4 to the RTX 50 series, and as PTX that the driver compiles for any other GPU, so you don't need the CUDA toolkit:
 

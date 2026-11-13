@@ -4,6 +4,7 @@ version = "0.2.0"
 edition = "2024"
 publish = false
 license = "MIT OR Apache-2.0"
+repository = "https://github.com/praveenperera/inkrs"
 description = "GPU-resident ink inference for villa's flat ink readers and Hecate 9.6 um, writing their outputs"
 
 # the kernel crate builds only through scripts/build-ptx.sh on its own pinned toolchain

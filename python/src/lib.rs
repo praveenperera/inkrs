@@ -501,7 +501,6 @@ fn hecate(
     serde_json::to_string(&rep).map_err(|e| InkrsError::new_err(e.to_string()))
 }
 
-/// The embedded PTX: its targets and ISA versions, as `(target, version)` pairs
 #[cfg(not(target_os = "macos"))]
 /// One 3D U-Net ink run over a zarr volume into a zarr prediction (`inkrs ink3d`); returns the
 /// run report as JSON
@@ -544,6 +543,7 @@ fn ink3d(
     serde_json::to_string(&report).map_err(|e| InkrsError::new_err(e.to_string()))
 }
 
+/// The embedded PTX: its targets and ISA versions, as `(target, version)` pairs
 #[cfg(not(target_os = "macos"))]
 #[pyfunction]
 fn ptx_targets() -> Vec<(String, String)> {
@@ -586,5 +586,7 @@ fn _inkrs(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add("InkrsError", m.py().get_type::<InkrsError>())?;
     m.add("CudaLibraryError", m.py().get_type::<CudaLibraryError>())?;
     m.add("UnsupportedError", m.py().get_type::<UnsupportedError>())?;
+    // the package's one version: pyproject.toml takes it from this crate, and CI checks the crate matches inkrs
+    m.add("__version__", env!("CARGO_PKG_VERSION"))?;
     Ok(())
 }

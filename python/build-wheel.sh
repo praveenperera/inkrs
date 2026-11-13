@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Builds the inkrs wheel: manylinux_2_28 x86_64, abi3 (CPython 3.9+), the kernels embedded as cubins and PTX; on macOS, an
-# arm64 wheel for the Metal engine (macOS 26 or later)
+# arm64 wheel for the Metal engine, which runs on macOS 26 or later
 #
 #   python/build-wheel.sh [OUT_DIR]      # default target/wheels
 #
@@ -14,13 +14,15 @@ jobs="${CARGO_BUILD_JOBS:-4}"
 maturin=(uvx --from 'maturin[zig]==1.16.0' maturin)
 
 # macOS: an arm64 wheel for the Metal engine. The shaders ship as source and compile when the engine opens, so
-# there is no PTX to check. Metal 4's tensor ops need macOS 26, hence the deployment target. BSD realpath has no
-# -m, so the output directory is made first
+# there is no PTX to check. Metal 4's tensor ops need macOS 26, but the wheel keeps the arm64 floor of 11.0 so pip
+# installs it on any Apple silicon Mac; on an older macOS the engine raises UnsupportedError naming the version,
+# instead of pip falling back to the sdist and failing to build it. BSD realpath has no -m, so the output
+# directory is made first
 if [ "$(uname -s)" = Darwin ]; then
   out="${1:-$here/../target/wheels}"
   mkdir -p "$out" && out="$(cd "$out" && pwd)"
   cd "$here"
-  MACOSX_DEPLOYMENT_TARGET=26.0 "${maturin[@]}" build --release --target aarch64-apple-darwin -j "$jobs" --out "$out"
+  MACOSX_DEPLOYMENT_TARGET=11.0 "${maturin[@]}" build --release --target aarch64-apple-darwin -j "$jobs" --out "$out"
   wheel="$(ls -t "$out"/inkrs-*-cp39-abi3-macosx_*_arm64.whl | head -1)"
   unzip -l "$wheel"
   echo "$wheel"
