@@ -725,9 +725,10 @@ def test_a_checkpoint_that_does_not_match_its_model_is_unsupported(tmp_path, mon
 
 
 def test_a_checkpoint_that_matches_its_model_still_exports(tmp_path, monkeypatch):
+    # _toy_villa skips without torch and safetensors, so the import follows it
+    torch, state = _toy_villa(monkeypatch)
     from safetensors.torch import load_file
 
-    torch, state = _toy_villa(monkeypatch)
     monkeypatch.setenv("INKRS_CACHE_DIR", str(tmp_path / "cache"))
     pth = _toy_checkpoint(tmp_path / "toy.pth", torch, state)
     # the export Engine loads; the toy model is no reader, so the engine itself is not opened
