@@ -6,6 +6,8 @@ All notable changes to inkrs are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-11-13
+
 ### Added
 
 - The `inkrs` CLI is on crates.io: `cargo install inkrs --locked` builds it with
@@ -55,5 +57,6 @@ The first public release.
 - `--fast` presets that trade a measured amount of accuracy for speed, described
   in [docs/FAST.md](docs/FAST.md).
 
-[Unreleased]: https://github.com/praveenperera/inkrs/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/praveenperera/inkrs/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/praveenperera/inkrs/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/praveenperera/inkrs/releases/tag/v0.2.0
