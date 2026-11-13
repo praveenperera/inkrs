@@ -85,7 +85,7 @@ site=$(python -c 'import sysconfig; print(sysconfig.get_paths()["purelib"])')
 export LD_LIBRARY_PATH="$site/nvidia/cudnn/lib:$site/nvidia/cublas/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 ```
 
-**Windows.** The same driver, plus cuDNN 9 (`cudnn64_9.dll`) and cuBLAS 12 (`cublas64_12.dll`). The driver's `nvcuda.dll` only loads from System32, where the driver puts it. The rest load from the folder `inkrs.exe` is in, System32, each absolute `PATH` entry in order, then `%CUDA_PATH%\bin\x64` and `%CUDA_PATH%\bin`. So a CUDA 12 toolkit is found through `CUDA_PATH`, and the pip copies once their `nvidia\cudnn\bin` and `nvidia\cublas\bin` folders are on `PATH`. NVRTC, which cuDNN uses for some of its engines, is found the same way. The CLI never loads a library from the current folder or a relative `PATH` entry: if one of them holds a DLL it would otherwise pick up, it stops and names the file.
+**Windows.** The same driver, plus cuDNN 9 (`cudnn64_9.dll`) and cuBLAS 12 (`cublas64_12.dll`). The CLI looks for them next to `inkrs.exe`, in System32, in each absolute `PATH` entry, then under `%CUDA_PATH%`, so a CUDA 12 toolkit works, and so do the pip copies once their `nvidia\cudnn\bin` and `nvidia\cublas\bin` folders are on `PATH`. It never loads a DLL from the current folder or a relative `PATH` entry; if one is there, it stops and names the file.
 
 **macOS.** Apple silicon (M1 or newer) and macOS 26 or newer, for Metal 4. The binary starts on macOS 11 and later, but before 26 it stops with an error naming the version it needs. It needs no CUDA libraries and no Xcode, since the Metal shaders ship as source and compile when the engine starts.
 
