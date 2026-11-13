@@ -91,7 +91,6 @@ def export(
     # villa and torch are needed only here, so `import inkrs` works without them
     import torch
     from safetensors.torch import save_file
-
     from vesuvius.ink_detection.config import InkConfig
     from vesuvius.ink_detection.inference.infer import flat_preprocessing_from_config
     from vesuvius.ink_detection.inference.inference_runtime import resolve_amp_dtype
@@ -116,7 +115,7 @@ def export(
     model.eval()
 
     sd = model.state_dict(keep_vars=False)
-    unique: dict[str, "torch.Tensor"] = {}
+    unique: dict[str, torch.Tensor] = {}
     aliases: dict[str, str] = {}
     by_ptr: dict[tuple[int, int, tuple], str] = {}
     for key, tensor in sd.items():

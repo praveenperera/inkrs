@@ -121,28 +121,28 @@ def test_hecate_refuses_bad_requests_before_any_cuda_library_loads(tmp_path, mon
     monkeypatch.setattr(inkrs, "load_cuda_libraries", no_load)
     (tmp_path / "exists.png").write_bytes(b"")
     cases = [
-        (dict(fast=True, stride=48), "--fast sets"),
-        (dict(fast=True, precision="fp32"), "--fast sets"),
-        (dict(fast=True, overlap=0.5), "--fast sets"),
-        (dict(stride=32, overlap=0.5), "not both"),
-        (dict(stride=65), "outside"),
-        (dict(stride=0), "outside"),
-        (dict(stride=-1), "negative"),
-        (dict(overlap=1.0), "overlap"),
-        (dict(batch_size=0), "batch size"),
-        (dict(precision="bf16", tf32=False), "fp32 only"),
-        (dict(precision="fp8"), "need fp32 or bf16"),
-        (dict(algo="fastest"), "need find or heuristic"),
-        (dict(direction="sideways"), "direction"),
-        (dict(spacing_um=8.64), "resample"),
-        (dict(spacing_um=float("nan")), "resample"),
-        (dict(output=tmp_path / "o.tif"), "ending in .png"),
-        (dict(output=tmp_path / "exists.png"), "ending in .png"),
-        (dict(output=tmp_path / "exists.png", direction="reverse"), "ending in .png"),
-        (dict(device=-1), "negative"),
+        ({"fast": True, "stride": 48}, "--fast sets"),
+        ({"fast": True, "precision": "fp32"}, "--fast sets"),
+        ({"fast": True, "overlap": 0.5}, "--fast sets"),
+        ({"stride": 32, "overlap": 0.5}, "not both"),
+        ({"stride": 65}, "outside"),
+        ({"stride": 0}, "outside"),
+        ({"stride": -1}, "negative"),
+        ({"overlap": 1.0}, "overlap"),
+        ({"batch_size": 0}, "batch size"),
+        ({"precision": "bf16", "tf32": False}, "fp32 only"),
+        ({"precision": "fp8"}, "need fp32 or bf16"),
+        ({"algo": "fastest"}, "need find or heuristic"),
+        ({"direction": "sideways"}, "direction"),
+        ({"spacing_um": 8.64}, "resample"),
+        ({"spacing_um": float("nan")}, "resample"),
+        ({"output": tmp_path / "o.tif"}, "ending in .png"),
+        ({"output": tmp_path / "exists.png"}, "ending in .png"),
+        ({"output": tmp_path / "exists.png", "direction": "reverse"}, "ending in .png"),
+        ({"device": -1}, "negative"),
     ]
     for kwargs, match in cases:
-        kwargs = dict(spacing_um=9.6, output=tmp_path / "o.png") | kwargs
+        kwargs = {"spacing_um": 9.6, "output": tmp_path / "o.png"} | kwargs
         output = kwargs.pop("output")
         with pytest.raises(ValueError, match=match):
             inkrs.hecate(tmp_path / "missing.npy", tmp_path / "missing.safetensors", output, **kwargs)
@@ -275,7 +275,7 @@ def test_torch_cpu_tensor_is_read_in_place():
 def test_missing_cudnn_names_the_pip_package(monkeypatch):
     monkeypatch.setattr(_cuda, "_loaded", None)
     monkeypatch.setattr(_cuda, "_candidates", lambda name: [f"libinkrs-test-missing-{name}.so"])
-    monkeypatch.setattr(_cuda, "_site_dirs", lambda: [])
+    monkeypatch.setattr(_cuda, "_site_dirs", list)
     with pytest.raises(inkrs.CudaLibraryError, match="pip install nvidia-cublas-cu12"):
         inkrs.load_cuda_libraries()
 
@@ -611,7 +611,7 @@ def test_sweep_needs_a_name_for_an_in_memory_volume(tmp_path):
     e._v8 = None
     e.reader = "reader-v2"
     with pytest.raises(ValueError, match="name is needed"):
-        e.sweep(np.zeros((66, 128, 128), np.uint8), range(0, 1), out_dir=tmp_path)
+        e.sweep(np.zeros((66, 128, 128), np.uint8), range(1), out_dir=tmp_path)
 
 
 # two real villa checkpoints of one architecture; the test exports both, so it runs only where villa, torch and the

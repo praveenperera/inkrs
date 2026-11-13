@@ -22,8 +22,9 @@ import re
 import shutil
 import sys
 import tempfile
+from collections.abc import Iterable, Sequence
 from pathlib import Path
-from typing import Any, Iterable, Sequence
+from typing import Any
 
 import numpy as np
 
@@ -541,9 +542,8 @@ class Engine:
                 raise ValueError(f"window ({f}, {s}): step must be 1 or -1")
         if outputs is not None and len(outputs) != len(windows):
             raise ValueError("outputs needs one path per window")
-        if coverage_outputs is not None:
-            if not coverage or len(coverage_outputs) != len(windows):
-                raise ValueError("coverage_outputs needs coverage=True and one path per window")
+        if coverage_outputs is not None and (not coverage or len(coverage_outputs) != len(windows)):
+            raise ValueError("coverage_outputs needs coverage=True and one path per window")
         if writers < 1:
             raise ValueError("writers must be positive")
         specs = [

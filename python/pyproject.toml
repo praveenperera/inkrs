@@ -34,3 +34,7 @@ python-packages = ["inkrs"]
 # the release profile keeps line tables for the CLI; the wheel does not need them
 strip = true
 include = [{ path = "API.md", format = "sdist" }]
+
+# ruff is pinned where it runs, in CI's Python lints job, since a new release can add lints
+[tool.ruff]
+line-length = 120
