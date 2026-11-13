@@ -6,6 +6,14 @@ All notable changes to inkrs are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- The `inkrs` CLI is on crates.io: `cargo install inkrs --locked` builds it with
+  only Rust installed, no CUDA toolkit.
+- Prebuilt CLI binaries for Linux x86-64 (glibc 2.28 or newer), Windows x86-64
+  and macOS arm64, installed with `cargo binstall inkrs` or downloaded from the
+  GitHub release.
+
 ### Changed
 
 - A villa checkpoint whose keys or tensor shapes don't match the model its config

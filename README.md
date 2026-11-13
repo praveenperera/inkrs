@@ -62,17 +62,36 @@ pip install "inkrs[cu12]"
 
 The `cu12` extra pulls in cuDNN 9 and cuBLAS 12 from pip. Leave it off if you already have them, for example from a CUDA 12 PyTorch. On an Apple silicon Mac it's `pip install inkrs`. [python/README.md](python/README.md) has the details.
 
-Or build the CLI from source. The GPU kernels are committed compiled for the common NVIDIA GPUs, from the T4 to the RTX 50 series, and as PTX that the driver compiles for any other GPU, so you don't need the CUDA toolkit:
+The `inkrs` CLI comes prebuilt for Linux x86-64, Windows x86-64 and Apple silicon Macs, through [cargo-binstall](https://github.com/cargo-bins/cargo-binstall):
 
 ```
-cargo build --release
+cargo binstall inkrs
 ```
 
-You'll need an NVIDIA driver new enough for CUDA 12 (r525 or later, r570 or later on the RTX 50 series), plus cuDNN 9 and cuBLAS. On a Mac you need Apple silicon and macOS 26, and nothing else.
+Or build it from crates.io. The GPU kernels ship compiled for the common NVIDIA GPUs, from the T4 to the RTX 50 series, and as PTX that the driver compiles for any other GPU, so all you need is Rust, not the CUDA toolkit:
+
+```
+cargo install inkrs --locked
+```
+
+The prebuilt Linux binary needs glibc 2.28 or newer (RHEL 8, Debian 10, Ubuntu 20.04 and later). The archives are also attached to each [GitHub release](https://github.com/praveenperera/inkrs/releases).
+
+### What the CLI needs to run
+
+**Linux.** An NVIDIA driver new enough for CUDA 12 (r525 or later, r570 or later on the RTX 50 series), plus cuDNN 9 and cuBLAS 12. The CLI opens them by name, so it finds them wherever the system's dynamic loader does: installed system-wide, or in a directory on `LD_LIBRARY_PATH`. It tries the unversioned names first (`libcudnn.so`, `libcublas.so`), then versioned ones such as `libcudnn.so.9` and `libcublas.so.12`. Unlike the Python package, it doesn't look inside a Python environment, so to use the pip copies, put their directories on the path:
+
+```
+site=$(python -c 'import sysconfig; print(sysconfig.get_paths()["purelib"])')
+export LD_LIBRARY_PATH="$site/nvidia/cudnn/lib:$site/nvidia/cublas/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+```
+
+**Windows.** The same driver, plus cuDNN 9 (`cudnn64_9.dll`) and cuBLAS 12 (`cublas64_12.dll`). The driver's `nvcuda.dll` only loads from System32, where the driver puts it. The rest load from the folder `inkrs.exe` is in, System32, each absolute `PATH` entry in order, then `%CUDA_PATH%\bin\x64` and `%CUDA_PATH%\bin`. So a CUDA 12 toolkit is found through `CUDA_PATH`, and the pip copies once their `nvidia\cudnn\bin` and `nvidia\cublas\bin` folders are on `PATH`. NVRTC, which cuDNN uses for some of its engines, is found the same way. The CLI never loads a library from the current folder or a relative `PATH` entry: if one of them holds a DLL it would otherwise pick up, it stops and names the file.
+
+**macOS.** Apple silicon (M1 or newer) and macOS 26 or newer, for Metal 4. The binary starts on macOS 11 and later, but before 26 it stops with an error naming the version it needs. It needs no CUDA libraries and no Xcode, since the Metal shaders ship as source and compile when the engine starts.
 
 ## Usage
 
-inkrs reads weights from a safetensors export of the checkpoint. You make it once, on the CPU, with villa installed:
+inkrs reads weights from a safetensors export of the checkpoint. You make it once, on the CPU, with villa installed, using the script in this repository or the copy in the Python package (`python -m inkrs.export_weights`):
 
 ```
 python -I scripts/export_weights.py ink_9um/hybrid_3d2d-seed42/step-075000.pth weights/
@@ -81,7 +100,7 @@ python -I scripts/export_weights.py ink_9um/hybrid_3d2d-seed42/step-075000.pth w
 Then all 18 maps of a segment in one go:
 
 ```
-target/release/inkrs sweep RENDER.zarr --ckpt weights/hybrid_3d2d-seed42.safetensors --depths=-4..4 \
+inkrs sweep RENDER.zarr --ckpt weights/hybrid_3d2d-seed42.safetensors --depths=-4..4 \
   --direction both --stride 64 --out OUT --name SEGMENT
 ```
 
@@ -121,7 +140,7 @@ A few other limits worth knowing:
 | Hecate | ✅ | ❌ | ✅ | ⚠️ fp16 only | ✅ |
 | v8-in and A-hn | ✅ | ❌ | ⚠️ v8-in only | ⚠️ its A-hn misses the 0306B recipe | ✅ |
 | Apple silicon | ✅ Metal | ⚠️ PyTorch MPS, slower | ❌ | ❌ | ⚠️ PyTorch MPS, slower, not tested by its authors |
-| Install | `pip` | `pip` | `pip` | build from source | `git clone`, then `pip` |
+| Install | `pip` or `cargo` | `pip` | `pip` | build from source | `git clone`, then `pip` |
 | Licence | MIT or Apache-2.0 | MIT | MIT | none | MIT |
 | Training | ❌ | ✅ | ❌ | ✅ its own models | ❌ |
 | Renders segments from a mesh | ❌ | ✅ VC3D | ✅ | ✅ its own surfaces | ✅ |
