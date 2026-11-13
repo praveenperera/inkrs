@@ -403,8 +403,12 @@ def _resolve_checkpoint(checkpoint: Path, weights_dir: Path) -> Path:
     try:
         try:
             export_weights.export(checkpoint, staging)
-        except (export_weights.ExportUnsupported, ImportError) as e:
-            # a checkpoint inkrs does not implement, or a villa without the exporter's entry points
+        except export_weights.ExportUnsupported as e:
+            # a checkpoint inkrs does not implement (not flat, keys or shapes that do not match its model, not
+            # float32); a manual export would refuse it the same way, so no export is suggested
+            raise UnsupportedError(f"cannot export {checkpoint} for inkrs: {e}") from e
+        except ImportError as e:
+            # a villa without the exporter's entry points
             raise UnsupportedError(f"cannot export {checkpoint} for inkrs: {type(e).__name__}: {e}; {manual}") from e
         except Exception as e:
             # disk full, out of memory, a corrupt checkpoint: real failures, which must not become a silent fallback

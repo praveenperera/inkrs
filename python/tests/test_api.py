@@ -649,3 +649,93 @@ def test_auto_export_names_each_checkpoint_after_itself(tmp_path, monkeypatch):
         names.append(meta["reader"])
     assert names[0] != names[1], names
     assert names[0] == pytest.importorskip("inkrs.export_weights").default_name(_PTH_PAIR[0])
+
+
+def _toy_villa(monkeypatch):
+    """Stands in for the six villa entry points the exporter calls, around a two-conv model, so a real torch
+    checkpoint runs through the real export where villa is not installed (it is not on CI)"""
+    import importlib.machinery
+    import types
+
+    torch = pytest.importorskip("torch")
+    pytest.importorskip("safetensors")
+
+    def make_model(config):
+        torch.manual_seed(0)
+        return torch.nn.Sequential(torch.nn.Conv3d(1, 2, 1), torch.nn.Conv3d(2, 1, 1))
+
+    def from_mapping(cfg):
+        data = types.SimpleNamespace(mode=cfg["mode"], normalization="robust")
+        model = types.SimpleNamespace(model_type=cfg["model_type"], crop_size=[17, 128, 128], input_pad_depth_to=None)
+        return types.SimpleNamespace(data=data, model=model)
+
+    entry_points = {
+        "vesuvius.ink_detection.config": {"InkConfig": types.SimpleNamespace(from_mapping=from_mapping)},
+        "vesuvius.ink_detection.inference.infer": {"flat_preprocessing_from_config": lambda norm: norm},
+        "vesuvius.ink_detection.inference.inference_runtime": {"resolve_amp_dtype": lambda *args: None},
+        "vesuvius.ink_detection.models.checkpoint": {
+            "load_checkpoint": lambda path: torch.load(path, weights_only=True),
+            "select_inference_weights": lambda payload, source: ("model", payload["model"]),
+        },
+        "vesuvius.ink_detection.models.model": {"make_model": make_model},
+    }
+    parents = {name.rsplit(".", n)[0] for name in entry_points for n in range(1, name.count(".") + 1)}
+    for name in sorted(parents | entry_points.keys()):
+        module = types.ModuleType(name)
+        # `inkrs` checks `importlib.util.find_spec("vesuvius")`, which needs a spec on a module already imported
+        module.__spec__ = importlib.machinery.ModuleSpec(name, None)
+        module.__dict__.update(entry_points.get(name, {}))
+        monkeypatch.setitem(sys.modules, name, module)
+    return torch, make_model(None).state_dict()
+
+
+def _toy_checkpoint(path, torch, state):
+    config = {"mode": "flat", "model_type": "toy", "model_config": {}, "targets": {"ink": {}}}
+    torch.save({"config": config, "model": state}, path)
+    return path
+
+
+@pytest.mark.parametrize(
+    "edit, mismatch",
+    [
+        ({"2.weight": [1]}, "unexpected keys: 2.weight"),
+        ({"0.bias": None}, "missing keys: 0.bias"),
+        ({"0.weight": [3, 1, 1, 1, 1]}, "shape mismatches: 0.weight is [3, 1, 1, 1, 1], the model's [2, 1, 1, 1, 1]"),
+        (
+            {"0.bias": None, "1.bias": None, **{f"head.{i}": [1] for i in range(7)}},
+            "missing keys: 0.bias, 1.bias; unexpected keys: head.0, head.1, head.2, head.3, head.4 and 2 more",
+        ),
+    ],
+)
+def test_a_checkpoint_that_does_not_match_its_model_is_unsupported(tmp_path, monkeypatch, edit, mismatch):
+    # villa loads with strict=False and runs such a checkpoint, so `--engine inkrs` must fall back, not stop
+    torch, state = _toy_villa(monkeypatch)
+    monkeypatch.setenv("INKRS_CACHE_DIR", str(tmp_path / "cache"))
+    for key, shape in edit.items():
+        if shape is None:
+            del state[key]
+        else:
+            state[key] = torch.zeros(shape)
+    pth = _toy_checkpoint(tmp_path / "toy.pth", torch, state)
+    with pytest.raises(inkrs.UnsupportedError) as caught:
+        inkrs.Engine(pth, weights_dir=tmp_path / "weights")
+    assert type(caught.value) is inkrs.UnsupportedError
+    assert str(caught.value) == f"cannot export {pth} for inkrs: the state does not match the toy model: {mismatch}"
+    assert list((tmp_path / "cache" / "weights").iterdir()) == [], "a refused export left a cache entry"
+
+
+def test_a_checkpoint_that_matches_its_model_still_exports(tmp_path, monkeypatch):
+    from safetensors.torch import load_file
+
+    torch, state = _toy_villa(monkeypatch)
+    monkeypatch.setenv("INKRS_CACHE_DIR", str(tmp_path / "cache"))
+    pth = _toy_checkpoint(tmp_path / "toy.pth", torch, state)
+    # the export Engine loads; the toy model is no reader, so the engine itself is not opened
+    export = inkrs._resolve_checkpoint(pth, tmp_path / "weights")
+    assert export == tmp_path / "cache" / "weights" / inkrs._sha256(pth) / "toy.safetensors"
+    tensors = load_file(str(export))
+    assert tensors.keys() == state.keys()
+    assert all(torch.equal(tensors[k], v) for k, v in state.items())
+    meta = json.loads(export.with_suffix(".json").read_text())
+    assert meta["keys"] == {k: list(v.shape) for k, v in state.items()}
+    assert meta["model_type"] == "toy" and meta["checkpoint_sha256"] == inkrs._sha256(pth)

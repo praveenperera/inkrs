@@ -2,8 +2,10 @@
 
 Runs once per checkpoint, on the CPU, where villa 0fb38c45 is installed. It rebuilds the model exactly as villa's
 `infer.configure_model` does, then loads the state with strict=True, which villa does not (it uses strict=False and
-so hides mismatches). Aliased parameters (`conv.weight` and `all_modules.0.weight` are one tensor) are written once
-under the first name, and the aliases go into the metadata so the Rust side can check the full key set.
+so hides mismatches). A state with missing or unexpected keys, or a tensor of another shape, raises
+ExportUnsupported naming them, so `inkrs.Engine` reports it as UnsupportedError. Aliased parameters (`conv.weight`
+and `all_modules.0.weight` are one tensor) are written once under the first name, and the aliases go into the
+metadata so the Rust side can check the full key set.
 
     python -m inkrs.export_weights CKPT OUT_DIR      # from the installed package
     python -I scripts/export_weights.py CKPT OUT_DIR  # from the source tree
@@ -46,7 +48,39 @@ def default_name(checkpoint: str | Path) -> str:
 
 
 class ExportUnsupported(ValueError):
-    """The checkpoint is valid, but not one inkrs implements: not a flat model, or weights that are not float32"""
+    """The checkpoint is valid, but not one inkrs implements: not a flat model, a state whose keys or shapes do not
+    match the model its config builds, or weights that are not float32"""
+
+
+#: names listed per kind of mismatch before the rest are only counted
+_LISTED = 5
+
+
+def _listed(names: list[str]) -> str:
+    shown = ", ".join(names[:_LISTED])
+    more = len(names) - _LISTED
+    return shown if more <= 0 else f"{shown} and {more} more"
+
+
+def _state_mismatch(expected: dict, state: dict) -> str | None:
+    """What keeps `state` from loading strictly into a model whose `state_dict()` is `expected`, or None when nothing
+
+    The key and shape checks `load_state_dict(strict=True)` makes, done first so a mismatch is reported as
+    ExportUnsupported with the keys named instead of as torch's RuntimeError, which `inkrs.Engine` would report as a
+    hard failure. villa's ink models register no state dict load hooks, so the model's own key set is the one a strict
+    load checks; a hook that renamed keys would make this refuse a checkpoint torch loads, which only costs a fallback
+    """
+    got = {str(k): v for k, v in state.items()}
+    missing = sorted(k for k in expected if k not in got)
+    unexpected = sorted(k for k in got if k not in expected)
+    shapes = sorted(
+        f"{k} is {list(got[k].shape)}, the model's {list(v.shape)}"
+        for k, v in expected.items()
+        if k in got and hasattr(got[k], "shape") and tuple(got[k].shape) != tuple(v.shape)
+    )
+    found = (("missing keys", missing), ("unexpected keys", unexpected), ("shape mismatches", shapes))
+    parts = [f"{kind}: {_listed(names)}" for kind, names in found if names]
+    return "; ".join(parts) or None
 
 
 def _sha256(path: Path) -> str:
@@ -110,7 +144,11 @@ def export(
     if state and all(str(k).startswith("module.") for k in state):
         state = {str(k)[len("module."):]: v for k, v in state.items()}
     model = make_model(config)
-    # strict: every checkpoint key is used and every model key is present
+    # villa loads with strict=False and runs such a checkpoint, so a mismatch is one inkrs does not implement, not a
+    # broken file; the strict load stays as the guarantee that no export is written from a partial state
+    mismatch = _state_mismatch(model.state_dict(), state)
+    if mismatch is not None:
+        raise ExportUnsupported(f"the state does not match the {config.model.model_type} model: {mismatch}")
     model.load_state_dict(state, strict=True)
     model.eval()
 
