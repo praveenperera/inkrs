@@ -4,6 +4,16 @@ All notable changes to inkrs are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions follow
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- The `inkrs` CLI is on crates.io: `cargo install inkrs --locked` builds it with
+  only Rust installed, no CUDA toolkit.
+- Prebuilt CLI binaries for Linux x86-64 (glibc 2.28 or newer), Windows x86-64
+  and macOS arm64, installed with `cargo binstall inkrs` or downloaded from the
+  GitHub release.
+
 ## [0.2.0] - 2026-11-12
 
 The first public release.
