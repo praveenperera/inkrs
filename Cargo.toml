@@ -2,10 +2,31 @@
 name = "inkrs"
 version = "0.2.0"
 edition = "2024"
-publish = false
 license = "MIT OR Apache-2.0"
+authors = ["Praveen Perera"]
 repository = "https://github.com/praveenperera/inkrs"
+documentation = "https://docs.rs/inkrs"
+readme = "README.md"
 description = "GPU-resident ink inference for villa's flat ink readers and Hecate 9.6 um, writing their outputs"
+keywords = ["vesuvius", "ink-detection", "cuda", "metal", "inference"]
+categories = ["science", "computer-vision", "command-line-utilities"]
+# what a build reads: the kernels are embedded from ptx/ and fixtures/ at compile time and the Metal shaders from
+# src/metal, so the crate needs neither the kernel sources nor a CUDA toolkit. ptx/tools.txt holds the libdevice hash
+# THIRD_PARTY_NOTICES cites, and metal/coreml_body.py builds the Core ML body the engine's errors point to
+include = [
+    "/src/**",
+    "/ptx/*.ptx",
+    "/ptx/*.cubin",
+    "/ptx/tools.txt",
+    "/fixtures/*.f32",
+    "/metal/coreml_body.py",
+    "/README.md",
+    "/CHANGELOG.md",
+    "/LICENSE-MIT",
+    "/LICENSE-APACHE",
+    "/THIRD_PARTY_NOTICES",
+    "/licenses/**",
+]
 
 # the kernel crate builds only through scripts/build-ptx.sh on its own pinned toolchain
 [workspace]
