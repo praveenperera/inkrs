@@ -4,6 +4,20 @@ All notable changes to inkrs are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions follow
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- A villa checkpoint whose keys or tensor shapes don't match the model its config
+  builds now makes `inkrs.Engine` raise `inkrs.UnsupportedError`, naming the
+  missing and unexpected keys and the mismatched shapes. It used to fail as a plain
+  `inkrs.InkrsError`, so a caller that falls back to PyTorch on `UnsupportedError`,
+  such as villa's `--engine inkrs`, stopped instead of falling back.
+  `python -m inkrs.export_weights` now reports the same keys in one line instead of
+  a PyTorch traceback. The export still never runs from a partial state.
+- An `UnsupportedError` for a checkpoint the exporter refuses no longer suggests
+  exporting it by hand, since that export would refuse it too.
+
 ## [0.2.0] - 2026-11-12
 
 The first public release.
@@ -33,4 +47,5 @@ The first public release.
 - `--fast` presets that trade a measured amount of accuracy for speed, described
   in [docs/FAST.md](docs/FAST.md).
 
+[Unreleased]: https://github.com/praveenperera/inkrs/compare/v0.2.0...HEAD
 [0.2.0]: https://github.com/praveenperera/inkrs/releases/tag/v0.2.0
