@@ -1,5 +1,5 @@
-# Builds and checks inkrs on Linux and Windows x86_64: formatting, clippy, the CPU tests and the CLI, plus the
-# dependency policy and the Python lints. package.yml builds and tests the Python wheels and sdist. A GitHub runner
+# Builds and checks inkrs on Linux and Windows x86_64: formatting, clippy, the CPU tests and the CLI, plus clippy on
+# macOS arm64, the dependency policy and the Python lints. package.yml builds and tests the Python wheels and sdist. A GitHub runner
 # has no GPU, so nothing here runs a model; the GPU checks are in results/README.md. CUDA loads at run time, so no
 # job installs a CUDA toolkit
 
@@ -111,6 +111,27 @@ jobs:
           echo "$out"
           grep -q 'nvcuda.dll' <<< "$out"
 
+
+  # the Metal backend and every macOS cfg compile only on macOS, so the Linux and Windows clippy never sees them
+  clippy-macos:
+    name: Clippy (macOS arm64)
+    runs-on: macos-26
+    timeout-minutes: 30
+    env:
+      RUSTFLAGS: -D warnings
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec # stable
+        with:
+          toolchain: stable
+          components: clippy
+
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
+
+      - name: Clippy
+        run: cargo clippy --workspace --all-targets --locked -- -D warnings
 
   # advisories, licences and sources (deny.toml): every dependency comes from crates.io
   deny:
