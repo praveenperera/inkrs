@@ -135,7 +135,7 @@ A few other limits worth knowing:
 
 ## Credits
 
-inkrs reimplements other people's work and is checked against it. villa wrote the ink models' architecture, `hybrid_3d2d-seed42`, the 3D ink U-Net, and the inference code inkrs matches. Domenico Russo trained reader-v2 and Reader V3. The Vesuvius Challenge released Hecate 9.6 µm and `hecate.py`. Youssef Nader trained v8-in, and Prodigle its A-hn fine-tunes for PHerc. 0306B. J. S. Gill and N. N. Tran trained TRACE v3B, and G. Pellerano the Rectina models. gomyway published the reader-v2 and Hecate maps I checked against. UFSM (SuperOptimizer), ink-sdk (LimeGS), inksweep and SurgeFok's MPS path are the other public runners I compared with.
+inkrs reimplements other people's work and is checked against it. villa wrote the ink models' architecture, `hybrid_3d2d-seed42`, the 3D ink U-Net, and the inference code inkrs matches. Domenico Russo trained reader-v2 and Reader V3. The Vesuvius Challenge released Hecate 9.6 µm and `hecate.py`. Youssef Nader trained v8-in, and Prodigle its A-hn fine-tunes for PHerc. 0306B. J. S. Gill and N. N. Tran trained TRACE v3B, and Giovanni Pellerano the Rectina models. gomyway published the reader-v2 and Hecate maps I checked against. UFSM (Forrest McDonald), ink-sdk (Leonel Wainer and Paulo Sergio Camillo), inksweep and SurgeFok's MPS path are the other public runners I compared with.
 
 ## Licence
 
