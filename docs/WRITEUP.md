@@ -8,7 +8,7 @@ A map only counts if it's within villa's own bar against villa eager: r ≥ 0.99
 
 The depth sweep is the recipe's slowest stage. The recipe calls villa once per depth, and every call reloads the model. villa has got faster lately, and has a set of faster flags, but it still runs one PyTorch process per depth.
 
-The fastest public PyTorch path I timed for this reader is inksweep's fast mode, which runs every depth in one process with `torch.compile`. UFSM (`SuperOptimizer/ufsm`) is a public C/CUDA port with its own fp16 kernels, compiled ahead of time. Warm, inkrs is 2.35× faster than UFSM on one S1 map (95% CI 2.12× to 2.57×, `results/public-ports.json`). A single run on a fresh machine, with every cache empty, takes inkrs 0.86 s (`results/first-run.json`) against UFSM's 1.87 s (`results/public-ports.json`), because inkrs's kernels come compiled for this GPU too.
+The fastest public PyTorch path I timed for this reader is inksweep's fast mode, which runs every depth in one process with `torch.compile`. UFSM (Forrest McDonald, `SuperOptimizer/ufsm`) is a public C/CUDA port with its own fp16 kernels, compiled ahead of time. Warm, inkrs is 2.35× faster than UFSM on one S1 map (95% CI 2.12× to 2.57×, `results/public-ports.json`). A single run on a fresh machine, with every cache empty, takes inkrs 0.86 s (`results/first-run.json`) against UFSM's 1.87 s (`results/public-ports.json`), because inkrs's kernels come compiled for this GPU too.
 
 inkrs replaces the whole pipeline for one reader and keeps the output contract.
 

@@ -85,7 +85,7 @@ v8-in (Youssef Nader, huggingface.co/YoussefMoNader/ink-8um-v8in at `d89166b4`, 
 
 - **Maps:** on a 1260 × 4410 claim crop and a 1260 × 1260 edge crop of the 306B segment, every map (v8-in in both conventions and each A-hn seed in `306b`, on both crops, on the sm120 tier and with sm80 forced) matches ink8um's `predict_stack` and the 306B runner: worst r 0.999993, p99.9 0.64/255, max 1.12/255, identical coverage. The sm80 maps equal the sm120 maps bit for bit. [Turing](#turing-tesla-t4) has the same checks on a T4.
 - **Stages:** on 256 real tiles every stage is within the reference's own fp16 error. On one synthetic constant tile (InstanceNorm variance 0) some A-hn decoder stages exceed it; the probability passes. The cause is unverified.
-- **Speed:** 6.99 ms per tile of GPU time at batch 16. End to end on the claim crop, 84.0 s against 152.6 s for inksweep's fast mode compiled, 1.82× faster (95% CI 1.74 to 1.90×), and 2.30× faster than inksweep without compile. ink-sdk (LimeGS, MIT) also runs v8-in and the A-hn fine-tunes, through the model's own `predict.py`; `results/public-ports.json` compares inkrs with its v8-in lane.
+- **Speed:** 6.99 ms per tile of GPU time at batch 16. End to end on the claim crop, 84.0 s against 152.6 s for inksweep's fast mode compiled, 1.82× faster (95% CI 1.74 to 1.90×), and 2.30× faster than inksweep without compile. ink-sdk (Leonel Wainer and Paulo Sergio Camillo, MIT) also runs v8-in and the A-hn fine-tunes, through the model's own `predict.py`; `results/public-ports.json` compares inkrs with its v8-in lane.
 
 ## villa's 3D ink U-Net
 
@@ -95,7 +95,7 @@ On a crop of a scan volume, with 256³ patches at villa's overlap 0.5, against v
 
 ## The prize recipes' models
 
-The two 2026 First Letters prizes used these models. Each one except Hecate is a villa `vesuvius_unet_3d_stem_2d` checkpoint with the same tensors, `module_repr` and `model_config` as `hybrid_3d2d-seed42`: 264 tensors plus 244 aliases, 34,546,498 parameters, robust MAD normalisation (percentiles 1 and 99) per 17-layer tile, and FP16 autocast. So inkrs runs them through `infer` and `sweep` with no new engine code. Rectina M1 has seed 42's 17 × 128 × 128 tile; Rectina M2 and M4 have Reader V3's tensors and its 17 × 384 × 384 tile. The export also checks `model_type` and `model_config`, since a checkpoint can change an option of the network without changing the tensor shapes. ink-sdk (LimeGS, MIT) is a public runner for TRACE v3B and Rectina M4 as well.
+The two 2026 First Letters prizes used these models. Each one except Hecate is a villa `vesuvius_unet_3d_stem_2d` checkpoint with the same tensors, `module_repr` and `model_config` as `hybrid_3d2d-seed42`: 264 tensors plus 244 aliases, 34,546,498 parameters, robust MAD normalisation (percentiles 1 and 99) per 17-layer tile, and FP16 autocast. So inkrs runs them through `infer` and `sweep` with no new engine code. Rectina M1 has seed 42's 17 × 128 × 128 tile; Rectina M2 and M4 have Reader V3's tensors and its 17 × 384 × 384 tile. The export also checks `model_type` and `model_config`, since a checkpoint can change an option of the network without changing the tensor shapes. ink-sdk (Leonel Wainer and Paulo Sergio Camillo, MIT) is a public runner for TRACE v3B and Rectina M4 as well.
 
 | Model | Used in | Weights and licence | Voxel size it was trained for | Export |
 |---|---|---|---|---|
@@ -104,9 +104,9 @@ The two 2026 First Letters prizes used these models. Each one except Hecate is a
 | ink_9um seed 43, step 75000 | 343 | same repository; MIT | 9 µm class | `export_weights.py hybrid_3d2d-seed43/step-075000.pth W` |
 | Hecate 9.6 µm | 343 | `scrollprize/hecate@9cb86e5`; MIT | 9.6 µm (the recipe resamples 8.64 µm renders) | `export_hecate.py` |
 | TRACE v3B (J. S. Gill, N. N. Tran) | 306B (× A-hn) | `v3B_best.pth`, release v1.0 of `Jashann/vesuvius-scrolling`, SHA-256 `812ffe2b…`; CC BY-NC-SA 4.0 (non-commercial, share-alike) | 9.362 µm per its card; the 306B recipe reads 8.64 µm directly | `export_weights.py v3B_best.pth W --name trace-v3b` |
-| Rectina M1 (G. Pellerano) | not a prize recipe | `evilaliv3/rectina@2f9eaf0`, `m1/ckpt_130001.pth`, SHA-256 `3a84f453…`; weights CC BY-NC 4.0, recipe code MIT | 9 µm class | `export_weights.py ckpt_130001.pth W --name rectina-m1` |
-| Rectina M2 (G. Pellerano) | not a prize recipe | `evilaliv3/rectina@2f9eaf0`, `m2/ckpt_020000.pth`, SHA-256 `dc39d5fa…`; weights CC BY-NC 4.0, recipe code MIT | 9 µm class | `export_weights.py ckpt_020000.pth W --name rectina-m2` (needs the 384-tile engine) |
-| Rectina M4 (G. Pellerano) | not a prize recipe | `evilaliv3/rectina@2f9eaf0`, `m4/ckpt_020000.pth`; weights CC BY-NC 4.0, recipe code MIT | 9 µm class | `export_weights.py ckpt_020000.pth W --name rectina-m4` (needs the 384-tile engine) |
+| Rectina M1 (Giovanni Pellerano) | not a prize recipe | `evilaliv3/rectina@2f9eaf0`, `m1/ckpt_130001.pth`, SHA-256 `3a84f453…`; weights CC BY-NC 4.0, recipe code MIT | 9 µm class | `export_weights.py ckpt_130001.pth W --name rectina-m1` |
+| Rectina M2 (Giovanni Pellerano) | not a prize recipe | `evilaliv3/rectina@2f9eaf0`, `m2/ckpt_020000.pth`, SHA-256 `dc39d5fa…`; weights CC BY-NC 4.0, recipe code MIT | 9 µm class | `export_weights.py ckpt_020000.pth W --name rectina-m2` (needs the 384-tile engine) |
+| Rectina M4 (Giovanni Pellerano) | not a prize recipe | `evilaliv3/rectina@2f9eaf0`, `m4/ckpt_020000.pth`; weights CC BY-NC 4.0, recipe code MIT | 9 µm class | `export_weights.py ckpt_020000.pth W --name rectina-m4` (needs the 384-tile engine) |
 
 The bare dense_native export and an export of the `.pth` the recipe's `rebuild_dense_native_pth.py` writes hold the same tensors and metadata. TRACE v3B's payload records step 74999, its base model's, although the release names it step 5000. A-hn, 306B's other factor, is the v8-in fine-tunes [above](#v8-in-and-a-hn).
 
