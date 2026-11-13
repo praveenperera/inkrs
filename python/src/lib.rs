@@ -557,6 +557,21 @@ fn ptx_targets() -> Vec<(String, String)> {
     Vec::new()
 }
 
+/// The embedded cubins: the PTX target each was compiled from and the GPU family it runs on, as
+/// `(target, arch)` pairs
+#[cfg(not(target_os = "macos"))]
+#[pyfunction]
+fn cubin_targets() -> Vec<(String, String)> {
+    inkrs::gpu::cubin_targets()
+}
+
+/// The embedded cubins: none on macOS, where the kernels are Metal shaders compiled at load
+#[cfg(target_os = "macos")]
+#[pyfunction]
+fn cubin_targets() -> Vec<(String, String)> {
+    Vec::new()
+}
+
 /// The 3D ink engine runs on CUDA only: on macOS its entry point raises [`UnsupportedError`], so the
 /// Python package imports the same names on every platform. v8-in runs on both backends
 #[cfg(target_os = "macos")]
@@ -579,6 +594,7 @@ fn _inkrs(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<v8in::PyV8in>()?;
     m.add_function(wrap_pyfunction!(write_tiff, m)?)?;
     m.add_function(wrap_pyfunction!(ptx_targets, m)?)?;
+    m.add_function(wrap_pyfunction!(cubin_targets, m)?)?;
     m.add_function(wrap_pyfunction!(fast_presets, m)?)?;
     m.add_function(wrap_pyfunction!(reader_stride, m)?)?;
     m.add_function(wrap_pyfunction!(hecate, m)?)?;

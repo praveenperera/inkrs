@@ -85,10 +85,23 @@ pub const TIER_ENV: &str = "INKRS_PTX_TIER";
 /// Each embedded PTX tier's `.target` and `.version` (PTX ISA) lines, lowest tier first, for build
 /// reports and the minimum-driver figures of the Python package
 pub fn ptx_targets() -> Vec<(String, String)> {
-    let directive = |ptx: &str, name: &str| {
-        ptx.lines().find_map(|l| l.trim().strip_prefix(name).map(|v| v.trim().to_owned())).unwrap_or_default()
-    };
-    PTX.iter().map(|(_, ptx)| (directive(ptx, ".target "), directive(ptx, ".version "))).collect()
+    PTX.iter().map(|(_, ptx)| (ptx_directive(ptx, ".target "), ptx_directive(ptx, ".version "))).collect()
+}
+
+/// Each embedded cubin as `(PTX target it was compiled from, GPU family it runs on)`, such as
+/// `("sm_80", "sm_86")`, in [`CUBINS`] order, for build reports
+pub fn cubin_targets() -> Vec<(String, String)> {
+    CUBINS
+        .iter()
+        .map(|c| {
+            let ptx = PTX.iter().find(|(tier, _)| *tier == c.tier).map(|(_, ptx)| *ptx).unwrap_or_default();
+            (ptx_directive(ptx, ".target "), format!("sm_{}{}", c.arch.major, c.arch.minor))
+        })
+        .collect()
+}
+
+fn ptx_directive(ptx: &str, name: &str) -> String {
+    ptx.lines().find_map(|l| l.trim().strip_prefix(name).map(|v| v.trim().to_owned())).unwrap_or_default()
 }
 
 /// cuDNN entry points the conv plans call directly, beyond cudakit's own list

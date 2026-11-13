@@ -20,8 +20,9 @@ The least glue is an engine switch inside `infer_single_zarr` that hands the sam
 import inkrs
 
 inkrs.__version__          # "0.2.0"
-inkrs.build_info()         # dict: backend ("cuda" or "metal"), embedded PTX targets and ISA version, minimum driver,
-                           # wanted cuDNN/cuBLAS sonames; on macOS no PTX and None for the driver and libraries
+inkrs.build_info()         # dict: backend ("cuda" or "metal"), embedded PTX targets and ISA version, the GPU families
+                           # with compiled kernels, minimum driver, wanted cuDNN/cuBLAS sonames; on macOS no PTX or
+                           # cubins and None for the driver and libraries
 inkrs.load_cuda_libraries()  # dict: the cuDNN / cuBLAS file the engine calls (libcudnn.so.9, or cudnn64_9.dll on
                              # Windows); Engine() calls it first; {} on macOS
 inkrs.write_tiff(path, image)  # villa's TIFF for a uint8 [H, W] map, byte-identical to the CLI's

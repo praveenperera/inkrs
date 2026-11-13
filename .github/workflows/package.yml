@@ -227,6 +227,8 @@ jobs:
           print(inkrs.__version__, info)
           assert inkrs.__version__ == info["version"] == sys.argv[1], (inkrs.__version__, sys.argv[1])
           assert [p["target"] for p in info["ptx"]] == ["sm_75", "sm_80", "sm_120"], info["ptx"]
+          # the sdist must carry the cubins too, or a wheel built from it JITs on every GPU
+          assert len(info["cubins"]) == 7, info["cubins"]
           EOF
 
       - name: Upload sdist

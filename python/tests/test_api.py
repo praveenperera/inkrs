@@ -29,6 +29,16 @@ def test_build_info_reads_the_embedded_ptx():
     # every tier the engine chooses between, lowest first
     assert [(e["target"], e["isa"]) for e in info["ptx"]] == [("sm_75", "6.5"), ("sm_80", "7.0"), ("sm_120", "8.7")]
     assert [e["min_driver"] for e in info["ptx"]] == [440, 450, 570]
+    # the families compiled ahead, each from the tier the engine loads there
+    assert [(e["ptx"], e["arch"]) for e in info["cubins"]] == [
+        ("sm_75", "sm_75"),
+        ("sm_80", "sm_80"),
+        ("sm_80", "sm_86"),
+        ("sm_80", "sm_89"),
+        ("sm_80", "sm_90"),
+        ("sm_80", "sm_100"),
+        ("sm_120", "sm_120"),
+    ]
     # the sm75 tier JITs on r440, but the CUDA 12 cuDNN and cuBLAS need r525
     assert info["min_driver"] == 525
 
@@ -157,7 +167,7 @@ def test_engine_precision_is_fp16_only():
 def test_build_info_on_macos_names_metal_and_no_ptx():
     info = inkrs.build_info()
     assert info["backend"] == "metal"
-    assert info["ptx"] == [] and inkrs.load_cuda_libraries() == {}
+    assert info["ptx"] == [] and info["cubins"] == [] and inkrs.load_cuda_libraries() == {}
 
 
 @metal_only

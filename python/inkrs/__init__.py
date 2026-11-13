@@ -29,7 +29,16 @@ from typing import Any
 import numpy as np
 
 from . import _cuda
-from ._inkrs import CudaLibraryError, InkrsError, UnsupportedError, __version__, _Engine, _V8in, ptx_targets
+from ._inkrs import (
+    CudaLibraryError,
+    InkrsError,
+    UnsupportedError,
+    __version__,
+    _Engine,
+    _V8in,
+    cubin_targets,
+    ptx_targets,
+)
 from ._inkrs import fast_presets as _fast_presets
 from ._inkrs import hecate as _hecate
 from ._inkrs import ink3d as _ink3d
@@ -106,20 +115,30 @@ _CUDA12_LIBRARY_DRIVER = 525
 
 
 def build_info() -> dict[str, Any]:
-    """The embedded PTX tiers (target, ISA version and the driver each needs), the minimum driver, and the libraries loaded at run time
+    """The embedded PTX tiers (target, ISA version and the driver each needs), the compiled kernels, the minimum driver, and the libraries loaded at run time
 
     The engine loads the highest tier the GPU runs (or the one ``INKRS_PTX_TIER`` names), so the minimum
     driver is the lowest any tier needs, raised to what the CUDA 12 libraries need; a GPU whose own tier
-    needs more (sm_120 at ISA 8.7 needs r570) gets that from its own entry in ``ptx``. On macOS the engine runs on
-    Metal, so ``ptx`` is empty and ``min_driver`` and ``cuda_libraries`` are None
+    needs more (sm_120 at ISA 8.7 needs r570) gets that from its own entry in ``ptx``. ``cubins`` lists the
+    tiers compiled ahead for a GPU family (``arch``, which also covers later minor versions of its major) from
+    the tier's PTX (``ptx``); a GPU with none JITs the PTX on its first run. On macOS the engine runs on Metal,
+    so ``ptx`` and ``cubins`` are empty and ``min_driver`` and ``cuda_libraries`` are None
     """
     if _METAL:
-        return {"version": __version__, "backend": "metal", "ptx": [], "min_driver": None, "cuda_libraries": None}
+        return {
+            "version": __version__,
+            "backend": "metal",
+            "ptx": [],
+            "cubins": [],
+            "min_driver": None,
+            "cuda_libraries": None,
+        }
     targets = ptx_targets()
     drivers = [_PTX_ISA_DRIVER.get(version) for _, version in targets]
     return {
         "version": __version__,
         "ptx": [{"target": t, "isa": v, "min_driver": d} for (t, v), d in zip(targets, drivers)],
+        "cubins": [{"arch": arch, "ptx": target} for target, arch in cubin_targets()],
         # None when an ISA version is newer than this table
         "min_driver": None if None in drivers else max(min(drivers), _CUDA12_LIBRARY_DRIVER),
         "backend": "cuda",
