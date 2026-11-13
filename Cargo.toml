@@ -28,6 +28,16 @@ include = [
     "/licenses/**",
 ]
 
+# cargo-binstall's download of the release archives package.yml builds: inkrs-<version>-<target>.tar.gz (.zip on
+# Windows) holding inkrs-<version>-<target>/inkrs; scripts/check-binstall.sh renders these against the real archives
+[package.metadata.binstall]
+pkg-url = "{ repo }/releases/download/v{ version }/{ name }-{ version }-{ target }{ archive-suffix }"
+bin-dir = "{ name }-{ version }-{ target }/{ bin }{ binary-ext }"
+pkg-fmt = "tgz"
+
+[package.metadata.binstall.overrides.x86_64-pc-windows-msvc]
+pkg-fmt = "zip"
+
 # the kernel crate builds only through scripts/build-ptx.sh on its own pinned toolchain
 [workspace]
 members = ["python"]

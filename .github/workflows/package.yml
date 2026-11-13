@@ -1,5 +1,5 @@
-# Builds and tests the inkrs Python package, its wheels and sdist, on every push and pull request, and publishes
-# them from a version tag
+# Builds and tests the inkrs Python package (wheels and sdist), the inkrs crate and the prebuilt CLI archives on
+# every push and pull request, and publishes them from a version tag
 #
 # To release:
 #   1. set the version in Cargo.toml and python/Cargo.toml; pyproject.toml takes it from python/Cargo.toml
@@ -10,12 +10,14 @@
 #        git push origin vX.Y.Z
 #
 # The tag publishes to TestPyPI and installs that release on each platform. The pypi environment then waits for a
-# reviewer, and once approved the workflow publishes to PyPI, then a GitHub release with the tag's CHANGELOG.md
-# entry as its notes and the wheels and sdist attached. A tag whose version or changelog entry is wrong fails
-# before anything is published. PyPI and TestPyPI trust this workflow and its environments through OIDC, so no
-# token is stored. Every publish skips files already uploaded, so "Re-run failed jobs" finishes a partial release.
-# Third-party actions are pinned to commit SHAs, since these jobs build and publish the release files; the trailing
-# comment names the version
+# reviewer, and once approved the workflow publishes to PyPI, then the crate to crates.io, then a GitHub release
+# with the tag's CHANGELOG.md entry as its notes and the wheels, sdist and CLI archives attached; cargo-binstall
+# finds the archives through [package.metadata.binstall] in Cargo.toml. A tag whose version or changelog entry is
+# wrong fails before anything is published. PyPI, TestPyPI and crates.io trust this workflow and its environments
+# through OIDC, so no token is stored; crates.io's trusted publishing can't create a crate, so its first version is
+# published by hand. Every publish skips what is already uploaded, so "Re-run failed jobs" finishes a partial
+# release. Third-party actions are pinned to commit SHAs, since these jobs build and publish the release files; the
+# trailing comment names the version
 
 name: Package
 
@@ -237,7 +239,246 @@ jobs:
           name: python-sdist
           path: dist/*.tar.gz
 
-  # checks a tag before anything is published: both crates' versions must match it, and CHANGELOG.md needs a dated
+  # the crate as crates.io would receive it: packaged from the include list in Cargo.toml and built from the
+  # unpacked archive, so a file the build needs but the list leaves out fails here
+  crate:
+    name: Crate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      RUSTFLAGS: -D warnings
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec # stable
+        with:
+          toolchain: stable
+
+      - name: Package and check the upload
+        run: |
+          set -euo pipefail
+          rm -rf target/package
+          cargo publish --dry-run --locked -p inkrs
+
+      - name: Check crate size
+        shell: bash
+        run: |
+          set -euo pipefail
+          # crates.io rejects uploads over 10 MiB unless it has raised the crate's limit
+          limit=$((10 * 1024 * 1024))
+          crate="$(find target/package -maxdepth 1 -name 'inkrs-*.crate' -print -quit)"
+          test -n "$crate"
+          size="$(stat -c %s "$crate")"
+          echo "$(basename "$crate"): $size bytes, $(tar -tzf "$crate" | grep -vc '/$') files"
+          test "$size" -le "$limit"
+
+  # the prebuilt CLI that cargo-binstall installs, one archive per platform, each built from the packaged crate
+  # with its Cargo.lock, as `cargo install inkrs --locked` builds it. The Linux build runs in the manylinux_2_28
+  # image, so it needs glibc 2.28 or newer like the wheel; the macOS build keeps the arm64 floor of 11.0, where the
+  # Metal engine names the macOS it needs; the Windows build links the C runtime statically. Archive names must
+  # match [package.metadata.binstall], which the binstall job checks
+  cli:
+    name: CLI (${{ matrix.name }})
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Linux x86_64, CUDA
+            os: ubuntu-24.04
+            target: x86_64-unknown-linux-gnu
+            # 2026.11.01-2
+            container: quay.io/pypa/manylinux_2_28_x86_64@sha256:7e41b1c7fd64dfc69703a1124b43c404382973ee06ec5d764b85c34d2221fded
+            rustflags: -D warnings
+          - name: macOS arm64, Metal
+            os: macos-26
+            target: aarch64-apple-darwin
+            container: ""
+            rustflags: -D warnings
+          # RUSTFLAGS replaces the per-target flags rather than adding to them, so each target spells out its full set
+          - name: Windows x86_64, CUDA
+            os: windows-2025
+            target: x86_64-pc-windows-msvc
+            container: ""
+            rustflags: -D warnings -C target-feature=+crt-static
+    runs-on: ${{ matrix.os }}
+    container: ${{ matrix.container }}
+    env:
+      RUSTFLAGS: ${{ matrix.rustflags }}
+      MACOSX_DEPLOYMENT_TARGET: "11.0"
+      # the release profile keeps line tables for profiling, which make the Linux binary about 80 MB; the archives
+      # drop them and keep the symbols, so a backtrace still names its functions
+      CARGO_PROFILE_RELEASE_STRIP: debuginfo
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec # stable
+        with:
+          toolchain: stable
+
+      # tag builds are published, so they never reuse objects from the shared cache
+      - if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
+        with:
+          key: cli-${{ matrix.target }}
+
+      - name: Build the CLI from the packaged crate
+        id: build
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf target/package
+          # the crate job already verified the package; this one builds it once, in release
+          cargo package --locked --no-verify -p inkrs
+          crate="$(find target/package -maxdepth 1 -name 'inkrs-*.crate' -print -quit)"
+          test -n "$crate"
+          stem="$(basename "$crate" .crate)"
+          # outside the checkout, where cargo would take the crate for a stray member of the repository's workspace;
+          # Windows bash needs the temp directory as a POSIX path
+          temp="$RUNNER_TEMP"
+          if [ "$RUNNER_OS" = Windows ]; then temp="$(cygpath -u "$RUNNER_TEMP")"; fi
+          unpacked="$temp/crate"
+          rm -rf "$unpacked"
+          mkdir -p "$unpacked"
+          tar -xzf "$crate" -C "$unpacked"
+          # the checkout's target directory, which the cache step saves; GITHUB_WORKSPACE, unlike the github.workspace
+          # expression, is the path inside the Linux container
+          cargo build --release --locked --bin inkrs --manifest-path "$unpacked/$stem/Cargo.toml" \
+            --target-dir "$GITHUB_WORKSPACE/target"
+          ext=""
+          if [ "$RUNNER_OS" = Windows ]; then ext=.exe; fi
+          bin="target/release/inkrs$ext"
+          "$bin" --version
+          "$bin" --help > /dev/null
+          {
+            echo "stem=$stem"
+            echo "source=$unpacked/$stem"
+            echo "bin=$bin"
+          } >> "$GITHUB_OUTPUT"
+
+      # CUDA loads at run time, so the binary may link only glibc and the GCC runtime, at most at glibc 2.28
+      - name: Check the binary's glibc and libraries
+        if: runner.os == 'Linux'
+        env:
+          BIN: ${{ steps.build.outputs.bin }}
+        run: |
+          set -euo pipefail
+          needed="$(readelf -d "$BIN" | sed -n 's/.*(NEEDED).*\[\(.*\)\]/\1/p' | sort -u)"
+          echo "$needed"
+          if grep -Ev '^(libc|libm|libdl|libpthread|librt|libgcc_s|ld-linux-x86-64)\.so\.[0-9]+$' <<< "$needed"; then
+            echo "the binary links a library outside glibc and the GCC runtime" >&2
+            exit 1
+          fi
+          glibc="$(objdump -T "$BIN" | grep -o 'GLIBC_[0-9.]*' | sed 's/GLIBC_//' | sort -uV | tail -1)"
+          echo "newest glibc symbol: $glibc"
+          test "$(printf '%s\n' "$glibc" 2.28 | sort -V | tail -1)" = 2.28
+          # the runner has no NVIDIA driver, so opening the GPU must fail with an error, not a panic
+          status=0
+          out="$("$BIN" probe 2>&1)" || status=$?
+          echo "$out"
+          test "$status" -eq 1
+
+      - name: Check the binary's macOS floor
+        if: runner.os == 'macOS'
+        env:
+          BIN: ${{ steps.build.outputs.bin }}
+        run: |
+          set -euo pipefail
+          minos="$(otool -l "$BIN" | awk '/LC_BUILD_VERSION/ { found = 1 } found && $1 == "minos" { print $2; exit }')"
+          echo "minos: $minos"
+          test "$minos" = 11.0
+
+      # a static C runtime keeps vcruntime140.dll and the UCRT out of the imports, and CUDA must load at run time,
+      # so the binary may import only Windows system DLLs
+      - name: Check the binary's imports and that it starts
+        if: runner.os == 'Windows'
+        shell: bash
+        env:
+          BIN: ${{ steps.build.outputs.bin }}
+        run: |
+          set -euo pipefail
+          rustup component add llvm-tools
+          readobj="$(cygpath -u "$(rustc --print sysroot)")/lib/rustlib/x86_64-pc-windows-msvc/bin/llvm-readobj.exe"
+          # a Windows tool's output ends lines with CRLF
+          imports="$("$readobj" --coff-imports "$BIN" | tr -d '\r' | sed -n 's/^ *Name: //p' | sort -u)"
+          echo "$imports"
+          if grep -Eiv '^(kernel32|ntdll|advapi32|bcrypt|bcryptprimitives|ws2_32|userenv|secur32|crypt32|ole32|oleaut32|shell32|user32|synchronization|api-ms-win-core-[a-z0-9-]+)\.dll$' <<< "$imports"; then
+            echo "the binary imports a DLL outside Windows itself" >&2
+            exit 1
+          fi
+          # the runner has no NVIDIA driver, so opening the GPU must fail naming the Windows driver, not panic
+          if out="$("$BIN" probe 2>&1)"; then
+            echo "probe succeeded without a GPU" >&2
+            exit 1
+          fi
+          echo "$out"
+          grep -q 'nvcuda.dll' <<< "$out"
+
+      # inkrs-<version>-<target>/ with the binary, the README, the changelog and every licence the crate carries
+      - name: Package the archive
+        shell: bash
+        env:
+          STEM: ${{ steps.build.outputs.stem }}
+          SOURCE: ${{ steps.build.outputs.source }}
+          BIN: ${{ steps.build.outputs.bin }}
+          TARGET: ${{ matrix.target }}
+        run: |
+          set -euo pipefail
+          name="$STEM-$TARGET"
+          temp="$RUNNER_TEMP"
+          if [ "$RUNNER_OS" = Windows ]; then temp="$(cygpath -u "$RUNNER_TEMP")"; fi
+          out="$temp/archive"
+          rm -rf "$out"
+          mkdir -p "$out/$name/licenses" dist
+          cp "$BIN" "$out/$name/"
+          for f in README.md CHANGELOG.md LICENSE-MIT LICENSE-APACHE THIRD_PARTY_NOTICES; do
+            cp "$SOURCE/$f" "$out/$name/"
+          done
+          cp "$SOURCE"/licenses/* "$out/$name/licenses/"
+          if [ "$RUNNER_OS" = Windows ]; then
+            # 7-Zip ships on the runner image
+            (cd "$out" && 7z a -tzip "$name.zip" "$name" > /dev/null)
+            mv "$out/$name.zip" dist/
+          else
+            # macOS tar would otherwise add AppleDouble ._ files for extended attributes
+            COPYFILE_DISABLE=1 tar -czf "dist/$name.tar.gz" -C "$out" "$name"
+          fi
+          ls -l dist
+
+      - name: Upload archive
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: cli-${{ matrix.target }}
+          path: dist/*
+
+  # cargo-binstall downloads the archive [package.metadata.binstall] names, so each name and binary path the template
+  # renders to must be exactly what the cli job built
+  binstall:
+    name: Binstall metadata
+    needs: cli
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec # stable
+        with:
+          toolchain: stable
+
+      - name: Download CLI archives
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: cli-*
+          path: cli
+          merge-multiple: true
+
+      - name: Check the archives against the binstall metadata
+        run: scripts/check-binstall.sh cli
+
+  # checks a tag before anything is published: the inkrs crate's version, which crates.io and the CLI archives
+  # carry, and the bindings' version, which the wheels carry, must both match it, and CHANGELOG.md needs a dated
   # entry for it, which becomes the GitHub release notes
   release-check:
     name: Check the tag
@@ -257,10 +498,12 @@ jobs:
         run: |
           set -euo pipefail
           version="${GITHUB_REF_NAME#v}"
-          for manifest in Cargo.toml python/Cargo.toml; do
-            crate=$(sed -n 's/^version = "\(.*\)"/\1/p' "$manifest" | head -1)
-            if [ "$crate" != "$version" ]; then
-              echo "$manifest is $crate but the tag is $GITHUB_REF_NAME"
+          # cargo's own reading of each manifest, so the check sees the version cargo publish would
+          packages="$(cargo metadata --no-deps --format-version 1 --locked)"
+          for crate in inkrs inkrs-python; do
+            crate_version="$(jq -r --arg name "$crate" '.packages[] | select(.name == $name) | .version' <<< "$packages")"
+            if [ "$crate_version" != "$version" ]; then
+              echo "$crate is ${crate_version:-missing} but the tag is $GITHUB_REF_NAME"
               exit 1
             fi
           done
@@ -276,12 +519,13 @@ jobs:
             exit 1
           fi
 
-  # a v* tag publishes to TestPyPI, installs that release, and only then publishes to PyPI; each index trusts this
-  # workflow and environment, so no token is stored
+  # a v* tag publishes to TestPyPI, installs that release, and only then publishes to PyPI and crates.io; each
+  # registry trusts this workflow and environment, so no token is stored. Nothing is published unless the crate and
+  # the CLI archives built too
   testpypi-publish:
     name: Publish to TestPyPI
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: [release-check, wheels, sdist]
+    needs: [release-check, wheels, sdist, crate, binstall]
     runs-on: ubuntu-24.04
     environment:
       name: testpypi
@@ -395,10 +639,58 @@ jobs:
         with:
           skip-existing: true
 
+  # crates.io trusts this workflow and the crates-io environment, but trusted publishing can't create a crate, so
+  # the first version went up by hand; a version already there is skipped, which also lets a rerun finish a release
+  crates-publish:
+    name: Publish to crates.io
+    needs: pypi-publish
+    runs-on: ubuntu-24.04
+    environment:
+      name: crates-io
+      url: https://crates.io/crates/inkrs
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec # stable
+        with:
+          toolchain: stable
+
+      - name: Check the crate matches the tag and crates.io lacks it
+        id: version
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="$(cargo metadata --no-deps --format-version 1 --locked \
+            | jq -r '.packages[] | select(.name == "inkrs") | .version')"
+          test "v$version" = "$GITHUB_REF_NAME"
+          status="$(curl -sS -o /dev/null -w '%{http_code}' -A 'inkrs-release (github.com/praveenperera/inkrs)' \
+            "https://crates.io/api/v1/crates/inkrs/$version")"
+          case "$status" in
+            200) echo "inkrs $version is already on crates.io"; echo "publish=false" >> "$GITHUB_OUTPUT" ;;
+            404) echo "publish=true" >> "$GITHUB_OUTPUT" ;;
+            *) echo "crates.io answered HTTP $status" >&2; exit 1 ;;
+          esac
+
+      - name: Get a crates.io token
+        if: steps.version.outputs.publish == 'true'
+        id: auth
+        uses: rust-lang/crates-io-auth-action@3268eb413133e2960fa4ae0e963ca76380c54cd9 # v1.0.6
+
+      - name: Publish
+        if: steps.version.outputs.publish == 'true'
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ steps.auth.outputs.token }}
+        run: cargo publish --locked -p inkrs
+
   # the release starts as a draft and is published only once its files are attached
   github-release:
     name: GitHub release
-    needs: pypi-publish
+    needs: crates-publish
     runs-on: ubuntu-24.04
     permissions:
       contents: write
@@ -411,6 +703,14 @@ jobs:
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           pattern: python-*
+          path: dist
+          merge-multiple: true
+
+      # under the names [package.metadata.binstall] gives, which the binstall job checked
+      - name: Download CLI archives
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: cli-*
           path: dist
           merge-multiple: true
 
@@ -445,7 +745,7 @@ jobs:
 
       # --clobber replaces files a failed run already attached. The release becomes latest only when no published
       # stable release has a higher version, so a maintenance release of an older line leaves the newest one as latest
-      - name: Attach the wheels and sdist, then publish
+      - name: Attach the wheels, sdist and CLI archives, then publish
         if: steps.existing.outputs.state != 'published'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
