@@ -97,29 +97,33 @@ macro_rules! ensure_supported {
 /// Whether `err` means "not supported here" rather than a failure: an [`Unsupported`] limit, a GPU whose compute
 /// capability the embedded PTX does not serve, or a driver that cannot load that PTX
 pub fn is_unsupported(err: &Report) -> bool {
-    err.chain().any(|cause| {
-        if cause.downcast_ref::<Unsupported>().is_some() {
-            return true;
-        }
-        #[cfg(not(target_os = "macos"))]
-        if let Some(e) = cause.downcast_ref::<cudakit::Error>() {
-            return matches!(
-                e,
-                cudakit::Error::TierNotCompiledIn { .. }
-                    | cudakit::Error::AreaTierNotCompiledIn { .. }
-                    | cudakit::Error::UnsupportedDevice { .. }
-                    | cudakit::Error::PtxTierAboveDevice { .. }
-            );
-        }
-        #[cfg(not(target_os = "macos"))]
-        if let Some(DriverError(code)) = cause.downcast_ref::<DriverError>() {
-            return matches!(
-                code,
-                CUresult::CUDA_ERROR_NO_BINARY_FOR_GPU | CUresult::CUDA_ERROR_UNSUPPORTED_PTX_VERSION
-            );
-        }
-        false
-    })
+    err.chain().any(|cause| cause.is::<Unsupported>() || is_unsupported_cuda_error(cause))
+}
+
+/// Whether `cause` is cudakit or the driver saying the embedded PTX cannot run on this GPU
+#[cfg(not(target_os = "macos"))]
+fn is_unsupported_cuda_error(cause: &(dyn std::error::Error + 'static)) -> bool {
+    if let Some(e) = cause.downcast_ref::<cudakit::Error>() {
+        return matches!(
+            e,
+            cudakit::Error::TierNotCompiledIn { .. }
+                | cudakit::Error::AreaTierNotCompiledIn { .. }
+                | cudakit::Error::UnsupportedDevice { .. }
+                | cudakit::Error::PtxTierAboveDevice { .. }
+        );
+    }
+
+    if let Some(DriverError(code)) = cause.downcast_ref::<DriverError>() {
+        return matches!(code, CUresult::CUDA_ERROR_NO_BINARY_FOR_GPU | CUresult::CUDA_ERROR_UNSUPPORTED_PTX_VERSION);
+    }
+
+    false
+}
+
+// macOS builds without cudakit or the CUDA driver, so no cause can be one of their errors
+#[cfg(target_os = "macos")]
+fn is_unsupported_cuda_error(_: &(dyn std::error::Error + 'static)) -> bool {
+    false
 }
 
 #[cfg(test)]
