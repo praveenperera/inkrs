@@ -118,8 +118,8 @@ A few other limits worth knowing:
 |---|---|---|---|---|---|
 | villa readers, speed | fastest | 19× slower | 7.6× to 14.5× slower | 2.4× slower | runs villa, so about villa's speed |
 | Matches villa's maps | ✅ | the reference | ✅ | ✅ | ✅ |
-| Hecate | ✅ | ❌ | ✅ | ✅ fp16 only | ✅ |
-| v8-in and A-hn | ✅ | ❌ | v8-in only | ✅, but its A-hn misses the 0306B recipe | ✅ |
+| Hecate | ✅ | ❌ | ✅ | ⚠️ fp16 only | ✅ |
+| v8-in and A-hn | ✅ | ❌ | ⚠️ v8-in only | ⚠️ its A-hn misses the 0306B recipe | ✅ |
 | Apple silicon | ✅ Metal | ⚠️ PyTorch MPS, slower | ❌ | ❌ | ⚠️ PyTorch MPS, slower, not tested by its authors |
 | Install | `pip` | `pip` | `pip` | build from source | `git clone`, then `pip` |
 | Licence | MIT or Apache-2.0 | MIT | MIT | none | MIT |
