@@ -255,11 +255,11 @@ jobs:
         with:
           toolchain: stable
 
-      - name: Package and check the upload
+      - name: Package crate
         run: |
           set -euo pipefail
           rm -rf target/package
-          cargo publish --dry-run --locked -p inkrs
+          cargo package --locked -p inkrs
 
       - name: Check crate size
         shell: bash
@@ -272,6 +272,10 @@ jobs:
           size="$(stat -c %s "$crate")"
           echo "$(basename "$crate"): $size bytes, $(tar -tzf "$crate" | grep -vc '/$') files"
           test "$size" -le "$limit"
+
+      # the rest of what cargo publish checks before an upload; the package step already built it
+      - name: Check the upload
+        run: cargo publish --dry-run --no-verify --locked -p inkrs
 
   # the prebuilt CLI that cargo-binstall installs, one archive per platform, each built from the packaged crate
   # with its Cargo.lock, as `cargo install inkrs --locked` builds it. The Linux build runs in the manylinux_2_28
