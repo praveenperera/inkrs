@@ -30,13 +30,13 @@ zstd = "0.13"
 
 # the CUDA backend: every platform but macOS
 [target.'cfg(not(target_os = "macos"))'.dependencies]
-# driver-only host stack; cuDNN and cuBLAS load at run time after its symbol preflight. Pinned to
-# the commit the gates ran with: later cudakit moved its cudarc types to cudakit-cudarc
-cudakit = { git = "https://github.com/avencera/cudakit.git", rev = "bcb03304b8f0325b2a0e91bd91f5de0ddd0acf4d", features = ["libraries"] }
+# driver-only host stack; cuDNN and cuBLAS load at run time after its symbol preflight. 0.1 re-exports
+# cudarc's own types; later cudakit moved them to cudakit-cudarc
+cudakit = { version = "0.1", features = ["libraries"] }
 # NVML for the algorithm cache's driver-release key where /proc hides it (dnn/algo_cache.rs), and on
 # Windows the pinned CUDA libraries (src/dll.rs); the version cudarc already brings into the tree
 libloading = "0.9"
-# the same cudarc as cudakit at that commit (0.19.10, one copy in Cargo.lock), for raw cuDNN and
+# the same cudarc as cudakit 0.1 (0.19.10, one copy in Cargo.lock), for raw cuDNN and
 # cuBLAS calls on handles of our own
 cudarc = { version = "0.19.10", default-features = false, features = ["std", "driver", "nvrtc", "dynamic-loading", "cuda-12040", "cublas", "cudnn"] }
 
