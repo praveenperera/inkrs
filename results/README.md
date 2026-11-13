@@ -155,6 +155,22 @@ $VILLA_PY -I scripts/p1_gate.py ours ref r343/layers.zarr 64 --report ours/inkrs
 
 `TMPDIR` needs a short path, because torch's DataLoader workers put sockets there. Every map should reach r ≥ 0.9994, with p99.9 and the largest difference at most 4/255, and cover exactly the pixels villa covers.
 
+### villa parity
+
+`scripts/villa_parity.py` checks villa's own `--engine inkrs` against villa's PyTorch engine: for each layer window it runs villa's flat inference once with each and applies the same gate, with coverage rebuilt from villa's tile schedule. It needs a villa checkout that has the inkrs engine, with the `models` and `inkrs` extras installed; `VILLA_INKRS_PY` below is that environment's `python`, and `INKRS` is this repository's checkout. Run it from the checkout's `vesuvius/` directory. S1 here has a 3-level mean pyramid, so inkrs gets villa's low-resolution occupancy mask:
+
+```
+$VILLA_PY -I scripts/make_s1.py r343/layers.zarr s1.zarr
+$VILLA_PY -I scripts/make_pyramid.py s1.zarr s1-pyramid.zarr --levels 3
+
+$VILLA_INKRS_PY $INKRS/scripts/villa_parity.py s1-pyramid.zarr step-075000.pth parity-s1 --candidate inkrs \
+  --layer-starts 21:30 -- --overlap 0.5 --blend-mode hann --batch-size 4 --direction both --no-compile
+$VILLA_INKRS_PY $INKRS/scripts/villa_parity.py 1447/native-crop.zarr reader-v2-step040000.pth parity-rv2 --candidate inkrs \
+  --layer-starts 5:10 -- --overlap 0.5 --blend-mode hann --batch-size 4 --direction both --no-compile
+```
+
+Each writes `parity.json` in its output directory and exits nonzero if a map fails. `--candidate torch-stub` runs the same adapter against a PyTorch stand-in for inkrs and needs no inkrs install; it should match PyTorch exactly.
+
 ### Speed
 
 Time each whole command. Run inksweep a few times first, until two runs in a row take about the same time, because its first run compiles. It reads the checkpoint from `checkpoints/ink_9um/hybrid_3d2d-seed42/step-075000.pth`.
