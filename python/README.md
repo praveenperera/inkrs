@@ -57,7 +57,7 @@ python -m inkrs.export_weights step-075000.pth weights/
 
 That writes `weights/hybrid_3d2d-seed42.safetensors` and its `.json` sidecar, and `inkrs.Engine` takes the `.safetensors` file directly.
 
-It takes the `.pth` too. inkrs then looks for an export of those exact bytes (by SHA-256) in `weights_dir` (default `$INKRS_WEIGHTS_DIR`, else `./weights`), then in `~/.cache/inkrs/weights/<sha256>/` (or under `$XDG_CACHE_HOME`, or `$INKRS_CACHE_DIR`; `%LOCALAPPDATA%\inkrs\weights\<sha256>\` on Windows). If neither has one and torch and villa are installed, as in a villa environment, it exports the checkpoint into that cache once and reuses it from then on. Without them it raises `inkrs.UnsupportedError` with the command above.
+It takes the `.pth` too. inkrs then looks for an export of those exact bytes (by SHA-256) in `weights_dir` (default `$INKRS_WEIGHTS_DIR`, else `./weights`), then in `~/.cache/inkrs/weights/<sha256>/` (or under `$XDG_CACHE_HOME`, or `$INKRS_CACHE_DIR`; `%LOCALAPPDATA%\inkrs\weights\<sha256>\` on Windows). If neither has one and torch and villa are installed, as in a villa environment, it exports the checkpoint into that cache once and reuses it from then on. Without them it raises `inkrs.UnsupportedError` with the command above. A checkpoint the exporter refuses also raises `inkrs.UnsupportedError`: one that isn't a flat model, has non-float32 weights, or whose keys or tensor shapes don't match the model its config builds. The message names the missing and unexpected keys.
 
 ## Use
 
