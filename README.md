@@ -89,6 +89,8 @@ export LD_LIBRARY_PATH="$site/nvidia/cudnn/lib:$site/nvidia/cublas/lib${LD_LIBRA
 
 **macOS.** Apple silicon (M1 or newer) and macOS 26 or newer, for Metal 4. The binary starts on macOS 11 and later, but before 26 it stops with an error naming the version it needs. It needs no CUDA libraries and no Xcode, since the Metal shaders ship as source and compile when the engine starts.
 
+The readers run in fp16 by default on Metal too, and their maps already land within 2/255 of villa's own float32 PyTorch run on MPS. For a closer match, `--precision fp32` (`inkrs.Engine(..., precision="fp32")`) runs them in float32: on an M4 Pro its maps came within 1/255 of PyTorch's, with 0.004% of pixels off by one against 5% at fp16, at 1.2-1.3x the run time and twice the activation and logit memory (`results/metal-fp32.json`). fp32 is Metal only; on CUDA it raises an error, and the Neural Engine offload and v8-in don't take it.
+
 ## Usage
 
 inkrs reads weights from a safetensors export of the checkpoint. You make it once, on the CPU, with villa installed, using the script in this repository or the copy in the Python package (`python -m inkrs.export_weights`):

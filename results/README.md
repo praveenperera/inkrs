@@ -74,6 +74,7 @@ The README's timings are in `release-timing.json`, `public-ports.json`, `first-r
 - `other-gpu-a10.json`, `other-gpu-tesla-t4.json`: the release wheel on an A10 and a Tesla T4 against the references.
 - `metal-s1.json`: the Metal backend on an M4 Pro, one S1 map against SurgeFok's public MPS path, with and without the Neural Engine offload.
 - `metal-gates.json`: the Metal backend on an M4 Pro: seed42, Reader V3 and Hecate maps against the CUDA references.
+- `metal-fp32.json`: the Metal backend's fp32 reader on an M4 Pro: seed42's S1 maps against villa's float32 PyTorch on MPS next to fp16's, its wall time against fp16 and PyTorch, and fp16's maps against v0.2.1's.
 - `windows-checks.json`: the Windows build, cross-built on Linux: what builds, the DLLs the CLI and the wheel import, and the unit tests run under Wine. Nothing in it ran on Windows.
 
 ## Other models

@@ -140,11 +140,19 @@ impl Algo {
 }
 
 impl EngineArgs {
-    fn options(&self, stride: usize, batch: usize, fast: bool, started: Instant) -> Result<Options> {
+    fn options(
+        &self,
+        stride: usize,
+        batch: usize,
+        precision: ReaderPrecision,
+        fast: bool,
+        started: Instant,
+    ) -> Result<Options> {
         Ok(Options {
             started,
             stride,
             batch,
+            precision,
             fast,
             pick: self.algo.pick(),
             max_workspace: self.max_workspace_mib << 20,
@@ -218,7 +226,9 @@ enum Command {
         /// 0.007 AUC at stride 72, 0.025 at 80, 0.015 at 96 and 0.047 at 128 (FAST.md)
         #[arg(long)]
         stride: Option<usize>,
-        /// The reader's numerics; its kernels are FP16-only
+        /// The reader's numerics: fp16, the default (villa's FP16 autocast), already within 2/255 of
+        /// villa's float32 maps on MPS; or fp32, Metal only, for a closer match (within 1/255 on an
+        /// M4 Pro) at 1.2-1.3x the run time
         #[arg(long, value_enum, default_value_t = ReaderPrecision::Fp16)]
         precision: ReaderPrecision,
         /// The reader's fast preset; refused for every reader, since no stride above 64 kept label
@@ -269,7 +279,9 @@ enum Command {
         /// 0.007 AUC at stride 72, 0.025 at 80, 0.015 at 96 and 0.047 at 128 (FAST.md)
         #[arg(long)]
         stride: Option<usize>,
-        /// The reader's numerics; its kernels are FP16-only
+        /// The reader's numerics: fp16, the default (villa's FP16 autocast), already within 2/255 of
+        /// villa's float32 maps on MPS; or fp32, Metal only, for a closer match (within 1/255 on an
+        /// M4 Pro) at 1.2-1.3x the run time
         #[arg(long, value_enum, default_value_t = ReaderPrecision::Fp16)]
         precision: ReaderPrecision,
         /// The reader's fast preset; refused for every reader, since no stride above 64 kept label
@@ -670,7 +682,7 @@ fn main() -> Result<()> {
             output_tiff,
             overlap,
             stride,
-            precision: _,
+            precision,
             fast,
             blend_mode,
             batch_size,
@@ -686,6 +698,10 @@ fn main() -> Result<()> {
                 ensure!(
                     overlap.is_none() && stride.is_none() && !fast && blend_mode == BlendMode::Auto && engine.tta == 1,
                     "--overlap, --stride, --fast, --blend-mode and --tta do not apply to v8-in; its map convention fixes the tiling and the window"
+                );
+                ensure!(
+                    precision == ReaderPrecision::Fp16,
+                    "--precision applies to the villa readers only; v8-in runs its own FP16 numerics"
                 );
                 #[cfg(not(target_os = "macos"))]
                 let conv_set = engine.conv.is_some();
@@ -754,7 +770,12 @@ fn main() -> Result<()> {
             if let Some(parent) = output_tiff.parent() {
                 std::fs::create_dir_all(parent).ok();
             }
-            let rep = engine::run(&input_zarr, &export, &maps, &engine.options(stride, batch_size, fast, started)?)?;
+            let rep = engine::run(
+                &input_zarr,
+                &export,
+                &maps,
+                &engine.options(stride, batch_size, precision, fast, started)?,
+            )?;
             finish(&rep, engine.report.as_deref())
         }
         Command::Sweep {
@@ -764,7 +785,7 @@ fn main() -> Result<()> {
             direction,
             overlap,
             stride,
-            precision: _,
+            precision,
             fast,
             batch_size,
             out,
@@ -830,7 +851,12 @@ fn main() -> Result<()> {
                     });
                 }
             }
-            let rep = engine::run(&input_zarr, &export, &maps, &engine.options(stride, batch_size, fast, started)?)?;
+            let rep = engine::run(
+                &input_zarr,
+                &export,
+                &maps,
+                &engine.options(stride, batch_size, precision, fast, started)?,
+            )?;
             let report = engine.report.clone().unwrap_or_else(|| out.join("inkrs.json"));
             finish(&rep, Some(&report))
         }

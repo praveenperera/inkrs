@@ -1,8 +1,9 @@
 // inkrs glue kernels for Metal: the MSL ports of inkrs-kernels/src/{tiles,inorm,stem,layout,blend}.rs
 //
-// Activations are FP16 channels-last (NHWC, NDHWC), as on CUDA. Every rounding the CUDA kernels make to copy PyTorch
-// FP16 autocast is kept: `r16` rounds a float through half (round to nearest even), and products and sums that
-// villa or numpy round separately stay separate, so FP contraction is off for the whole file
+// Activations are `real` channels-last (NHWC, NDHWC; common.metal), FP16 as on CUDA or FP32. Every rounding the CUDA
+// kernels make to copy PyTorch FP16 autocast is kept: `rnd` rounds a float to `real` (through half, round to nearest
+// even, at FP16; exact at FP32, where every op runs in float as villa's eager PyTorch on MPS), and products and sums
+// that villa or numpy round separately stay separate, so FP contraction is off for the whole file
 //
 // Buffers carry no length on Metal, so every kernel takes the element counts it bounds-checks against
 
@@ -13,8 +14,8 @@
 constant uint DESC = 8;
 constant uint DEPTH = 17;
 
-static inline float r16(float x) { return float(half(x)); }
-static inline float leaky16(float x) { return x > 0.0f ? x : r16(x * 0.01f); }
+static inline float rnd(float x) { return float(real(x)); }
+static inline float leaky(float x) { return x > 0.0f ? x : rnd(x * 0.01f); }
 
 // ---------------------------------------------------------------- tiles: gather and villa normalize_robust
 
@@ -250,8 +251,8 @@ kernel void tile_std(device float4* p_stats [[buffer(0)]],
     if (tid == 0) p_stats[b].w = sd >= 1e-6f ? sd : -marker;
 }
 
-// Normalised FP16 input [tiles, DEPTH, edge, edge], two voxels per thread, as tile_norm on CUDA
-kernel void tile_norm(device half2* p_out [[buffer(0)]],
+// Normalised `real` input [tiles, DEPTH, edge, edge], two voxels per thread, as tile_norm on CUDA
+kernel void tile_norm(device real2* p_out [[buffer(0)]],
                       device const uchar* p_vol [[buffer(1)]],
                       device const int* p_desc [[buffer(2)]],
                       device const float4* p_stats [[buffer(3)]],
@@ -274,7 +275,7 @@ kernel void tile_norm(device half2* p_out [[buffer(0)]],
     uint i = layer * height * width + (y0 + y) * width + x0 + x;
     float a = (clipf(float(p_vol[i]), s.x, s.y) - s.z) / s.w;
     float c = (clipf(float(p_vol[i + 1]), s.x, s.y) - s.z) / s.w;
-    p_out[e] = half2(half(a), half(c));
+    p_out[e] = real2(real(a), real(c));
 }
 
 // ---------------------------------------------------------------- InstanceNorm, as inorm.rs
@@ -297,8 +298,8 @@ static inline float2 df_add(float2 acc, float v) {
 // Per (sample, channel) [mean, invstd] from the conv epilogue's partials [B, tiles, cols] (`tile_stats`). Grid (cols /
 // 16, B) of 256 threads: each of 16 threads per column merges a contiguous stripe of tiles in order, then the first
 // merges the stripes in order, so the result is the same on every pass. CUDA forms these in float64 from shifted sums;
-// the per-tile two-pass partials keep float's error at about one ulp of the variance, well under the FP16 rounding of
-// the apply
+// the per-tile two-pass partials keep float's error at about one ulp of the variance: well under the apply's rounding
+// at FP16, and at FP32 the size of PyTorch's own float statistics' error
 kernel void in_finalize(device float2* p_stats [[buffer(0)]],
                         device const float4* p_part [[buffer(1)]],
                         constant uint& tiles [[buffer(2)]],
@@ -323,16 +324,16 @@ kernel void in_finalize(device float2* p_stats [[buffer(0)]],
     }
 }
 
-// One normalised channel value as CUDA's in_apply rounds it: r16(norm(v) * w + bias)
+// One normalised channel value as CUDA's in_apply rounds it: rnd(norm(v) * w + bias)
 static inline float in_one(float v, float2 s, float w, float bias) {
     float t = (v - s.x) * s.y;
     t = t * w;
-    return r16(t + bias);
+    return rnd(t + bias);
 }
 
 // in_apply's arithmetic for the 8 channels from c0 of sample b: then the optional residual add and LeakyReLU
-static inline void in_eight(thread half4* v, uint b, uint c0, uint cols, device const float2* p_stats,
-                            device const float* p_w, device const float* p_bias, device const half4* res, uint flags) {
+static inline void in_eight(thread real4* v, uint b, uint c0, uint cols, device const float2* p_stats,
+                            device const float* p_w, device const float* p_bias, device const real4* res, uint flags) {
     for (uint h = 0; h < 2; h++) {
         float4 y;
         for (uint j = 0; j < 4; j++) {
@@ -341,18 +342,18 @@ static inline void in_eight(thread half4* v, uint b, uint c0, uint cols, device 
         }
         if (flags & 2) {
             float4 r = float4(res[h]);
-            for (uint j = 0; j < 4; j++) y[j] = r16(y[j] + r[j]);
+            for (uint j = 0; j < 4; j++) y[j] = rnd(y[j] + r[j]);
         }
         if (flags & 1) {
-            for (uint j = 0; j < 4; j++) y[j] = leaky16(y[j]);
+            for (uint j = 0; j < 4; j++) y[j] = leaky(y[j]);
         }
-        v[h] = half4(y);
+        v[h] = real4(y);
     }
 }
 
-// x = leaky?(r16(r16(norm(x) * w + bias) + residual?)) in place, eight channels per thread (cols a multiple of 8)
-kernel void in_apply(device half4* p_x [[buffer(0)]],
-                     device const half4* p_residual [[buffer(1)]],
+// x = leaky?(rnd(rnd(norm(x) * w + bias) + residual?)) in place, eight channels per thread (cols a multiple of 8)
+kernel void in_apply(device real4* p_x [[buffer(0)]],
+                     device const real4* p_residual [[buffer(1)]],
                      device const float2* p_stats [[buffer(2)]],
                      device const float* p_w [[buffer(3)]],
                      device const float* p_bias [[buffer(4)]],
@@ -364,7 +365,7 @@ kernel void in_apply(device half4* p_x [[buffer(0)]],
     if (e >= count) return;
     uint oct = cols / 8;
     uint pix = e / oct, q = e % oct;
-    half4 v[2] = {p_x[2 * e], p_x[2 * e + 1]};
+    real4 v[2] = {p_x[2 * e], p_x[2 * e + 1]};
     in_eight(v, pix / rows, 8 * q, cols, p_stats, p_w, p_bias, p_residual + 2 * e, flags);
     p_x[2 * e] = v[0];
     p_x[2 * e + 1] = v[1];
@@ -374,9 +375,9 @@ kernel void in_apply(device half4* p_x [[buffer(0)]],
 // h, w, cols] to xp [B, depth + 2 dpad, h + 2, w + 2, cols] followed by zero rows up to `count` octets (dpad 1 pads
 // depth too, for the stem's conv3d). Flags as in_apply (1 LeakyReLU, 2 residual add) plus 4: also write the result
 // back into x, for activations other layers read unpadded (residuals, pools). One thread per 8 channels of xp
-kernel void in_apply_pad(device half4* p_xp [[buffer(0)]],
-                         device half4* p_x [[buffer(1)]],
-                         device const half4* p_residual [[buffer(2)]],
+kernel void in_apply_pad(device real4* p_xp [[buffer(0)]],
+                         device real4* p_x [[buffer(1)]],
+                         device const real4* p_residual [[buffer(2)]],
                          device const float2* p_stats [[buffer(3)]],
                          device const float* p_w [[buffer(4)]],
                          device const float* p_bias [[buffer(5)]],
@@ -398,7 +399,7 @@ kernel void in_apply_pad(device half4* p_xp [[buffer(0)]],
     uint y = yx / wp, x = yx % wp;
     // rows past the last sample are the tail, zero
     bool inside = b < batch && z >= dpad && z < depth + dpad && y >= 1 && y <= h && x >= 1 && x <= w;
-    half4 v[2] = {half4(0.0h), half4(0.0h)};
+    real4 v[2] = {real4(0), real4(0)};
     if (inside) {
         uint e = (((b * depth + z - dpad) * h + y - 1) * w + x - 1) * oct + q;
         v[0] = p_x[2 * e];
@@ -416,9 +417,9 @@ kernel void in_apply_pad(device half4* p_xp [[buffer(0)]],
 
 // ---------------------------------------------------------------- stem tail, as stem.rs
 
-// cat(sum_z softmax_z(att) * f, max_z f), 32 FP16 channels per pixel; one thread per (sample, pixel)
-kernel void depth_pool(device half* p_out [[buffer(0)]],
-                       device const half* p_feat [[buffer(1)]],
+// cat(sum_z softmax_z(att) * f, max_z f), 32 `real` channels per pixel; one thread per (sample, pixel)
+kernel void depth_pool(device real* p_out [[buffer(0)]],
+                       device const real* p_feat [[buffer(1)]],
                        device const float* p_w [[buffer(2)]],
                        constant float& bias [[buffer(3)]],
                        constant uint& pixels [[buffer(4)]],
@@ -431,7 +432,7 @@ kernel void depth_pool(device half* p_out [[buffer(0)]],
     float logits[17];
     float top = -INFINITY;
     for (uint z = 0; z < Z; z++) {
-        device const half* f = p_feat + (base + z * pixels) * C;
+        device const real* f = p_feat + (base + z * pixels) * C;
         float dot = 0.0f;
         for (uint k = 0; k < C / 2; k++) {
             float a = float(f[2 * k]), c = float(f[2 * k + 1]);
@@ -439,7 +440,7 @@ kernel void depth_pool(device half* p_out [[buffer(0)]],
             float pc = c * p_w[2 * k + 1];
             dot = dot + (pa + pc);
         }
-        float l = r16(r16(dot) + bias);
+        float l = rnd(rnd(dot) + bias);
         logits[z] = l;
         top = fmax(top, l);
     }
@@ -455,26 +456,26 @@ kernel void depth_pool(device half* p_out [[buffer(0)]],
         mx[k] = -INFINITY;
     }
     for (uint z = 0; z < Z; z++) {
-        float wz = r16(logits[z] / sum);
-        device const half* f = p_feat + (base + z * pixels) * C;
+        float wz = rnd(logits[z] / sum);
+        device const real* f = p_feat + (base + z * pixels) * C;
         for (uint k = 0; k < C; k++) {
             float a = float(f[k]);
-            att[k] += r16(a * wz);
+            att[k] += rnd(a * wz);
             mx[k] = fmax(mx[k], a);
         }
     }
-    device half* o = p_out + i * 32;
+    device real* o = p_out + i * 32;
     for (uint k = 0; k < C; k++) {
-        o[k] = half(att[k]);
-        o[C + k] = half(mx[k]);
+        o[k] = real(att[k]);
+        o[C + k] = real(mx[k]);
     }
 }
 
 // ---------------------------------------------------------------- 2D glue, as layout.rs
 
-// 2x2 stride-2 average pool, [B, H, W, C] to [B, H/2, W/2, C], FP16 pairs
-kernel void avgpool2(device half2* p_out [[buffer(0)]],
-                     device const half2* p_x [[buffer(1)]],
+// 2x2 stride-2 average pool, [B, H, W, C] to [B, H/2, W/2, C], in pairs
+kernel void avgpool2(device real2* p_out [[buffer(0)]],
+                     device const real2* p_x [[buffer(1)]],
                      constant uint& out_h [[buffer(2)]],
                      constant uint& out_w [[buffer(3)]],
                      constant uint& cols [[buffer(4)]],
@@ -489,16 +490,16 @@ kernel void avgpool2(device half2* p_out [[buffer(0)]],
     uint row = ((b * h + 2 * oy) * w + 2 * ox) * pairs + cp;
     float2 a = float2(p_x[row]), bb = float2(p_x[row + pairs]);
     float2 c = float2(p_x[row + w * pairs]), d = float2(p_x[row + w * pairs + pairs]);
-    p_out[e] = half2(half((((a.x + bb.x) + c.x) + d.x) / 4.0f), half((((a.y + bb.y) + c.y) + d.y) / 4.0f));
+    p_out[e] = real2(real((((a.x + bb.x) + c.x) + d.x) / 4.0f), real((((a.y + bb.y) + c.y) + d.y) / 4.0f));
 }
 
 // The decoder's cat(transpconv(x) + bias, skip) at the upsampled size, written straight into the zero-padded layout
 // of the tap conv that reads it ([B, height + 2, width + 2, up + skip_cols], then zero tail rows up to `count` pairs);
 // g is [B*H/2*W/2, 4*up] with column (dy*2+dx)*up + c
-kernel void cat_up(device half2* p_out [[buffer(0)]],
-                   device const half* p_g [[buffer(1)]],
+kernel void cat_up(device real2* p_out [[buffer(0)]],
+                   device const real* p_g [[buffer(1)]],
                    device const float* p_bias [[buffer(2)]],
-                   device const half2* p_skip [[buffer(3)]],
+                   device const real2* p_skip [[buffer(3)]],
                    constant uint& batch [[buffer(4)]],
                    constant uint& height [[buffer(5)]],
                    constant uint& width [[buffer(6)]],
@@ -514,7 +515,7 @@ kernel void cat_up(device half2* p_out [[buffer(0)]],
     uint yp = rem / wp, xp = rem % wp;
     // padding and the tail past the last sample are zero
     if (b >= batch || yp < 1 || yp > height || xp < 1 || xp > width) {
-        p_out[e] = half2(0.0h);
+        p_out[e] = real2(0);
         return;
     }
     uint y = yp - 1, x = xp - 1;
@@ -524,7 +525,7 @@ kernel void cat_up(device half2* p_out [[buffer(0)]],
         uint d = (y & 1) * 2 + (x & 1);
         uint gi = m * 4 * up + d * up + c;
         float v0 = float(p_g[gi]), v1 = float(p_g[gi + 1]);
-        p_out[e] = half2(half(r16(v0) + p_bias[c]), half(r16(v1) + p_bias[c + 1]));
+        p_out[e] = real2(real(rnd(v0) + p_bias[c]), real(rnd(v1) + p_bias[c + 1]));
     } else {
         uint q = (b * height + y) * width + x;
         p_out[e] = p_skip[q * (skip_cols / 2) + (c - up) / 2];
@@ -534,8 +535,8 @@ kernel void cat_up(device half2* p_out [[buffer(0)]],
 // ---------------------------------------------------------------- head and blend, as blend.rs
 
 // Head logits of every real tile into its slot; one thread per (tile, pixel); padding tiles (slot < 0) write nothing
-kernel void head_logits(device half* p_logits [[buffer(0)]],
-                        device const half* p_feat [[buffer(1)]],
+kernel void head_logits(device real* p_logits [[buffer(0)]],
+                        device const real* p_feat [[buffer(1)]],
                         device const float* p_w [[buffer(2)]],
                         constant float& bias [[buffer(3)]],
                         device const int* p_desc [[buffer(4)]],
@@ -547,7 +548,7 @@ kernel void head_logits(device half* p_logits [[buffer(0)]],
     uint b = i / pixels, p = i % pixels;
     int slot = p_desc[b * DESC + 4];
     if (slot < 0) return;
-    device const half* f = p_feat + i * 32;
+    device const real* f = p_feat + i * 32;
     float dot = 0.0f;
     for (uint k = 0; k < 16; k++) {
         float a = float(f[2 * k]), c = float(f[2 * k + 1]);
@@ -556,13 +557,13 @@ kernel void head_logits(device half* p_logits [[buffer(0)]],
         dot = dot + (pa + pc);
     }
     // 64-bit: a large sweep's logits pass 2^32 elements (17x8192x8192, 18 maps is 4.8e9)
-    if (uint(slot) < slots) p_logits[ulong(slot) * pixels + p] = half(r16(dot) + bias);
+    if (uint(slot) < slots) p_logits[ulong(slot) * pixels + p] = real(rnd(dot) + bias);
 }
 
 // One map: blend its tiles' logits in villa's tile order and write villa's uint8 output
 kernel void blend_finish(device uchar* p_out [[buffer(0)]],
                          device uchar* p_cov [[buffer(1)]],
-                         device const half* p_logits [[buffer(2)]],
+                         device const real* p_logits [[buffer(2)]],
                          device const int* p_grid [[buffer(3)]],
                          device const uint* p_ys [[buffer(4)]],
                          device const uint* p_xs [[buffer(5)]],

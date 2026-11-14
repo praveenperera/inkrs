@@ -17,6 +17,7 @@ use sha2::{Digest, Sha256};
 use crate::conv::ConvBackend;
 use crate::dnn::{Dnn, Pick, algo_cache};
 use crate::ensure_supported;
+use crate::fast::{FP32_METAL_ONLY, ReaderPrecision};
 use crate::gpu::{Arg, Buf, Gpu, Pinned};
 use crate::model::{Ctx, Model, logits_buf, upload_desc};
 use crate::sched::{DESC, Edge, Occupancy, Schedule, hann_weights};
@@ -44,6 +45,8 @@ pub struct MapSpec {
 pub struct Options {
     pub stride: usize,
     pub batch: usize,
+    /// The reader's numerics; fp16 only on CUDA ([`check_precision`])
+    pub precision: ReaderPrecision,
     /// Whether the settings came from the `--fast` preset ([`crate::fast`]) rather than parity mode;
     /// recorded in the report only
     pub fast: bool,
@@ -68,7 +71,7 @@ pub struct Options {
 pub struct Report {
     pub stride: usize,
     pub batch: usize,
-    /// The reader's numerics, always fp16 ([`crate::fast::ReaderPrecision`])
+    /// The reader's numerics, always `fp16` on CUDA ([`ReaderPrecision`])
     pub precision: String,
     /// Whether the run used the `--fast` preset, which gives up map parity with villa
     pub fast: bool,
@@ -218,6 +221,8 @@ pub struct EngineOptions {
     /// The CUDA device ordinal
     pub device: usize,
     pub batch: usize,
+    /// The reader's numerics; fp16 only on CUDA ([`check_precision`])
+    pub precision: ReaderPrecision,
     pub pick: Pick,
     pub max_workspace: usize,
     /// Which library runs the reader's 2D convs; None for the GPU's default ([`ConvBackend::resolve`])
@@ -306,10 +311,11 @@ impl Engine {
     /// `opts.weights_dir`), opens device 0 and plans the model at `opts.batch`
     pub fn open(ckpt: &Path, opts: &EngineOptions) -> Result<Self> {
         ensure!(opts.batch > 0, "batch size must be positive");
+        check_precision(opts.precision)?;
         let mut load = LoadReport::default();
         let t = Instant::now();
         let export = resolve_weights(ckpt, &opts.weights_dir)?;
-        let ck = Checkpoint::load(&export)?;
+        let ck = Checkpoint::load(&export, opts.precision)?;
         // `inkrs run` takes an export without a sidecar, so only callers that name files need the reader
         load.reader = export_reader(&export).ok();
         load.load_weights_s = t.elapsed().as_secs_f64();
@@ -414,12 +420,20 @@ impl Engine {
     }
 }
 
+/// Refuses reader numerics the CUDA engine has no kernels for: fp32 runs on the Metal backend only
+/// ([`FP32_METAL_ONLY`])
+pub fn check_precision(precision: ReaderPrecision) -> Result<()> {
+    ensure_supported!(precision == ReaderPrecision::Fp16, "{FP32_METAL_ONLY}");
+    Ok(())
+}
+
 /// Runs `maps` over the volume at `zarr` with the weights at `ckpt`, once per output path
 /// each map carries; the model and its plans persist across passes, while each pass reads,
 /// schedules and uploads the volume again as a new segment would. The first pass's read and
 /// schedule run on the CPU while the engine loads
 pub fn run(zarr: &Path, ckpt: &Path, maps: &[MapSpec], opts: &Options) -> Result<Report> {
     ensure!(!maps.is_empty(), "no maps to run");
+    check_precision(opts.precision)?;
     ensure!(opts.batch > 0 && opts.writers > 0, "batch size and writer count must be positive");
     let passes = maps[0].paths.len();
     ensure!(passes > 0 && maps.iter().all(|m| m.paths.len() == passes), "every map needs one path per pass");
@@ -460,6 +474,7 @@ pub fn run(zarr: &Path, ckpt: &Path, maps: &[MapSpec], opts: &Options) -> Result
                 weights_dir: weights_dir(),
                 device: 0,
                 batch: opts.batch,
+                precision: opts.precision,
                 pick: opts.pick,
                 max_workspace: opts.max_workspace,
                 conv: opts.conv,
@@ -474,7 +489,7 @@ pub fn run(zarr: &Path, ckpt: &Path, maps: &[MapSpec], opts: &Options) -> Result
     let mut rep = Report {
         stride: opts.stride,
         batch: opts.batch,
-        precision: crate::fast::ReaderPrecision::Fp16.name().into(),
+        precision: opts.precision.name().into(),
         fast: opts.fast,
         tta: opts.tta.count(),
         cudnn: load.cudnn,
@@ -1080,4 +1095,29 @@ fn default_cache_home(nonempty: &dyn Fn(&str) -> Option<PathBuf>) -> Option<Path
 /// in the working directory (`scripts/export_weights.py`'s OUT_DIR)
 pub fn weights_dir() -> PathBuf {
     std::env::var_os("INKRS_WEIGHTS_DIR").map_or_else(|| PathBuf::from("weights"), PathBuf::from)
+}
+
+#[cfg(test)]
+mod precision_tests {
+    use std::path::Path;
+
+    use super::{Engine, EngineOptions};
+    use crate::dnn::Pick;
+    use crate::error::is_unsupported;
+    use crate::fast::ReaderPrecision;
+
+    #[test]
+    fn fp32_is_unsupported_on_cuda_before_any_gpu_or_file_is_touched() {
+        let opts = EngineOptions {
+            weights_dir: "weights".into(),
+            device: 0,
+            batch: 1,
+            precision: ReaderPrecision::Fp32,
+            pick: Pick::Heuristic,
+            max_workspace: 1 << 20,
+            conv: None,
+        };
+        let err = Engine::open(Path::new("missing.safetensors"), &opts).err().expect("opens");
+        assert!(is_unsupported(&err) && format!("{err:#}").contains("Metal backend only"), "{err:#}");
+    }
 }

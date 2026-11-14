@@ -28,6 +28,8 @@ use objc2_metal::{
     MTLLanguageVersion, MTLLibrary, MTLMathMode, MTLPipelineOption, MTLResourceOptions, MTLSize, MTLStorageMode,
 };
 
+use crate::fast::ReaderPrecision;
+
 /// The kernel library's sources, compiled together in this order: the shared header first
 const SOURCES: [&str; 5] = [
     include_str!("common.metal"),
@@ -36,6 +38,13 @@ const SOURCES: [&str; 5] = [
     include_str!("hecate.metal"),
     include_str!("v8in.metal"),
 ];
+
+/// The sources of the hybrid_3d2d reader's kernels, the fp32 library's only ones: Hecate and v8-in have no fp32
+/// reader to serve, and leaving them out keeps that library's build short
+const READER_SOURCES: usize = 3;
+
+/// The macro that switches the reader kernels' storage type `real` (common.metal) from half to float
+const FP32_DEFINE: &str = "#define INKRS_FP32 1\n";
 
 /// Dispatches encoded before the open command buffer is committed
 const FLUSH_EVERY: usize = 64;
@@ -143,14 +152,23 @@ struct Kernel {
 
 type Kernels = HashMap<String, Kernel>;
 
+/// The kernel library's source for reader precision `precision`: at fp16 every kernel, as it always was; at fp32 the
+/// reader's kernels only, with `real` defined as float
+fn library_source(precision: ReaderPrecision) -> String {
+    match precision {
+        ReaderPrecision::Fp16 => SOURCES.concat(),
+        ReaderPrecision::Fp32 => [FP32_DEFINE].iter().chain(&SOURCES[..READER_SOURCES]).copied().collect(),
+    }
+}
+
 /// Compiles the kernel library and builds a pipeline for every kernel, spread over a few threads, so pipeline builds
 /// stay out of the first forward; [`Gpu::open`] runs this on a background thread behind the weight load
-fn build_kernels(device: &ProtocolObject<dyn MTLDevice>) -> Result<Kernels> {
+fn build_kernels(device: &ProtocolObject<dyn MTLDevice>, precision: ReaderPrecision) -> Result<Kernels> {
     let options = MTLCompileOptions::new();
     // Metal 4 for the tensor ops; safe math so exp, division and rounding follow IEEE as the CUDA kernels' do
     options.setLanguageVersion(MTLLanguageVersion::Version4_0);
     options.setMathMode(MTLMathMode::Safe);
-    let source = NSString::from_str(&SOURCES.concat());
+    let source = NSString::from_str(&library_source(precision));
     let library = device
         .newLibraryWithSource_options_error(&source, Some(&options))
         .map_err(|e| eyre!("compile the Metal kernels: {}", e.localizedDescription()))?;
@@ -373,6 +391,9 @@ fn failure_reason(cb: &ProtocolObject<dyn MTLCommandBuffer>) -> String {
 /// The Metal device, its queue and the kernel library
 pub struct Gpu {
     device: Retained<ProtocolObject<dyn MTLDevice>>,
+    /// The reader precision the library was compiled for; the reader's model takes it from here, so its buffers and
+    /// the kernels that read them always agree on the storage type
+    precision: ReaderPrecision,
     queue: Retained<ProtocolObject<dyn MTLCommandQueue>>,
     build: RefCell<Option<JoinHandle<Result<Kernels>>>>,
     kernels: OnceCell<Kernels>,
@@ -389,9 +410,16 @@ pub struct Gpu {
 unsafe impl Send for Gpu {}
 
 impl Gpu {
-    /// Opens the system's default Metal device and starts compiling the kernel library on a background thread; the
-    /// first dispatch or [`Gpu::ready`] waits for it. Apple silicon has one GPU, device 0
+    /// Opens the system's default Metal device and starts compiling the kernel library, with the reader's kernels at
+    /// fp16, on a background thread; the first dispatch or [`Gpu::ready`] waits for it. Apple silicon has one GPU,
+    /// device 0
     pub fn open(ordinal: usize) -> Result<Self> {
+        Self::open_at(ordinal, ReaderPrecision::Fp16)
+    }
+
+    /// [`Gpu::open`] with the reader's kernels at `precision`. At fp32 the library holds the reader's kernels only,
+    /// so Hecate and v8-in need a library opened at fp16
+    pub fn open_at(ordinal: usize, precision: ReaderPrecision) -> Result<Self> {
         crate::ensure_supported!(ordinal == 0, "Metal device {ordinal} requested, but Apple silicon has only device 0");
         // older systems lack Metal 4 and `setMathMode:`, which raises an Objective-C exception instead of failing
         let info = NSProcessInfo::processInfo();
@@ -416,11 +444,14 @@ impl Gpu {
         let queue = device.newCommandQueue().ok_or_else(|| eyre!("Metal could not create a command queue"))?;
         let build = {
             let device = device.clone();
-            std::thread::Builder::new().name("inkrs-metal-kernels".into()).spawn(move || build_kernels(&device))?
+            std::thread::Builder::new()
+                .name("inkrs-metal-kernels".into())
+                .spawn(move || build_kernels(&device, precision))?
         };
         let profile = std::env::var_os("INKRS_METAL_PROFILE").map(|_| Profiler::new(&device)).transpose()?;
         Ok(Self {
             device,
+            precision,
             queue,
             build: RefCell::new(Some(build)),
             kernels: OnceCell::new(),
@@ -429,6 +460,11 @@ impl Gpu {
             settled: RefCell::default(),
             profile: profile.map(RefCell::new),
         })
+    }
+
+    /// The reader precision the kernel library was compiled for
+    pub fn precision(&self) -> ReaderPrecision {
+        self.precision
     }
 
     /// The GPU's name, such as "Apple M4 Pro"
@@ -483,6 +519,34 @@ impl Gpu {
         // SAFETY: the buffer is fresh, at least `bytes` long, and unused by any command
         unsafe { buf.host_mut::<u8>()[..bytes].copy_from_slice(bytemuck::cast_slice(data)) };
         Ok(buf)
+    }
+
+    /// A buffer of `n` values in the reader's storage type ([`Gpu::precision`]), every one NaN, so a value no kernel
+    /// writes fails the finiteness checks: all-ones bytes are NaN in FP16 and FP32 alike
+    pub fn alloc_real_nan(&self, n: usize) -> Result<Buf> {
+        self.alloc_fill(n * self.precision.bytes(), 0xFF)
+    }
+
+    /// A buffer holding `values` in the reader's storage type: rounded to FP16 at fp16, as they are at fp32
+    pub fn upload_real(&self, values: &[f32]) -> Result<Buf> {
+        match self.precision {
+            ReaderPrecision::Fp16 => self.upload(&values.iter().map(|&v| half::f16::from_f32(v)).collect::<Vec<_>>()),
+            ReaderPrecision::Fp32 => self.upload(values),
+        }
+    }
+
+    /// [`Gpu::download`] of `out.len()` values in the reader's storage type from element `offset` of `buf`, widened
+    /// to f32
+    pub fn download_real(&self, buf: &Buf, offset: usize, out: &mut [f32]) -> Result<()> {
+        match self.precision {
+            ReaderPrecision::Fp16 => {
+                let mut h = vec![half::f16::ZERO; out.len()];
+                self.download(buf, offset, &mut h)?;
+                out.iter_mut().zip(&h).for_each(|(o, v)| *o = v.to_f32());
+                Ok(())
+            }
+            ReaderPrecision::Fp32 => self.download(buf, offset, out),
+        }
     }
 
     /// Waits for the GPU, then copies `out.len()` elements of `T` from element `offset` of `buf`

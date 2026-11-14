@@ -475,10 +475,10 @@ class Engine:
     ) -> None:
         if batch_size is not None and batch_size < 1:
             raise ValueError("batch_size must be positive")
-        if precision != "fp16":
-            # the reader's InstanceNorm, pooling and head kernels are FP16-only
-            raise ValueError(f"precision {precision!r}: the reader runs fp16 only")
-        #: the reader's numerics, always "fp16"
+        if precision not in ("fp16", "fp32"):
+            raise ValueError(f"precision {precision!r}: need fp16 or fp32")
+        #: the reader's numerics: "fp16" (the default, villa's FP16 autocast) or "fp32" (Metal only, villa's
+        #: float32 run on MPS); never read from the checkpoint
         self.precision = precision
         if weights_dir is None:
             weights_dir = os.environ.get("INKRS_WEIGHTS_DIR", "weights")
@@ -498,6 +498,8 @@ class Engine:
         if self.architecture == "v8in":
             if self.device != 0:
                 raise UnsupportedError("a v8-in engine runs on the first visible GPU; set CUDA_VISIBLE_DEVICES instead")
+            if precision != "fp16":
+                raise UnsupportedError("precision applies to villa's readers only; v8-in runs its own FP16 numerics")
             self._v8 = _V8in(os.fspath(self.weights), self.batch_size, algo, int(max_workspace_mib))
             self.reader = self._v8.reader()
             self.convention = self._v8.convention()
@@ -507,7 +509,13 @@ class Engine:
             }  # fmt: skip
             return
         self._engine = _Engine(
-            os.fspath(self.weights), self.device, self.batch_size, algo, int(max_workspace_mib), os.fspath(weights_dir)
+            os.fspath(self.weights),
+            self.device,
+            self.batch_size,
+            algo,
+            int(max_workspace_mib),
+            os.fspath(weights_dir),
+            precision,
         )
         self.load_report: dict[str, Any] = json.loads(self._engine.load_report())
         self.load_report["weights"] = os.fspath(self.weights)

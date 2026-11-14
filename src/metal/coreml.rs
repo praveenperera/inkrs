@@ -4,6 +4,9 @@
 //! A package takes inkrs's pooled activations as they are, `x` = `[batch, px, px, 32]` f16 channels-last, and
 //! returns `logits` = `[batch, px, px]` f16, the same values `head_logits` writes. `metal/coreml_body.py`
 //! builds them: fp16 compute for the Neural Engine, fp32 for the CPU (fp16 on the CPU misses parity)
+//!
+//! The offload runs with the fp16 reader only ([`OFFLOAD_FP16_ONLY`]): both bodies take and return f16, so even the
+//! CPU's fp32-compute body rounds its input and its logits through FP16, and the Neural Engine computes in FP16
 
 use std::cell::RefCell;
 use std::collections::HashMap;
@@ -29,6 +32,7 @@ use objc2_foundation::{NSArray, NSDictionary, NSError, NSNumber, NSString, NSURL
 
 use super::gpu::{Buf, Fence, Gpu};
 use super::model::Model;
+use crate::fast::ReaderPrecision;
 use crate::sched::Edge;
 
 /// Where Core ML runs a body
@@ -70,6 +74,11 @@ fn numbers(v: &[usize]) -> Retained<NSArray<NSNumber>> {
     let v: Vec<Retained<NSNumber>> = v.iter().map(|&n| NSNumber::numberWithInteger(n as isize)).collect();
     NSArray::from_retained_slice(&v)
 }
+
+/// Why the offload refuses the fp32 reader
+pub const OFFLOAD_FP16_ONLY: &str = "the Core ML offload (INKRS_COREML_ANE, INKRS_COREML_CPU) runs with reader \
+     precision fp16 only: the Neural Engine computes in FP16, and every body takes and returns f16, so an fp32 run \
+     would round its pooled activations and logits through FP16; unset them for --precision fp32";
 
 /// The layout `metal/coreml_body.py` stamps on the bodies it builds: input `x` = the engine's pooled buffer, output
 /// `logits` = one slot per tile. Bump both together when either side changes
@@ -272,6 +281,7 @@ impl Offload {
         if var("INKRS_COREML_ANE").is_none() && var("INKRS_COREML_CPU").is_none() {
             return Ok(None);
         }
+        crate::ensure_supported!(gpu.precision() == ReaderPrecision::Fp16, "{OFFLOAD_FP16_ONLY}");
         let checkpoint = checkpoint()?;
         let count = |k: &str, default: usize| -> Result<usize> {
             var(k).map_or(Ok(default), |v| v.parse().map_err(|_| eyre!("{k}={v} is not a count")))

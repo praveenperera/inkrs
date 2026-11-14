@@ -21,6 +21,7 @@ use serde::Deserialize;
 
 use crate::ensure_supported;
 use crate::error::Unsupported;
+use crate::fast::ReaderPrecision;
 use crate::sched::Edge;
 
 /// The fields of the export's JSON sidecar that fix the inference contract
@@ -29,8 +30,9 @@ pub struct Sidecar {
     pub crop_size: Vec<usize>,
     pub input_pad_depth_to: Option<usize>,
     pub preprocessing: String,
-    /// `null` when the checkpoint ran without autocast, which this engine does not implement; the
-    /// field itself is required, so a sidecar missing it is corrupt rather than unsupported
+    /// `null` when the checkpoint ran without autocast. The FP16 engine needs `float16`; at fp32 every
+    /// value runs as villa runs on MPS, which ignores it. The field itself is required, so a sidecar
+    /// missing it is corrupt rather than unsupported
     #[serde(deserialize_with = "present")]
     pub amp_dtype: Option<String>,
     pub targets: BTreeMap<String, serde_json::Value>,
@@ -61,6 +63,16 @@ const MODEL_CONFIG_DERIVED: [(&str, &str); 6] = [
     ("strides", "[[1,1],[2,2],[2,2],[2,2],[2,2],[2,2]]"),
     ("pool_op_kernel_sizes", "[[1,1],[2,2],[2,2],[2,2],[2,2],[2,2]]"),
 ];
+
+/// Whether a checkpoint whose sidecar records autocast dtype `amp` runs at `precision`: the FP16 engine
+/// copies villa's FP16 autocast and needs it recorded, while fp32 runs every checkpoint as villa does
+/// on MPS
+fn amp_supported(amp: Option<&str>, precision: ReaderPrecision) -> bool {
+    match precision {
+        ReaderPrecision::Fp16 => amp == Some("float16"),
+        ReaderPrecision::Fp32 => matches!(amp, None | Some("float16" | "bfloat16")),
+    }
+}
 
 /// A required field that may be `null`, as [`present`] for a JSON value
 fn present_value<'de, D: serde::Deserializer<'de>>(d: D) -> std::result::Result<Option<serde_json::Value>, D::Error> {
@@ -97,12 +109,16 @@ pub struct Checkpoint {
 
 impl Checkpoint {
     /// Loads `path` (`.safetensors`) and its `.json` sidecar and checks the contract this
-    /// engine implements: a 17x128x128 or 17x384x384 crop, robust normalisation, FP16 autocast and
-    /// one `ink` target with no activation in the model
+    /// engine implements at `precision`: a 17x128x128 or 17x384x384 crop, robust normalisation, one
+    /// `ink` target with no activation in the model and, at fp16, FP16 autocast
+    ///
+    /// The precision is the caller's choice and is never read from the sidecar: villa runs a
+    /// checkpoint that records FP16 autocast in float32 on MPS, since it autocasts on CUDA only, so
+    /// an fp32 run takes any recorded autocast dtype (`null`, `float16`, `bfloat16`)
     ///
     /// The contract is checked from the sidecar before the tensors are read, so a checkpoint this
     /// engine does not implement is reported as unsupported (a fallback) whatever its tensor file holds
-    pub fn load(path: &Path) -> Result<Self> {
+    pub fn load(path: &Path, precision: ReaderPrecision) -> Result<Self> {
         let sidecar_path = path.with_extension("json");
         let sidecar: Sidecar = serde_json::from_slice(
             &std::fs::read(&sidecar_path).wrap_err_with(|| format!("read {}", sidecar_path.display()))?,
@@ -126,9 +142,10 @@ impl Checkpoint {
             sidecar.preprocessing
         );
         ensure_supported!(
-            sidecar.amp_dtype.as_deref() == Some("float16"),
-            "amp dtype {:?} is not supported",
-            sidecar.amp_dtype
+            amp_supported(sidecar.amp_dtype.as_deref(), precision),
+            "amp dtype {:?} is not supported at reader precision {}",
+            sidecar.amp_dtype,
+            precision.name()
         );
         ensure_supported!(
             sidecar.model_type == "vesuvius_unet_3d_stem_2d",
@@ -265,11 +282,16 @@ pub fn stem2_frags(w: &[f32]) -> Vec<u32> {
 
 /// A PyTorch conv weight `[K, C, *kernel]` as FP16 channels-last `[K, *kernel, C]`
 pub fn conv_nhwc(w: &[f32], k: usize, c: usize, kernel: usize) -> Vec<half::f16> {
-    let mut out = vec![half::f16::ZERO; w.len()];
+    conv_nhwc_f32(w, k, c, kernel).into_iter().map(half::f16::from_f32).collect()
+}
+
+/// [`conv_nhwc`] without the FP16 rounding
+pub fn conv_nhwc_f32(w: &[f32], k: usize, c: usize, kernel: usize) -> Vec<f32> {
+    let mut out = vec![0.0; w.len()];
     for ko in 0..k {
         for ci in 0..c {
             for s in 0..kernel {
-                out[(ko * kernel + s) * c + ci] = half::f16::from_f32(w[(ko * c + ci) * kernel + s]);
+                out[(ko * kernel + s) * c + ci] = w[(ko * c + ci) * kernel + s];
             }
         }
     }
@@ -313,6 +335,7 @@ mod contract_tests {
 
     use super::Checkpoint;
     use crate::error::is_unsupported;
+    use crate::fast::ReaderPrecision;
 
     /// villa's `model_config` for `hybrid_3d2d-seed42`, reader-v2, dense_native and TRACE v3B
     const SEED42_CONFIG: &str = r#"{"autoconfigure": true, "basic_decoder_block": "ConvBlock",
@@ -341,13 +364,20 @@ mod contract_tests {
     }
 
     #[test]
-    fn a_checkpoint_without_fp16_autocast_is_unsupported() {
+    fn a_checkpoint_without_fp16_autocast_is_unsupported_at_fp16_only() {
         for amp in ["null", "\"bfloat16\""] {
             let st = export_with(amp);
-            let err = Checkpoint::load(&st).err().expect("loads");
-            assert!(is_unsupported(&err), "{amp}: {err:#}");
+            let err = Checkpoint::load(&st, ReaderPrecision::Fp16).err().expect("loads");
+            assert!(is_unsupported(&err) && format!("{err:#}").contains("amp dtype"), "{amp}: {err:#}");
+            // fp32 runs it as villa does on MPS: the contract passes and only the empty tensor file fails
+            let err = Checkpoint::load(&st, ReaderPrecision::Fp32).err().expect("loads");
+            assert!(!is_unsupported(&err), "{amp} at fp32: {err:#}");
             std::fs::remove_dir_all(st.parent().unwrap()).unwrap();
         }
+        let st = export_with("\"float32\"");
+        let err = Checkpoint::load(&st, ReaderPrecision::Fp32).err().expect("loads");
+        assert!(is_unsupported(&err) && format!("{err:#}").contains("amp dtype"), "{err:#}");
+        std::fs::remove_dir_all(st.parent().unwrap()).unwrap();
     }
 
     #[test]
@@ -362,7 +392,7 @@ mod contract_tests {
         );
         for config in [SEED42_CONFIG, v3.as_str()] {
             let st = export_full("\"float16\"", config);
-            let err = Checkpoint::load(&st).err().expect("loads");
+            let err = Checkpoint::load(&st, ReaderPrecision::Fp16).err().expect("loads");
             assert!(!is_unsupported(&err), "{err:#}");
             std::fs::remove_dir_all(st.parent().unwrap()).unwrap();
         }
@@ -378,7 +408,7 @@ mod contract_tests {
             &SEED42_CONFIG.replace("}", r#", "features_per_stage": [32, 64, 128, 256, 320]}"#),
         ] {
             let st = export_full("\"float16\"", config);
-            let err = Checkpoint::load(&st).err().expect("loads");
+            let err = Checkpoint::load(&st, ReaderPrecision::Fp16).err().expect("loads");
             assert!(is_unsupported(&err) && format!("{err:#}").contains("model_config"), "{config}: {err:#}");
             std::fs::remove_dir_all(st.parent().unwrap()).unwrap();
         }
@@ -389,7 +419,7 @@ mod contract_tests {
         let st = export_with("\"float16\"");
         let side = std::fs::read_to_string(st.with_extension("json")).unwrap();
         std::fs::write(st.with_extension("json"), side.replace(r#""amp_dtype": "float16","#, "")).unwrap();
-        let err = Checkpoint::load(&st).err().expect("loads");
+        let err = Checkpoint::load(&st, ReaderPrecision::Fp16).err().expect("loads");
         assert!(!is_unsupported(&err) && format!("{err:#}").contains("amp_dtype"), "{err:#}");
         std::fs::remove_dir_all(st.parent().unwrap()).unwrap();
     }

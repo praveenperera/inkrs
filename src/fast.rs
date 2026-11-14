@@ -10,19 +10,53 @@ use serde::Serialize;
 
 use crate::hecate::{self, Precision};
 
-/// Reader numerics. The reader's InstanceNorm, pooling and head kernels are FP16-only, so FP16 is
-/// the one precision; bf16 or fp8 would need new kernels
+/// Reader numerics, chosen by the caller and never read from the checkpoint
+///
+/// - `Fp16`, the default: villa's FP16 autocast on CUDA, with every autocast rounding
+/// - `Fp32`: every op in float32, as villa runs on MPS (it autocasts on CUDA only), so a Mac run can
+///   match villa's own MPS maps. Metal only: the CUDA engine's kernels are FP16 ([`FP32_METAL_ONLY`])
+///
+/// bf16 or fp8 would need new kernels
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, clap::ValueEnum)]
 #[serde(rename_all = "lowercase")]
 pub enum ReaderPrecision {
     #[default]
     Fp16,
+    Fp32,
 }
 
+/// Why the CUDA engine refuses fp32 reader numerics
+pub const FP32_METAL_ONLY: &str = "reader precision fp32 runs on the Metal backend only: the CUDA engine's reader \
+     kernels are FP16, as villa autocasts to FP16 on CUDA";
+
 impl ReaderPrecision {
+    /// The name the CLI, the Python API and the run report use
     pub fn name(self) -> &'static str {
         match self {
             Self::Fp16 => "fp16",
+            Self::Fp32 => "fp32",
+        }
+    }
+
+    /// The precision named `name` (`fp16` or `fp32`)
+    pub fn parse(name: &str) -> Option<Self> {
+        [Self::Fp16, Self::Fp32].into_iter().find(|p| p.name() == name)
+    }
+
+    /// Bytes of one stored activation, conv weight or logit
+    pub fn bytes(self) -> usize {
+        match self {
+            Self::Fp16 => 2,
+            Self::Fp32 => 4,
+        }
+    }
+
+    /// `w` as this precision stores the weights autocast would cast: rounded through FP16 at fp16
+    /// ([`crate::weights::round16`]), unchanged at fp32
+    pub fn round(self, w: &[f32]) -> Vec<f32> {
+        match self {
+            Self::Fp16 => crate::weights::round16(w),
+            Self::Fp32 => w.to_vec(),
         }
     }
 }

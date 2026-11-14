@@ -20,6 +20,7 @@ use super::dnn::Pick;
 use super::gpu::{Arg, Buf, Fence, Gpu};
 use super::model::{Model, logits_buf};
 use crate::ensure_supported;
+use crate::fast::ReaderPrecision;
 use crate::sched::{DESC, Edge, Occupancy, Schedule, hann_weights};
 use crate::tta::Tta;
 use crate::weights::Checkpoint;
@@ -41,6 +42,8 @@ pub struct MapSpec {
 pub struct Options {
     pub stride: usize,
     pub batch: usize,
+    /// The reader's numerics: fp16 (villa's CUDA autocast) or fp32 (villa on MPS)
+    pub precision: ReaderPrecision,
     /// Whether the settings came from the `--fast` preset ([`crate::fast`]) rather than parity mode;
     /// recorded in the report only
     pub fast: bool,
@@ -71,7 +74,7 @@ pub struct TtaOutput {
 pub struct Report {
     pub stride: usize,
     pub batch: usize,
-    /// The reader's numerics, always fp16 ([`crate::fast::ReaderPrecision`])
+    /// The reader's numerics, `fp16` or `fp32` ([`ReaderPrecision`])
     pub precision: String,
     /// Whether the run used the `--fast` preset, which gives up map parity with villa
     pub fast: bool,
@@ -181,6 +184,8 @@ pub struct EngineOptions {
     pub weights_dir: PathBuf,
     pub device: usize,
     pub batch: usize,
+    /// The reader's numerics; the caller's choice, never read from the checkpoint ([`ReaderPrecision`])
+    pub precision: ReaderPrecision,
     pub pick: Pick,
     pub max_workspace: usize,
 }
@@ -255,12 +260,12 @@ impl Engine {
         let mut load = LoadReport::default();
         let t = Instant::now();
         // the kernel library compiles on a background thread while the weights load
-        let gpu = Gpu::open(opts.device)?;
+        let gpu = Gpu::open_at(opts.device, opts.precision)?;
         load.open_gpu_s = t.elapsed().as_secs_f64();
 
         let t = Instant::now();
         let export = resolve_weights(ckpt, &opts.weights_dir)?;
-        let ck = Checkpoint::load(&export)?;
+        let ck = Checkpoint::load(&export, opts.precision)?;
         load.reader = export_reader(&export).ok();
         load.load_weights_s = t.elapsed().as_secs_f64();
         load.compute_capability = gpu.name();
@@ -291,6 +296,11 @@ impl Engine {
         self.model.edge
     }
 
+    /// The reader precision the engine runs at
+    pub fn precision(&self) -> ReaderPrecision {
+        self.gpu.precision()
+    }
+
     /// The batch size the model was planned at
     pub fn batch(&self) -> usize {
         self.model.batch
@@ -303,8 +313,8 @@ impl Engine {
 
     /// Downloads a pass's logits and fails on any non-finite value
     pub fn check_finite(&mut self, out: &PassOutput) -> Result<()> {
-        let mut all = vec![f16::ZERO; out.report.tiles * self.model.edge.pixels()];
-        self.gpu.download(&out.logits, 0, &mut all)?;
+        let mut all = vec![0.0f32; out.report.tiles * self.model.edge.pixels()];
+        self.gpu.download_real(&out.logits, 0, &mut all)?;
         let bad = all.iter().filter(|v| !v.is_finite()).count();
         ensure!(bad == 0, "{bad} non-finite logits among {} slots", out.report.tiles);
         Ok(())
@@ -342,6 +352,7 @@ pub fn run(zarr: &Path, ckpt: &Path, maps: &[MapSpec], opts: &Options) -> Result
             weights_dir: weights_dir(),
             device: 0,
             batch: opts.batch,
+            precision: opts.precision,
             pick: opts.pick,
             max_workspace: opts.max_workspace,
         },
@@ -350,7 +361,7 @@ pub fn run(zarr: &Path, ckpt: &Path, maps: &[MapSpec], opts: &Options) -> Result
     let mut rep = Report {
         stride: opts.stride,
         batch: opts.batch,
-        precision: crate::fast::ReaderPrecision::Fp16.name().into(),
+        precision: engine.precision().name().into(),
         fast: opts.fast,
         cudnn: load.cudnn,
         compute_capability: load.compute_capability.clone(),
@@ -555,6 +566,7 @@ fn run_pass(
             free_tx.send(slot).ok();
         }
         let (logits_ref, sched_ref, progress_ref) = (&logits, &sched, &progress);
+        // only the offload scatters, and it runs with fp16 logits only (`coreml::OFFLOAD_FP16_ONLY`)
         let scatter = move |bi: usize, t: usize, row: &[f16]| {
             let slot = sched_ref.desc[(bi * model.batch + t) * DESC + 4];
             if slot < 0 || slot as usize >= sched_ref.slots || row.len() != pixels {

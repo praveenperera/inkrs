@@ -69,7 +69,8 @@ These stay available, off by default. Each one leaves parity, and its cost is th
 | `--precision bf16 --stride 48` | Hecate | −0.023 |
 | `--precision bf16 --stride 64` | Hecate | −0.041 |
 | `--no-tf32` (strict fp32) | Hecate | not scored; hecate.py runs TF32 convolutions |
-| `--precision fp16` | readers | the only reader precision (the kernels are FP16-only) |
+| `--precision fp16` | readers | the default reader precision |
+| `--precision fp32` | readers, Metal only | not a speed setting: 1.2-1.3x slower, for a closer match to villa's float32 maps on MPS (within 1/255 against 2/255 at fp16) |
 
 A reader's `--overlap` sets the same strides: 0.4375 is stride 72, 0.375 is 80, 0.25 is 96 and 0 is 128. Other strides weren't scored.
 

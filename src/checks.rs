@@ -11,6 +11,7 @@ use sha2::{Digest, Sha256};
 
 use crate::conv::ConvBackend;
 use crate::dnn::{Dnn, Pick};
+use crate::fast::ReaderPrecision;
 use crate::gpu::Gpu;
 use crate::model::{Ctx, Model, NormArith, TilePrep, logits_buf};
 use crate::sched::{DEPTH, DESC, Edge};
@@ -155,7 +156,7 @@ pub fn p0(zarr: &Path, weights: &Path, tiles: &Path, out: &Path, pick: Pick) -> 
     ensure!(!tiles.is_empty(), "no tiles");
     let batch = tiles.len();
     let vol = Volume::read(zarr)?;
-    let ck = Checkpoint::load(weights)?;
+    let ck = Checkpoint::load(weights, ReaderPrecision::Fp16)?;
     let gpu = Gpu::open()?;
     let dnn = Dnn::new(&gpu)?;
     let ctx = Ctx { gpu: &gpu, dnn: &dnn, pick, max_workspace: 1 << 30 };
