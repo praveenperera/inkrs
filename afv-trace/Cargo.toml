@@ -1,0 +1,37 @@
+[package]
+name = "inkrs-afv-trace"
+version = "0.1.0"
+edition = "2024"
+publish = false
+license = "Apache-2.0"
+description = "Native drop-in for AVF_SPLINE_GENERATOR 0.2.0: traces H/V fibre predictions into the same .afv"
+
+# a workspace of its own, so it builds apart from the CUDA crates in the parent workspace
+[workspace]
+
+[[bin]]
+name = "inkrs-afv-trace"
+path = "src/main.rs"
+
+[dependencies]
+# the c-blosc release numcodecs 0.15 bundles (1.21.6), so every Blosc chunk the reference reads decodes here
+# too: all of its codecs, byte and bit shuffle, split and unsplit blocks
+blosc-src = { version = "0.3.8", features = ["lz4", "zlib", "zstd"] }
+clap = { version = "4.6", features = ["derive"] }
+color-eyre = "0.6"
+flate2 = "1"
+half = "2"
+libc = "0.2"
+# numpy's own OpenBLAS supplies dsyevd, so the direction field is bitwise numpy.linalg.eigh
+libloading = "0.9"
+lz4_flex = { version = "0.11", default-features = false, features = ["std", "safe-decode"] }
+memmap2 = "0.9"
+rayon = "1.12"
+rusqlite = { version = "0.40", features = ["bundled"] }
+serde_json = { version = "1", features = ["preserve_order"] }
+sha2 = "0.10"
+zstd = "0.13"
+
+[profile.release]
+debug = 1
+codegen-units = 4

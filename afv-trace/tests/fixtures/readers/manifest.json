@@ -1,0 +1,782 @@
+[
+ {
+  "name": "u1-blosc-lz4-shuffle",
+  "path": "u1-blosc-lz4-shuffle.zarr",
+  "key": null,
+  "order": "VH",
+  "window": [
+   [
+    1,
+    3,
+    2
+   ],
+   [
+    8,
+    9,
+    11
+   ]
+  ],
+  "full_u8": "51dc0bbcddb8962c.bin",
+  "full_f32": "886b14d34116da3c.bin",
+  "window_u8": "541c241dac7ef86b.bin",
+  "window_f32": "2ccfaa5a1fb7a3fe.bin"
+ },
+ {
+  "name": "u1-blosc-zstd-noshuffle-blocks",
+  "path": "u1-blosc-zstd-noshuffle-blocks.zarr",
+  "key": null,
+  "order": "VH",
+  "window": [
+   [
+    1,
+    3,
+    2
+   ],
+   [
+    8,
+    9,
+    11
+   ]
+  ],
+  "full_u8": "51dc0bbcddb8962c.bin",
+  "full_f32": "886b14d34116da3c.bin",
+  "window_u8": "541c241dac7ef86b.bin",
+  "window_f32": "2ccfaa5a1fb7a3fe.bin"
+ },
+ {
+  "name": "u1-blosc-blosclz-bitshuffle",
+  "path": "u1-blosc-blosclz-bitshuffle.zarr",
+  "key": null,
+  "order": "VH",
+  "window": [
+   [
+    1,
+    3,
+    2
+   ],
+   [
+    8,
+    9,
+    11
+   ]
+  ],
+  "full_u8": "51dc0bbcddb8962c.bin",
+  "full_f32": "886b14d34116da3c.bin",
+  "window_u8": "541c241dac7ef86b.bin",
+  "window_f32": "2ccfaa5a1fb7a3fe.bin"
+ },
+ {
+  "name": "u1-blosc-zlib",
+  "path": "u1-blosc-zlib.zarr",
+  "key": null,
+  "order": "VH",
+  "window": [
+   [
+    1,
+    3,
+    2
+   ],
+   [
+    8,
+    9,
+    11
+   ]
+  ],
+  "full_u8": "51dc0bbcddb8962c.bin",
+  "full_f32": "886b14d34116da3c.bin",
+  "window_u8": "541c241dac7ef86b.bin",
+  "window_f32": "2ccfaa5a1fb7a3fe.bin"
+ },
+ {
+  "name": "u1-blosc-lz4hc",
+  "path": "u1-blosc-lz4hc.zarr",
+  "key": null,
+  "order": "VH",
+  "window": [
+   [
+    1,
+    3,
+    2
+   ],
+   [
+    8,
+    9,
+    11
+   ]
+  ],
+  "full_u8": "51dc0bbcddb8962c.bin",
+  "full_f32": "886b14d34116da3c.bin",
+  "window_u8": "541c241dac7ef86b.bin",
+  "window_f32": "2ccfaa5a1fb7a3fe.bin"
+ },
+ {
+  "name": "u1-blosc-memcpy",
+  "path": "u1-blosc-memcpy.zarr",
+  "key": null,
+  "order": "VH",
+  "window": [
+   [
+    1,
+    3,
+    2
+   ],
+   [
+    8,
+    9,
+    11
+   ]
+  ],
+  "full_u8": "51dc0bbcddb8962c.bin",
+  "full_f32": "886b14d34116da3c.bin",
+  "window_u8": "541c241dac7ef86b.bin",
+  "window_f32": "2ccfaa5a1fb7a3fe.bin"
+ },
+ {
+  "name": "u1-raw",
+  "path": "u1-raw.zarr",
+  "key": null,
+  "order": "VH",
+  "window": [
+   [
+    1,
+    3,
+    2
+   ],
+   [
+    8,
+    9,
+    11
+   ]
+  ],
+  "full_u8": "51dc0bbcddb8962c.bin",
+  "full_f32": "886b14d34116da3c.bin",
+  "window_u8": "541c241dac7ef86b.bin",
+  "window_f32": "2ccfaa5a1fb7a3fe.bin"
+ },
+ {
+  "name": "u1-zstd",
+  "path": "u1-zstd.zarr",
+  "key": null,
+  "order": "VH",
+  "window": [
+   [
+    1,
+    3,
+    2
+   ],
+   [
+    8,
+    9,
+    11
+   ]
+  ],
+  "full_u8": "51dc0bbcddb8962c.bin",
+  "full_f32": "886b14d34116da3c.bin",
+  "window_u8": "541c241dac7ef86b.bin",
+  "window_f32": "2ccfaa5a1fb7a3fe.bin"
+ },
+ {
+  "name": "u1-zlib",
+  "path": "u1-zlib.zarr",
+  "key": null,
+  "order": "VH",
+  "window": [
+   [
+    1,
+    3,
+    2
+   ],
+   [
+    8,
+    9,
+    11
+   ]
+  ],
+  "full_u8": "51dc0bbcddb8962c.bin",
+  "full_f32": "886b14d34116da3c.bin",
+  "window_u8": "541c241dac7ef86b.bin",
+  "window_f32": "2ccfaa5a1fb7a3fe.bin"
+ },
+ {
+  "name": "u1-gzip",
+  "path": "u1-gzip.zarr",
+  "key": null,
+  "order": "VH",
+  "window": [
+   [
+    1,
+    3,
+    2
+   ],
+   [
+    8,
+    9,
+    11
+   ]
+  ],
+  "full_u8": "51dc0bbcddb8962c.bin",
+  "full_f32": "886b14d34116da3c.bin",
+  "window_u8": "541c241dac7ef86b.bin",
+  "window_f32": "2ccfaa5a1fb7a3fe.bin"
+ },
+ {
+  "name": "u1-lz4",
+  "path": "u1-lz4.zarr",
+  "key": null,
+  "order": "VH",
+  "window": [
+   [
+    1,
+    3,
+    2
+   ],
+   [
+    8,
+    9,
+    11
+   ]
+  ],
+  "full_u8": "51dc0bbcddb8962c.bin",
+  "full_f32": "886b14d34116da3c.bin",
+  "window_u8": "541c241dac7ef86b.bin",
+  "window_f32": "2ccfaa5a1fb7a3fe.bin"
+ },
+ {
+  "name": "u1-channel-chunks-1",
+  "path": "u1-channel-chunks-1.zarr",
+  "key": null,
+  "order": "VH",
+  "window": [
+   [
+    1,
+    3,
+    2
+   ],
+   [
+    8,
+    9,
+    11
+   ]
+  ],
+  "full_u8": "51dc0bbcddb8962c.bin",
+  "full_f32": "886b14d34116da3c.bin",
+  "window_u8": "541c241dac7ef86b.bin",
+  "window_f32": "2ccfaa5a1fb7a3fe.bin"
+ },
+ {
+  "name": "u1-fortran",
+  "path": "u1-fortran.zarr",
+  "key": null,
+  "order": "VH",
+  "window": [
+   [
+    1,
+    3,
+    2
+   ],
+   [
+    8,
+    9,
+    11
+   ]
+  ],
+  "full_u8": "51dc0bbcddb8962c.bin",
+  "full_f32": "886b14d34116da3c.bin",
+  "window_u8": "541c241dac7ef86b.bin",
+  "window_f32": "2ccfaa5a1fb7a3fe.bin"
+ },
+ {
+  "name": "u1-slash",
+  "path": "u1-slash.zarr",
+  "key": null,
+  "order": "VH",
+  "window": [
+   [
+    1,
+    3,
+    2
+   ],
+   [
+    8,
+    9,
+    11
+   ]
+  ],
+  "full_u8": "51dc0bbcddb8962c.bin",
+  "full_f32": "886b14d34116da3c.bin",
+  "window_u8": "541c241dac7ef86b.bin",
+  "window_f32": "2ccfaa5a1fb7a3fe.bin"
+ },
+ {
+  "name": "u1-group",
+  "path": "u1-group.zarr",
+  "key": "semantic",
+  "order": "VH",
+  "window": [
+   [
+    1,
+    3,
+    2
+   ],
+   [
+    8,
+    9,
+    11
+   ]
+  ],
+  "full_u8": "51dc0bbcddb8962c.bin",
+  "full_f32": "886b14d34116da3c.bin",
+  "window_u8": "541c241dac7ef86b.bin",
+  "window_f32": "2ccfaa5a1fb7a3fe.bin"
+ },
+ {
+  "name": "u1-missing-fill-7",
+  "path": "u1-missing-fill-7.zarr",
+  "key": null,
+  "order": "VH",
+  "window": [
+   [
+    1,
+    3,
+    2
+   ],
+   [
+    8,
+    9,
+    11
+   ]
+  ],
+  "full_u8": "b3ad630ef9f4325f.bin",
+  "full_f32": "f1a4f7bbe2be4d44.bin",
+  "window_u8": "df109f09d687dd10.bin",
+  "window_f32": "d8e039accb07f8c5.bin"
+ },
+ {
+  "name": "u1-hv",
+  "path": "u1-hv.zarr",
+  "key": null,
+  "order": "HV",
+  "window": [
+   [
+    1,
+    3,
+    2
+   ],
+   [
+    8,
+    9,
+    11
+   ]
+  ],
+  "full_u8": "19137a2075f7aaf4.bin",
+  "full_f32": "1132da84f45a3011.bin",
+  "window_u8": "1b7c2d307f9ba717.bin",
+  "window_f32": "425bfbb0b7871f3d.bin"
+ },
+ {
+  "name": "f4-blosc-lz4-shuffle",
+  "path": "f4-blosc-lz4-shuffle.zarr",
+  "key": null,
+  "order": "VH",
+  "window": [
+   [
+    1,
+    3,
+    2
+   ],
+   [
+    8,
+    9,
+    11
+   ]
+  ],
+  "full_u8": "6966c699928f207a.bin",
+  "full_f32": "54003fc86c7df762.bin",
+  "window_u8": "577b26739af9ffb4.bin",
+  "window_f32": "af90cac7e84eabbc.bin"
+ },
+ {
+  "name": "f4-blosc-zstd-bitshuffle-blocks",
+  "path": "f4-blosc-zstd-bitshuffle-blocks.zarr",
+  "key": null,
+  "order": "VH",
+  "window": [
+   [
+    1,
+    3,
+    2
+   ],
+   [
+    8,
+    9,
+    11
+   ]
+  ],
+  "full_u8": "6966c699928f207a.bin",
+  "full_f32": "54003fc86c7df762.bin",
+  "window_u8": "577b26739af9ffb4.bin",
+  "window_f32": "af90cac7e84eabbc.bin"
+ },
+ {
+  "name": "f4-blosc-memcpy",
+  "path": "f4-blosc-memcpy.zarr",
+  "key": null,
+  "order": "VH",
+  "window": [
+   [
+    1,
+    3,
+    2
+   ],
+   [
+    8,
+    9,
+    11
+   ]
+  ],
+  "full_u8": "6966c699928f207a.bin",
+  "full_f32": "54003fc86c7df762.bin",
+  "window_u8": "577b26739af9ffb4.bin",
+  "window_f32": "af90cac7e84eabbc.bin"
+ },
+ {
+  "name": "f8-blosc-zstd-shuffle",
+  "path": "f8-blosc-zstd-shuffle.zarr",
+  "key": null,
+  "order": "VH",
+  "window": [
+   [
+    1,
+    3,
+    2
+   ],
+   [
+    8,
+    9,
+    11
+   ]
+  ],
+  "full_u8": "6966c699928f207a.bin",
+  "full_f32": "54003fc86c7df762.bin",
+  "window_u8": "577b26739af9ffb4.bin",
+  "window_f32": "af90cac7e84eabbc.bin"
+ },
+ {
+  "name": "f2-blosc-lz4-shuffle",
+  "path": "f2-blosc-lz4-shuffle.zarr",
+  "key": null,
+  "order": "VH",
+  "window": [
+   [
+    1,
+    3,
+    2
+   ],
+   [
+    8,
+    9,
+    11
+   ]
+  ],
+  "full_u8": "c9a019d4dd1eb872.bin",
+  "full_f32": "ea7c612bf681d2c3.bin",
+  "window_u8": "40ba1beb7480174a.bin",
+  "window_f32": "480c2186abe3e4fe.bin"
+ },
+ {
+  "name": "f4-big-endian",
+  "path": "f4-big-endian.zarr",
+  "key": null,
+  "order": "VH",
+  "window": [
+   [
+    1,
+    3,
+    2
+   ],
+   [
+    8,
+    9,
+    11
+   ]
+  ],
+  "full_u8": "6966c699928f207a.bin",
+  "full_f32": "54003fc86c7df762.bin",
+  "window_u8": "577b26739af9ffb4.bin",
+  "window_f32": "af90cac7e84eabbc.bin"
+ },
+ {
+  "name": "f4-fortran-channel-chunks-1",
+  "path": "f4-fortran-channel-chunks-1.zarr",
+  "key": null,
+  "order": "VH",
+  "window": [
+   [
+    1,
+    3,
+    2
+   ],
+   [
+    8,
+    9,
+    11
+   ]
+  ],
+  "full_u8": "6966c699928f207a.bin",
+  "full_f32": "54003fc86c7df762.bin",
+  "window_u8": "577b26739af9ffb4.bin",
+  "window_f32": "af90cac7e84eabbc.bin"
+ },
+ {
+  "name": "f4-missing-fill-half",
+  "path": "f4-missing-fill-half.zarr",
+  "key": null,
+  "order": "VH",
+  "window": [
+   [
+    1,
+    3,
+    2
+   ],
+   [
+    8,
+    9,
+    11
+   ]
+  ],
+  "full_u8": "521d34348974033b.bin",
+  "full_f32": "2d5080485a42d106.bin",
+  "window_u8": "0ab336fbf1fabdf6.bin",
+  "window_f32": "67d4968b7a5c6e7b.bin"
+ },
+ {
+  "name": "f4-missing-fill-nan",
+  "path": "f4-missing-fill-nan.zarr",
+  "key": null,
+  "order": "VH",
+  "window": [
+   [
+    1,
+    3,
+    2
+   ],
+   [
+    8,
+    9,
+    11
+   ]
+  ],
+  "error": "Predictions contain NaN, infinity or values outside [0,1]"
+ },
+ {
+  "name": "f4-missing-fill-inf",
+  "path": "f4-missing-fill-inf.zarr",
+  "key": null,
+  "order": "VH",
+  "window": [
+   [
+    1,
+    3,
+    2
+   ],
+   [
+    8,
+    9,
+    11
+   ]
+  ],
+  "error": "Predictions contain NaN, infinity or values outside [0,1]"
+ },
+ {
+  "name": "f4-missing-fill--inf",
+  "path": "f4-missing-fill--inf.zarr",
+  "key": null,
+  "order": "VH",
+  "window": [
+   [
+    1,
+    3,
+    2
+   ],
+   [
+    8,
+    9,
+    11
+   ]
+  ],
+  "error": "Predictions contain NaN, infinity or values outside [0,1]"
+ },
+ {
+  "name": "f4-out-of-range",
+  "path": "f4-out-of-range.zarr",
+  "key": null,
+  "order": "VH",
+  "window": [
+   [
+    1,
+    3,
+    2
+   ],
+   [
+    8,
+    9,
+    11
+   ]
+  ],
+  "error": "Predictions contain NaN, infinity or values outside [0,1]"
+ },
+ {
+  "name": "npy-u1",
+  "path": "npy-u1.npy",
+  "key": null,
+  "order": "VH",
+  "window": [
+   [
+    1,
+    3,
+    2
+   ],
+   [
+    8,
+    9,
+    11
+   ]
+  ],
+  "full_u8": "51dc0bbcddb8962c.bin",
+  "full_f32": "886b14d34116da3c.bin",
+  "window_u8": "541c241dac7ef86b.bin",
+  "window_f32": "2ccfaa5a1fb7a3fe.bin"
+ },
+ {
+  "name": "npy-u1-fortran",
+  "path": "npy-u1-fortran.npy",
+  "key": null,
+  "order": "VH",
+  "window": [
+   [
+    1,
+    3,
+    2
+   ],
+   [
+    8,
+    9,
+    11
+   ]
+  ],
+  "full_u8": "51dc0bbcddb8962c.bin",
+  "full_f32": "886b14d34116da3c.bin",
+  "window_u8": "541c241dac7ef86b.bin",
+  "window_f32": "2ccfaa5a1fb7a3fe.bin"
+ },
+ {
+  "name": "npy-u1-hv",
+  "path": "npy-u1-hv.npy",
+  "key": null,
+  "order": "HV",
+  "window": [
+   [
+    1,
+    3,
+    2
+   ],
+   [
+    8,
+    9,
+    11
+   ]
+  ],
+  "full_u8": "19137a2075f7aaf4.bin",
+  "full_f32": "1132da84f45a3011.bin",
+  "window_u8": "1b7c2d307f9ba717.bin",
+  "window_f32": "425bfbb0b7871f3d.bin"
+ },
+ {
+  "name": "npy-f2",
+  "path": "npy-f2.npy",
+  "key": null,
+  "order": "VH",
+  "window": [
+   [
+    1,
+    3,
+    2
+   ],
+   [
+    8,
+    9,
+    11
+   ]
+  ],
+  "full_u8": "c9a019d4dd1eb872.bin",
+  "full_f32": "ea7c612bf681d2c3.bin",
+  "window_u8": "40ba1beb7480174a.bin",
+  "window_f32": "480c2186abe3e4fe.bin"
+ },
+ {
+  "name": "npy-f4-big-endian",
+  "path": "npy-f4-big-endian.npy",
+  "key": null,
+  "order": "VH",
+  "window": [
+   [
+    1,
+    3,
+    2
+   ],
+   [
+    8,
+    9,
+    11
+   ]
+  ],
+  "full_u8": "6966c699928f207a.bin",
+  "full_f32": "54003fc86c7df762.bin",
+  "window_u8": "577b26739af9ffb4.bin",
+  "window_f32": "af90cac7e84eabbc.bin"
+ },
+ {
+  "name": "npy-f4-fortran",
+  "path": "npy-f4-fortran.npy",
+  "key": null,
+  "order": "VH",
+  "window": [
+   [
+    1,
+    3,
+    2
+   ],
+   [
+    8,
+    9,
+    11
+   ]
+  ],
+  "full_u8": "6966c699928f207a.bin",
+  "full_f32": "54003fc86c7df762.bin",
+  "window_u8": "577b26739af9ffb4.bin",
+  "window_f32": "af90cac7e84eabbc.bin"
+ },
+ {
+  "name": "npy-f8",
+  "path": "npy-f8.npy",
+  "key": null,
+  "order": "VH",
+  "window": [
+   [
+    1,
+    3,
+    2
+   ],
+   [
+    8,
+    9,
+    11
+   ]
+  ],
+  "full_u8": "6966c699928f207a.bin",
+  "full_f32": "54003fc86c7df762.bin",
+  "window_u8": "577b26739af9ffb4.bin",
+  "window_f32": "af90cac7e84eabbc.bin"
+ }
+]

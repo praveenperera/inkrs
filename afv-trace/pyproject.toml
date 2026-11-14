@@ -1,0 +1,38 @@
+[build-system]
+requires = ["maturin>=1.9,<2"]
+build-backend = "maturin"
+
+[project]
+name = "inkrs-afv-trace"
+# the version of Cargo.toml
+dynamic = ["version"]
+description = "Native drop-in for AVF_SPLINE_GENERATOR 0.2.0: traces AFV V/H fibre predictions into the same .afv"
+readme = "README.md"
+requires-python = ">=3.9"
+license = "Apache-2.0"
+license-files = ["NOTICE", "licenses/*.txt"]
+authors = [{ name = "Praveen Perera", email = "me@praveenperera.com" }]
+keywords = ["vesuvius-challenge", "herculaneum", "papyrus", "fibre-tracing", "afv"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Science/Research",
+  "Operating System :: MacOS",
+  "Operating System :: POSIX :: Linux",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Rust",
+  "Topic :: Scientific/Engineering :: Image Processing",
+]
+# the direction field calls dsyevd from numpy's bundled OpenBLAS, so the tracer runs in an environment with numpy, as
+# the reference does. macOS numpy wheels link Accelerate and bundle no OpenBLAS, so there the same OpenBLAS build as
+# numpy 2.4.6's Linux wheel comes from scipy-openblas64
+dependencies = ["numpy>=2", "scipy-openblas64==0.3.31.188.0; sys_platform == 'darwin'"]
+
+[tool.maturin]
+# the wheel installs the binary as the inkrs-afv-trace script, next to the environment's python, plus the Python
+# entry (python -m inkrs_afv_trace) that finds it
+bindings = "bin"
+python-source = "python"
+module-name = "inkrs_afv_trace"
+python-packages = ["inkrs_afv_trace"]
+# the release profile keeps line tables for profiling; the wheel does not need them
+strip = true

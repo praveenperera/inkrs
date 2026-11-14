@@ -1,0 +1,34 @@
+inkrs-afv-trace
+
+This crate is a Rust port of AVF_SPLINE_GENERATOR 0.2.0
+(https://github.com/Qualzz/AVF_SPLINE_GENERATOR, commit bee798f7), licensed under the
+Apache License, Version 2.0. The tracing kernels (src/kernels.rs), the field preparation
+(src/axes.rs, src/fields.rs), the finishing pass (src/finish.rs), the AFV writer
+(src/afv.rs) and the command line (src/run.rs) reproduce that project's algorithms,
+constants, schema and messages. The upstream project ships no NOTICE file. The
+Apache License 2.0 text, under which this crate is licensed too, is in licenses/apache-2.0.txt.
+
+src/pyfmt.rs ports NumPy 2.4.6's unsigned-integer introsort (npysort/quicksort.cpp,
+aquicksort_) line for line, so that np.argsort's order of ties is reproduced. NumPy is
+licensed under the BSD 3-Clause licence; its full text is in licenses/numpy.txt.
+
+The binary statically links these C libraries, built from the sources their Rust crates
+vendor. Their full licence texts are in licenses/:
+
+- c-blosc 1.21.6 (blosc-src 0.3.8): BSD-3-Clause, Copyright (c) 2009-2018 Francesc Alted,
+  Copyright (c) 2019-present Blosc Development Team (licenses/c-blosc.txt). Its blosclz
+  codec derives from FastLZ (MIT, Copyright (C) 2005-2020 Ariya Hidayat,
+  licenses/c-blosc-fastlz.txt) and its bit shuffle from Bitshuffle (MIT, Copyright (c)
+  2014 Kiyoshi Masui, licenses/c-blosc-bitshuffle.txt)
+- LZ4 1.10.0 (lz4-sys): BSD-2-Clause, Copyright (c) 2011-2020 Yann Collet
+  (licenses/lz4.txt)
+- Zstandard 1.5.7 (zstd-sys): BSD-3-Clause, Copyright (c) Meta Platforms, Inc. and
+  affiliates (licenses/zstd.txt)
+- zlib (libz-sys, static): zlib licence, Copyright (C) Jean-loup Gailly and Mark Adler
+  (licenses/zlib.txt)
+- SQLite (rusqlite, bundled): public domain
+
+The Rust crates it links are MIT or Apache-2.0 licensed; Cargo.lock lists them.
+
+At run time the binary loads numpy's bundled OpenBLAS (libscipy_openblas64_*, BSD-3-Clause)
+from the Python environment it is installed into; that library is not distributed here.
