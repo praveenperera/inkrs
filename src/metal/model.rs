@@ -19,6 +19,7 @@
 use color_eyre::eyre::{Result, WrapErr, ensure};
 
 use super::gpu::{Arg, Buf, Gpu};
+use crate::fast::ReaderPrecision;
 use crate::sched::{DEPTH, Edge, percentile_params};
 use crate::weights::{Checkpoint, conv_nhwc_f32};
 
@@ -318,6 +319,8 @@ fn transp_rows(w: &[f32], cin: usize, cout: usize) -> Vec<f32> {
 pub struct TilePrep {
     batch: usize,
     edge: Edge,
+    /// The storage type of `x0`
+    precision: ReaderPrecision,
     hist: Buf,
     tstats: Buf,
     pub x0: Buf,
@@ -330,6 +333,7 @@ impl TilePrep {
         Ok(Self {
             batch,
             edge,
+            precision: gpu.precision(),
             hist: gpu.alloc(batch * 256 * 4)?,
             tstats: gpu.alloc(batch * 16)?,
             x0: gpu.alloc_real_nan(batch * vox)?,
@@ -339,6 +343,7 @@ impl TilePrep {
 
     /// Queues the batch `desc` describes (`[batch, DESC]`) from the resident volume
     pub fn run(&self, gpu: &Gpu, vol: (&Buf, usize, usize), desc: Arg) -> Result<()> {
+        same_precision(gpu, self.precision)?;
         let b = self.batch;
         let (vbuf, height, width) = vol;
         let px = self.edge.px();
@@ -387,6 +392,8 @@ pub struct Model {
     pub batch: usize,
     /// The tile edge the reader's sidecar fixes: 128 (reader-v2) or 384 (Reader V3)
     pub edge: Edge,
+    /// The storage type of every weight and activation buffer, the `Gpu`'s it was built on
+    precision: ReaderPrecision,
     stem1_w: Buf,
     stem1_n: Norm,
     stem2_w: Buf,
@@ -544,6 +551,7 @@ impl Model {
             ups,
             head_w,
             head_b,
+            precision: p,
             tiles: TilePrep::new(gpu, batch, edge)?,
             s1: act(batch * vox * STEM)?,
             s2: act(batch * vox * STEM)?,
@@ -649,18 +657,21 @@ impl Model {
     /// Queues one forward: gather and normalise the tiles `desc` describes (`[batch, DESC]`) from the resident `vol`,
     /// run the model and write each real tile's logits into its slot of `logits`
     pub fn forward(&self, gpu: &Gpu, vol: (&Buf, usize, usize), desc: Arg, logits: &Buf) -> Result<()> {
+        same_precision(gpu, self.precision)?;
         self.stem(gpu, vol, desc, &self.pooled)?;
         self.body(gpu, desc, logits)
     }
 
     /// A buffer for one batch of the stem's output, `[batch, px, px, 32]` in the storage type
     pub fn pooled_buf(&self, gpu: &Gpu) -> Result<Buf> {
+        same_precision(gpu, self.precision)?;
         gpu.alloc_real_nan(self.batch * self.edge.pixels() * 32)
     }
 
     /// Queues the first half of a forward: gather and normalise the tiles, run the 3D stem and write the depth
     /// pools to `pooled` (`[batch, px, px, 32]` in the storage type, attention sums then maxima, villa's `cat` order)
     pub fn stem(&self, gpu: &Gpu, vol: (&Buf, usize, usize), desc: Arg, pooled: &Buf) -> Result<()> {
+        same_precision(gpu, self.precision)?;
         let b = self.batch;
         let px = self.edge.px();
         let pixels = px * px;
@@ -878,6 +889,18 @@ fn stem_c16(gpu: &Gpu, (b, px): (usize, usize), (xp, w, y): (&Buf, &Buf, &Buf), 
     Ok(tiles)
 }
 
+/// Fails unless `gpu`'s kernels read the storage type `precision` the buffers were made in: an fp32 buffer passes
+/// every fp16 size check, and its kernels would read its bytes as FP16
+fn same_precision(gpu: &Gpu, precision: ReaderPrecision) -> Result<()> {
+    ensure!(
+        gpu.precision() == precision,
+        "buffers in the {} storage type passed to a Metal device opened at {}",
+        precision.name(),
+        gpu.precision().name()
+    );
+    Ok(())
+}
+
 /// A logits buffer of `slots` tiles of edge `edge` in the storage type, NaN-filled so an unwritten slot fails the
 /// finish checks
 pub fn logits_buf(gpu: &Gpu, slots: usize, edge: Edge) -> Result<Buf> {
@@ -886,29 +909,46 @@ pub fn logits_buf(gpu: &Gpu, slots: usize, edge: Edge) -> Result<Buf> {
 
 #[cfg(test)]
 mod tests {
-    //! Every conv and GEMM shape class of the model against an f64 CPU reference on FP16-rounded random data, at both
-    //! reader precisions: the matmul2d tile shapes are new, a shape that compiles can still return garbage, and the
-    //! fp32 tolerance is tight enough to catch a matmul2d that drops FP32 operands to a narrower type
+    //! Every conv and GEMM shape class of the model against an f64 CPU reference on random data in the storage type,
+    //! at both reader precisions: the matmul2d tile shapes are new, a shape that compiles can still return garbage, and
+    //! the fp32 tolerance is tight enough to catch a matmul2d that drops FP32 operands to a narrower type
 
     use super::*;
-    use crate::fast::ReaderPrecision;
 
-    /// Deterministic values in [-1, 1), rounded to FP16
-    fn rand16(n: usize, seed: u64) -> Vec<f32> {
+    /// Deterministic values in [-1, 1) as `gpu`'s storage type holds them: rounded to FP16 at fp16, unrounded at fp32,
+    /// so an fp32 kernel that narrowed its operands to FP16 would miss the f64 reference
+    fn rand(gpu: &Gpu, n: usize, seed: u64) -> Vec<f32> {
+        let v = uniform(n, seed);
+        match gpu.precision() {
+            ReaderPrecision::Fp16 => v.iter().map(|&x| half::f16::from_f32(x).to_f32()).collect(),
+            ReaderPrecision::Fp32 => v,
+        }
+    }
+
+    /// Deterministic values in [-1, 1), exact in f32
+    fn uniform(n: usize, seed: u64) -> Vec<f32> {
         let mut s = seed.wrapping_mul(6364136223846793005).wrapping_add(1442695040888963407);
         (0..n)
             .map(|_| {
                 s = s.wrapping_mul(6364136223846793005).wrapping_add(1442695040888963407);
-                let v = ((s >> 40) as f32 / (1u64 << 24) as f32) * 2.0 - 1.0;
-                half::f16::from_f32(v).to_f32()
+                ((s >> 40) as f32 / (1u64 << 24) as f32) * 2.0 - 1.0
             })
             .collect()
     }
 
     fn download(gpu: &Gpu, b: &Buf, n: usize) -> Vec<f32> {
-        let mut out = vec![f32::NAN; n];
-        gpu.download_real(b, 0, &mut out).unwrap();
-        out
+        match gpu.precision() {
+            ReaderPrecision::Fp16 => {
+                let mut h = vec![half::f16::ZERO; n];
+                gpu.download(b, 0, &mut h).unwrap();
+                h.iter().map(|v| v.to_f32()).collect()
+            }
+            ReaderPrecision::Fp32 => {
+                let mut out = vec![f32::NAN; n];
+                gpu.download(b, 0, &mut out).unwrap();
+                out
+            }
+        }
     }
 
     /// NHWC conv reference in f64: x [b, h, h, c], w [o, c, k, k], stride s, pad k / 2
@@ -1001,8 +1041,8 @@ mod tests {
             Kind::Strided => (3, 2),
             Kind::Pointwise => (1, 1),
         };
-        let x = rand16(b * h * h * c, seed);
-        let w = rand16(o * c * k * k, seed + 1);
+        let x = rand(gpu, b * h * h * c, seed);
+        let w = rand(gpu, o * c * k * k, seed + 1);
         let conv = Conv::from_torch(gpu, &w, (c, o, h), kind).unwrap();
         let ho = conv.out_h();
         let xb = gpu.upload_real(&x).unwrap();
@@ -1064,8 +1104,8 @@ mod tests {
 
     fn transposed_gemm_case(gpu: &Gpu) {
         let (m, cin, up) = (2 * 4 * 4 + 3, 320, 320);
-        let x = rand16(m * cin, 7);
-        let tw = rand16(cin * up * 4, 8);
+        let x = rand(gpu, m * cin, 7);
+        let tw = rand(gpu, cin * up * 4, 8);
         let w = gpu.upload_real(&transp_rows(&tw, cin, up)).unwrap();
         let xb = gpu.upload_real(&x).unwrap();
         let y = gpu.alloc_real_nan(m * 4 * up).unwrap();
@@ -1087,6 +1127,17 @@ mod tests {
     }
 
     #[test]
+    fn buffers_refuse_a_gpu_of_the_other_precision() {
+        let fp32 = Gpu::open_at(0, ReaderPrecision::Fp32).unwrap();
+        let fp16 = Gpu::open_at(0, ReaderPrecision::Fp16).unwrap();
+        let prep = TilePrep::new(&fp32, 1, Edge::P128).unwrap();
+        let vol = fp16.alloc(DEPTH * 128 * 128).unwrap();
+        let desc = fp16.upload(&[0i32; crate::sched::DESC]).unwrap();
+        let err = prep.run(&fp16, (&vol, 128, 128), desc.arg()).expect_err("runs");
+        assert!(format!("{err:#}").contains("fp32 storage type passed to a Metal device opened at fp16"), "{err:#}");
+    }
+
+    #[test]
     fn stem_convs_match_reference_fp16() {
         stem_case(&Gpu::open_at(0, ReaderPrecision::Fp16).unwrap());
     }
@@ -1101,8 +1152,8 @@ mod tests {
         let px = 128;
         let vox = DEPTH * px * px;
         let (d, hw) = (DEPTH as i64, px as i64);
-        let x = rand16(b * vox, 3);
-        let w1 = rand16(STEM * 27, 4);
+        let x = rand(gpu, b * vox, 3);
+        let w1 = rand(gpu, STEM * 27, 4);
         let xb = gpu.upload_real(&x).unwrap();
         let w1b = gpu.upload_real(&conv_nhwc_f32(&w1, STEM, 1, 27)).unwrap();
         let s1 = gpu.alloc_real_nan(b * vox * STEM).unwrap();
@@ -1140,8 +1191,8 @@ mod tests {
         check(gpu, "conv3d 1->16", &got1, &conv3(&x, &w1, 1));
         check_stats(gpu, "conv3d 1->16", &part, tiles1, &got1, (b, vox, STEM));
 
-        let x2 = rand16(b * vox * STEM, 5);
-        let w2 = rand16(STEM * STEM * 27, 6);
+        let x2 = rand(gpu, b * vox * STEM, 5);
+        let w2 = rand(gpu, STEM * STEM * 27, 6);
         let x2b = gpu.upload_real(&x2).unwrap();
         let w2b = gpu.upload_real(&conv_nhwc_f32(&w2, STEM, STEM, 27)).unwrap();
         let n = (b * stem_padded(px) + stem_tail(px)) * STEM / 2;

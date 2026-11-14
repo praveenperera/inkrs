@@ -164,6 +164,16 @@ def test_engine_precision_is_fp16_or_fp32():
             inkrs.Engine("missing.safetensors", precision=precision)
 
 
+@cuda_only
+def test_fp32_on_cuda_is_unsupported_before_any_file_or_library_is_read(monkeypatch):
+    def no_libraries() -> dict[str, str]:
+        raise AssertionError("loaded the CUDA libraries")
+
+    monkeypatch.setattr(inkrs, "load_cuda_libraries", no_libraries)
+    with pytest.raises(inkrs.UnsupportedError, match="Metal backend only"):
+        inkrs.Engine("missing.safetensors", precision="fp32")
+
+
 @metal_only
 def test_build_info_on_macos_names_metal_and_no_ptx():
     info = inkrs.build_info()

@@ -166,6 +166,8 @@ pub enum Scan<'a> {
 /// What a pass returns: its report, its logits and the in-memory images
 pub struct PassOutput {
     pub report: PassReport,
+    /// The storage type of `logits`
+    pub precision: ReaderPrecision,
     pub logits: Buf,
     pub maps: Vec<Option<Vec<u8>>>,
     pub coverage: Vec<Option<Vec<u8>>>,
@@ -313,9 +315,13 @@ impl Engine {
 
     /// Downloads a pass's logits and fails on any non-finite value
     pub fn check_finite(&mut self, out: &PassOutput) -> Result<()> {
-        let mut all = vec![0.0f32; out.report.tiles * self.model.edge.pixels()];
-        self.gpu.download_real(&out.logits, 0, &mut all)?;
-        let bad = all.iter().filter(|v| !v.is_finite()).count();
+        ensure!(
+            out.precision == self.precision(),
+            "a pass at {} checked by an engine at {}",
+            out.precision.name(),
+            self.precision().name()
+        );
+        let bad = self.gpu.nonfinite_real(&out.logits, out.report.tiles * self.model.edge.pixels())?;
         ensure!(bad == 0, "{bad} non-finite logits among {} slots", out.report.tiles);
         Ok(())
     }
@@ -733,7 +739,7 @@ fn run_pass(
             "map {i}: in-memory outputs out of step"
         );
     }
-    Ok(PassOutput { report: rep, logits, maps, coverage })
+    Ok(PassOutput { report: rep, precision: gpu.precision(), logits, maps, coverage })
 }
 
 #[allow(clippy::too_many_arguments)]

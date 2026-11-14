@@ -477,6 +477,12 @@ class Engine:
             raise ValueError("batch_size must be positive")
         if precision not in ("fp16", "fp32"):
             raise ValueError(f"precision {precision!r}: need fp16 or fp32")
+        if precision == "fp32" and not _METAL:
+            # refused before any CUDA library loads, so a caller that falls back on UnsupportedError always can
+            raise UnsupportedError(
+                "reader precision fp32 runs on the Metal backend only: the CUDA engine's reader kernels are FP16, "
+                "as villa autocasts to FP16 on CUDA"
+            )
         #: the reader's numerics: "fp16" (the default, villa's FP16 autocast) or "fp32" (Metal only, villa's
         #: float32 run on MPS); never read from the checkpoint
         self.precision = precision

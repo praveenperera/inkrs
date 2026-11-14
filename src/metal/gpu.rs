@@ -535,17 +535,20 @@ impl Gpu {
         }
     }
 
-    /// [`Gpu::download`] of `out.len()` values in the reader's storage type from element `offset` of `buf`, widened
-    /// to f32
-    pub fn download_real(&self, buf: &Buf, offset: usize, out: &mut [f32]) -> Result<()> {
+    /// How many of the first `n` values of `buf`, in the reader's storage type, are not finite; the copy stays in that
+    /// type, so an fp16 check holds 2 bytes per value
+    pub fn nonfinite_real(&self, buf: &Buf, n: usize) -> Result<usize> {
         match self.precision {
             ReaderPrecision::Fp16 => {
-                let mut h = vec![half::f16::ZERO; out.len()];
-                self.download(buf, offset, &mut h)?;
-                out.iter_mut().zip(&h).for_each(|(o, v)| *o = v.to_f32());
-                Ok(())
+                let mut v = vec![half::f16::ZERO; n];
+                self.download(buf, 0, &mut v)?;
+                Ok(v.iter().filter(|x| !x.is_finite()).count())
             }
-            ReaderPrecision::Fp32 => self.download(buf, offset, out),
+            ReaderPrecision::Fp32 => {
+                let mut v = vec![0.0f32; n];
+                self.download(buf, 0, &mut v)?;
+                Ok(v.iter().filter(|x| !x.is_finite()).count())
+            }
         }
     }
 
