@@ -14,6 +14,7 @@ use inkrs::dnn::Pick;
 use inkrs::engine::{
     Dest, Engine, EngineOptions, PassOptions, PassOutput, PassReport, Scan, Source, Target, TtaOutput,
 };
+use inkrs::fast::ReaderPrecision;
 use inkrs::hecate::engine::MapSpec as HecateMap;
 use inkrs::zarr::{LowRes, VolumeRef};
 use numpy::ndarray::Array2;
@@ -78,7 +79,8 @@ struct PyEngine {
 #[pymethods]
 impl PyEngine {
     #[new]
-    #[pyo3(signature = (checkpoint, device, batch_size, algo, max_workspace_mib, weights_dir))]
+    #[pyo3(signature = (checkpoint, device, batch_size, algo, max_workspace_mib, weights_dir, precision))]
+    #[allow(clippy::too_many_arguments)]
     fn new(
         py: Python<'_>,
         checkpoint: PathBuf,
@@ -87,7 +89,11 @@ impl PyEngine {
         algo: &str,
         max_workspace_mib: usize,
         weights_dir: PathBuf,
+        precision: &str,
     ) -> PyResult<Self> {
+        let precision = ReaderPrecision::parse(precision).ok_or_else(|| {
+            pyo3::exceptions::PyValueError::new_err(format!("precision {precision:?}: need fp16 or fp32"))
+        })?;
         let pick = match algo {
             "find" => Pick::Find,
             "heuristic" => Pick::Heuristic,
@@ -103,6 +109,7 @@ impl PyEngine {
             weights_dir,
             device,
             batch: batch_size,
+            precision,
             pick,
             max_workspace: max_workspace_mib << 20,
             #[cfg(not(target_os = "macos"))]

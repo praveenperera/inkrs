@@ -1022,7 +1022,7 @@ mod tests {
                 eprintln!("skipped: no export at {}", path.display());
                 continue;
             }
-            let ck = Checkpoint::load(&path).unwrap();
+            let ck = Checkpoint::load(&path, crate::fast::ReaderPrecision::Fp16).unwrap();
             for (key, shape) in expected_keys() {
                 ck.take(&key, &shape).unwrap();
             }

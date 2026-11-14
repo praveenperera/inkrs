@@ -65,7 +65,8 @@ eng = inkrs.Engine(
     algo="find",              # "find" (time every cuDNN algorithm once) | "heuristic"
     max_workspace_mib=1024,
     weights_dir=None,         # where a .pth's export is looked up first; default $INKRS_WEIGHTS_DIR, else ./weights
-    precision="fp16",         # the reader's kernels are FP16-only; anything else raises ValueError
+    precision="fp16",         # "fp16" (default) | "fp32" (Metal only: UnsupportedError on CUDA); anything else
+                              # raises ValueError
 )
 eng.weights                   # Path: the safetensors export loaded
 eng.reader                    # str: the reader name its sidecar records ("hybrid_3d2d-seed42", "reader-v2"),
@@ -75,8 +76,10 @@ eng.load_report               # dict: reader, cudnn, compute_capability, ptx_tie
                               # JIT-compiled" otherwise), load_weights_s, open_gpu_s, plan_s, algo_cache_hits, algo_cache, algos,
                               # schema, weights, cuda_libraries (the files the engine calls), mapped_libraries; on
                               # macOS compute_capability is the GPU's name, ptx_tier and kernels are "metal", cudnn 0 and algo_cache null
-eng.batch_size, eng.device
+eng.batch_size, eng.device, eng.precision
 ```
+
+- `precision` is always the caller's choice, never read from the checkpoint. fp16, the default, uses villa's FP16 autocast numerics and its maps are already within 2/255 of villa's float32 PyTorch run on MPS. `"fp32"` runs the reader in float32 on Metal, as villa does on MPS, for a closer match: on an M4 Pro its maps came within 1/255 of PyTorch's, with 0.004% of pixels off by one, at 1.2-1.3x the run time and twice the memory for activations and logits ([results/metal-fp32.json](../results/metal-fp32.json)). The CUDA engine's reader kernels are fp16 only, so `"fp32"` there raises `UnsupportedError`, as it does for a v8-in export and with the Neural Engine offload (`INKRS_COREML_ANE`, `INKRS_COREML_CPU`). An fp32 engine also takes a checkpoint trained without FP16 autocast.
 
 - `checkpoint` is the safetensors export from `python -m inkrs.export_weights CKPT OUT_DIR`, or villa's `.pth` (see "Weights"). `eng.weights` is the export that was loaded.
 - Construction loads the weights, opens the device and plans every layer (with `"find"`, a few seconds of cuDNN timing). The GIL is released throughout.

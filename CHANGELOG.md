@@ -6,6 +6,19 @@ All notable changes to inkrs are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- An opt-in fp32 reader on the Metal backend: `inkrs infer` and `inkrs sweep` take
+  `--precision fp32`, and `inkrs.Engine` takes `precision="fp32"`. fp16 stays the
+  default, and its maps are unchanged byte for byte. fp16 already lands within
+  2/255 of villa's float32 PyTorch run on MPS, so fp32 is only for a closer match:
+  on an M4 Pro its maps came within 1/255, with 0.004% of pixels off by one against
+  5% at fp16, and it ran 1.2-1.3x slower, with twice the activation and logit
+  memory. On CUDA, fp32 raises `inkrs.UnsupportedError`, since the CUDA reader
+  kernels are fp16 only; v8-in exports and the Neural Engine offload refuse it
+  too. An fp32 run also takes a checkpoint trained without FP16 autocast, as villa
+  on MPS does.
+
 ## [0.2.1] - 2026-11-13
 
 ### Added

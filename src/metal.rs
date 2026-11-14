@@ -29,11 +29,14 @@ pub mod dnn {
 #[cfg(test)]
 mod tests {
     use super::gpu::Gpu;
+    use crate::fast::ReaderPrecision;
 
+    /// Both libraries compile
     #[test]
     fn kernels_compile() {
-        let gpu = Gpu::open(0).unwrap();
-        gpu.ready().unwrap();
+        for p in [ReaderPrecision::Fp16, ReaderPrecision::Fp32] {
+            Gpu::open_at(0, p).unwrap().ready().unwrap();
+        }
     }
 
     // a profiling window synchronizes mid-pass; the flush that fences a map must still return a fence, and that

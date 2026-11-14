@@ -1,6 +1,10 @@
 //! villa's `Local3DStem2DUNet` for `hybrid_3d2d` on Metal, planned once at a fixed batch: the same layers, weights
 //! and FP16 autocast roundings as the CUDA model (`src/model.rs`), with the convolutions on Metal 4 tensor ops
 //!
+//! The reader precision is the [`Gpu`]'s ([`Gpu::precision`]): at fp16 every activation, conv weight and logit is
+//! stored as FP16 with autocast's roundings; at fp32 the same kernels store FP32 and round nowhere, as villa runs on
+//! MPS. Accumulation, InstanceNorm statistics and the norm's affine parameters are FP32 in both
+//!
 //! - 3x3 stride-1 convs: the input in a zero-padded layout, then one accumulating matmul2d per row of taps, the
 //!   three column taps folded into K (`conv3x3`). The padding is fused into the producer where the conv is the only
 //!   reader (`in_apply_pad` after a block's first IN, `cat_up` in the decoder) and a `pad2d` pass elsewhere
@@ -16,7 +20,7 @@ use color_eyre::eyre::{Result, WrapErr, ensure};
 
 use super::gpu::{Arg, Buf, Gpu};
 use crate::sched::{DEPTH, Edge, percentile_params};
-use crate::weights::{Checkpoint, conv_nhwc, round16};
+use crate::weights::{Checkpoint, conv_nhwc_f32};
 
 const STEM: usize = 16;
 const FEATURES: [usize; 6] = [32, 64, 128, 256, 320, 320];
@@ -65,7 +69,7 @@ enum Kind {
     Pointwise,
 }
 
-/// A 2D conv: its FP16 weight `[o, k*k, c]` and shape at the model's batch
+/// A 2D conv: its weight `[o, k*k, c]` in the reader's storage type and its shape at the model's batch
 struct Conv {
     w: Buf,
     kind: Kind,
@@ -98,7 +102,7 @@ impl Conv {
         ensure!(w.len() == o * c * k * k, "conv weight of {} values for {c} -> {o}", w.len());
         ensure!(c % 2 == 0 && o % 16 == 0, "{c} -> {o} channels: need even inputs and outputs in 16s");
         ensure!(kind != Kind::Strided || h % 2 == 0, "stride-2 conv on an odd edge {h}");
-        Ok(Self { w: gpu.upload(&conv_nhwc(w, o, c, k * k))?, kind, c, o, h })
+        Ok(Self { w: gpu.upload_real(&conv_nhwc_f32(w, o, c, k * k))?, kind, c, o, h })
     }
 
     /// Output edge
@@ -120,7 +124,7 @@ impl Conv {
         span.div_ceil(row_tile(span))
     }
 
-    /// Scratch elements (FP16) this conv needs at batch `b`: the padded input or the im2col matrix
+    /// Scratch elements (in the storage type) this conv needs at batch `b`: the padded input or the im2col matrix
     fn scratch(&self, b: usize) -> usize {
         match self.kind {
             Kind::Taps => padded_rows(b, self.h) * self.c,
@@ -132,10 +136,11 @@ impl Conv {
     /// Runs the conv of `x` into `y` and its IN partials into `part`; returns the partials per sample
     fn run(&self, gpu: &Gpu, b: usize, scratch: &Buf, x: &Buf, y: &Buf, part: &Buf) -> Result<usize> {
         let (c, o, h) = (self.c, self.o, self.h);
+        let pair = 2 * gpu.precision().bytes();
         match self.kind {
             Kind::Taps => {
                 let n = padded_rows(b, h) * c / 2;
-                ensure!(n * 4 <= scratch.bytes(), "conv scratch too small");
+                ensure!(n * pair <= scratch.bytes(), "conv scratch too small");
                 gpu.dispatch_1d(
                     "pad2d",
                     n,
@@ -146,7 +151,7 @@ impl Conv {
             Kind::Strided => {
                 let ho = h / 2;
                 let n = b * ho * ho * 9 * c / 2;
-                ensure!(n * 4 <= scratch.bytes(), "conv scratch too small");
+                ensure!(n * pair <= scratch.bytes(), "conv scratch too small");
                 gpu.dispatch_1d("im2col_s2", n, &[scratch.arg(), x.arg(), h.into(), h.into(), c.into(), n.into()])?;
                 gemm_in(gpu, scratch, &self.w, y, (b * ho * ho, o, 9 * c), ho * ho, part)
             }
@@ -158,9 +163,10 @@ impl Conv {
     /// fuses the padding (`in_apply_pad`, `cat_up`); returns the IN partials per sample
     fn run_padded(&self, gpu: &Gpu, b: usize, xp: &Buf, y: &Buf, part: &Buf) -> Result<usize> {
         let (c, o, h) = (self.c, self.o, self.h);
+        let e = gpu.precision().bytes();
         ensure!(self.kind == Kind::Taps, "run_padded on a {:?} conv", self.kind);
-        ensure!(padded_rows(b, h) * c * 2 <= xp.bytes(), "padded conv input too small");
-        ensure!(b * h * h * o * 2 <= y.bytes(), "conv output too small");
+        ensure!(padded_rows(b, h) * c * e <= xp.bytes(), "padded conv input too small");
+        ensure!(b * h * h * o * e <= y.bytes(), "conv output too small");
         let tiles = self.tiles();
         ensure!(b * tiles * o * 16 <= part.bytes(), "IN partials too small");
         let (name, bn) = tap_kernel(o, row_tile(self.span()));
@@ -205,10 +211,11 @@ fn tap_kernel(o: usize, bm: usize) -> (&'static str, usize) {
     (name, bn)
 }
 
-/// `y[m, n] = x[m, k] . w[n, k]^T`, FP16
+/// `y[m, n] = x[m, k] . w[n, k]^T` in the reader's storage type
 fn gemm(gpu: &Gpu, x: &Buf, w: &Buf, y: &Buf, (m, n, k): (usize, usize, usize)) -> Result<()> {
+    let e = gpu.precision().bytes();
     ensure!(
-        x.bytes() >= m * k * 2 && w.bytes() >= n * k * 2 && y.bytes() >= m * n * 2,
+        x.bytes() >= m * k * e && w.bytes() >= n * k * e && y.bytes() >= m * n * e,
         "gemm {m}x{n}x{k}: buffers too small"
     );
     let (name, bn) = if n % 64 == 0 {
@@ -237,8 +244,9 @@ fn gemm_in(
     rps: usize,
     part: &Buf,
 ) -> Result<usize> {
+    let e = gpu.precision().bytes();
     ensure!(
-        x.bytes() >= m * k * 2 && w.bytes() >= n * k * 2 && y.bytes() >= m * n * 2,
+        x.bytes() >= m * k * e && w.bytes() >= n * k * e && y.bytes() >= m * n * e,
         "gemm {m}x{n}x{k}: buffers too small"
     );
     ensure!(rps > 0 && m.is_multiple_of(rps), "gemm of {m} rows is not whole samples of {rps}");
@@ -293,13 +301,13 @@ struct Up {
     skip_c: usize,
 }
 
-/// A PyTorch `ConvTranspose2d(k=2, s=2)` weight `[cin, cout, 2, 2]` as the FP16 GEMM operand `[4 * cout, cin]`
-fn transp_rows(w: &[f32], cin: usize, cout: usize) -> Vec<half::f16> {
-    let mut out = vec![half::f16::ZERO; w.len()];
+/// A PyTorch `ConvTranspose2d(k=2, s=2)` weight `[cin, cout, 2, 2]` as the GEMM operand `[4 * cout, cin]`
+fn transp_rows(w: &[f32], cin: usize, cout: usize) -> Vec<f32> {
+    let mut out = vec![0.0; w.len()];
     for ci in 0..cin {
         for co in 0..cout {
             for d in 0..4 {
-                out[(d * cout + co) * cin + ci] = half::f16::from_f32(w[(ci * cout + co) * 4 + d]);
+                out[(d * cout + co) * cin + ci] = w[(ci * cout + co) * 4 + d];
             }
         }
     }
@@ -324,7 +332,7 @@ impl TilePrep {
             edge,
             hist: gpu.alloc(batch * 256 * 4)?,
             tstats: gpu.alloc(batch * 16)?,
-            x0: f16_buf(gpu, batch * vox)?,
+            x0: gpu.alloc_real_nan(batch * vox)?,
             pct: [percentile_params(vox, 1.0), percentile_params(vox, 99.0)],
         })
     }
@@ -409,27 +417,26 @@ pub struct Tap<'a> {
     pub shape: Vec<usize>,
 }
 
-fn f16_buf(gpu: &Gpu, n: usize) -> Result<Buf> {
-    // NaN-filled, so a layer that is never written fails the finiteness checks
-    gpu.alloc_fill(n * 2, 0xFF)
-}
-
 impl Model {
-    /// Uploads the weights and allocates every activation at `batch`; every checkpoint tensor must be consumed
+    /// Uploads the weights and allocates every activation at `batch`, in the storage type of `gpu`'s reader precision;
+    /// every checkpoint tensor must be consumed
     pub fn new(gpu: &Gpu, ck: &Checkpoint, batch: usize, edge: Edge) -> Result<Self> {
         let px = edge.px();
+        let p = gpu.precision();
+        // activations start NaN, so a layer that is never written fails the finiteness checks
+        let act = |n: usize| gpu.alloc_real_nan(n);
         check_batch(batch, px)?;
         let vox = DEPTH * px * px;
 
         // stem
         let w = ck.take("depth_fusion.features.0.weight", &[STEM, 1, 3, 3, 3])?;
-        let stem1_w = gpu.upload(&conv_nhwc(&w, STEM, 1, 27))?;
+        let stem1_w = gpu.upload_real(&conv_nhwc_f32(&w, STEM, 1, 27))?;
         let stem1_n = Norm::load(gpu, ck, "depth_fusion.features.1", STEM)?;
         let w = ck.take("depth_fusion.features.3.weight", &[STEM, STEM, 3, 3, 3])?;
-        let stem2_w = gpu.upload(&conv_nhwc(&w, STEM, STEM, 27))?;
+        let stem2_w = gpu.upload_real(&conv_nhwc_f32(&w, STEM, STEM, 27))?;
         let stem2_n = Norm::load(gpu, ck, "depth_fusion.features.4", STEM)?;
-        let att_w = gpu.upload(&round16(&ck.take("depth_fusion.attention_logits.weight", &[1, STEM, 1, 1, 1])?))?;
-        let att_b = round16(&[ck.scalar("depth_fusion.attention_logits.bias")?])[0];
+        let att_w = gpu.upload(&p.round(&ck.take("depth_fusion.attention_logits.weight", &[1, STEM, 1, 1, 1])?))?;
+        let att_b = p.round(&[ck.scalar("depth_fusion.attention_logits.bias")?])[0];
 
         // encoder
         let enc_key = "network.shared_encoder.stem.convs.0";
@@ -448,13 +455,13 @@ impl Model {
                 let n1 = Norm::load(gpu, ck, &format!("{key}.conv1.norm"), c)?;
                 let conv2 = Conv::load(gpu, ck, &format!("{key}.conv2.conv"), (c, c, hout), Kind::Taps, true)?;
                 let n2 = Norm::load(gpu, ck, &format!("{key}.conv2.norm"), c)?;
-                let pooled = if strided { Some(f16_buf(gpu, batch * hout * hout * cin)?) } else { None };
+                let pooled = if strided { Some(act(batch * hout * hout * cin)?) } else { None };
                 let skip = if cin != c {
                     ensure!(strided, "stage {s} block {j}: a width change without a stride");
                     let conv =
                         Conv::load(gpu, ck, &format!("{key}.skip.1.conv"), (cin, c, hout), Kind::Pointwise, false)?;
                     let norm = Norm::load(gpu, ck, &format!("{key}.skip.1.norm"), c)?;
-                    Some((conv, norm, f16_buf(gpu, batch * hout * hout * c)?))
+                    Some((conv, norm, act(batch * hout * hout * c)?))
                 } else {
                     None
                 };
@@ -465,8 +472,8 @@ impl Model {
                     n2,
                     pooled,
                     skip,
-                    t1: f16_buf(gpu, batch * hout * hout * c)?,
-                    out: f16_buf(gpu, batch * hout * hout * c)?,
+                    t1: act(batch * hout * hout * c)?,
+                    out: act(batch * hout * hout * c)?,
                     cin,
                     c,
                     h: hout,
@@ -485,17 +492,17 @@ impl Model {
             let up = skip_c;
             let hh = 2 * low_h;
             let tw = ck.take(&format!("network.shared_decoder.transpconvs.{i}.weight"), &[low_c, up, 2, 2])?;
-            let tb = round16(&ck.take(&format!("network.shared_decoder.transpconvs.{i}.bias"), &[up])?);
+            let tb = p.round(&ck.take(&format!("network.shared_decoder.transpconvs.{i}.bias"), &[up])?);
             let key = format!("network.shared_decoder.stages.{i}.convs.0");
             let conv = Conv::load(gpu, ck, &format!("{key}.conv"), (up + skip_c, up, hh), Kind::Taps, true)?;
             let norm = Norm::load(gpu, ck, &format!("{key}.norm"), up)?;
             ups.push(Up {
-                w: gpu.upload(&transp_rows(&tw, low_c, up))?,
+                w: gpu.upload_real(&transp_rows(&tw, low_c, up))?,
                 bias: gpu.upload(&tb)?,
-                g: f16_buf(gpu, batch * low_h * low_h * 4 * up)?,
+                g: act(batch * low_h * low_h * 4 * up)?,
                 conv,
                 n: norm,
-                out: f16_buf(gpu, batch * hh * hh * up)?,
+                out: act(batch * hh * hh * up)?,
                 h: low_h,
                 cin: low_c,
                 up,
@@ -505,8 +512,8 @@ impl Model {
             low_h = hh;
         }
         ensure!(low_h == px && low_c == 32, "decoder ends at {low_h}x{low_h}x{low_c}");
-        let head_w = gpu.upload(&round16(&ck.take("network.task_heads.ink.weight", &[1, 32, 1, 1])?))?;
-        let head_b = round16(&[ck.scalar("network.task_heads.ink.bias")?])[0];
+        let head_w = gpu.upload(&p.round(&ck.take("network.task_heads.ink.weight", &[1, 32, 1, 1])?))?;
+        let head_b = p.round(&[ck.scalar("network.task_heads.ink.bias")?])[0];
 
         // scratch sized for the largest user
         let mut scratch = (batch * stem_padded(px) + stem_tail(px)) * STEM;
@@ -538,11 +545,11 @@ impl Model {
             head_w,
             head_b,
             tiles: TilePrep::new(gpu, batch, edge)?,
-            s1: f16_buf(gpu, batch * vox * STEM)?,
-            s2: f16_buf(gpu, batch * vox * STEM)?,
-            pooled: f16_buf(gpu, batch * px * px * 32)?,
-            e0: f16_buf(gpu, batch * px * px * 32)?,
-            scratch: gpu.alloc(scratch * 2)?,
+            s1: act(batch * vox * STEM)?,
+            s2: act(batch * vox * STEM)?,
+            pooled: act(batch * px * px * 32)?,
+            e0: act(batch * px * px * 32)?,
+            scratch: gpu.alloc(scratch * p.bytes())?,
             partial: gpu.alloc(batch * partial_len * 16)?,
             stats: gpu.alloc(batch * max_cols * 8)?,
         })
@@ -593,7 +600,7 @@ impl Model {
     ) -> Result<()> {
         let b = self.batch;
         let Pad { xp, dpad, pairs, keep } = pad;
-        ensure!(pairs * 4 <= xp.bytes(), "padded norm output too small");
+        ensure!(pairs * 2 * gpu.precision().bytes() <= xp.bytes(), "padded norm output too small");
         ensure!(
             pairs * 2 >= b * (depth + 2 * dpad) * (h + 2) * (h + 2) * cols,
             "padded norm output short of the batch"
@@ -646,20 +653,20 @@ impl Model {
         self.body(gpu, desc, logits)
     }
 
-    /// A buffer for one batch of the stem's output, `[batch, px, px, 32]` f16
+    /// A buffer for one batch of the stem's output, `[batch, px, px, 32]` in the storage type
     pub fn pooled_buf(&self, gpu: &Gpu) -> Result<Buf> {
-        f16_buf(gpu, self.batch * self.edge.pixels() * 32)
+        gpu.alloc_real_nan(self.batch * self.edge.pixels() * 32)
     }
 
     /// Queues the first half of a forward: gather and normalise the tiles, run the 3D stem and write the depth
-    /// pools to `pooled` (`[batch, px, px, 32]` f16, attention sums then maxima, villa's `cat` order)
+    /// pools to `pooled` (`[batch, px, px, 32]` in the storage type, attention sums then maxima, villa's `cat` order)
     pub fn stem(&self, gpu: &Gpu, vol: (&Buf, usize, usize), desc: Arg, pooled: &Buf) -> Result<()> {
         let b = self.batch;
         let px = self.edge.px();
         let pixels = px * px;
         let vox = DEPTH * pixels;
         let scratch = &self.scratch;
-        ensure!(pooled.bytes() >= b * pixels * 32 * 2, "pooled buffer too small");
+        ensure!(pooled.bytes() >= b * pixels * 32 * gpu.precision().bytes(), "pooled buffer too small");
 
         self.tiles.run(gpu, vol, desc)?;
 
@@ -750,7 +757,7 @@ impl Model {
             let (m, hh) = (b * u.h * u.h, 2 * u.h);
             gemm(gpu, low, &u.w, &u.g, (m, 4 * u.up, u.cin))?;
             let n = padded_rows(b, hh) * (u.up + u.skip_c) / 2;
-            ensure!(n * 4 <= scratch.bytes(), "decoder scratch too small");
+            ensure!(n * 2 * gpu.precision().bytes() <= scratch.bytes(), "decoder scratch too small");
             gpu.dispatch_1d(
                 "cat_up",
                 n,
@@ -783,7 +790,9 @@ impl Model {
                 self.head_b.into(),
                 desc,
                 n.into(),
-                u32::try_from(logits.bytes() / (2 * pixels)).wrap_err("logits slots past u32")?.into(),
+                u32::try_from(logits.bytes() / (gpu.precision().bytes() * pixels))
+                    .wrap_err("logits slots past u32")?
+                    .into(),
                 pixels.into(),
             ],
         )
@@ -825,7 +834,7 @@ fn check_batch(batch: usize, px: usize) -> Result<()> {
     Ok(())
 }
 
-/// Where `norm_pad` writes: `pairs` FP16 pairs of the padded layout `[B, depth + 2 dpad, h + 2, h + 2, cols]` plus
+/// Where `norm_pad` writes: `pairs` pairs of the padded layout `[B, depth + 2 dpad, h + 2, h + 2, cols]` plus
 /// zero tail rows in `xp`; `keep` also writes the result back into the unpadded input, for other readers
 #[derive(Clone, Copy)]
 struct Pad<'a> {
@@ -869,17 +878,20 @@ fn stem_c16(gpu: &Gpu, (b, px): (usize, usize), (xp, w, y): (&Buf, &Buf, &Buf), 
     Ok(tiles)
 }
 
-/// A logits buffer of `slots` tiles of edge `edge`, NaN-filled so an unwritten slot fails the finish checks
+/// A logits buffer of `slots` tiles of edge `edge` in the storage type, NaN-filled so an unwritten slot fails the
+/// finish checks
 pub fn logits_buf(gpu: &Gpu, slots: usize, edge: Edge) -> Result<Buf> {
-    gpu.alloc_fill(slots.max(1) * edge.pixels() * 2, 0xFF)
+    gpu.alloc_real_nan(slots.max(1) * edge.pixels())
 }
 
 #[cfg(test)]
 mod tests {
-    //! Every conv and GEMM shape class of the model against an f64 CPU reference on FP16-rounded random data: the
-    //! matmul2d tile shapes are new, and a shape that compiles can still return garbage
+    //! Every conv and GEMM shape class of the model against an f64 CPU reference on FP16-rounded random data, at both
+    //! reader precisions: the matmul2d tile shapes are new, a shape that compiles can still return garbage, and the
+    //! fp32 tolerance is tight enough to catch a matmul2d that drops FP32 operands to a narrower type
 
     use super::*;
+    use crate::fast::ReaderPrecision;
 
     /// Deterministic values in [-1, 1), rounded to FP16
     fn rand16(n: usize, seed: u64) -> Vec<f32> {
@@ -893,14 +905,10 @@ mod tests {
             .collect()
     }
 
-    fn upload16(gpu: &Gpu, v: &[f32]) -> Buf {
-        gpu.upload(&v.iter().map(|&x| half::f16::from_f32(x)).collect::<Vec<_>>()).unwrap()
-    }
-
-    fn download16(gpu: &Gpu, b: &Buf, n: usize) -> Vec<f32> {
-        let mut out = vec![half::f16::ZERO; n];
-        gpu.download(b, 0, &mut out).unwrap();
-        out.iter().map(|v| v.to_f32()).collect()
+    fn download(gpu: &Gpu, b: &Buf, n: usize) -> Vec<f32> {
+        let mut out = vec![f32::NAN; n];
+        gpu.download_real(b, 0, &mut out).unwrap();
+        out
     }
 
     /// NHWC conv reference in f64: x [b, h, h, c], w [o, c, k, k], stride s, pad k / 2
@@ -934,15 +942,23 @@ mod tests {
         y
     }
 
-    /// Fails unless every output is within FP16 rounding of the reference (plus FP32 accumulation slack)
-    fn check(name: &str, got: &[f32], want: &[f64]) {
+    /// Fails unless every output is within one rounding to the storage type of the reference, plus FP32
+    /// accumulation slack
+    fn check(gpu: &Gpu, name: &str, got: &[f32], want: &[f64]) {
         assert_eq!(got.len(), want.len(), "{name}: length");
+        let (rel, abs) = match gpu.precision() {
+            ReaderPrecision::Fp16 => (1e-3, 1e-4),
+            // FP32 accumulation over K up to 5760 products drifts by about sqrt(K) 2^-24 of the running sum, near 1e-5
+            // of the largest output; operands narrowed to a 10-bit mantissa would be off by about 1e-3 of it
+            ReaderPrecision::Fp32 => (1e-5, 1e-5),
+        };
+        let name = format!("{name} {}", gpu.precision().name());
         let scale = want.iter().fold(0f64, |m, v| m.max(v.abs())).max(1e-3);
         let mut worst = 0f64;
         for (i, (&g, &w)) in got.iter().zip(want).enumerate() {
             assert!(g.is_finite(), "{name}: non-finite at {i}");
             let err = (g as f64 - w).abs();
-            let tol = w.abs() * 1e-3 + scale * 1e-4;
+            let tol = w.abs() * rel + scale * abs;
             assert!(err <= tol, "{name}: element {i} got {g}, want {w} (tol {tol})");
             worst = worst.max(err / scale);
         }
@@ -989,14 +1005,14 @@ mod tests {
         let w = rand16(o * c * k * k, seed + 1);
         let conv = Conv::from_torch(gpu, &w, (c, o, h), kind).unwrap();
         let ho = conv.out_h();
-        let xb = upload16(gpu, &x);
-        let y = gpu.alloc_fill(b * ho * ho * o * 2, 0xFF).unwrap();
-        let scratch = gpu.alloc(conv.scratch(b).max(1) * 2).unwrap();
+        let xb = gpu.upload_real(&x).unwrap();
+        let y = gpu.alloc_real_nan(b * ho * ho * o).unwrap();
+        let scratch = gpu.alloc(conv.scratch(b).max(1) * gpu.precision().bytes()).unwrap();
         let part = gpu.alloc(b * conv.tiles() * o * 16).unwrap();
         let tiles = conv.run(gpu, b, &scratch, &xb, &y, &part).unwrap();
-        let got = download16(gpu, &y, b * ho * ho * o);
+        let got = download(gpu, &y, b * ho * ho * o);
         let name = format!("{kind:?} b{b} h{h} {c}->{o}");
-        check(&name, &got, &conv_ref(&x, &w, (b, h, c, o, k, s)));
+        check(gpu, &name, &got, &conv_ref(&x, &w, (b, h, c, o, k, s)));
         check_stats(gpu, &name, &part, tiles, &got, (b, ho * ho, o));
     }
 
@@ -1007,36 +1023,54 @@ mod tests {
         assert!(check_batch(47, 384).is_ok() && check_batch(48, 384).is_err());
     }
 
-    #[test]
-    fn convs_match_reference() {
-        let gpu = Gpu::open(0).unwrap();
+    fn convs_case(gpu: &Gpu) {
         // every tap kernel width, ragged row tiles, the narrow C=32 layers and the 4x4 bottleneck
         for (i, &(b, h, c, o)) in
             [(2, 8, 64, 64), (3, 16, 32, 32), (2, 4, 320, 320), (2, 8, 640, 320), (1, 32, 48, 16), (5, 6, 96, 32)]
                 .iter()
                 .enumerate()
         {
-            conv_case(&gpu, (b, h, c, o), Kind::Taps, 10 + i as u64);
+            conv_case(gpu, (b, h, c, o), Kind::Taps, 10 + i as u64);
         }
         for (i, &(b, h, c, o)) in [(2, 8, 32, 64), (3, 16, 64, 128), (2, 8, 256, 320)].iter().enumerate() {
-            conv_case(&gpu, (b, h, c, o), Kind::Strided, 30 + i as u64);
+            conv_case(gpu, (b, h, c, o), Kind::Strided, 30 + i as u64);
         }
         for (i, &(b, h, c, o)) in [(2, 8, 32, 64), (3, 4, 256, 320)].iter().enumerate() {
-            conv_case(&gpu, (b, h, c, o), Kind::Pointwise, 50 + i as u64);
+            conv_case(gpu, (b, h, c, o), Kind::Pointwise, 50 + i as u64);
         }
     }
 
+    // one test per precision, so a validation run can select fp16: shader validation doubles a kernel's threadgroup
+    // memory, and the fp32 64-wide tiles' 18 KB then fail its 32 KB check
     #[test]
-    fn transposed_gemm_matches_reference() {
-        let gpu = Gpu::open(0).unwrap();
+    fn convs_match_reference_fp16() {
+        convs_case(&Gpu::open_at(0, ReaderPrecision::Fp16).unwrap());
+    }
+
+    #[test]
+    fn convs_match_reference_fp32() {
+        convs_case(&Gpu::open_at(0, ReaderPrecision::Fp32).unwrap());
+    }
+
+    #[test]
+    fn transposed_gemm_matches_reference_fp16() {
+        transposed_gemm_case(&Gpu::open_at(0, ReaderPrecision::Fp16).unwrap());
+    }
+
+    #[test]
+    fn transposed_gemm_matches_reference_fp32() {
+        transposed_gemm_case(&Gpu::open_at(0, ReaderPrecision::Fp32).unwrap());
+    }
+
+    fn transposed_gemm_case(gpu: &Gpu) {
         let (m, cin, up) = (2 * 4 * 4 + 3, 320, 320);
         let x = rand16(m * cin, 7);
         let tw = rand16(cin * up * 4, 8);
-        let w = gpu.upload(&transp_rows(&tw, cin, up)).unwrap();
-        let xb = upload16(&gpu, &x);
-        let y = gpu.alloc_fill(m * 4 * up * 2, 0xFF).unwrap();
-        gemm(&gpu, &xb, &w, &y, (m, 4 * up, cin)).unwrap();
-        let got = download16(&gpu, &y, m * 4 * up);
+        let w = gpu.upload_real(&transp_rows(&tw, cin, up)).unwrap();
+        let xb = gpu.upload_real(&x).unwrap();
+        let y = gpu.alloc_real_nan(m * 4 * up).unwrap();
+        gemm(gpu, &xb, &w, &y, (m, 4 * up, cin)).unwrap();
+        let got = download(gpu, &y, m * 4 * up);
         let mut want = vec![0f64; m * 4 * up];
         for r in 0..m {
             for co in 0..up {
@@ -1049,24 +1083,32 @@ mod tests {
                 }
             }
         }
-        check("transposed gemm", &got, &want);
+        check(gpu, "transposed gemm", &got, &want);
     }
 
     #[test]
-    fn stem_convs_match_reference() {
-        let gpu = Gpu::open(0).unwrap();
+    fn stem_convs_match_reference_fp16() {
+        stem_case(&Gpu::open_at(0, ReaderPrecision::Fp16).unwrap());
+    }
+
+    #[test]
+    fn stem_convs_match_reference_fp32() {
+        stem_case(&Gpu::open_at(0, ReaderPrecision::Fp32).unwrap());
+    }
+
+    fn stem_case(gpu: &Gpu) {
         let b = 2;
         let px = 128;
         let vox = DEPTH * px * px;
         let (d, hw) = (DEPTH as i64, px as i64);
         let x = rand16(b * vox, 3);
         let w1 = rand16(STEM * 27, 4);
-        let xb = upload16(&gpu, &x);
-        let w1b = gpu.upload(&conv_nhwc(&w1, STEM, 1, 27)).unwrap();
-        let s1 = gpu.alloc_fill(b * vox * STEM * 2, 0xFF).unwrap();
+        let xb = gpu.upload_real(&x).unwrap();
+        let w1b = gpu.upload_real(&conv_nhwc_f32(&w1, STEM, 1, 27)).unwrap();
+        let s1 = gpu.alloc_real_nan(b * vox * STEM).unwrap();
         let part = gpu.alloc(b * stem_c16_tiles(px) * STEM * 16).unwrap();
-        let tiles1 = stem_c1(&gpu, (b, px), (&xb, &w1b, &s1), &part).unwrap();
-        let got1 = download16(&gpu, &s1, b * vox * STEM);
+        let tiles1 = stem_c1(gpu, (b, px), (&xb, &w1b, &s1), &part).unwrap();
+        let got1 = download(gpu, &s1, b * vox * STEM);
         // one reference loop for both convs: input [b, D, H, W, c], weight [o, c, 27]
         let conv3 = |x: &[f32], w: &[f32], c: usize| -> Vec<f64> {
             let mut y = vec![0f64; b * vox * STEM];
@@ -1095,20 +1137,20 @@ mod tests {
             }
             y
         };
-        check("conv3d 1->16", &got1, &conv3(&x, &w1, 1));
-        check_stats(&gpu, "conv3d 1->16", &part, tiles1, &got1, (b, vox, STEM));
+        check(gpu, "conv3d 1->16", &got1, &conv3(&x, &w1, 1));
+        check_stats(gpu, "conv3d 1->16", &part, tiles1, &got1, (b, vox, STEM));
 
         let x2 = rand16(b * vox * STEM, 5);
         let w2 = rand16(STEM * STEM * 27, 6);
-        let x2b = upload16(&gpu, &x2);
-        let w2b = gpu.upload(&conv_nhwc(&w2, STEM, STEM, 27)).unwrap();
+        let x2b = gpu.upload_real(&x2).unwrap();
+        let w2b = gpu.upload_real(&conv_nhwc_f32(&w2, STEM, STEM, 27)).unwrap();
         let n = (b * stem_padded(px) + stem_tail(px)) * STEM / 2;
-        let scratch = gpu.alloc(n * 4).unwrap();
-        let s2 = gpu.alloc_fill(b * vox * STEM * 2, 0xFF).unwrap();
+        let scratch = gpu.alloc(n * 2 * gpu.precision().bytes()).unwrap();
+        let s2 = gpu.alloc_real_nan(b * vox * STEM).unwrap();
         gpu.dispatch_1d("pad3d", n, &[scratch.arg(), x2b.arg(), b.into(), n.into(), px.into()]).unwrap();
-        let tiles2 = stem_c16(&gpu, (b, px), (&scratch, &w2b, &s2), &part).unwrap();
-        let got2 = download16(&gpu, &s2, b * vox * STEM);
-        check("conv3d 16->16", &got2, &conv3(&x2, &w2, STEM));
-        check_stats(&gpu, "conv3d 16->16", &part, tiles2, &got2, (b, vox, STEM));
+        let tiles2 = stem_c16(gpu, (b, px), (&scratch, &w2b, &s2), &part).unwrap();
+        let got2 = download(gpu, &s2, b * vox * STEM);
+        check(gpu, "conv3d 16->16", &got2, &conv3(&x2, &w2, STEM));
+        check_stats(gpu, "conv3d 16->16", &part, tiles2, &got2, (b, vox, STEM));
     }
 }

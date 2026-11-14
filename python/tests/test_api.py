@@ -158,9 +158,10 @@ def test_hecate_refuses_bad_requests_before_any_cuda_library_loads(tmp_path, mon
             inkrs.hecate(tmp_path / "missing.npy", tmp_path / "missing.safetensors", output, **kwargs)
 
 
-def test_engine_precision_is_fp16_only():
-    with pytest.raises(ValueError, match="fp16 only"):
-        inkrs.Engine("missing.safetensors", precision="bf16")
+def test_engine_precision_is_fp16_or_fp32():
+    for precision in ("bf16", "FP32", None):
+        with pytest.raises(ValueError, match="need fp16 or fp32"):
+            inkrs.Engine("missing.safetensors", precision=precision)
 
 
 @metal_only

@@ -1,0 +1,72 @@
+{
+ "what": "The Metal backend's opt-in fp32 reader (--precision fp32, Engine(precision='fp32')) on a Mac mini (M4 Pro, 20-core GPU), hybrid_3d2d-seed42 on S1 (2048 x 2048 crop of the PHerc. 343 render), against villa's PyTorch on MPS, which runs float32 eager (villa autocasts on CUDA only). Parity: scripts/villa_parity.py at villa e213a1137, layer starts 21-29, both directions, overlap 0.5, Hann blend; inkrs runs through villa's adapter. Wall time: villa's whole infer command, one depth (layers 25-42), both directions, three rounds in rotating order after one warm-up each, PyTorch with PYTORCH_MPS_HIGH_WATERMARK_RATIO 0.6 and PYTORCH_MPS_LOW_WATERMARK_RATIO 0.5. Sweep: Engine.sweep over depths -4..4, both directions (18 maps), one process each",
+ "gpu": "Apple M4 Pro, 20-core GPU",
+ "parity_vs_pytorch_mps_fp32": {
+  "inkrs_fp16": {
+   "maps": 18,
+   "passed": 18,
+   "max_abs_diff": 2,
+   "p999_abs_diff_max": 1.0,
+   "pearson_min": 0.9999259,
+   "coverage_mismatch_pixels": 0,
+   "pixels_differing_pct": 4.9794,
+   "pixels_differing_by_more_than_1_pct": 0.001079
+  },
+  "inkrs_fp32": {
+   "maps": 18,
+   "passed": 18,
+   "max_abs_diff": 1,
+   "p999_abs_diff_max": 0.0,
+   "pearson_min": 0.9999999,
+   "coverage_mismatch_pixels": 0,
+   "pixels_differing_pct": 0.0037,
+   "pixels_differing_by_more_than_1_pct": 0.0
+  }
+ },
+ "pytorch_rerun_identical_maps": 18,
+ "fp16_unchanged": {
+  "maps": 18,
+  "identical_files_to_v0.2.1": 18
+ },
+ "fp32_run_to_run_identical_maps": 18,
+ "villa_infer_wall_s": {
+  "pytorch_mps_fp32": [
+   88.69,
+   88.04,
+   88.53
+  ],
+  "inkrs_fp16": [
+   7.55,
+   8.03,
+   7.64
+  ],
+  "inkrs_fp32": [
+   9.59,
+   9.98,
+   11.02
+  ]
+ },
+ "villa_infer_median_wall_s": {
+  "pytorch_mps_fp32": 88.53,
+  "inkrs_fp16": 7.64,
+  "inkrs_fp32": 9.98
+ },
+ "sweep_18_maps_s": {
+  "inkrs_v0.2.1_fp16": 57.41,
+  "inkrs_fp16": 55.34,
+  "inkrs_fp32": [
+   67.72,
+   65.88
+  ]
+ },
+ "fp32_over_fp16": {
+  "villa_infer": 1.31,
+  "sweep": 1.21
+ },
+ "validation": "Metal kernel tests at both precisions against f64: fp16 under API and shader validation, fp32 under API validation only (shader validation doubles a kernel's threadgroup memory, and the fp32 64-wide tiles' 18 KB then fail its 32 KB check)",
+ "jobs": {
+  "tests_and_sweeps": "8896cdf9",
+  "parity_and_timing": "a515d3d2",
+  "fp16_baseline": "180e1779"
+ }
+}
