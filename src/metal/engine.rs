@@ -826,6 +826,12 @@ pub fn export_reader(export: &Path) -> Result<String> {
     Ok(name.to_owned())
 }
 
+/// Accepts every reader precision, since Metal has kernels for both; the CUDA engine's `check_precision` refuses
+/// fp32, so the CLI calls this before it reads any file
+pub fn check_precision(_precision: ReaderPrecision) -> Result<()> {
+    Ok(())
+}
+
 /// The safetensors export for `ckpt`: the export itself, or for a `.pth`, the export in the weights directory whose
 /// sidecar names that checkpoint
 pub fn resolve_weights(ckpt: &Path, dir: &Path) -> Result<PathBuf> {

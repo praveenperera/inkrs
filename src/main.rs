@@ -739,6 +739,8 @@ fn main() -> Result<()> {
                 engine.tta
             );
             let batch_size = batch_size.unwrap_or(1);
+            // refused before a checkpoint is hashed or the input read, so the backend is what the error names
+            engine::check_precision(precision)?;
             // the export is resolved once (a `.pth` is hashed), and its sidecar fixes the tile edge
             let export = engine::resolve_weights(&checkpoint, &engine::weights_dir())?;
             let patch = engine::export_edge(&export)?.px();
@@ -794,6 +796,8 @@ fn main() -> Result<()> {
             engine,
         } => {
             ensure!(passes >= 1, "--passes must be at least 1");
+            // refused before a checkpoint is hashed or the input read, so the backend is what the error names
+            engine::check_precision(precision)?;
             // the export is resolved once (a `.pth` is hashed), and its sidecar fixes the tile edge
             let export = engine::resolve_weights(&ckpt, &engine::weights_dir())?;
             let edge = engine::export_edge(&export)?;
