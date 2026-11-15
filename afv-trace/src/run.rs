@@ -692,12 +692,15 @@ fn trace_families(
     let t = Instant::now();
     let lapack = Lapack::init(&find_lapack()?)?;
     let (nx, ny) = direction_field(&tracing, lapack)?;
+    release_freed();
     debug_dump(work, "nx", &nx)?;
     debug_dump(work, "ny", &ny)?;
     log!("Direction field: {:.1} s", t.elapsed().as_secs_f64());
+    debug_mem("direction field", &[("tracing", resident), ("nx", nx.resident_bytes()), ("ny", ny.resident_bytes())]);
     let cache = NativeCache::new(native, cache_bytes);
     for &family in families {
         trace_family(&tracing, &nx, &ny, &cache, work, family, threads)?;
+        release_freed();
     }
     Ok(())
 }
@@ -731,6 +734,34 @@ impl ToLe for u16 {
     }
 }
 
+/// Hand the heap pages freed since the last call back to the system
+///
+/// Each stage frees what the next does not read (the direction field's and centrality's tile results, the seed
+/// field, a finished family's presence, centrality and coverage), but glibc keeps freed memory in the arena of
+/// the thread that freed it and only trims the top of each heap. The next stage allocates from other threads'
+/// arenas (coverage grows on the tracing thread, the next family's fields on the pool's), so without this the
+/// freed bytes stay resident beside the new ones: on a 0826 band the H family peaked 1.7 GiB above V with the
+/// same fields
+fn release_freed() {
+    // SAFETY: malloc_trim only returns free pages to the kernel; it touches no live allocation
+    #[cfg(all(target_os = "linux", target_env = "gnu"))]
+    unsafe {
+        libc::malloc_trim(0);
+    }
+}
+
+/// With `INKRS_AFV_DEBUG_MEM` set, log named resident sizes and the process RSS
+fn debug_mem(stage: &str, parts: &[(&str, usize)]) {
+    if std::env::var_os("INKRS_AFV_DEBUG_MEM").is_none() {
+        return;
+    }
+    let rss =
+        fs::read_to_string("/proc/self/statm").ok().and_then(|s| s.split_whitespace().nth(1)?.parse::<usize>().ok());
+    let page = unsafe { libc::sysconf(libc::_SC_PAGESIZE) } as usize;
+    let parts: Vec<String> = parts.iter().map(|(k, v)| format!("{k} {:.2}", gib(*v))).collect();
+    log!("mem {stage}: {} GiB; rss {:.2} GiB", parts.join(", "), gib(rss.unwrap_or(0) * page));
+}
+
 fn gib(bytes: usize) -> f64 {
     bytes as f64 / (1u64 << 30) as f64
 }
@@ -750,6 +781,10 @@ fn trace_family(
     let t = Instant::now();
     let FamilyFields { pres, cent, seeds } = centrality(presence(tracing, family), nx, ny);
     log!("{label} centrality: {:.1} s", t.elapsed().as_secs_f64());
+    debug_mem(
+        label,
+        &[("pres", pres.resident_bytes()), ("cent", cent.resident_bytes()), ("seeds", seeds.resident_bytes())],
+    );
     let t = Instant::now();
     let cat = catalogue(&seeds, &cent);
     debug_dump(&folder, "presence", &pres)?;
@@ -760,6 +795,7 @@ fn trace_family(
         fs::write(folder.join("coordinates.i4"), bytes)?;
     }
     drop(seeds);
+    release_freed();
     log!("{label} seeds: {} in {:.1} s", cat.coords.len(), t.elapsed().as_secs_f64());
     let shape = pres.shape();
     let fields = Fields { pres: &pres, cent: &cent, nx, ny };
@@ -804,6 +840,8 @@ fn trace_family(
         if !batch.is_empty() {
             let _ = tx.send(batch);
         }
+        let cov_bytes = [&cov.cnt, &cov.nx, &cov.ny].map(Vol::resident_bytes);
+        debug_mem(label, &[("coverage", cov_bytes.iter().sum()), ("cache", cache.bytes()), ("catalogue", 12 * total)]);
         Ok(count)
     };
     let consume = |batch: Vec<RawCurve>| -> Result<()> {

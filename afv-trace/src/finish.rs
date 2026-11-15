@@ -51,6 +51,11 @@ impl<'a> NativeCache<'a> {
         [z / self.edge[0], y / self.edge[1], x / self.edge[2]]
     }
 
+    /// Bytes of decoded chunks held now
+    pub fn bytes(&self) -> usize {
+        self.lru.lock().expect("cache lock").bytes
+    }
+
     /// Chunks decoded so far, counting re-decodes after eviction
     pub fn decoded(&self) -> u64 {
         self.lru.lock().expect("cache lock").decoded

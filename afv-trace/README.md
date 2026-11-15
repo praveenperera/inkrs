@@ -75,8 +75,13 @@ from it; `cargo test` checks every case.
 
 ## Differences from the original
 
-- Fields live in memory as sparse 32³ bricks instead of a Zarr work store, so peak memory is higher: 12.4
-  GiB against the original's 4.6 GiB on a 512 × 8169 × 8169 band.
+- Fields live in memory as sparse 32³ bricks instead of a Zarr work store, so peak memory is higher and
+  grows with how much of the band holds fibres: 11.0 GiB against the original's 4.6 GiB on a 512 × 8169 ×
+  8169 band of PHerc0826, and 18.4 GiB on a denser 512 × 7947 × 7947 band of PHerc0813. With
+  `--field-cache-mib 4096`, 4.1 GiB of that is the chunk cache; a smaller cache lowers the peak by the
+  difference but decodes chunks again (at 16 MiB the PHerc0826 band took about 45% longer). Memory each stage
+  frees goes back to the system before the next stage allocates. `INKRS_AFV_DEBUG_MEM=1` logs each stage's
+  field sizes and resident memory.
 - The work directory holds `run.json` (with a `native` key, so neither tool resumes the other's
   directory) and one finished curve file per family. An interrupted family is traced again from its first
   seed on `--resume`, instead of from the last 16-seed batch.
