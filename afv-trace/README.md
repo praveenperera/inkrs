@@ -76,8 +76,9 @@ from it; `cargo test` checks every case.
 ## Differences from the original
 
 - Fields live in memory as sparse 32³ bricks instead of a Zarr work store, so peak memory is higher and
-  grows with how much of the band holds fibres: 11.0 GiB against the original's 4.6 GiB on a 512 × 8169 ×
-  8169 band of PHerc0826, and 18.4 GiB on a denser 512 × 7947 × 7947 band of PHerc0813. With
+  grows with how much of the band holds fibres: 11–12 GiB against the original's 4.6 GiB on a 512 × 8169 ×
+  8169 band of PHerc0826, and 18.4 GiB on a denser 512 × 7947 × 7947 band of PHerc0813. The peak varies by
+  about a gigabyte between runs of the same band, with thread timing. With
   `--field-cache-mib 4096`, 4.1 GiB of that is the chunk cache; a smaller cache lowers the peak by the
   difference but decodes chunks again (at 16 MiB the PHerc0826 band took about 45% longer). Memory each stage
   frees goes back to the system before the next stage allocates. `INKRS_AFV_DEBUG_MEM=1` logs each stage's
