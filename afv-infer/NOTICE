@@ -1,0 +1,11 @@
+inkrs-afv
+
+Inference for Qual's AFV fibre model V2 (https://huggingface.co/Qualzz20/afv_fiber_9um_v2). The model, its
+architecture and its normalisation are Qual's: inkrs-afv ships none of them and runs the model.py of the snapshot
+you point it at.
+
+Its tiling, padding, blend ramp, softmax, quantisation, tracing downsample and, in --mode villa, its choice of tiles
+and output chunks follow villa's lasagna.qualzz_inference and lasagna.tiled_predict3d
+(https://github.com/ScrollPrize/villa, commit 97fb9336c). inkrs_afv/contract.py's blend_ramp is copied from
+lasagna/tiled_predict3d.py, and inkrs_afv/villa.py reimplements villa's tile-selection rule. villa is MIT licensed,
+Copyright (c) 2024 Vesuvius Challenge; the full text is in licenses/villa-MIT.txt.

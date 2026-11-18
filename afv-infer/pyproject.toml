@@ -1,0 +1,49 @@
+# The inkrs-afv wheel: python/inkrs_afv, pure Python (torch, zarr 2 and the model's own model.py do the work). Build
+# with `uv build --wheel` from this directory; README.md is the usage README
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "inkrs-afv"
+version = "0.1.0"
+description = "Faster inference for the AFV fibre model V2: with --mode villa, the same probability zarr as villa's lasagna.qualzz_inference"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT OR Apache-2.0"
+license-files = ["LICENSE-MIT", "LICENSE-APACHE", "NOTICE", "licenses/villa-MIT.txt"]
+authors = [{ name = "Praveen Perera", email = "me@praveenperera.com" }]
+keywords = ["vesuvius-challenge", "herculaneum", "papyrus", "fibre", "afv", "inference"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Science/Research",
+  "Programming Language :: Python :: 3",
+  "Topic :: Scientific/Engineering :: Image Processing",
+]
+# the versions the same-output checks ran with (villa's own run used its pinned environment): torch 2.14.1 with numpy
+# 2.4.6, and torch 2.15.0 with numpy 2.5.4 from a fresh install of this wheel (CPU crops, identical); zarr 2.18.7,
+# numcodecs 0.15.2 and the model repository's dynamic-network-architectures pin. torch stops before 2.16, which no check has
+# run; zarr 2 because the output is a zarr v2 group written through its API
+dependencies = [
+  "numpy>=1.24",
+  "torch>=2.14.1,<2.16",
+  "zarr>=2.18,<3",
+  "numcodecs>=0.15,<0.16",
+  "dynamic-network-architectures==0.4.4",
+]
+
+[project.scripts]
+inkrs-afv = "inkrs_afv:main"
+
+[project.urls]
+Repository = "https://github.com/praveenperera/inkrs"
+
+[tool.hatch.build.targets.wheel]
+packages = ["python/inkrs_afv"]
+
+[tool.ruff]
+line-length = 120
+
+# the package is kept as it was when its output was compared with villa's, so a style-only rule does not change it
+[tool.ruff.lint.per-file-ignores]
+"python/inkrs_afv/*" = ["C408"]
