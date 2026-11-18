@@ -103,8 +103,8 @@ jobs:
           target: ${{ matrix.target }}
           manylinux: ${{ matrix.manylinux }}
           args: --release --locked --out dist -m python/Cargo.toml
-          # tag builds are published, so they never reuse objects from the shared cache
-          sccache: ${{ !startsWith(github.ref, 'refs/tags/') }}
+          # no sccache: its server refuses to start when the Actions cache answers its read check with an error such
+          # as a 503, failing the build, and it saved only about a minute per wheel
 
       - name: Check wheel size
         shell: bash
