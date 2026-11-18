@@ -1,8 +1,8 @@
 # inkrs
 
-Fast ink detection for the Vesuvius Challenge, written in Rust.
+Fast native inference for the Vesuvius Challenge's models, written in Rust.
 
-inkrs runs villa's ink models, and a handful of others, entirely on the GPU. It writes the same maps villa's Python code writes, just a lot faster. The volume and the model stay on the GPU, every depth and both directions run in one process, and the TIFFs get written on other threads while the next maps compute.
+inkrs runs villa's models natively, entirely on the GPU: its ink readers, and a handful of other ink models. It writes the same maps villa's Python code writes, just a lot faster. The volume and the model stay on the GPU, every depth and both directions run in one process, and the TIFFs get written on other threads while the next maps compute.
 
 It runs on NVIDIA GPUs (compute capability 7.5 and up, so T4 / RTX 20 series and newer) and on Apple silicon Macs through Metal.
 
