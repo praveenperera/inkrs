@@ -6,7 +6,7 @@ inkrs runs villa's models natively, entirely on the GPU: its ink readers, and a 
 
 It runs on NVIDIA GPUs (compute capability 7.5 and up, so T4 / RTX 20 series and newer) and on Apple silicon Macs through Metal.
 
-For AFV fibres, [`afv-trace/`](afv-trace/) is a native port of Qual's fibre tracer that writes the same `.afv`, 62× faster on the PHerc. 0826 band we measured, and [`afv-infer/`](afv-infer/) (`inkrs-afv`) runs Qual's AFV fibre model V2 faster and writes the same probability zarr as villa's `lasagna.qualzz_inference` (compared on the CPU).
+For AFV fibres, [fibrs](https://github.com/praveenperera/fibrs) is a native port of Qual's fibre tracer that writes the same `.afv`, 62× faster on the PHerc. 0826 band we measured, and [`afv-infer/`](afv-infer/) (`inkrs-afv`) runs Qual's AFV fibre model V2 faster and writes the same probability zarr as villa's `lasagna.qualzz_inference` (compared on the CPU).
 
 ## How fast
 
