@@ -7,8 +7,8 @@ authors = ["Praveen Perera"]
 repository = "https://github.com/praveenperera/inkrs"
 documentation = "https://docs.rs/inkrs"
 readme = "README.md"
-description = "GPU-resident ink inference for villa's flat ink readers and Hecate 9.6 um, writing their outputs"
-keywords = ["vesuvius", "ink-detection", "cuda", "metal", "inference"]
+description = "Fast native inference for the Vesuvius Challenge's models: villa's ink readers and a few others, writing their outputs"
+keywords = ["vesuvius-challenge", "inference", "ink-detection", "cuda", "metal"]
 categories = ["science", "computer-vision", "command-line-utilities"]
 # what a build reads: the kernels are embedded from ptx/ and fixtures/ at compile time and the Metal shaders from
 # src/metal, so the crate needs neither the kernel sources nor a CUDA toolkit. ptx/tools.txt holds the libdevice hash
