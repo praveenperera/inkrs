@@ -6,8 +6,6 @@ inkrs runs villa's models natively, entirely on the GPU: its ink readers, and a 
 
 It runs on NVIDIA GPUs (compute capability 7.5 and up, so T4 / RTX 20 series and newer) and on Apple silicon Macs through Metal.
 
-For AFV fibres, [fibrs](https://github.com/praveenperera/fibrs) does both steps faster: `fibrs predict` runs Qual's AFV fibre model V2 and writes the same probability zarr as villa's `lasagna.qualzz_inference` (compared on the CPU), and `fibrs` traces it into the same `.afv` as Qual's tracer, 62× faster on the PHerc. 0826 band we measured.
-
 ## How fast
 
 All 18 maps of PHerc. 343's First Letters render (66 × 2560 × 6720, depths −4..4, both directions) with villa's `hybrid_3d2d-seed42`, on one RTX 5090:
