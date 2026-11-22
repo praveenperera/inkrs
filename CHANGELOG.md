@@ -6,6 +6,8 @@ All notable changes to inkrs are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-11-22
+
 ### Fixed
 
 - A checkpoint passed as a parent-relative path such as `../step-075000.pth`
@@ -85,7 +87,8 @@ The first public release.
 - `--fast` presets that trade a measured amount of accuracy for speed, described
   in [docs/FAST.md](docs/FAST.md).
 
-[Unreleased]: https://github.com/praveenperera/inkrs/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/praveenperera/inkrs/compare/v0.3.1...HEAD
+[0.3.1]: https://github.com/praveenperera/inkrs/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/praveenperera/inkrs/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/praveenperera/inkrs/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/praveenperera/inkrs/releases/tag/v0.2.0
