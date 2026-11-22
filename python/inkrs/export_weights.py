@@ -43,7 +43,8 @@ def default_name(checkpoint: str | Path) -> str:
     path = Path(checkpoint)
     parent = path.parent.name
     # `../step-075000.pth` names the directory `..` points to. Only the directory is resolved, as the OS follows
-    # `..`, so a Hugging Face snapshot's link to its blob still names the run
+    # `..` (after a linked directory on POSIX, lexically on Windows), so a Hugging Face snapshot's link to its blob
+    # still names the run
     if parent == "..":
         parent = path.parent.resolve().name
     if _STEP_STEM.fullmatch(path.stem) and parent not in ("", "."):

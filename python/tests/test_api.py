@@ -694,7 +694,9 @@ def test_default_name_of_a_parent_relative_checkpoint(tmp_path, monkeypatch):
     monkeypatch.chdir(snapshot / "logs")
     assert export_weights.default_name("../step-075000.pth") == "hybrid_3d2d-seed43"
     monkeypatch.chdir(tmp_path / "elsewhere")
-    assert export_weights.default_name("logs-link/../step-075000.pth") == "hybrid_3d2d-seed43"
+    # Windows collapses `..` before following links, so there the path opens elsewhere/step-075000.pth
+    expected = "elsewhere" if sys.platform == "win32" else "hybrid_3d2d-seed43"
+    assert export_weights.default_name("logs-link/../step-075000.pth") == expected
 
 
 def test_occupancy_modes():
