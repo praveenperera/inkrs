@@ -8,6 +8,7 @@ import ctypes
 import ctypes.util
 import json
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -613,6 +614,89 @@ def test_auto_export_lands_in_the_cache(tmp_path, monkeypatch):
     assert got == tmp_path / "cache" / "weights" / sha / "hybrid_3d2d-seed42.safetensors"
     assert inkrs._resolve_checkpoint(pth, tmp_path / "weights") == got
     assert len(calls) == 1, "the second call must reuse the cache"
+
+
+def test_export_of_a_parent_relative_checkpoint_from_inkrs_0_3_0_is_found(tmp_path, monkeypatch):
+    # inkrs 0.3.0 named the export of `../step-075000.pth` `..`; Python 3.14 reads `...json` as having no suffix,
+    # so pairing it by suffix missed the tensors, and every later run failed on the occupied cache entry
+    monkeypatch.setenv("INKRS_CACHE_DIR", str(tmp_path / "cache"))
+    pth = tmp_path / "step.pth"
+    pth.write_bytes(b"a checkpoint")
+    sha = inkrs._sha256(pth)
+    entry = tmp_path / "cache" / "weights" / sha
+    old = _fake_export(entry, sha, name="..")
+    assert old.name == "...safetensors"
+    assert inkrs._resolve_checkpoint(pth, tmp_path / "weights") == old
+
+
+def test_a_cache_entry_without_a_usable_export_names_itself(tmp_path, monkeypatch):
+    monkeypatch.setenv("INKRS_CACHE_DIR", str(tmp_path / "cache"))
+    pth = tmp_path / "step.pth"
+    pth.write_bytes(b"a checkpoint")
+    sha = inkrs._sha256(pth)
+    entry = tmp_path / "cache" / "weights" / sha
+    # a sidecar whose tensors were deleted
+    _fake_export(entry, sha).unlink()
+    monkeypatch.setattr(inkrs.importlib.util, "find_spec", lambda name: object())
+    from inkrs import export_weights
+
+    monkeypatch.setattr(export_weights, "export", lambda checkpoint, out_dir: _fake_export(out_dir, sha))
+    no_export = f"cache entry {re.escape(str(entry))} .* holds no usable export"
+    with pytest.raises(inkrs.InkrsError, match=no_export):
+        inkrs._resolve_checkpoint(pth, tmp_path / "weights")
+    assert [p.name for p in entry.parent.iterdir()] == [sha], "a staging directory was left"
+
+
+def test_a_failed_publish_without_an_entry_is_not_blamed_on_the_cache(tmp_path, monkeypatch):
+    # with no entry in the way, a failed rename is the real error, not advice to delete a missing entry
+    monkeypatch.setenv("INKRS_CACHE_DIR", str(tmp_path / "cache"))
+    pth = tmp_path / "step.pth"
+    pth.write_bytes(b"a checkpoint")
+    sha = inkrs._sha256(pth)
+    monkeypatch.setattr(inkrs.importlib.util, "find_spec", lambda name: object())
+    from inkrs import export_weights
+
+    monkeypatch.setattr(export_weights, "export", lambda checkpoint, out_dir: _fake_export(out_dir, sha))
+
+    def denied(src, dst):
+        raise PermissionError(13, "Permission denied")
+
+    monkeypatch.setattr(inkrs.os, "replace", denied)
+    with pytest.raises(PermissionError):
+        inkrs._resolve_checkpoint(pth, tmp_path / "weights")
+
+
+def test_default_name_of_a_parent_relative_checkpoint(tmp_path, monkeypatch):
+    export_weights = pytest.importorskip("inkrs.export_weights")
+    run = tmp_path / "ink_9um" / "hybrid_3d2d-seed42"
+    run.mkdir(parents=True)
+    (tmp_path / "ink_9um" / "other").mkdir()
+    monkeypatch.chdir(tmp_path / "ink_9um" / "other")
+    assert export_weights.default_name("../hybrid_3d2d-seed42/step-075000.pth") == "hybrid_3d2d-seed42"
+    monkeypatch.chdir(run)
+    assert export_weights.default_name("../step-075000.pth") == "ink_9um"
+    # a checkpoint in the current directory keeps its own name, so best.pth and last.pth stay apart
+    assert export_weights.default_name("best.pth") == "best"
+    assert export_weights.default_name("./last.pth") == "last"
+    # through a Hugging Face snapshot's link, the run directory names it, not the blob it points to
+    (tmp_path / "blobs").mkdir()
+    (tmp_path / "blobs" / "9f2c").write_bytes(b"")
+    snapshot = tmp_path / "snapshots" / "abc123" / "hybrid_3d2d-seed43"
+    (snapshot / "logs").mkdir(parents=True)
+    try:
+        (snapshot / "step-075000.pth").symlink_to(tmp_path / "blobs" / "9f2c")
+        # `..` after a linked directory is the link target's parent, as the OS follows it
+        (tmp_path / "elsewhere").mkdir()
+        (tmp_path / "elsewhere" / "logs-link").symlink_to(snapshot / "logs", target_is_directory=True)
+    except OSError as e:
+        # Windows creates symlinks only with Developer Mode or the privilege
+        pytest.skip(f"cannot create symlinks here: {e}")
+    monkeypatch.chdir(snapshot / "logs")
+    assert export_weights.default_name("../step-075000.pth") == "hybrid_3d2d-seed43"
+    monkeypatch.chdir(tmp_path / "elsewhere")
+    # Windows collapses `..` before following links, so there the path opens elsewhere/step-075000.pth
+    expected = "elsewhere" if sys.platform == "win32" else "hybrid_3d2d-seed43"
+    assert export_weights.default_name("logs-link/../step-075000.pth") == expected
 
 
 def test_occupancy_modes():

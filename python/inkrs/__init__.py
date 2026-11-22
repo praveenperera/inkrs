@@ -345,6 +345,17 @@ def _sha256(path: Path) -> str:
     return digest
 
 
+def _swap_suffix(path: Path, old: str, new: str) -> Path:
+    """`path` with its `old` suffix replaced by `new`, or with its suffix set to `new` when it has another
+
+    Python 3.14 reads a dot-led name such as `...json`, which inkrs 0.3.0 and earlier wrote for the export of
+    `../step-075000.pth`, as a stem with no suffix, so with_suffix alone would miss the pair
+    """
+    if path.name.endswith(old):
+        return path.with_name(path.name[: -len(old)] + new)
+    return path.with_suffix(new)
+
+
 def _export_in(directory: Path, sha: str) -> Path | None:
     """The .safetensors export in `directory` whose sidecar names a checkpoint with this sha256"""
     if not directory.is_dir():
@@ -354,7 +365,7 @@ def _export_in(directory: Path, sha: str) -> Path | None:
             meta = json.loads(side.read_text())
         except (OSError, ValueError):
             continue
-        tensors = side.with_suffix(".safetensors")
+        tensors = _swap_suffix(side, ".json", ".safetensors")
         if isinstance(meta, dict) and meta.get("checkpoint_sha256") == sha and tensors.is_file():
             return tensors
     return None
@@ -363,7 +374,7 @@ def _export_in(directory: Path, sha: str) -> Path | None:
 def _export_patch(export: Path) -> int | None:
     """The tile edge the export's sidecar `crop_size` records, or None without a readable sidecar"""
     try:
-        crop = json.loads(export.with_suffix(".json").read_text())["crop_size"]
+        crop = json.loads(_swap_suffix(export, ".safetensors", ".json").read_text())["crop_size"]
         return int(crop[-1])
     except (OSError, ValueError, KeyError, IndexError, TypeError):
         return None
@@ -415,10 +426,14 @@ def _resolve_checkpoint(checkpoint: Path, weights_dir: Path) -> Path:
             raise InkrsError(f"exporting {checkpoint} for inkrs failed: {type(e).__name__}: {e}") from e
         try:
             os.replace(staging, cache)
-        except OSError:
+        except OSError as e:
             # another export of the same checkpoint was renamed in first; keep that one
             if _export_in(cache, sha) is None:
-                raise
+                if not cache.is_dir():
+                    raise
+                raise InkrsError(
+                    f"the cache entry {cache} for {checkpoint} holds no usable export; delete it and run again"
+                ) from e
     finally:
         shutil.rmtree(staging, ignore_errors=True)
     found = _export_in(cache, sha)
@@ -446,7 +461,7 @@ def _tta_defaults(occupancy: Any, coverage: bool) -> None:
 def _architecture(export: Path) -> str:
     """`v8in` when the export's sidecar names the v8-in architecture, else `villa`"""
     try:
-        side = json.loads(export.with_suffix(".json").read_text())
+        side = json.loads(_swap_suffix(export, ".safetensors", ".json").read_text())
     except (OSError, ValueError):
         return "villa"
     return "v8in" if side.get("architecture_family") == "v8in" else "villa"

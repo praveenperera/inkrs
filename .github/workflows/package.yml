@@ -152,12 +152,13 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
 
-      # the oldest and a current CPython, since the wheel is abi3; the tests need no GPU, cuDNN or checkpoint
+      # the wheel is abi3, so the oldest CPython and current ones, including 3.14, whose pathlib reads a dot-led name
+      # such as `...json` as having no suffix; the tests need no GPU, cuDNN or checkpoint
       - name: Install the wheel and run its CPU tests
         shell: bash
         run: |
           set -euo pipefail
-          for python in 3.9 3.13; do
+          for python in 3.9 3.13 3.14; do
             venv="$RUNNER_TEMP/venv-$python"
             uv venv --python "$python" "$venv"
             # Windows venvs keep the interpreter in Scripts, not bin
