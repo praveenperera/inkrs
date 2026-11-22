@@ -6,6 +6,19 @@ All notable changes to inkrs are documented here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- A checkpoint passed as a parent-relative path such as `../step-075000.pth`
+  was exported as a reader named `..`. On Python 3.14 inkrs then could not find
+  that export again, and every later run of the checkpoint failed with `File
+  exists` or `Directory not empty`. Such a path now names the directory it
+  points to, and exports earlier releases left in the cache are found again.
+  Such an export keeps the name `..`, which `Engine.sweep(out_dir=...)` cannot
+  put in file names; delete its cache entry, `weights/<sha256>` under the cache
+  directory, to export it again under the run directory's name.
+- A cache entry that holds no usable export now raises an error naming the entry
+  to delete, instead of `File exists` or `Directory not empty`.
+
 ## [0.3.0] - 2026-11-13
 
 ### Added

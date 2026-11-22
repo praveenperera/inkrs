@@ -41,8 +41,13 @@ def default_name(checkpoint: str | Path) -> str:
     The name keys output file names, so two checkpoints must not share one by default
     """
     path = Path(checkpoint)
-    if _STEP_STEM.fullmatch(path.stem) and path.parent.name not in ("", "."):
-        return path.parent.name
+    parent = path.parent.name
+    # `../step-075000.pth` names the directory `..` points to. Only the directory is resolved, as the OS follows
+    # `..`, so a Hugging Face snapshot's link to its blob still names the run
+    if parent == "..":
+        parent = path.parent.resolve().name
+    if _STEP_STEM.fullmatch(path.stem) and parent not in ("", "."):
+        return parent
     return _STEP_SUFFIX.sub("", path.stem) or path.stem
 
 
