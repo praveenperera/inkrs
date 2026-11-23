@@ -338,8 +338,7 @@ pub fn run(input: &Path, ckpt: &Path, out: &Path, opts: &Options) -> Result<Repo
         slab: gpu.alloc(slab_max)?,
     };
     let writer = Writer::create(out, vol.shape, c, opts.overwrite)?;
-    let cov_writer =
-        if opts.coverage { Some(Writer::create(&out.join("coverage"), vol.shape, c, false)?) } else { None };
+    let cov_writer = if opts.coverage { Some(Writer::create_coverage(out, vol.shape, c)?) } else { None };
     let (head_c, head_b) = {
         let h = model.head();
         (h.1, h.3)

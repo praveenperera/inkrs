@@ -37,8 +37,9 @@ All notable changes to inkrs are documented here. The format follows
   or a directory holding the checkpoint included. Each prediction now carries a
   mark in its `.zattrs`, and `--overwrite` replaces only a marked prediction of
   the same command that holds nothing else, never through a symlink, as
-  `inkrs nnunet predict` does. It refuses anything else, including an ink3d
-  output from before 0.4.0, as unsupported, so villa runs PyTorch instead.
+  `inkrs nnunet predict` does. It refuses anything else. Another zarr store,
+  including an ink3d output from before 0.4.0, is refused as unsupported, so
+  villa runs PyTorch instead.
 
 ## [0.3.1] - 2026-11-22
 

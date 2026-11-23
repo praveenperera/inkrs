@@ -153,6 +153,12 @@ mod tests {
             assert!(crate::error::is_unsupported(&e), "{}: {e:#}", path.display());
         }
         assert!(villa.join(".zarray").exists() && lookalike.join("0.0.0.0").exists() && pred.join("m7.json").exists());
+        // a model folder is an error, not unsupported, so villa never falls back onto replacing it
+        let model = root.join("surface_m7_nnunet");
+        std::fs::create_dir_all(&model).unwrap();
+        std::fs::write(model.join("m7.json"), b"{}").unwrap();
+        let e = Writer::create(&model, [4, 4, 4], 4, true).err().expect("a model folder");
+        assert!(!crate::error::is_unsupported(&e) && model.join("m7.json").exists(), "{e:#}");
         std::fs::remove_dir_all(root).unwrap();
     }
 }
