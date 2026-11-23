@@ -961,3 +961,17 @@ def test_cli_stops_when_forced_cuda_libraries_fail(monkeypatch, capsys):
         with pytest.raises(SystemExit) as done:
             _cli.main()
         assert done.value.code == 0 and ran[-1] == argv
+
+
+def test_nnunet_export_loads_numpy_scalars_from_either_numpy(tmp_path):
+    torch = pytest.importorskip("torch")
+    export_nnunet = pytest.importorskip("inkrs.export_nnunet")
+
+    # nnU-Net's training log pickles numpy scalars, named after the module of the numpy that saved them
+    path = tmp_path / "numpy2.pth"
+    torch.save({"w": torch.zeros(2), "loss": np.float64(0.5)}, path, _use_new_zipfile_serialization=False)
+    raw = path.read_bytes()
+    assert b"numpy._core.multiarray" in raw
+    (tmp_path / "numpy1.pth").write_bytes(raw.replace(b"numpy._core.multiarray", b"numpy.core.multiarray"))
+    for name in ("numpy2.pth", "numpy1.pth"):
+        assert export_nnunet.safe_load(tmp_path / name)["loss"] == 0.5, name

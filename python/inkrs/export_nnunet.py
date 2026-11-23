@@ -100,9 +100,14 @@ def triple(v) -> list[int]:
 def safe_load(path: Path) -> dict:
     """A checkpoint downloaded from a hub is untrusted, so it is unpickled with `weights_only`: tensors, plain
     containers and the numpy scalars and dtypes nnU-Net's training log holds, nothing that runs code"""
-    from numpy._core import multiarray
+    try:
+        from numpy._core import multiarray
+    except ImportError:  # numpy 1
+        from numpy.core import multiarray
 
-    safe = [multiarray.scalar, np.dtype, *(type(np.dtype(t)) for t in ["float32", "float64", "int64", "bool"])]
+    # a checkpoint names the scalar reconstructor by the module of the numpy that saved it, numpy.core before 2.0
+    scalar = [(multiarray.scalar, f"{m}.multiarray.scalar") for m in ("numpy._core", "numpy.core")]
+    safe = [*scalar, np.dtype, *(type(np.dtype(t)) for t in ["float32", "float64", "int64", "bool"])]
     with torch.serialization.safe_globals(safe):
         return torch.load(path, map_location="cpu", weights_only=True)
 
