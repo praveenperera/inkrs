@@ -31,6 +31,8 @@ struct Meta {
 
 /// An open uint8 `[Z, Y, X]` zarr v2 array
 pub struct Array {
+    /// The path [`Array::open`] was given: the array, or the group holding it as `0`
+    pub opened: PathBuf,
     pub dir: PathBuf,
     pub shape: [usize; 3],
     pub chunks: [usize; 3],
@@ -79,7 +81,8 @@ impl Array {
         let s = &meta.shape;
         let c = &meta.chunks;
         ensure!(c.iter().all(|&v| v > 0), "zero chunk size");
-        Ok(Self { dir, shape: [s[0], s[1], s[2]], chunks: [c[0], c[1], c[2]], fill, sep, codec })
+        let shape = [s[0], s[1], s[2]];
+        Ok(Self { opened: path.to_path_buf(), dir, shape, chunks: [c[0], c[1], c[2]], fill, sep, codec })
     }
 
     fn chunk_path(&self, k: [usize; 3]) -> PathBuf {
@@ -143,10 +146,12 @@ impl Array {
 }
 
 impl Array {
-    /// Fails when `output` holds this array or sits inside it, so `--overwrite` never deletes the input and the
-    /// output's chunks never land among the input's
-    pub fn ensure_apart(&self, output: &Path) -> Result<()> {
-        let input = self.dir.canonicalize().wrap_err_with(|| format!("resolve {}", self.dir.display()))?;
+    /// Fails when `output` holds this array, the group it was opened through or one of `others` (the model), or
+    /// sits inside the array, so `--overwrite` never deletes an input and the output's chunks never land among the
+    /// input's. The group counts apart from the array because its `0` may be a symlink to an array elsewhere
+    pub fn ensure_apart(&self, output: &Path, others: &[&Path]) -> Result<()> {
+        let resolve = |p: &Path| p.canonicalize().wrap_err_with(|| format!("resolve {}", p.display()));
+        let (array, opened) = (resolve(&self.dir)?, resolve(&self.opened)?);
         // a missing output resolves through its parent, which may be missing too and then holds nothing
         let resolved = match (output.canonicalize(), output.parent(), output.file_name()) {
             (Ok(p), ..) => Some(p),
@@ -158,11 +163,14 @@ impl Array {
         };
         let Some(out) = resolved else { return Ok(()) };
         ensure!(
-            !input.starts_with(&out) && !out.starts_with(&input),
-            "output {} would replace or write into the input array {}",
+            !array.starts_with(&out) && !opened.starts_with(&out) && !out.starts_with(&array),
+            "output {} would replace or write into the input {}",
             output.display(),
-            self.dir.display()
+            self.opened.display()
         );
+        for other in others {
+            ensure!(!resolve(other)?.starts_with(&out), "output {} would delete {}", output.display(), other.display());
+        }
         Ok(())
     }
 }
@@ -253,13 +261,36 @@ mod tests {
         let vol = Array::open(&group).unwrap();
 
         for bad in [group.clone(), group.join("0"), root.clone(), group.join("0/pred.zarr")] {
-            let e = vol.ensure_apart(&bad).expect_err(&bad.display().to_string());
-            assert!(format!("{e:#}").contains("input array"), "{}: {e:#}", bad.display());
+            let e = vol.ensure_apart(&bad, &[]).expect_err(&bad.display().to_string());
+            assert!(format!("{e:#}").contains("write into the input"), "{}: {e:#}", bad.display());
         }
         for ok in [root.join("pred.zarr"), group.join("pred.zarr"), root.join("missing/pred.zarr")] {
-            vol.ensure_apart(&ok).unwrap_or_else(|e| panic!("{}: {e:#}", ok.display()));
+            vol.ensure_apart(&ok, &[]).unwrap_or_else(|e| panic!("{}: {e:#}", ok.display()));
         }
         assert!(group.join("0/.zarray").exists(), "the input survives");
+
+        // nor may it hold the model
+        let model = root.join("weights/m7.safetensors");
+        std::fs::create_dir_all(model.parent().unwrap()).unwrap();
+        std::fs::write(&model, b"").unwrap();
+        let e = vol.ensure_apart(&root.join("weights"), &[&model]).expect_err("holds the model");
+        assert!(format!("{e:#}").contains("would delete"), "{e:#}");
+        vol.ensure_apart(&root.join("pred.zarr"), &[&model]).unwrap();
+
+        // a group whose array 0 links to an array elsewhere is still the input, as is the linked array
+        #[cfg(unix)]
+        {
+            let linked = root.join("linked.zarr");
+            std::fs::create_dir_all(&linked).unwrap();
+            std::fs::write(linked.join(".zgroup"), "{\"zarr_format\": 2}").unwrap();
+            std::os::unix::fs::symlink(group.join("0"), linked.join("0")).unwrap();
+            let vol = Array::open(&linked).unwrap();
+            for bad in [linked.clone(), group.join("0")] {
+                let e = vol.ensure_apart(&bad, &[]).expect_err(&bad.display().to_string());
+                assert!(format!("{e:#}").contains("write into the input"), "{}: {e:#}", bad.display());
+            }
+            vol.ensure_apart(&root.join("pred.zarr"), &[]).unwrap();
+        }
         std::fs::remove_dir_all(root).unwrap();
     }
 }
