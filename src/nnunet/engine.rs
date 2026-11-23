@@ -19,7 +19,7 @@ use color_eyre::eyre::{Result, ensure};
 
 use super::grid::{Bbox, Plan};
 use super::out::Writer;
-use super::{Contract, GAUSSIAN_KEY, Precision, Predict};
+use super::{Contract, Precision, Predict};
 use crate::dnn::{Blas, Dnn, Pick, algo_cache};
 use crate::ensure_supported;
 use crate::gpu::{Arg, Buf, Gpu};
@@ -218,7 +218,7 @@ pub fn run(model: &Path, input: &Path, output: &Path, opts: &Options) -> Result<
     let contract = Contract::from_sidecar(&sidecar)?;
     let recipe: Predict = contract.predict()?;
     let p = contract.patch_size[0];
-    let gauss = ck.take(GAUSSIAN_KEY, &[p, p, p])?;
+    let gauss = ck.take(&recipe.gaussian_key, &[p, p, p])?;
     ensure!(gauss.iter().all(|&v| (0.0..=1.0).contains(&v)), "blend weights outside [0, 1]");
     let host = HostNet::take(&ck, &contract.program, Precision::Fp16)?;
     ck.finish()?;
