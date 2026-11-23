@@ -31,6 +31,12 @@ All notable changes to inkrs are documented here. The format follows
   workspace sized for another one, which failed with PyTorch's cuDNN 9.24 loaded.
   Run reports record the loaded cuDNN version.
 
+### Fixed
+
+- `inkrs ink3d --overwrite` deleted the input volume when `--output` named it or
+  a directory holding it. It now refuses such an output before any GPU work, as
+  `inkrs nnunet predict` does.
+
 ## [0.3.1] - 2026-11-22
 
 ### Fixed
