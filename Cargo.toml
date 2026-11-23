@@ -12,13 +12,15 @@ keywords = ["vesuvius-challenge", "inference", "ink-detection", "segmentation", 
 categories = ["science", "computer-vision", "command-line-utilities"]
 # what a build reads: the kernels are embedded from ptx/ and fixtures/ at compile time and the Metal shaders from
 # src/metal, so the crate needs neither the kernel sources nor a CUDA toolkit. ptx/tools.txt holds the libdevice hash
-# THIRD_PARTY_NOTICES cites, and metal/coreml_body.py builds the Core ML body the engine's errors point to
+# THIRD_PARTY_NOTICES cites, and metal/coreml_body.py builds the Core ML body the engine's errors point to.
+# fixtures/nnunet holds the sidecars the nnU-Net contract tests read, so the packaged crate's tests run too
 include = [
     "/src/**",
     "/ptx/*.ptx",
     "/ptx/*.cubin",
     "/ptx/tools.txt",
     "/fixtures/*.f32",
+    "/fixtures/nnunet/*.json",
     "/metal/coreml_body.py",
     "/README.md",
     "/CHANGELOG.md",
