@@ -501,8 +501,9 @@ mod tests {
     }
 
     /// Kernel name prefixes of the `inkrs-kernels` modules the sm75 tier leaves out
-    /// (`#[cfg(not(feature = "sm75"))]` in its lib.rs): the own 2D convs and the 3D ink engine
-    const NOT_ON_SM75: &[&str] = &["conv_", "u3_"];
+    /// (`#[cfg(not(feature = "sm75"))]` in its lib.rs): the own 2D convs, the 3D ink engine's bf16 and fp16 glue
+    /// and the nnU-Net engine
+    const NOT_ON_SM75: &[&str] = &["conv_", "u3_", "u3h_", "nn_"];
 
     /// Every profile tier has its PTX, for its own target, with the same kernels and params as
     /// every other tier, so the launch checks hold whichever tier loads. The one exception is the

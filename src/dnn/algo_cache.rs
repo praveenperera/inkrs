@@ -366,16 +366,36 @@ struct StoredPerf {
 /// schema, the inkrs version, the PTX tier, the GPU's name and compute capability, the driver
 /// release and cuDNN version. None when the device or driver can't be described
 fn setup_key(gpu: &Gpu) -> Option<String> {
-    let ctx = gpu.inner.context();
-    let name = ctx.name().ok()?;
-    let driver = driver_key(planning_release()?);
-    Some(format!(
-        "schema {SCHEMA}; inkrs {}; tier {}; gpu {name}; sm {}; driver {driver}; cudnn {}",
-        env!("CARGO_PKG_VERSION"),
-        gpu.inner.ptx_tier(),
-        gpu.inner.compute_capability(),
-        Dnn::version(),
-    ))
+    let setup = Setup {
+        gpu: gpu.inner.context().name().ok()?,
+        tier: gpu.inner.ptx_tier().to_string(),
+        sm: gpu.inner.compute_capability().to_string(),
+        driver: driver_key(planning_release()?),
+        // the loaded library's own version: a process where torch loaded its pip cuDNN first runs
+        // that one, not the system copy, and the two must never share entries
+        cudnn: Dnn::version(),
+    };
+
+    Some(setup.key())
+}
+
+/// The setup half of a key, apart from the device queries so the key's shape is testable
+struct Setup {
+    gpu: String,
+    tier: String,
+    sm: String,
+    driver: String,
+    cudnn: usize,
+}
+
+impl Setup {
+    fn key(&self) -> String {
+        let Self { gpu, tier, sm, driver, cudnn } = self;
+        format!(
+            "schema {SCHEMA}; inkrs {}; tier {tier}; gpu {gpu}; sm {sm}; driver {driver}; cudnn {cudnn}",
+            env!("CARGO_PKG_VERSION"),
+        )
+    }
 }
 
 impl Entry {
@@ -645,6 +665,24 @@ mod tests {
         let tried = resolve(&[(DriverSource::Proc, &proc_gone), (DriverSource::Nvml, &nvml_gone)]).unwrap_err();
         assert_eq!(tried.len(), 2);
         assert!(tried[0].starts_with("/proc/driver/nvidia/version:") && tried[1].starts_with("NVML:"), "{tried:?}");
+    }
+
+    #[test]
+    fn two_cudnn_versions_on_one_gpu_never_share_an_entry() {
+        // the CLI on system cuDNN 9.27 and the villa adapter on torch's pip 9.24 share a cache dir
+        let setup = |cudnn| Setup {
+            gpu: "NVIDIA GeForce RTX 5090".into(),
+            tier: "sm120".into(),
+            sm: "12.0".into(),
+            driver: LINE.into(),
+            cudnn,
+        };
+        let (system, pip) = (setup(92700).key(), setup(92400).key());
+        assert!(system.ends_with("; cudnn 92700"), "{system}");
+        assert!(pip.ends_with("; cudnn 92400"), "{pip}");
+
+        let dir = PathBuf::from("/c/cudnn-algos");
+        assert_ne!(Entry::at(dir.clone(), system).path, Entry::at(dir, pip).path);
     }
 
     #[test]

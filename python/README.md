@@ -1,6 +1,6 @@
 # inkrs (Python)
 
-inkrs runs villa's flat ink readers on the GPU, from Python: `hybrid_3d2d-seed42` and the readers with its architecture (`reader-v2`, Reader V3, ink_9um seed 43, dense_native, TRACE v3B and Rectina M1, M2 and M4). Give it the same input, layers, direction and stride as villa's `vesuvius.ink_detection.inference.infer` and it returns the uint8 maps that `infer` writes, or writes villa's TIFFs itself. `inkrs.Engine` also runs the v8-in exports, `inkrs.hecate` runs Hecate 9.6 µm and `inkrs.ink3d` runs villa's 3D ink models, each with the CLI's code. The model stays loaded on the GPU between calls, and `Engine.sweep` runs every depth and both directions of a segment in one pass.
+inkrs runs villa's ink and surface models on the GPU, from Python. It runs the flat ink readers `hybrid_3d2d-seed42` and the readers with its architecture (`reader-v2`, Reader V3, ink_9um seed 43, dense_native, TRACE v3B and Rectina M1, M2 and M4). Give it the same input, layers, direction and stride as villa's `vesuvius.ink_detection.inference.infer` and it returns the uint8 maps that `infer` writes, or writes villa's TIFFs itself. `inkrs.Engine` also runs the v8-in exports, `inkrs.hecate` runs Hecate 9.6 µm, `inkrs.ink3d` runs villa's 3D ink models and `inkrs.nnunet_predict` villa's nnU-Net surface model `surface_m7_nnunet` as `vesuvius.predict` does, each with the CLI's code. The model stays loaded on the GPU between calls, and `Engine.sweep` runs every depth and both directions of a segment in one pass.
 
 ## Install
 
@@ -12,12 +12,14 @@ pip install "inkrs[cu12]"
 
 On an Apple silicon Mac, `pip install inkrs` (see [macOS](#macos)).
 
+The wheel also installs the `inkrs` command: the CLI's own code, run inside a Python process, which finds cuDNN and cuBLAS the way the package does, the `cu12` extra's copies included. So every CLI command runs without Rust.
+
 The Linux wheel is for CPython 3.9 and newer, on glibc 2.28 or newer. It doesn't need Rust or a CUDA toolkit, because the kernels ship inside it, compiled for the common NVIDIA GPUs and as PTX. You do need:
 
 - **An NVIDIA GPU of compute capability 7.5 or above** (T4 and RTX 20, RTX 30, 40 and 50, A100, H100) **and a driver of r525 or newer**.
 - **cuDNN 9 and cuBLAS 12.** The `cu12` extra installs them from pip (`nvidia-cudnn-cu12`, `nvidia-cublas-cu12`). Without it, inkrs uses the copies already on the system, or the ones a CUDA 12 build of PyTorch installed. A CUDA 13 PyTorch ships cuBLAS 13 under a name inkrs doesn't look for, so there add `pip install nvidia-cublas-cu12`.
 
-The wheel has three PTX tiers: sm_75 for Turing, sm_80 for every GPU from 8.0 up, and sm_120 (r570 or newer) for the RTX 50 series. The engine loads the highest tier the GPU runs, and `INKRS_PTX_TIER=sm80` or `sm75` forces a lower one. Each tier also ships compiled for the GPU families it serves: sm_75; sm_80, sm_86, sm_89, sm_90 and sm_100; and sm_120. On those GPUs the engine loads the compiled kernels and skips the driver's PTX compile, which takes over a second on a machine's first run. A GPU outside those families (compute capability 11.x), a tier forced below the GPU's own, or a driver that refuses the compiled kernels gets the PTX instead, the last with a warning on stderr. `load_report["kernels"]` says which loaded. `inkrs.build_info()` reports each tier and its minimum driver, and the families with compiled kernels. Hecate in bf16 and the 3D ink U-Net need 8.0 or above, so they're refused on Turing. It's tested on an RTX 5090 (every tier), a Tesla T4 (sm75), and an A100, an A10, an L4 and an RTX 4090 (sm80, the readers).
+The wheel has three PTX tiers: sm_75 for Turing, sm_80 for every GPU from 8.0 up, and sm_120 (r570 or newer) for the RTX 50 series. The engine loads the highest tier the GPU runs, and `INKRS_PTX_TIER=sm80` or `sm75` forces a lower one. Each tier also ships compiled for the GPU families it serves: sm_75; sm_80, sm_86, sm_89, sm_90 and sm_100; and sm_120. On those GPUs the engine loads the compiled kernels and skips the driver's PTX compile, which takes over a second on a machine's first run. A GPU outside those families (compute capability 11.x), a tier forced below the GPU's own, or a driver that refuses the compiled kernels gets the PTX instead, the last with a warning on stderr. `load_report["kernels"]` says which loaded. `inkrs.build_info()` reports each tier and its minimum driver, and the families with compiled kernels. Hecate in bf16, the 3D ink U-Net and the nnU-Net engine need 8.0 or above, so they're refused on Turing. It's tested on an RTX 5090 (every tier), a Tesla T4 (sm75), and an A100, an A10, an L4 and an RTX 4090 (sm80, the readers).
 
 ### Which cuDNN and cuBLAS it loads
 
@@ -37,7 +39,7 @@ It never loads a library from the current directory. It raises `inkrs.CudaLibrar
 pip install inkrs
 ```
 
-The arm64 wheel installs on any Apple silicon Mac, but the engine needs macOS 26 or newer, and on an older macOS it raises `inkrs.UnsupportedError` naming the version. There the engine runs on Metal. It needs no CUDA libraries and no Xcode, because the Metal shaders ship as source and compile when the engine opens. Pass `device=0`, `"mps"`, `"mps:0"` or a torch MPS device; the engine uses the system's default GPU. `algo` does nothing there, and `inkrs.build_info()` reports `"backend": "metal"` and no PTX or compiled kernels. Only the M4 Pro has been tested.
+The arm64 wheel installs on any Apple silicon Mac, but the engine needs macOS 26 or newer, and on an older macOS it raises `inkrs.UnsupportedError` naming the version. There the engine runs on Metal. It needs no CUDA libraries and no Xcode, because the Metal shaders ship as source and compile when the engine opens. Pass `device=0`, `"mps"`, `"mps:0"` or a torch MPS device; the engine uses the system's default GPU. `algo` does nothing there, and `inkrs.build_info()` reports `"backend": "metal"` and no PTX or compiled kernels. Only the M4 Pro has been tested. The nnU-Net engine is CUDA only: `inkrs.nnunet_predict` raises `inkrs.UnsupportedError`.
 
 Experimental, and reader-v2 only: the engine can run most batches' 2D network on the Neural Engine through Core ML while the GPU runs every batch's 3D stem. Build the Core ML bodies once with `metal/coreml_body.py`, set `INKRS_COREML_ANE` to the `fp16` `.mlmodelc` it prints, and run at `--batch-size 8` (`batch_size=8`). The engine refuses a body built from another checkpoint, batch or precision. The maps stay within villa's parity limits and are the same on every run, but differ from the GPU-only maps by up to a few 1/255 steps. `src/metal/coreml.rs` lists the tuning variables, including an opt-in CPU lane.
 
@@ -91,8 +93,8 @@ maps = eng.infer(volume, layer_start=25, layer_end=42, occupancy="segment.zarr")
 
 Input, a model or a GPU outside these limits raises `inkrs.UnsupportedError`, a subclass of `inkrs.InkrsError`. So a caller with a PyTorch path can fall back on `UnsupportedError` and treat any other `InkrsError` as a failure.
 
-- In `Engine`, the `hybrid_3d2d-seed42` architecture and contract (its own weights or another reader's of the same architecture) or a v8-in export. Hecate runs through `inkrs.hecate` and 3D ink through `inkrs.ink3d`.
-- On macOS, the villa readers, Hecate and the v8-in exports only. `inkrs.ink3d` and `tta=8` raise there.
+- In `Engine`, the `hybrid_3d2d-seed42` architecture and contract (its own weights or another reader's of the same architecture) or a v8-in export. Hecate runs through `inkrs.hecate`, 3D ink through `inkrs.ink3d` and nnU-Net models through `inkrs.nnunet_predict`.
+- On macOS, the villa readers, Hecate and the v8-in exports only. `inkrs.ink3d`, the nnU-Net engine and `tta=8` raise there.
 - uint8 input only.
 - The Hann blend only.
 - The unpadded tile phase only.

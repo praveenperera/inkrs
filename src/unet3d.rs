@@ -25,6 +25,38 @@ pub mod zio;
 /// The sidecar format this engine reads
 pub const FORMAT: &str = "inkrs-unet3d-v1";
 
+/// The precision autocast runs the network in: the activations' storage type, the weights' rounding, the
+/// cuDNN and cuBLAS data type and the glue kernels (`u3_*` for bf16, `u3h_*` for fp16)
+#[derive(Clone, Copy, Debug, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "lowercase")]
+pub enum Precision {
+    Fp16,
+    Bf16,
+}
+
+impl Precision {
+    /// `v` rounded to the storage type, as raw bits
+    pub fn bits(self, v: f32) -> u16 {
+        match self {
+            Self::Bf16 => half::bf16::from_f32(v).to_bits(),
+            Self::Fp16 => half::f16::from_f32(v).to_bits(),
+        }
+    }
+
+    /// Raw storage bits as float32
+    pub fn value(self, bits: u16) -> f32 {
+        match self {
+            Self::Bf16 => half::bf16::from_bits(bits).to_f32(),
+            Self::Fp16 => half::f16::from_bits(bits).to_f32(),
+        }
+    }
+
+    /// `v` as autocast casts it: rounded to the storage type, kept as float32
+    pub fn round(self, v: f32) -> f32 {
+        self.value(self.bits(v))
+    }
+}
+
 /// An InstanceNorm's affine tensors and eps
 #[derive(Clone, Debug, Deserialize)]
 pub struct NormSpec {
@@ -47,11 +79,30 @@ pub struct ConvSpec {
     pub leaky: Option<f32>,
 }
 
-/// A BasicBlockD skip: optional 2x2x2 average pool, then optional bias-free 1x1 conv + norm
+/// A BasicBlockD skip: optional average pool (kernel = stride), then optional bias-free 1x1 conv + norm
 #[derive(Clone, Debug, Deserialize)]
 pub struct SkipSpec {
-    pub pool: usize,
+    pub pool: Pool,
     pub proj: Option<ConvSpec>,
+}
+
+/// A skip's average-pool stride: one value for every axis (`inkrs-unet3d-v1`) or one per axis
+/// (`inkrs-nnunet-v1`); 1 means no pooling on that axis
+#[derive(Clone, Copy, Debug, Deserialize, PartialEq, Eq)]
+#[serde(untagged)]
+pub enum Pool {
+    Iso(usize),
+    Axes([usize; 3]),
+}
+
+impl Pool {
+    /// The stride per axis, z, y, x
+    pub fn axes(self) -> [usize; 3] {
+        match self {
+            Self::Iso(v) => [v; 3],
+            Self::Axes(a) => a,
+        }
+    }
 }
 
 /// One BasicBlockD: `leaky(norm(conv2(leaky(norm(conv1(x))))) + skip(x))`
@@ -113,8 +164,8 @@ pub struct Contract {
 pub fn check_device(cc: ComputeCapability, tier: PtxTier) -> Result<()> {
     ensure_supported!(
         cc >= ComputeCapability::new(8, 0) && tier != PtxTier::Sm75,
-        "ink3d needs a GPU of compute capability 8.0 or above and the sm80 or sm120 PTX tier, for its bf16 convs; \
-         this GPU is {cc} on the {tier} tier"
+        "the 3D U-Net engines (ink3d, nnunet) need a GPU of compute capability 8.0 or above and the sm80 or sm120 \
+         PTX tier, for their cuDNN bf16 and fp16 convs; this GPU is {cc} on the {tier} tier"
     );
     Ok(())
 }
@@ -174,15 +225,17 @@ impl Contract {
 }
 
 impl ConvSpec {
+    /// The kernel and stride as three axes, each kernel odd "same" and each stride 1 or 2 when `odd`
     fn check(&self, what: &str, cin: usize, odd: bool) -> Result<()> {
         ensure_supported!(self.cin == cin, "{what}: {} input channels, the previous layer gives {cin}", self.cin);
         ensure_supported!(self.kernel.len() == 3 && self.stride.len() == 3, "{what}: not 3D");
-        let k = self.kernel[0];
-        ensure_supported!(self.kernel.iter().all(|&v| v == k), "{what}: kernel {:?}, only cubic", self.kernel);
-        let s = self.stride[0];
-        ensure_supported!(self.stride.iter().all(|&v| v == s), "{what}: stride {:?}, only isotropic", self.stride);
         if odd {
-            ensure_supported!(k % 2 == 1 && (s == 1 || s == 2), "{what}: kernel {k} stride {s}");
+            ensure_supported!(
+                self.kernel.iter().all(|&k| k % 2 == 1) && self.stride.iter().all(|&s| s == 1 || s == 2),
+                "{what}: kernel {:?} stride {:?}",
+                self.kernel,
+                self.stride
+            );
         }
         ensure_supported!(
             self.cout.is_multiple_of(2) || self.norm.is_none(),
@@ -194,45 +247,70 @@ impl ConvSpec {
         }
         Ok(())
     }
+
+    fn axes(v: &[usize]) -> [usize; 3] {
+        [v[0], v[1], v[2]]
+    }
+
+    /// Whether kernel and stride are the same on every axis
+    fn isotropic(&self) -> bool {
+        self.kernel.iter().all(|&v| v == self.kernel[0]) && self.stride.iter().all(|&v| v == self.stride[0])
+    }
+
+    /// Multiply-accumulates on an input of `shape`, and the output shape ("same" padding)
+    fn macs(&self, shape: [usize; 3]) -> (u64, [usize; 3]) {
+        let out: [usize; 3] = std::array::from_fn(|a| shape[a].div_ceil(self.stride[a]));
+        let taps: usize = self.kernel.iter().product();
+        let vox: usize = out.iter().product();
+        ((vox * self.cout * self.cin * taps) as u64, out)
+    }
 }
 
 impl Program {
-    /// Every layer's channels chain, strides halve the edge evenly, and the decoder mirrors the
-    /// encoder, for a patch of edge `p`
-    fn check(&self, p: usize) -> Result<()> {
+    /// Every layer's channels chain from `in_channels`, each stage's stride divides its input evenly, the
+    /// decoder mirrors the encoder (a transposed conv of kernel = stride undoing each stage's stride, with
+    /// bias) and the head is a 1x1 conv with bias. Returns each stage's output shape and channels, for a
+    /// patch of `patch` voxels (z, y, x)
+    pub fn levels(&self, patch: [usize; 3], in_channels: usize) -> Result<Vec<([usize; 3], usize)>> {
         ensure_supported!(!self.stages.is_empty() && self.stages.iter().all(|s| !s.is_empty()), "empty stage");
-        let mut cin = 1;
+        ensure_supported!(patch.iter().all(|&v| v > 0 && v < 1 << 10), "patch {patch:?}");
+        let mut cin = in_channels;
         for (i, s) in self.stem.iter().enumerate() {
             s.check(&format!("stem {i}"), cin, true)?;
             ensure_supported!(
-                s.stride[0] == 1 && s.norm.is_some() && s.leaky.is_some(),
+                s.stride.iter().all(|&v| v == 1) && s.norm.is_some() && s.leaky.is_some(),
                 "stem {i}: stride or activation"
             );
             cin = s.cout;
         }
-        let mut edge = p;
-        let mut chans = Vec::new();
+        let mut shape = patch;
+        let mut levels = Vec::new();
+        let mut strides = Vec::new();
         for (si, stage) in self.stages.iter().enumerate() {
+            let stride = ConvSpec::axes(&stage[0].conv1.stride);
             for (bi, b) in stage.iter().enumerate() {
                 let what = format!("stage {si} block {bi}");
                 b.conv1.check(&format!("{what} conv1"), cin, true)?;
                 b.conv2.check(&format!("{what} conv2"), b.conv1.cout, true)?;
-                ensure_supported!(b.conv2.stride[0] == 1, "{what}: conv2 stride {}", b.conv2.stride[0]);
+                ensure_supported!(b.conv2.stride.iter().all(|&v| v == 1), "{what}: conv2 stride {:?}", b.conv2.stride);
                 ensure_supported!(b.conv1.norm.is_some() && b.conv1.leaky.is_some(), "{what}: conv1 norm/act");
                 ensure_supported!(b.conv2.norm.is_some() && b.conv2.leaky.is_none(), "{what}: conv2 norm/act");
-                let s = b.conv1.stride[0];
-                ensure_supported!(b.skip.pool == s, "{what}: skip pool {} with stride {s}", b.skip.pool);
-                ensure_supported!(bi == 0 || s == 1, "{what}: stride {s} past a stage's first block");
-                if s == 2 {
-                    ensure_supported!(edge.is_multiple_of(2), "{what}: edge {edge} does not halve");
-                    edge /= 2;
+                let s = ConvSpec::axes(&b.conv1.stride);
+                ensure_supported!(b.skip.pool.axes() == s, "{what}: skip pool {:?} with stride {s:?}", b.skip.pool);
+                ensure_supported!(bi == 0 || s == [1; 3], "{what}: stride {s:?} past a stage's first block");
+                for a in 0..3 {
+                    ensure_supported!(
+                        shape[a].is_multiple_of(s[a]),
+                        "{what}: shape {shape:?} does not divide by {s:?}"
+                    );
+                    shape[a] /= s[a];
                 }
                 match &b.skip.proj {
                     Some(pj) => {
                         pj.check(&format!("{what} skip"), cin, true)?;
                         ensure_supported!(
-                            pj.kernel[0] == 1
-                                && pj.stride[0] == 1
+                            pj.kernel.iter().all(|&v| v == 1)
+                                && pj.stride.iter().all(|&v| v == 1)
                                 && pj.b.is_none()
                                 && pj.norm.is_some()
                                 && pj.leaky.is_none(),
@@ -246,17 +324,21 @@ impl Program {
                 }
                 cin = b.conv2.cout;
             }
-            chans.push((cin, edge));
+            levels.push((shape, cin));
+            strides.push(stride);
         }
         ensure_supported!(self.decoder.len() + 1 == self.stages.len(), "{} decoder stages", self.decoder.len());
         for (d, dec) in self.decoder.iter().enumerate() {
             let level = self.stages.len() - 2 - d;
-            let (skip_c, _) = chans[level];
+            let (_, skip_c) = levels[level];
             let t = &dec.transp;
             t.check(&format!("decoder {d} transp"), cin, false)?;
+            let undo = strides[level + 1];
             ensure_supported!(
-                t.kernel[0] == 2 && t.stride[0] == 2 && t.b.is_some(),
-                "decoder {d}: transp must be k2 s2 with bias"
+                ConvSpec::axes(&t.kernel) == undo && ConvSpec::axes(&t.stride) == undo && t.b.is_some(),
+                "decoder {d}: transp k{:?} s{:?} must undo stride {undo:?}, with bias",
+                t.kernel,
+                t.stride
             );
             ensure_supported!(
                 t.cout == skip_c && t.cout % 2 == 0,
@@ -267,7 +349,10 @@ impl Program {
             let mut c = 2 * skip_c;
             for (i, cv) in dec.convs.iter().enumerate() {
                 cv.check(&format!("decoder {d} conv {i}"), c, true)?;
-                ensure_supported!(cv.stride[0] == 1 && cv.norm.is_some() && cv.leaky.is_some(), "decoder {d} conv {i}");
+                ensure_supported!(
+                    cv.stride.iter().all(|&v| v == 1) && cv.norm.is_some() && cv.leaky.is_some(),
+                    "decoder {d} conv {i}"
+                );
                 c = cv.cout;
             }
             cin = c;
@@ -275,13 +360,88 @@ impl Program {
         let h = &self.head;
         h.check("head", cin, true)?;
         ensure_supported!(
-            h.kernel[0] == 1 && h.cout == 1 && h.b.is_some() && h.norm.is_none(),
-            "head must be a 1x1 conv to 1 channel with bias"
+            h.kernel.iter().all(|&v| v == 1) && h.cout >= 1 && h.b.is_some() && h.norm.is_none() && h.leaky.is_none(),
+            "head must be a 1x1 conv with bias"
         );
+        Ok(levels)
+    }
+
+    /// v0.2's contract on top of [`Program::levels`]: one input channel, a cubic patch of edge `p`, cubic
+    /// kernels and isotropic strides, k2 s2 transposed convs and a 1-channel head
+    fn check(&self, p: usize) -> Result<()> {
+        self.levels([p; 3], 1)?;
+        self.check_isotropic()?;
+        ensure_supported!(self.head.cout == 1, "head must be a 1x1 conv to 1 channel with bias");
         if p >= 1 << 10 {
             bail!("patch edge {p} too large");
         }
         Ok(())
+    }
+
+    /// The layers [`model::Model`] runs: cubic kernels, isotropic strides and pools, k2 s2 transposed convs
+    pub fn check_isotropic(&self) -> Result<()> {
+        let convs = self
+            .stem
+            .iter()
+            .chain(self.stages.iter().flatten().flat_map(|b| [&b.conv1, &b.conv2].into_iter().chain(&b.skip.proj)))
+            .chain(self.decoder.iter().flat_map(|d| d.convs.iter()))
+            .chain([&self.head]);
+        for c in convs {
+            ensure_supported!(c.isotropic(), "{}: kernel {:?} stride {:?}, only isotropic", c.w, c.kernel, c.stride);
+        }
+        for d in &self.decoder {
+            let t = &d.transp;
+            ensure_supported!(
+                t.kernel.iter().all(|&v| v == 2) && t.stride.iter().all(|&v| v == 2),
+                "{}: transp k{:?} s{:?}, only k2 s2",
+                t.w,
+                t.kernel,
+                t.stride
+            );
+        }
+        for b in self.stages.iter().flatten() {
+            let pool = b.skip.pool.axes();
+            ensure_supported!(pool.iter().all(|&v| v == pool[0]), "skip pool {pool:?}, only isotropic");
+        }
+        Ok(())
+    }
+
+    /// Multiply-accumulates of one forward on a `patch` input: every conv (output voxels x Cout x Cin x
+    /// taps), every transposed conv (input voxels x Cin x Cout x taps) and the head
+    pub fn macs(&self, patch: [usize; 3]) -> u64 {
+        let mut shape = patch;
+        let mut total = 0u64;
+        let conv = |total: &mut u64, c: &ConvSpec, s: [usize; 3]| -> [usize; 3] {
+            let (m, out) = c.macs(s);
+            *total += m;
+            out
+        };
+        for s in &self.stem {
+            shape = conv(&mut total, s, shape);
+        }
+        let mut shapes = Vec::new();
+        for stage in &self.stages {
+            for b in stage {
+                if let Some(pj) = &b.skip.proj {
+                    let pool = b.skip.pool.axes();
+                    conv(&mut total, pj, std::array::from_fn(|a| shape[a] / pool[a]));
+                }
+                shape = conv(&mut total, &b.conv1, shape);
+                shape = conv(&mut total, &b.conv2, shape);
+            }
+            shapes.push(shape);
+        }
+        for (d, dec) in self.decoder.iter().enumerate() {
+            let t = &dec.transp;
+            let taps: usize = t.kernel.iter().product();
+            total += (shape.iter().product::<usize>() * t.cin * t.cout * taps) as u64;
+            shape = shapes[shapes.len() - 2 - d];
+            for c in &dec.convs {
+                shape = conv(&mut total, c, shape);
+            }
+        }
+        conv(&mut total, &self.head, shape);
+        total
     }
 }
 

@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import ctypes
 import ctypes.util
+import hashlib
 import json
 import os
 import re
@@ -835,3 +836,102 @@ def test_a_checkpoint_that_matches_its_model_still_exports(tmp_path, monkeypatch
     meta = json.loads(export.with_suffix(".json").read_text())
     assert meta["keys"] == {k: list(v.shape) for k, v in state.items()}
     assert meta["model_type"] == "toy" and meta["checkpoint_sha256"] == inkrs._sha256(pth)
+
+
+@pytest.mark.parametrize("key, name", [
+    ("conv_op", "os.system"),  # anything outside the table, which would otherwise be imported
+    ("nonlin", "torch.nn.GELU"),
+    ("dropout_op", "torch.nn.Dropout3d"),
+])
+def test_nnunet_plans_ops_come_from_a_fixed_table(key, name):
+    pytest.importorskip("torch")
+    pytest.importorskip("dynamic_network_architectures")
+    from inkrs import export_nnunet
+
+    kwargs = dict(export_nnunet.SOCRATIC_M7_RESENC_L, **{key: name})
+    plans = {"configurations": {"c": {"architecture": {
+        "network_class_name": export_nnunet.ARCH, "arch_kwargs": kwargs,
+        "_kw_requires_import": ["conv_op", "norm_op", "dropout_op", "nonlin"]}}}}
+    with pytest.raises(export_nnunet.ExportUnsupported, match=key):
+        export_nnunet.build_network(plans, "c", 1, 2)
+
+
+def test_an_nnunet_folder_of_another_network_is_unsupported(tmp_path, monkeypatch):
+    # a PlainConvUNet checkpoint has no encoder.stem tensors; it must be refused before they are read, so a
+    # caller that falls back on UnsupportedError can
+    torch = pytest.importorskip("torch")
+    pytest.importorskip("safetensors")
+    pytest.importorskip("dynamic_network_architectures")
+    model = tmp_path / "model"
+    (model / "fold_0").mkdir(parents=True)
+    plain = "dynamic_network_architectures.architectures.unet.PlainConvUNet"
+    (model / "plans.json").write_text(json.dumps({"configurations": {"3d_fullres": {"architecture": {
+        "network_class_name": plain, "arch_kwargs": {}, "_kw_requires_import": []}}}}))
+    dataset = {"labels": {"background": 0, "fg": 1}, "channel_names": {"0": "CT"}}
+    (model / "dataset.json").write_text(json.dumps(dataset))
+    torch.save({"network_weights": {"encoder.stages.0.0.convs.0.conv.weight": torch.zeros(32, 1, 3, 3, 3)},
+                "init_args": {"configuration": "3d_fullres"}}, model / "fold_0" / "checkpoint_final.pth")
+    monkeypatch.setenv("INKRS_CACHE_DIR", str(tmp_path / "cache"))
+    with pytest.raises(inkrs.UnsupportedError, match="PlainConvUNet"):
+        inkrs._resolve_nnunet(model)
+
+
+def nnunet_folder(tmp_path, monkeypatch):
+    """An nnU-Net folder of placeholder files, and the exports a stand-in exporter made from it; the exporter
+    imports without torch, so no export package is needed"""
+    from inkrs import export_nnunet
+
+    model = tmp_path / "model"
+    (model / "fold_0").mkdir(parents=True)
+    files = {"ck": model / "fold_0" / "checkpoint_final.pth", "plans": model / "plans.json",
+             "dataset": model / "dataset.json", "fingerprint": model / "dataset_fingerprint.json"}
+    for f in files.values():
+        f.write_text("v1")
+    exports = []
+
+    def export(model_dir, out_dir, recipe, name=None):
+        # a stand-in export: its sidecar records which plans it read, so a stale cache entry is visible
+        exports.append(files["plans"].read_text())
+        sha = hashlib.sha256(files["ck"].read_bytes()).hexdigest()
+        (out_dir / "m.json").write_text(json.dumps({"format": "inkrs-nnunet-v1", "checkpoint_sha256": sha,
+                                                    "recipe": {"pipeline": recipe},
+                                                    "plans": files["plans"].read_text()}))
+        (out_dir / "m.safetensors").write_bytes(b"")
+        return out_dir / "m.safetensors"
+
+    monkeypatch.setattr(export_nnunet, "export", export)
+    monkeypatch.setattr(export_nnunet, "missing_packages", list)
+    monkeypatch.setenv("INKRS_CACHE_DIR", str(tmp_path / "cache"))
+    return model, files, exports
+
+
+def test_nnunet_export_cache_follows_every_input(tmp_path, monkeypatch):
+    model, files, exports = nnunet_folder(tmp_path, monkeypatch)
+
+    def plans_seen():
+        found = inkrs._resolve_nnunet(model)
+        return json.loads(found.with_suffix(".json").read_text())["plans"]
+
+    assert plans_seen() == "v1" and len(exports) == 1
+    assert plans_seen() == "v1" and len(exports) == 1, "an unchanged folder reuses its export"
+    files["plans"].write_text("v2")
+    assert plans_seen() == "v2" and len(exports) == 2
+    for name in ("dataset", "fingerprint", "ck"):
+        files[name].write_text("v2")
+        plans_seen()
+    assert len(exports) == 5, "a new dataset, fingerprint or checkpoint is a new export"
+
+
+def test_a_cached_nnunet_export_runs_without_the_export_packages(tmp_path, monkeypatch):
+    from inkrs import export_nnunet
+
+    model, files, exports = nnunet_folder(tmp_path, monkeypatch)
+    cached = inkrs._resolve_nnunet(model)
+    monkeypatch.setattr(export_nnunet, "missing_packages", lambda: ["torch", "safetensors"])
+    assert inkrs._resolve_nnunet(model) == cached and len(exports) == 1
+
+    # a folder with no export yet still needs them, and the error names the manual command
+    files["plans"].write_text("v2")
+    with pytest.raises(inkrs.UnsupportedError, match="torch, safetensors do not import.*python -m inkrs.export_nnunet"):
+        inkrs._resolve_nnunet(model)
+    assert len(exports) == 1

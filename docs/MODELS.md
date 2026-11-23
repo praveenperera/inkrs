@@ -7,6 +7,7 @@ Besides `hybrid_3d2d-seed42`, inkrs runs:
 - Hecate 9.6 µm, through `inkrs hecate`
 - v8-in and its A-hn fine-tunes, through `infer`
 - villa's 3D ink U-Net, through `inkrs ink3d` ([below](#villas-3d-ink-u-net))
+- villa's nnU-Net surface model `surface_m7_nnunet`, through `inkrs nnunet predict` ([below](#villas-nnu-net-surface-model-m7))
 
 This page gives each one's licence, how to export it, and how it checks out against the reference code. No weights ship with inkrs. You download each model, accept its licence, and export it once on the CPU.
 
@@ -92,6 +93,19 @@ v8-in (Youssef Nader, huggingface.co/YoussefMoNader/ink-8um-v8in at `d89166b4`, 
 villa's `ink_3d_dino_guided` v3 (`ckpt_78k_fullsup.pth`), exported with `python -I scripts/export_unet3d.py CKPT OUT_DIR` and run with `inkrs ink3d`. It needs compute capability 8.0 or above.
 
 On a crop of a scan volume, with 256³ patches at villa's overlap 0.5, against villa eager in bf16 with its GPU blend (`results/ink3d-gates.json`): r 0.999996, p99.9 1/255, max 7/255 and identical coverage, the same with the sm80 tier forced. 0.029% of voxels differ by more than 1/255. At overlap 0.25 it's r 0.999996, p99.9 1/255, max 8/255.
+
+## villa's nnU-Net surface model (m7)
+
+| Model | Weights and licence | Reference | Export | Runs through |
+|---|---|---|---|---|
+| `surface_m7_nnunet`, nnU-Net ResEnc-L, 192³ patches | `scrollprize/surface_m7_nnunet@cd83ccf7`; Apache-2.0 on its model card, which adds that the original authors' terms govern where they differ | villa `vesuvius.predict --blend_in_memory --mode binary`, fp16 autocast, eight-flip TTA, Gaussian blend | `python -I scripts/export_nnunet.py MODEL_FOLDER W --recipe vesuvius-predict --name m7` | `inkrs nnunet predict` and `inkrs.nnunet_predict` (CUDA, compute capability 8.0 or above) |
+
+Checked on one 512³ zone of PHerc. 0826 (448 patches), thresholded at 0.2 as the published surface tracks are. The CLI, the Python call and every timed run wrote the same bytes.
+
+- **Bar.** The bar fixed before the run compared inkrs with villa's compiled in-memory path. inkrs misses it: the largest difference is 3 steps of 255 against a bound of 2, on 6 of 562M values, and the binary IoU is 0.9996948 against a floor of 0.9996981. **The bar was then amended, after the result was seen,** to accept either of villa's paths as the reference. Against villa eager, inkrs is inside the band: largest difference 1 step, IoU 0.999805. Against villa's staged path (blend on disk), IoU is 0.999682, also under the floor; villa's own in-memory and staged paths agree to IoU 0.999809.
+- **Speed.** End to end on that zone against villa compiled with `--blend_in_memory`, 6 ABBA pairs: 130.6 s against 206.5 s (medians), 1.58× faster (pairs 1.49× to 1.66×, every pair in inkrs's favour).
+
+The exporter also reads HercUNet and Socratic F0 checkpoints; `inkrs nnunet predict` refuses their pipelines. Chunks are written with zstd rather than villa's blosc-wrapped zstd, so the files differ but every zarr reader decodes the same bytes.
 
 ## The prize recipes' models
 

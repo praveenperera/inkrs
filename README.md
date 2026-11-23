@@ -2,9 +2,9 @@
 
 Fast native inference for the Vesuvius Challenge's models, written in Rust.
 
-inkrs runs villa's models natively, entirely on the GPU: its ink readers, and a handful of other ink models. It writes the same maps villa's Python code writes, just a lot faster. The volume and the model stay on the GPU, every depth and both directions run in one process, and the TIFFs get written on other threads while the next maps compute.
+inkrs runs villa's models natively, entirely on the GPU: its ink readers and a handful of other ink models, and its nnU-Net surface model, `surface_m7_nnunet`. It writes the same outputs villa's Python code writes, just a lot faster. The volume and the model stay on the GPU, every depth and both directions run in one process, and the TIFFs get written on other threads while the next maps compute.
 
-It runs on NVIDIA GPUs (compute capability 7.5 and up, so T4 / RTX 20 series and newer) and on Apple silicon Macs through Metal.
+It runs on NVIDIA GPUs (compute capability 7.5 and up, so T4 / RTX 20 series and newer) and on Apple silicon Macs through Metal. The surface model and the 3D ink U-Net run on NVIDIA only, at compute capability 8.0 and up.
 
 ## How fast
 
@@ -31,7 +31,9 @@ S1 is a 2048 × 2048 crop of the PHerc. 343 render. UFSM is a native C/CUDA port
 
 Hecate and v8-in gain less. They're big networks, and inkrs runs their convolutions through cuDNN, the same as PyTorch, so there's less overhead to cut. Hecate in bf16 is 1.70× faster than inksweep, v8-in 1.82× faster than inksweep and 2.38× faster than ink-sdk, and both about 1.2× faster than UFSM. The PHerc. 0306B claim's recipe, mostly v8-in, is 1.68× faster than its own scripts.
 
-The numbers behind these are in [results/](results/), along with how to rerun them.
+For the nnU-Net models: on one 512³ zone of PHerc. 0826, `surface_m7_nnunet` runs end to end in 130.6 s against 206.5 s for villa's compiled in-memory path, 1.58× faster.
+
+The numbers behind these are in [results/](results/), along with how to rerun them; the nnU-Net ones are in [docs/MODELS.md](docs/MODELS.md).
 
 ## Same maps, or it doesn't count
 
@@ -41,7 +43,7 @@ None of the speed matters if the maps are different. For villa's readers I hold 
 
 *PHerc. 343 at d 0, reading side, over the band with the published first letters: villa main's map (top), inkrs's (middle), and where they differ (bottom, each 4 × 4 block's largest difference × 64, so one grey level shows as dark grey).*
 
-Hecate gets the same treatment against `hecate.py`'s maps. Every model's checks are in [docs/MODELS.md](docs/MODELS.md).
+Hecate gets the same treatment against `hecate.py`'s maps. For `surface_m7_nnunet`, inkrs missed the bar I set before the run, and I amended the bar after seeing the results, to accept villa eager as well as villa compiled as the reference. [docs/MODELS.md](docs/MODELS.md) gives both comparisons, along with every model's checks.
 
 ## Models
 
@@ -49,6 +51,7 @@ Hecate gets the same treatment against `hecate.py`'s maps. Every model's checks 
 - Hecate 9.6 µm
 - v8-in (8 µm), and its three A-hn fine-tunes from the PHerc. 0306B claim
 - villa's 3D ink U-Net (`ink_3d_dino_guided` v3)
+- villa's nnU-Net surface model, `surface_m7_nnunet`
 
 Some of these weights are non-commercial (TRACE v3B, Rectina and A-hn). [docs/MODELS.md](docs/MODELS.md) lists each model's licence.
 
@@ -60,7 +63,7 @@ The Python package, on Linux x86-64 or Windows x86-64:
 pip install "inkrs[cu12]"
 ```
 
-The `cu12` extra pulls in cuDNN 9 and cuBLAS 12 from pip. Leave it off if you already have them, for example from a CUDA 12 PyTorch. On an Apple silicon Mac it's `pip install inkrs`. [python/README.md](python/README.md) has the details.
+The `cu12` extra pulls in cuDNN 9 and cuBLAS 12 from pip. Leave it off if you already have them, for example from a CUDA 12 PyTorch. On an Apple silicon Mac it's `pip install inkrs`. The wheel also installs the `inkrs` command, the CLI's own code run inside Python, so it needs no Rust. [python/README.md](python/README.md) has the details.
 
 The `inkrs` CLI comes prebuilt for Linux x86-64, Windows x86-64 and Apple silicon Macs, through [cargo-binstall](https://github.com/cargo-bins/cargo-binstall):
 
@@ -116,7 +119,17 @@ maps = eng.infer("RENDER.zarr", layer_start=25, layer_end=42, direction="both")
 sweep = eng.sweep("RENDER.zarr", range(-4, 5))
 ```
 
-Hecate, v8-in and the 3D U-Net have their own commands (`inkrs hecate`, `inkrs infer` and `inkrs ink3d`). `inkrs --help` lists every option, and [python/API.md](python/API.md) covers the Python API.
+Hecate, v8-in and the 3D U-Net have their own commands (`inkrs hecate`, `inkrs infer` and `inkrs ink3d`).
+
+The nnU-Net models read an export that `scripts/export_nnunet.py` (or `python -m inkrs.export_nnunet`) makes once, with torch and `dynamic_network_architectures` installed. `inkrs nnunet predict` runs `surface_m7_nnunet` as villa's `vesuvius.predict --blend_in_memory --mode binary` does, and takes villa's flags:
+
+```
+python -I scripts/export_nnunet.py surface_m7_nnunet/ weights/ --recipe vesuvius-predict --name m7
+inkrs nnunet predict --model weights/m7.safetensors --input VOLUME.zarr --output PRED.zarr \
+  --bbox z0:z1,y0:y1,x0:x1 --threshold --threshold-value 0.2
+```
+
+From Python this is `inkrs.nnunet_predict`. `inkrs --help` lists every option, and [python/API.md](python/API.md) covers the Python API.
 
 ## Where it's not faster
 
@@ -131,7 +144,7 @@ A few other limits worth knowing:
 - Only the Hann blend and villa's unpadded tile phase.
 - The full equivalence checks ran on an RTX 5090. A T4, an A10, an A100, an L4, an RTX 4090 and an M4 Pro passed the per-map checks ([results/README.md](results/README.md)). Other GPUs should work but haven't been tried.
 - The Windows build has never run on actual Windows. It's cross-built on Linux and its tests pass under Wine.
-- The Metal backend doesn't do the 3D U-Net or test-time augmentation.
+- The Metal backend doesn't do the 3D U-Net, the nnU-Net models or test-time augmentation. The nnU-Net models need compute capability 8.0 or above.
 
 ## Other runners
 
@@ -156,7 +169,7 @@ A few other limits worth knowing:
 
 ## Credits
 
-inkrs reimplements other people's work and is checked against it. villa wrote the ink models' architecture, `hybrid_3d2d-seed42`, the 3D ink U-Net, and the inference code inkrs matches. Domenico Russo trained reader-v2 and Reader V3. The Vesuvius Challenge released Hecate 9.6 µm and `hecate.py`. Youssef Nader trained v8-in, and Prodigle its A-hn fine-tunes for PHerc. 0306B. J. S. Gill and N. N. Tran trained TRACE v3B, and Giovanni Pellerano the Rectina models. gomyway published the reader-v2 and Hecate maps I checked against. UFSM (Forrest McDonald), ink-sdk (Leonel Wainer and Paulo Sergio Camillo), inksweep and SurgeFok's MPS path are the other public runners I compared with.
+inkrs reimplements other people's work and is checked against it. villa wrote the ink models' architecture, `hybrid_3d2d-seed42`, the 3D ink U-Net, and the inference code inkrs matches. Domenico Russo trained reader-v2 and Reader V3. The Vesuvius Challenge released Hecate 9.6 µm and `hecate.py`. Youssef Nader trained v8-in, and Prodigle its A-hn fine-tunes for PHerc. 0306B. J. S. Gill and N. N. Tran trained TRACE v3B, and Giovanni Pellerano the Rectina models. The Vesuvius Challenge released `surface_m7_nnunet`. gomyway published the reader-v2 and Hecate maps I checked against. UFSM (Forrest McDonald), ink-sdk (Leonel Wainer and Paulo Sergio Camillo), inksweep and SurgeFok's MPS path are the other public runners I compared with.
 
 ## Licence
 

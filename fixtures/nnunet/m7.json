@@ -1,0 +1,3838 @@
+{
+ "format": "inkrs-nnunet-v1",
+ "name": "m7",
+ "patch_size": [
+  192,
+  192,
+  192
+ ],
+ "in_channels": 1,
+ "declared_channels": 1,
+ "num_classes": 2,
+ "configuration": "3d_fullres",
+ "trainer": "nnUNetTrainer_4000epochs",
+ "mirror_axes": [
+  0,
+  1,
+  2
+ ],
+ "recipe": {
+  "pipeline": "vesuvius-predict",
+  "precision": "fp16",
+  "normalization": {
+   "mode": "ct",
+   "center": 87.54424285888672,
+   "scale": 47.74376678466797,
+   "low": 0.0,
+   "high": 212.0,
+   "table_f32_bits": [
+    3219829831,
+    3219654131,
+    3219478430,
+    3219302729,
+    3219127029,
+    3218951328,
+    3218775628,
+    3218599927,
+    3218424226,
+    3218248526,
+    3218072825,
+    3217897125,
+    3217721424,
+    3217545723,
+    3217370023,
+    3217194322,
+    3217018622,
+    3216842921,
+    3216667221,
+    3216491520,
+    3216315819,
+    3216140119,
+    3215964418,
+    3215788718,
+    3215613017,
+    3215437316,
+    3215261616,
+    3215085915,
+    3214910215,
+    3214734514,
+    3214558813,
+    3214383113,
+    3214207412,
+    3214031712,
+    3213856011,
+    3213680310,
+    3213504610,
+    3213328909,
+    3213153209,
+    3212977508,
+    3212766751,
+    3212415350,
+    3212063949,
+    3211712548,
+    3211361146,
+    3211009745,
+    3210658344,
+    3210306943,
+    3209955542,
+    3209604140,
+    3209252739,
+    3208901338,
+    3208549937,
+    3208198536,
+    3207847135,
+    3207495733,
+    3207144332,
+    3206792931,
+    3206441530,
+    3206090129,
+    3205738727,
+    3205387326,
+    3205035925,
+    3204684524,
+    3204217989,
+    3203515187,
+    3202812385,
+    3202109582,
+    3201406780,
+    3200703978,
+    3200001175,
+    3199298373,
+    3198595571,
+    3197892768,
+    3197189966,
+    3196487163,
+    3195509074,
+    3194103470,
+    3192697865,
+    3191292260,
+    3189886655,
+    3188481051,
+    3186479852,
+    3183668642,
+    3180857433,
+    3176810015,
+    3171187596,
+    3157967845,
+    1008494182,
+    1023002713,
+    1028828863,
+    1033125033,
+    1035936243,
+    1038747452,
+    1040873027,
+    1042278631,
+    1043684236,
+    1045089841,
+    1046495446,
+    1047901050,
+    1048941328,
+    1049644130,
+    1050346932,
+    1051049735,
+    1051752537,
+    1052455339,
+    1053158142,
+    1053860944,
+    1054563746,
+    1055266549,
+    1055969351,
+    1056672153,
+    1057169782,
+    1057521183,
+    1057872584,
+    1058223985,
+    1058575387,
+    1058926788,
+    1059278189,
+    1059629590,
+    1059980991,
+    1060332393,
+    1060683794,
+    1061035195,
+    1061386596,
+    1061737997,
+    1062089398,
+    1062440800,
+    1062792201,
+    1063143602,
+    1063495003,
+    1063846404,
+    1064197806,
+    1064549207,
+    1064900608,
+    1065252009,
+    1065478313,
+    1065654014,
+    1065829714,
+    1066005415,
+    1066181115,
+    1066356816,
+    1066532517,
+    1066708217,
+    1066883918,
+    1067059618,
+    1067235319,
+    1067411020,
+    1067586720,
+    1067762421,
+    1067938121,
+    1068113822,
+    1068289523,
+    1068465223,
+    1068640924,
+    1068816624,
+    1068992325,
+    1069168026,
+    1069343726,
+    1069519427,
+    1069695127,
+    1069870828,
+    1070046528,
+    1070222229,
+    1070397930,
+    1070573630,
+    1070749331,
+    1070925031,
+    1071100732,
+    1071276433,
+    1071452133,
+    1071627834,
+    1071803534,
+    1071979235,
+    1072154936,
+    1072330636,
+    1072506337,
+    1072682037,
+    1072857738,
+    1073033439,
+    1073209139,
+    1073384840,
+    1073560540,
+    1073736241,
+    1073826883,
+    1073914733,
+    1074002583,
+    1074090434,
+    1074178284,
+    1074266134,
+    1074353984,
+    1074441835,
+    1074529685,
+    1074617535,
+    1074705386,
+    1074793236,
+    1074881086,
+    1074968937,
+    1075056787,
+    1075144637,
+    1075232487,
+    1075320338,
+    1075408188,
+    1075496038,
+    1075583889,
+    1075671739,
+    1075759589,
+    1075847440,
+    1075935290,
+    1076023140,
+    1076110990,
+    1076198841,
+    1076286691,
+    1076286691,
+    1076286691,
+    1076286691,
+    1076286691,
+    1076286691,
+    1076286691,
+    1076286691,
+    1076286691,
+    1076286691,
+    1076286691,
+    1076286691,
+    1076286691,
+    1076286691,
+    1076286691,
+    1076286691,
+    1076286691,
+    1076286691,
+    1076286691,
+    1076286691,
+    1076286691,
+    1076286691,
+    1076286691,
+    1076286691,
+    1076286691,
+    1076286691,
+    1076286691,
+    1076286691,
+    1076286691,
+    1076286691,
+    1076286691,
+    1076286691,
+    1076286691,
+    1076286691,
+    1076286691,
+    1076286691,
+    1076286691,
+    1076286691,
+    1076286691,
+    1076286691,
+    1076286691,
+    1076286691,
+    1076286691,
+    1076286691
+   ]
+  },
+  "tta": {
+   "mode": "mirror8",
+   "combine": "mean_logits"
+  },
+  "blend": {
+   "mode": "gaussian_map",
+   "tensor": "inkrs.blend.gaussian",
+   "sigma_scale": 8.0
+  },
+  "finalize": {
+   "mode": "softmax_u8"
+  },
+  "overlap": 0.5,
+  "skip_constant_patches": true
+ },
+ "program": {
+  "stem": [
+   {
+    "w": "encoder.stem.convs.0.conv.weight",
+    "b": "encoder.stem.convs.0.conv.bias",
+    "cin": 1,
+    "cout": 32,
+    "kernel": [
+     3,
+     3,
+     3
+    ],
+    "stride": [
+     1,
+     1,
+     1
+    ],
+    "norm": {
+     "w": "encoder.stem.convs.0.norm.weight",
+     "b": "encoder.stem.convs.0.norm.bias",
+     "eps": 1e-05
+    },
+    "leaky": 0.01
+   }
+  ],
+  "stages": [
+   [
+    {
+     "conv1": {
+      "w": "encoder.stages.0.blocks.0.conv1.conv.weight",
+      "b": "encoder.stages.0.blocks.0.conv1.conv.bias",
+      "cin": 32,
+      "cout": 32,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.0.blocks.0.conv1.norm.weight",
+       "b": "encoder.stages.0.blocks.0.conv1.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": 0.01
+     },
+     "conv2": {
+      "w": "encoder.stages.0.blocks.0.conv2.conv.weight",
+      "b": "encoder.stages.0.blocks.0.conv2.conv.bias",
+      "cin": 32,
+      "cout": 32,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.0.blocks.0.conv2.norm.weight",
+       "b": "encoder.stages.0.blocks.0.conv2.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": null
+     },
+     "skip": {
+      "pool": [
+       1,
+       1,
+       1
+      ],
+      "proj": null
+     },
+     "leaky": 0.01
+    }
+   ],
+   [
+    {
+     "conv1": {
+      "w": "encoder.stages.1.blocks.0.conv1.conv.weight",
+      "b": "encoder.stages.1.blocks.0.conv1.conv.bias",
+      "cin": 32,
+      "cout": 64,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       2,
+       2,
+       2
+      ],
+      "norm": {
+       "w": "encoder.stages.1.blocks.0.conv1.norm.weight",
+       "b": "encoder.stages.1.blocks.0.conv1.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": 0.01
+     },
+     "conv2": {
+      "w": "encoder.stages.1.blocks.0.conv2.conv.weight",
+      "b": "encoder.stages.1.blocks.0.conv2.conv.bias",
+      "cin": 64,
+      "cout": 64,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.1.blocks.0.conv2.norm.weight",
+       "b": "encoder.stages.1.blocks.0.conv2.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": null
+     },
+     "skip": {
+      "pool": [
+       2,
+       2,
+       2
+      ],
+      "proj": {
+       "w": "encoder.stages.1.blocks.0.skip.1.conv.weight",
+       "b": null,
+       "cin": 32,
+       "cout": 64,
+       "kernel": [
+        1,
+        1,
+        1
+       ],
+       "stride": [
+        1,
+        1,
+        1
+       ],
+       "norm": {
+        "w": "encoder.stages.1.blocks.0.skip.1.norm.weight",
+        "b": "encoder.stages.1.blocks.0.skip.1.norm.bias",
+        "eps": 1e-05
+       },
+       "leaky": null
+      }
+     },
+     "leaky": 0.01
+    },
+    {
+     "conv1": {
+      "w": "encoder.stages.1.blocks.1.conv1.conv.weight",
+      "b": "encoder.stages.1.blocks.1.conv1.conv.bias",
+      "cin": 64,
+      "cout": 64,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.1.blocks.1.conv1.norm.weight",
+       "b": "encoder.stages.1.blocks.1.conv1.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": 0.01
+     },
+     "conv2": {
+      "w": "encoder.stages.1.blocks.1.conv2.conv.weight",
+      "b": "encoder.stages.1.blocks.1.conv2.conv.bias",
+      "cin": 64,
+      "cout": 64,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.1.blocks.1.conv2.norm.weight",
+       "b": "encoder.stages.1.blocks.1.conv2.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": null
+     },
+     "skip": {
+      "pool": [
+       1,
+       1,
+       1
+      ],
+      "proj": null
+     },
+     "leaky": 0.01
+    },
+    {
+     "conv1": {
+      "w": "encoder.stages.1.blocks.2.conv1.conv.weight",
+      "b": "encoder.stages.1.blocks.2.conv1.conv.bias",
+      "cin": 64,
+      "cout": 64,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.1.blocks.2.conv1.norm.weight",
+       "b": "encoder.stages.1.blocks.2.conv1.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": 0.01
+     },
+     "conv2": {
+      "w": "encoder.stages.1.blocks.2.conv2.conv.weight",
+      "b": "encoder.stages.1.blocks.2.conv2.conv.bias",
+      "cin": 64,
+      "cout": 64,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.1.blocks.2.conv2.norm.weight",
+       "b": "encoder.stages.1.blocks.2.conv2.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": null
+     },
+     "skip": {
+      "pool": [
+       1,
+       1,
+       1
+      ],
+      "proj": null
+     },
+     "leaky": 0.01
+    }
+   ],
+   [
+    {
+     "conv1": {
+      "w": "encoder.stages.2.blocks.0.conv1.conv.weight",
+      "b": "encoder.stages.2.blocks.0.conv1.conv.bias",
+      "cin": 64,
+      "cout": 128,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       2,
+       2,
+       2
+      ],
+      "norm": {
+       "w": "encoder.stages.2.blocks.0.conv1.norm.weight",
+       "b": "encoder.stages.2.blocks.0.conv1.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": 0.01
+     },
+     "conv2": {
+      "w": "encoder.stages.2.blocks.0.conv2.conv.weight",
+      "b": "encoder.stages.2.blocks.0.conv2.conv.bias",
+      "cin": 128,
+      "cout": 128,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.2.blocks.0.conv2.norm.weight",
+       "b": "encoder.stages.2.blocks.0.conv2.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": null
+     },
+     "skip": {
+      "pool": [
+       2,
+       2,
+       2
+      ],
+      "proj": {
+       "w": "encoder.stages.2.blocks.0.skip.1.conv.weight",
+       "b": null,
+       "cin": 64,
+       "cout": 128,
+       "kernel": [
+        1,
+        1,
+        1
+       ],
+       "stride": [
+        1,
+        1,
+        1
+       ],
+       "norm": {
+        "w": "encoder.stages.2.blocks.0.skip.1.norm.weight",
+        "b": "encoder.stages.2.blocks.0.skip.1.norm.bias",
+        "eps": 1e-05
+       },
+       "leaky": null
+      }
+     },
+     "leaky": 0.01
+    },
+    {
+     "conv1": {
+      "w": "encoder.stages.2.blocks.1.conv1.conv.weight",
+      "b": "encoder.stages.2.blocks.1.conv1.conv.bias",
+      "cin": 128,
+      "cout": 128,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.2.blocks.1.conv1.norm.weight",
+       "b": "encoder.stages.2.blocks.1.conv1.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": 0.01
+     },
+     "conv2": {
+      "w": "encoder.stages.2.blocks.1.conv2.conv.weight",
+      "b": "encoder.stages.2.blocks.1.conv2.conv.bias",
+      "cin": 128,
+      "cout": 128,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.2.blocks.1.conv2.norm.weight",
+       "b": "encoder.stages.2.blocks.1.conv2.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": null
+     },
+     "skip": {
+      "pool": [
+       1,
+       1,
+       1
+      ],
+      "proj": null
+     },
+     "leaky": 0.01
+    },
+    {
+     "conv1": {
+      "w": "encoder.stages.2.blocks.2.conv1.conv.weight",
+      "b": "encoder.stages.2.blocks.2.conv1.conv.bias",
+      "cin": 128,
+      "cout": 128,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.2.blocks.2.conv1.norm.weight",
+       "b": "encoder.stages.2.blocks.2.conv1.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": 0.01
+     },
+     "conv2": {
+      "w": "encoder.stages.2.blocks.2.conv2.conv.weight",
+      "b": "encoder.stages.2.blocks.2.conv2.conv.bias",
+      "cin": 128,
+      "cout": 128,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.2.blocks.2.conv2.norm.weight",
+       "b": "encoder.stages.2.blocks.2.conv2.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": null
+     },
+     "skip": {
+      "pool": [
+       1,
+       1,
+       1
+      ],
+      "proj": null
+     },
+     "leaky": 0.01
+    },
+    {
+     "conv1": {
+      "w": "encoder.stages.2.blocks.3.conv1.conv.weight",
+      "b": "encoder.stages.2.blocks.3.conv1.conv.bias",
+      "cin": 128,
+      "cout": 128,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.2.blocks.3.conv1.norm.weight",
+       "b": "encoder.stages.2.blocks.3.conv1.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": 0.01
+     },
+     "conv2": {
+      "w": "encoder.stages.2.blocks.3.conv2.conv.weight",
+      "b": "encoder.stages.2.blocks.3.conv2.conv.bias",
+      "cin": 128,
+      "cout": 128,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.2.blocks.3.conv2.norm.weight",
+       "b": "encoder.stages.2.blocks.3.conv2.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": null
+     },
+     "skip": {
+      "pool": [
+       1,
+       1,
+       1
+      ],
+      "proj": null
+     },
+     "leaky": 0.01
+    }
+   ],
+   [
+    {
+     "conv1": {
+      "w": "encoder.stages.3.blocks.0.conv1.conv.weight",
+      "b": "encoder.stages.3.blocks.0.conv1.conv.bias",
+      "cin": 128,
+      "cout": 256,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       2,
+       2,
+       2
+      ],
+      "norm": {
+       "w": "encoder.stages.3.blocks.0.conv1.norm.weight",
+       "b": "encoder.stages.3.blocks.0.conv1.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": 0.01
+     },
+     "conv2": {
+      "w": "encoder.stages.3.blocks.0.conv2.conv.weight",
+      "b": "encoder.stages.3.blocks.0.conv2.conv.bias",
+      "cin": 256,
+      "cout": 256,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.3.blocks.0.conv2.norm.weight",
+       "b": "encoder.stages.3.blocks.0.conv2.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": null
+     },
+     "skip": {
+      "pool": [
+       2,
+       2,
+       2
+      ],
+      "proj": {
+       "w": "encoder.stages.3.blocks.0.skip.1.conv.weight",
+       "b": null,
+       "cin": 128,
+       "cout": 256,
+       "kernel": [
+        1,
+        1,
+        1
+       ],
+       "stride": [
+        1,
+        1,
+        1
+       ],
+       "norm": {
+        "w": "encoder.stages.3.blocks.0.skip.1.norm.weight",
+        "b": "encoder.stages.3.blocks.0.skip.1.norm.bias",
+        "eps": 1e-05
+       },
+       "leaky": null
+      }
+     },
+     "leaky": 0.01
+    },
+    {
+     "conv1": {
+      "w": "encoder.stages.3.blocks.1.conv1.conv.weight",
+      "b": "encoder.stages.3.blocks.1.conv1.conv.bias",
+      "cin": 256,
+      "cout": 256,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.3.blocks.1.conv1.norm.weight",
+       "b": "encoder.stages.3.blocks.1.conv1.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": 0.01
+     },
+     "conv2": {
+      "w": "encoder.stages.3.blocks.1.conv2.conv.weight",
+      "b": "encoder.stages.3.blocks.1.conv2.conv.bias",
+      "cin": 256,
+      "cout": 256,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.3.blocks.1.conv2.norm.weight",
+       "b": "encoder.stages.3.blocks.1.conv2.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": null
+     },
+     "skip": {
+      "pool": [
+       1,
+       1,
+       1
+      ],
+      "proj": null
+     },
+     "leaky": 0.01
+    },
+    {
+     "conv1": {
+      "w": "encoder.stages.3.blocks.2.conv1.conv.weight",
+      "b": "encoder.stages.3.blocks.2.conv1.conv.bias",
+      "cin": 256,
+      "cout": 256,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.3.blocks.2.conv1.norm.weight",
+       "b": "encoder.stages.3.blocks.2.conv1.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": 0.01
+     },
+     "conv2": {
+      "w": "encoder.stages.3.blocks.2.conv2.conv.weight",
+      "b": "encoder.stages.3.blocks.2.conv2.conv.bias",
+      "cin": 256,
+      "cout": 256,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.3.blocks.2.conv2.norm.weight",
+       "b": "encoder.stages.3.blocks.2.conv2.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": null
+     },
+     "skip": {
+      "pool": [
+       1,
+       1,
+       1
+      ],
+      "proj": null
+     },
+     "leaky": 0.01
+    },
+    {
+     "conv1": {
+      "w": "encoder.stages.3.blocks.3.conv1.conv.weight",
+      "b": "encoder.stages.3.blocks.3.conv1.conv.bias",
+      "cin": 256,
+      "cout": 256,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.3.blocks.3.conv1.norm.weight",
+       "b": "encoder.stages.3.blocks.3.conv1.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": 0.01
+     },
+     "conv2": {
+      "w": "encoder.stages.3.blocks.3.conv2.conv.weight",
+      "b": "encoder.stages.3.blocks.3.conv2.conv.bias",
+      "cin": 256,
+      "cout": 256,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.3.blocks.3.conv2.norm.weight",
+       "b": "encoder.stages.3.blocks.3.conv2.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": null
+     },
+     "skip": {
+      "pool": [
+       1,
+       1,
+       1
+      ],
+      "proj": null
+     },
+     "leaky": 0.01
+    },
+    {
+     "conv1": {
+      "w": "encoder.stages.3.blocks.4.conv1.conv.weight",
+      "b": "encoder.stages.3.blocks.4.conv1.conv.bias",
+      "cin": 256,
+      "cout": 256,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.3.blocks.4.conv1.norm.weight",
+       "b": "encoder.stages.3.blocks.4.conv1.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": 0.01
+     },
+     "conv2": {
+      "w": "encoder.stages.3.blocks.4.conv2.conv.weight",
+      "b": "encoder.stages.3.blocks.4.conv2.conv.bias",
+      "cin": 256,
+      "cout": 256,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.3.blocks.4.conv2.norm.weight",
+       "b": "encoder.stages.3.blocks.4.conv2.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": null
+     },
+     "skip": {
+      "pool": [
+       1,
+       1,
+       1
+      ],
+      "proj": null
+     },
+     "leaky": 0.01
+    },
+    {
+     "conv1": {
+      "w": "encoder.stages.3.blocks.5.conv1.conv.weight",
+      "b": "encoder.stages.3.blocks.5.conv1.conv.bias",
+      "cin": 256,
+      "cout": 256,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.3.blocks.5.conv1.norm.weight",
+       "b": "encoder.stages.3.blocks.5.conv1.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": 0.01
+     },
+     "conv2": {
+      "w": "encoder.stages.3.blocks.5.conv2.conv.weight",
+      "b": "encoder.stages.3.blocks.5.conv2.conv.bias",
+      "cin": 256,
+      "cout": 256,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.3.blocks.5.conv2.norm.weight",
+       "b": "encoder.stages.3.blocks.5.conv2.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": null
+     },
+     "skip": {
+      "pool": [
+       1,
+       1,
+       1
+      ],
+      "proj": null
+     },
+     "leaky": 0.01
+    }
+   ],
+   [
+    {
+     "conv1": {
+      "w": "encoder.stages.4.blocks.0.conv1.conv.weight",
+      "b": "encoder.stages.4.blocks.0.conv1.conv.bias",
+      "cin": 256,
+      "cout": 320,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       2,
+       2,
+       2
+      ],
+      "norm": {
+       "w": "encoder.stages.4.blocks.0.conv1.norm.weight",
+       "b": "encoder.stages.4.blocks.0.conv1.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": 0.01
+     },
+     "conv2": {
+      "w": "encoder.stages.4.blocks.0.conv2.conv.weight",
+      "b": "encoder.stages.4.blocks.0.conv2.conv.bias",
+      "cin": 320,
+      "cout": 320,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.4.blocks.0.conv2.norm.weight",
+       "b": "encoder.stages.4.blocks.0.conv2.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": null
+     },
+     "skip": {
+      "pool": [
+       2,
+       2,
+       2
+      ],
+      "proj": {
+       "w": "encoder.stages.4.blocks.0.skip.1.conv.weight",
+       "b": null,
+       "cin": 256,
+       "cout": 320,
+       "kernel": [
+        1,
+        1,
+        1
+       ],
+       "stride": [
+        1,
+        1,
+        1
+       ],
+       "norm": {
+        "w": "encoder.stages.4.blocks.0.skip.1.norm.weight",
+        "b": "encoder.stages.4.blocks.0.skip.1.norm.bias",
+        "eps": 1e-05
+       },
+       "leaky": null
+      }
+     },
+     "leaky": 0.01
+    },
+    {
+     "conv1": {
+      "w": "encoder.stages.4.blocks.1.conv1.conv.weight",
+      "b": "encoder.stages.4.blocks.1.conv1.conv.bias",
+      "cin": 320,
+      "cout": 320,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.4.blocks.1.conv1.norm.weight",
+       "b": "encoder.stages.4.blocks.1.conv1.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": 0.01
+     },
+     "conv2": {
+      "w": "encoder.stages.4.blocks.1.conv2.conv.weight",
+      "b": "encoder.stages.4.blocks.1.conv2.conv.bias",
+      "cin": 320,
+      "cout": 320,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.4.blocks.1.conv2.norm.weight",
+       "b": "encoder.stages.4.blocks.1.conv2.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": null
+     },
+     "skip": {
+      "pool": [
+       1,
+       1,
+       1
+      ],
+      "proj": null
+     },
+     "leaky": 0.01
+    },
+    {
+     "conv1": {
+      "w": "encoder.stages.4.blocks.2.conv1.conv.weight",
+      "b": "encoder.stages.4.blocks.2.conv1.conv.bias",
+      "cin": 320,
+      "cout": 320,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.4.blocks.2.conv1.norm.weight",
+       "b": "encoder.stages.4.blocks.2.conv1.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": 0.01
+     },
+     "conv2": {
+      "w": "encoder.stages.4.blocks.2.conv2.conv.weight",
+      "b": "encoder.stages.4.blocks.2.conv2.conv.bias",
+      "cin": 320,
+      "cout": 320,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.4.blocks.2.conv2.norm.weight",
+       "b": "encoder.stages.4.blocks.2.conv2.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": null
+     },
+     "skip": {
+      "pool": [
+       1,
+       1,
+       1
+      ],
+      "proj": null
+     },
+     "leaky": 0.01
+    },
+    {
+     "conv1": {
+      "w": "encoder.stages.4.blocks.3.conv1.conv.weight",
+      "b": "encoder.stages.4.blocks.3.conv1.conv.bias",
+      "cin": 320,
+      "cout": 320,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.4.blocks.3.conv1.norm.weight",
+       "b": "encoder.stages.4.blocks.3.conv1.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": 0.01
+     },
+     "conv2": {
+      "w": "encoder.stages.4.blocks.3.conv2.conv.weight",
+      "b": "encoder.stages.4.blocks.3.conv2.conv.bias",
+      "cin": 320,
+      "cout": 320,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.4.blocks.3.conv2.norm.weight",
+       "b": "encoder.stages.4.blocks.3.conv2.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": null
+     },
+     "skip": {
+      "pool": [
+       1,
+       1,
+       1
+      ],
+      "proj": null
+     },
+     "leaky": 0.01
+    },
+    {
+     "conv1": {
+      "w": "encoder.stages.4.blocks.4.conv1.conv.weight",
+      "b": "encoder.stages.4.blocks.4.conv1.conv.bias",
+      "cin": 320,
+      "cout": 320,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.4.blocks.4.conv1.norm.weight",
+       "b": "encoder.stages.4.blocks.4.conv1.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": 0.01
+     },
+     "conv2": {
+      "w": "encoder.stages.4.blocks.4.conv2.conv.weight",
+      "b": "encoder.stages.4.blocks.4.conv2.conv.bias",
+      "cin": 320,
+      "cout": 320,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.4.blocks.4.conv2.norm.weight",
+       "b": "encoder.stages.4.blocks.4.conv2.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": null
+     },
+     "skip": {
+      "pool": [
+       1,
+       1,
+       1
+      ],
+      "proj": null
+     },
+     "leaky": 0.01
+    },
+    {
+     "conv1": {
+      "w": "encoder.stages.4.blocks.5.conv1.conv.weight",
+      "b": "encoder.stages.4.blocks.5.conv1.conv.bias",
+      "cin": 320,
+      "cout": 320,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.4.blocks.5.conv1.norm.weight",
+       "b": "encoder.stages.4.blocks.5.conv1.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": 0.01
+     },
+     "conv2": {
+      "w": "encoder.stages.4.blocks.5.conv2.conv.weight",
+      "b": "encoder.stages.4.blocks.5.conv2.conv.bias",
+      "cin": 320,
+      "cout": 320,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.4.blocks.5.conv2.norm.weight",
+       "b": "encoder.stages.4.blocks.5.conv2.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": null
+     },
+     "skip": {
+      "pool": [
+       1,
+       1,
+       1
+      ],
+      "proj": null
+     },
+     "leaky": 0.01
+    }
+   ],
+   [
+    {
+     "conv1": {
+      "w": "encoder.stages.5.blocks.0.conv1.conv.weight",
+      "b": "encoder.stages.5.blocks.0.conv1.conv.bias",
+      "cin": 320,
+      "cout": 320,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       2,
+       2,
+       2
+      ],
+      "norm": {
+       "w": "encoder.stages.5.blocks.0.conv1.norm.weight",
+       "b": "encoder.stages.5.blocks.0.conv1.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": 0.01
+     },
+     "conv2": {
+      "w": "encoder.stages.5.blocks.0.conv2.conv.weight",
+      "b": "encoder.stages.5.blocks.0.conv2.conv.bias",
+      "cin": 320,
+      "cout": 320,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.5.blocks.0.conv2.norm.weight",
+       "b": "encoder.stages.5.blocks.0.conv2.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": null
+     },
+     "skip": {
+      "pool": [
+       2,
+       2,
+       2
+      ],
+      "proj": null
+     },
+     "leaky": 0.01
+    },
+    {
+     "conv1": {
+      "w": "encoder.stages.5.blocks.1.conv1.conv.weight",
+      "b": "encoder.stages.5.blocks.1.conv1.conv.bias",
+      "cin": 320,
+      "cout": 320,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.5.blocks.1.conv1.norm.weight",
+       "b": "encoder.stages.5.blocks.1.conv1.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": 0.01
+     },
+     "conv2": {
+      "w": "encoder.stages.5.blocks.1.conv2.conv.weight",
+      "b": "encoder.stages.5.blocks.1.conv2.conv.bias",
+      "cin": 320,
+      "cout": 320,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.5.blocks.1.conv2.norm.weight",
+       "b": "encoder.stages.5.blocks.1.conv2.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": null
+     },
+     "skip": {
+      "pool": [
+       1,
+       1,
+       1
+      ],
+      "proj": null
+     },
+     "leaky": 0.01
+    },
+    {
+     "conv1": {
+      "w": "encoder.stages.5.blocks.2.conv1.conv.weight",
+      "b": "encoder.stages.5.blocks.2.conv1.conv.bias",
+      "cin": 320,
+      "cout": 320,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.5.blocks.2.conv1.norm.weight",
+       "b": "encoder.stages.5.blocks.2.conv1.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": 0.01
+     },
+     "conv2": {
+      "w": "encoder.stages.5.blocks.2.conv2.conv.weight",
+      "b": "encoder.stages.5.blocks.2.conv2.conv.bias",
+      "cin": 320,
+      "cout": 320,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.5.blocks.2.conv2.norm.weight",
+       "b": "encoder.stages.5.blocks.2.conv2.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": null
+     },
+     "skip": {
+      "pool": [
+       1,
+       1,
+       1
+      ],
+      "proj": null
+     },
+     "leaky": 0.01
+    },
+    {
+     "conv1": {
+      "w": "encoder.stages.5.blocks.3.conv1.conv.weight",
+      "b": "encoder.stages.5.blocks.3.conv1.conv.bias",
+      "cin": 320,
+      "cout": 320,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.5.blocks.3.conv1.norm.weight",
+       "b": "encoder.stages.5.blocks.3.conv1.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": 0.01
+     },
+     "conv2": {
+      "w": "encoder.stages.5.blocks.3.conv2.conv.weight",
+      "b": "encoder.stages.5.blocks.3.conv2.conv.bias",
+      "cin": 320,
+      "cout": 320,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.5.blocks.3.conv2.norm.weight",
+       "b": "encoder.stages.5.blocks.3.conv2.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": null
+     },
+     "skip": {
+      "pool": [
+       1,
+       1,
+       1
+      ],
+      "proj": null
+     },
+     "leaky": 0.01
+    },
+    {
+     "conv1": {
+      "w": "encoder.stages.5.blocks.4.conv1.conv.weight",
+      "b": "encoder.stages.5.blocks.4.conv1.conv.bias",
+      "cin": 320,
+      "cout": 320,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.5.blocks.4.conv1.norm.weight",
+       "b": "encoder.stages.5.blocks.4.conv1.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": 0.01
+     },
+     "conv2": {
+      "w": "encoder.stages.5.blocks.4.conv2.conv.weight",
+      "b": "encoder.stages.5.blocks.4.conv2.conv.bias",
+      "cin": 320,
+      "cout": 320,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.5.blocks.4.conv2.norm.weight",
+       "b": "encoder.stages.5.blocks.4.conv2.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": null
+     },
+     "skip": {
+      "pool": [
+       1,
+       1,
+       1
+      ],
+      "proj": null
+     },
+     "leaky": 0.01
+    },
+    {
+     "conv1": {
+      "w": "encoder.stages.5.blocks.5.conv1.conv.weight",
+      "b": "encoder.stages.5.blocks.5.conv1.conv.bias",
+      "cin": 320,
+      "cout": 320,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.5.blocks.5.conv1.norm.weight",
+       "b": "encoder.stages.5.blocks.5.conv1.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": 0.01
+     },
+     "conv2": {
+      "w": "encoder.stages.5.blocks.5.conv2.conv.weight",
+      "b": "encoder.stages.5.blocks.5.conv2.conv.bias",
+      "cin": 320,
+      "cout": 320,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "encoder.stages.5.blocks.5.conv2.norm.weight",
+       "b": "encoder.stages.5.blocks.5.conv2.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": null
+     },
+     "skip": {
+      "pool": [
+       1,
+       1,
+       1
+      ],
+      "proj": null
+     },
+     "leaky": 0.01
+    }
+   ]
+  ],
+  "decoder": [
+   {
+    "transp": {
+     "w": "decoder.transpconvs.0.weight",
+     "b": "decoder.transpconvs.0.bias",
+     "cin": 320,
+     "cout": 320,
+     "kernel": [
+      2,
+      2,
+      2
+     ],
+     "stride": [
+      2,
+      2,
+      2
+     ]
+    },
+    "convs": [
+     {
+      "w": "decoder.stages.0.convs.0.conv.weight",
+      "b": "decoder.stages.0.convs.0.conv.bias",
+      "cin": 640,
+      "cout": 320,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "decoder.stages.0.convs.0.norm.weight",
+       "b": "decoder.stages.0.convs.0.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": 0.01
+     }
+    ]
+   },
+   {
+    "transp": {
+     "w": "decoder.transpconvs.1.weight",
+     "b": "decoder.transpconvs.1.bias",
+     "cin": 320,
+     "cout": 256,
+     "kernel": [
+      2,
+      2,
+      2
+     ],
+     "stride": [
+      2,
+      2,
+      2
+     ]
+    },
+    "convs": [
+     {
+      "w": "decoder.stages.1.convs.0.conv.weight",
+      "b": "decoder.stages.1.convs.0.conv.bias",
+      "cin": 512,
+      "cout": 256,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "decoder.stages.1.convs.0.norm.weight",
+       "b": "decoder.stages.1.convs.0.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": 0.01
+     }
+    ]
+   },
+   {
+    "transp": {
+     "w": "decoder.transpconvs.2.weight",
+     "b": "decoder.transpconvs.2.bias",
+     "cin": 256,
+     "cout": 128,
+     "kernel": [
+      2,
+      2,
+      2
+     ],
+     "stride": [
+      2,
+      2,
+      2
+     ]
+    },
+    "convs": [
+     {
+      "w": "decoder.stages.2.convs.0.conv.weight",
+      "b": "decoder.stages.2.convs.0.conv.bias",
+      "cin": 256,
+      "cout": 128,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "decoder.stages.2.convs.0.norm.weight",
+       "b": "decoder.stages.2.convs.0.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": 0.01
+     }
+    ]
+   },
+   {
+    "transp": {
+     "w": "decoder.transpconvs.3.weight",
+     "b": "decoder.transpconvs.3.bias",
+     "cin": 128,
+     "cout": 64,
+     "kernel": [
+      2,
+      2,
+      2
+     ],
+     "stride": [
+      2,
+      2,
+      2
+     ]
+    },
+    "convs": [
+     {
+      "w": "decoder.stages.3.convs.0.conv.weight",
+      "b": "decoder.stages.3.convs.0.conv.bias",
+      "cin": 128,
+      "cout": 64,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "decoder.stages.3.convs.0.norm.weight",
+       "b": "decoder.stages.3.convs.0.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": 0.01
+     }
+    ]
+   },
+   {
+    "transp": {
+     "w": "decoder.transpconvs.4.weight",
+     "b": "decoder.transpconvs.4.bias",
+     "cin": 64,
+     "cout": 32,
+     "kernel": [
+      2,
+      2,
+      2
+     ],
+     "stride": [
+      2,
+      2,
+      2
+     ]
+    },
+    "convs": [
+     {
+      "w": "decoder.stages.4.convs.0.conv.weight",
+      "b": "decoder.stages.4.convs.0.conv.bias",
+      "cin": 64,
+      "cout": 32,
+      "kernel": [
+       3,
+       3,
+       3
+      ],
+      "stride": [
+       1,
+       1,
+       1
+      ],
+      "norm": {
+       "w": "decoder.stages.4.convs.0.norm.weight",
+       "b": "decoder.stages.4.convs.0.norm.bias",
+       "eps": 1e-05
+      },
+      "leaky": 0.01
+     }
+    ]
+   }
+  ],
+  "head": {
+   "w": "decoder.seg_layers.4.weight",
+   "b": "decoder.seg_layers.4.bias",
+   "cin": 32,
+   "cout": 2,
+   "kernel": [
+    1,
+    1,
+    1
+   ],
+   "stride": [
+    1,
+    1,
+    1
+   ]
+  }
+ },
+ "checkpoint": "/build/inkrs-v03/resenc-1/weights/m7/fold_0/checkpoint_best.pth",
+ "checkpoint_sha256": "17465b77591b794638e671f1a9f79c4cf1e79821f302e6fc235e3725e5da7d7e",
+ "keys": {
+  "encoder.stem.convs.0.conv.weight": [
+   32,
+   1,
+   3,
+   3,
+   3
+  ],
+  "encoder.stem.convs.0.conv.bias": [
+   32
+  ],
+  "encoder.stem.convs.0.norm.weight": [
+   32
+  ],
+  "encoder.stem.convs.0.norm.bias": [
+   32
+  ],
+  "encoder.stages.0.blocks.0.conv1.conv.weight": [
+   32,
+   32,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.0.blocks.0.conv1.conv.bias": [
+   32
+  ],
+  "encoder.stages.0.blocks.0.conv1.norm.weight": [
+   32
+  ],
+  "encoder.stages.0.blocks.0.conv1.norm.bias": [
+   32
+  ],
+  "encoder.stages.0.blocks.0.conv2.conv.weight": [
+   32,
+   32,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.0.blocks.0.conv2.conv.bias": [
+   32
+  ],
+  "encoder.stages.0.blocks.0.conv2.norm.weight": [
+   32
+  ],
+  "encoder.stages.0.blocks.0.conv2.norm.bias": [
+   32
+  ],
+  "encoder.stages.1.blocks.0.conv1.conv.weight": [
+   64,
+   32,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.1.blocks.0.conv1.conv.bias": [
+   64
+  ],
+  "encoder.stages.1.blocks.0.conv1.norm.weight": [
+   64
+  ],
+  "encoder.stages.1.blocks.0.conv1.norm.bias": [
+   64
+  ],
+  "encoder.stages.1.blocks.0.conv2.conv.weight": [
+   64,
+   64,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.1.blocks.0.conv2.conv.bias": [
+   64
+  ],
+  "encoder.stages.1.blocks.0.conv2.norm.weight": [
+   64
+  ],
+  "encoder.stages.1.blocks.0.conv2.norm.bias": [
+   64
+  ],
+  "encoder.stages.1.blocks.0.skip.1.conv.weight": [
+   64,
+   32,
+   1,
+   1,
+   1
+  ],
+  "encoder.stages.1.blocks.0.skip.1.norm.weight": [
+   64
+  ],
+  "encoder.stages.1.blocks.0.skip.1.norm.bias": [
+   64
+  ],
+  "encoder.stages.1.blocks.1.conv1.conv.weight": [
+   64,
+   64,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.1.blocks.1.conv1.conv.bias": [
+   64
+  ],
+  "encoder.stages.1.blocks.1.conv1.norm.weight": [
+   64
+  ],
+  "encoder.stages.1.blocks.1.conv1.norm.bias": [
+   64
+  ],
+  "encoder.stages.1.blocks.1.conv2.conv.weight": [
+   64,
+   64,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.1.blocks.1.conv2.conv.bias": [
+   64
+  ],
+  "encoder.stages.1.blocks.1.conv2.norm.weight": [
+   64
+  ],
+  "encoder.stages.1.blocks.1.conv2.norm.bias": [
+   64
+  ],
+  "encoder.stages.1.blocks.2.conv1.conv.weight": [
+   64,
+   64,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.1.blocks.2.conv1.conv.bias": [
+   64
+  ],
+  "encoder.stages.1.blocks.2.conv1.norm.weight": [
+   64
+  ],
+  "encoder.stages.1.blocks.2.conv1.norm.bias": [
+   64
+  ],
+  "encoder.stages.1.blocks.2.conv2.conv.weight": [
+   64,
+   64,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.1.blocks.2.conv2.conv.bias": [
+   64
+  ],
+  "encoder.stages.1.blocks.2.conv2.norm.weight": [
+   64
+  ],
+  "encoder.stages.1.blocks.2.conv2.norm.bias": [
+   64
+  ],
+  "encoder.stages.2.blocks.0.conv1.conv.weight": [
+   128,
+   64,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.2.blocks.0.conv1.conv.bias": [
+   128
+  ],
+  "encoder.stages.2.blocks.0.conv1.norm.weight": [
+   128
+  ],
+  "encoder.stages.2.blocks.0.conv1.norm.bias": [
+   128
+  ],
+  "encoder.stages.2.blocks.0.conv2.conv.weight": [
+   128,
+   128,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.2.blocks.0.conv2.conv.bias": [
+   128
+  ],
+  "encoder.stages.2.blocks.0.conv2.norm.weight": [
+   128
+  ],
+  "encoder.stages.2.blocks.0.conv2.norm.bias": [
+   128
+  ],
+  "encoder.stages.2.blocks.0.skip.1.conv.weight": [
+   128,
+   64,
+   1,
+   1,
+   1
+  ],
+  "encoder.stages.2.blocks.0.skip.1.norm.weight": [
+   128
+  ],
+  "encoder.stages.2.blocks.0.skip.1.norm.bias": [
+   128
+  ],
+  "encoder.stages.2.blocks.1.conv1.conv.weight": [
+   128,
+   128,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.2.blocks.1.conv1.conv.bias": [
+   128
+  ],
+  "encoder.stages.2.blocks.1.conv1.norm.weight": [
+   128
+  ],
+  "encoder.stages.2.blocks.1.conv1.norm.bias": [
+   128
+  ],
+  "encoder.stages.2.blocks.1.conv2.conv.weight": [
+   128,
+   128,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.2.blocks.1.conv2.conv.bias": [
+   128
+  ],
+  "encoder.stages.2.blocks.1.conv2.norm.weight": [
+   128
+  ],
+  "encoder.stages.2.blocks.1.conv2.norm.bias": [
+   128
+  ],
+  "encoder.stages.2.blocks.2.conv1.conv.weight": [
+   128,
+   128,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.2.blocks.2.conv1.conv.bias": [
+   128
+  ],
+  "encoder.stages.2.blocks.2.conv1.norm.weight": [
+   128
+  ],
+  "encoder.stages.2.blocks.2.conv1.norm.bias": [
+   128
+  ],
+  "encoder.stages.2.blocks.2.conv2.conv.weight": [
+   128,
+   128,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.2.blocks.2.conv2.conv.bias": [
+   128
+  ],
+  "encoder.stages.2.blocks.2.conv2.norm.weight": [
+   128
+  ],
+  "encoder.stages.2.blocks.2.conv2.norm.bias": [
+   128
+  ],
+  "encoder.stages.2.blocks.3.conv1.conv.weight": [
+   128,
+   128,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.2.blocks.3.conv1.conv.bias": [
+   128
+  ],
+  "encoder.stages.2.blocks.3.conv1.norm.weight": [
+   128
+  ],
+  "encoder.stages.2.blocks.3.conv1.norm.bias": [
+   128
+  ],
+  "encoder.stages.2.blocks.3.conv2.conv.weight": [
+   128,
+   128,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.2.blocks.3.conv2.conv.bias": [
+   128
+  ],
+  "encoder.stages.2.blocks.3.conv2.norm.weight": [
+   128
+  ],
+  "encoder.stages.2.blocks.3.conv2.norm.bias": [
+   128
+  ],
+  "encoder.stages.3.blocks.0.conv1.conv.weight": [
+   256,
+   128,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.3.blocks.0.conv1.conv.bias": [
+   256
+  ],
+  "encoder.stages.3.blocks.0.conv1.norm.weight": [
+   256
+  ],
+  "encoder.stages.3.blocks.0.conv1.norm.bias": [
+   256
+  ],
+  "encoder.stages.3.blocks.0.conv2.conv.weight": [
+   256,
+   256,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.3.blocks.0.conv2.conv.bias": [
+   256
+  ],
+  "encoder.stages.3.blocks.0.conv2.norm.weight": [
+   256
+  ],
+  "encoder.stages.3.blocks.0.conv2.norm.bias": [
+   256
+  ],
+  "encoder.stages.3.blocks.0.skip.1.conv.weight": [
+   256,
+   128,
+   1,
+   1,
+   1
+  ],
+  "encoder.stages.3.blocks.0.skip.1.norm.weight": [
+   256
+  ],
+  "encoder.stages.3.blocks.0.skip.1.norm.bias": [
+   256
+  ],
+  "encoder.stages.3.blocks.1.conv1.conv.weight": [
+   256,
+   256,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.3.blocks.1.conv1.conv.bias": [
+   256
+  ],
+  "encoder.stages.3.blocks.1.conv1.norm.weight": [
+   256
+  ],
+  "encoder.stages.3.blocks.1.conv1.norm.bias": [
+   256
+  ],
+  "encoder.stages.3.blocks.1.conv2.conv.weight": [
+   256,
+   256,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.3.blocks.1.conv2.conv.bias": [
+   256
+  ],
+  "encoder.stages.3.blocks.1.conv2.norm.weight": [
+   256
+  ],
+  "encoder.stages.3.blocks.1.conv2.norm.bias": [
+   256
+  ],
+  "encoder.stages.3.blocks.2.conv1.conv.weight": [
+   256,
+   256,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.3.blocks.2.conv1.conv.bias": [
+   256
+  ],
+  "encoder.stages.3.blocks.2.conv1.norm.weight": [
+   256
+  ],
+  "encoder.stages.3.blocks.2.conv1.norm.bias": [
+   256
+  ],
+  "encoder.stages.3.blocks.2.conv2.conv.weight": [
+   256,
+   256,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.3.blocks.2.conv2.conv.bias": [
+   256
+  ],
+  "encoder.stages.3.blocks.2.conv2.norm.weight": [
+   256
+  ],
+  "encoder.stages.3.blocks.2.conv2.norm.bias": [
+   256
+  ],
+  "encoder.stages.3.blocks.3.conv1.conv.weight": [
+   256,
+   256,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.3.blocks.3.conv1.conv.bias": [
+   256
+  ],
+  "encoder.stages.3.blocks.3.conv1.norm.weight": [
+   256
+  ],
+  "encoder.stages.3.blocks.3.conv1.norm.bias": [
+   256
+  ],
+  "encoder.stages.3.blocks.3.conv2.conv.weight": [
+   256,
+   256,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.3.blocks.3.conv2.conv.bias": [
+   256
+  ],
+  "encoder.stages.3.blocks.3.conv2.norm.weight": [
+   256
+  ],
+  "encoder.stages.3.blocks.3.conv2.norm.bias": [
+   256
+  ],
+  "encoder.stages.3.blocks.4.conv1.conv.weight": [
+   256,
+   256,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.3.blocks.4.conv1.conv.bias": [
+   256
+  ],
+  "encoder.stages.3.blocks.4.conv1.norm.weight": [
+   256
+  ],
+  "encoder.stages.3.blocks.4.conv1.norm.bias": [
+   256
+  ],
+  "encoder.stages.3.blocks.4.conv2.conv.weight": [
+   256,
+   256,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.3.blocks.4.conv2.conv.bias": [
+   256
+  ],
+  "encoder.stages.3.blocks.4.conv2.norm.weight": [
+   256
+  ],
+  "encoder.stages.3.blocks.4.conv2.norm.bias": [
+   256
+  ],
+  "encoder.stages.3.blocks.5.conv1.conv.weight": [
+   256,
+   256,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.3.blocks.5.conv1.conv.bias": [
+   256
+  ],
+  "encoder.stages.3.blocks.5.conv1.norm.weight": [
+   256
+  ],
+  "encoder.stages.3.blocks.5.conv1.norm.bias": [
+   256
+  ],
+  "encoder.stages.3.blocks.5.conv2.conv.weight": [
+   256,
+   256,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.3.blocks.5.conv2.conv.bias": [
+   256
+  ],
+  "encoder.stages.3.blocks.5.conv2.norm.weight": [
+   256
+  ],
+  "encoder.stages.3.blocks.5.conv2.norm.bias": [
+   256
+  ],
+  "encoder.stages.4.blocks.0.conv1.conv.weight": [
+   320,
+   256,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.4.blocks.0.conv1.conv.bias": [
+   320
+  ],
+  "encoder.stages.4.blocks.0.conv1.norm.weight": [
+   320
+  ],
+  "encoder.stages.4.blocks.0.conv1.norm.bias": [
+   320
+  ],
+  "encoder.stages.4.blocks.0.conv2.conv.weight": [
+   320,
+   320,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.4.blocks.0.conv2.conv.bias": [
+   320
+  ],
+  "encoder.stages.4.blocks.0.conv2.norm.weight": [
+   320
+  ],
+  "encoder.stages.4.blocks.0.conv2.norm.bias": [
+   320
+  ],
+  "encoder.stages.4.blocks.0.skip.1.conv.weight": [
+   320,
+   256,
+   1,
+   1,
+   1
+  ],
+  "encoder.stages.4.blocks.0.skip.1.norm.weight": [
+   320
+  ],
+  "encoder.stages.4.blocks.0.skip.1.norm.bias": [
+   320
+  ],
+  "encoder.stages.4.blocks.1.conv1.conv.weight": [
+   320,
+   320,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.4.blocks.1.conv1.conv.bias": [
+   320
+  ],
+  "encoder.stages.4.blocks.1.conv1.norm.weight": [
+   320
+  ],
+  "encoder.stages.4.blocks.1.conv1.norm.bias": [
+   320
+  ],
+  "encoder.stages.4.blocks.1.conv2.conv.weight": [
+   320,
+   320,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.4.blocks.1.conv2.conv.bias": [
+   320
+  ],
+  "encoder.stages.4.blocks.1.conv2.norm.weight": [
+   320
+  ],
+  "encoder.stages.4.blocks.1.conv2.norm.bias": [
+   320
+  ],
+  "encoder.stages.4.blocks.2.conv1.conv.weight": [
+   320,
+   320,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.4.blocks.2.conv1.conv.bias": [
+   320
+  ],
+  "encoder.stages.4.blocks.2.conv1.norm.weight": [
+   320
+  ],
+  "encoder.stages.4.blocks.2.conv1.norm.bias": [
+   320
+  ],
+  "encoder.stages.4.blocks.2.conv2.conv.weight": [
+   320,
+   320,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.4.blocks.2.conv2.conv.bias": [
+   320
+  ],
+  "encoder.stages.4.blocks.2.conv2.norm.weight": [
+   320
+  ],
+  "encoder.stages.4.blocks.2.conv2.norm.bias": [
+   320
+  ],
+  "encoder.stages.4.blocks.3.conv1.conv.weight": [
+   320,
+   320,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.4.blocks.3.conv1.conv.bias": [
+   320
+  ],
+  "encoder.stages.4.blocks.3.conv1.norm.weight": [
+   320
+  ],
+  "encoder.stages.4.blocks.3.conv1.norm.bias": [
+   320
+  ],
+  "encoder.stages.4.blocks.3.conv2.conv.weight": [
+   320,
+   320,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.4.blocks.3.conv2.conv.bias": [
+   320
+  ],
+  "encoder.stages.4.blocks.3.conv2.norm.weight": [
+   320
+  ],
+  "encoder.stages.4.blocks.3.conv2.norm.bias": [
+   320
+  ],
+  "encoder.stages.4.blocks.4.conv1.conv.weight": [
+   320,
+   320,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.4.blocks.4.conv1.conv.bias": [
+   320
+  ],
+  "encoder.stages.4.blocks.4.conv1.norm.weight": [
+   320
+  ],
+  "encoder.stages.4.blocks.4.conv1.norm.bias": [
+   320
+  ],
+  "encoder.stages.4.blocks.4.conv2.conv.weight": [
+   320,
+   320,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.4.blocks.4.conv2.conv.bias": [
+   320
+  ],
+  "encoder.stages.4.blocks.4.conv2.norm.weight": [
+   320
+  ],
+  "encoder.stages.4.blocks.4.conv2.norm.bias": [
+   320
+  ],
+  "encoder.stages.4.blocks.5.conv1.conv.weight": [
+   320,
+   320,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.4.blocks.5.conv1.conv.bias": [
+   320
+  ],
+  "encoder.stages.4.blocks.5.conv1.norm.weight": [
+   320
+  ],
+  "encoder.stages.4.blocks.5.conv1.norm.bias": [
+   320
+  ],
+  "encoder.stages.4.blocks.5.conv2.conv.weight": [
+   320,
+   320,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.4.blocks.5.conv2.conv.bias": [
+   320
+  ],
+  "encoder.stages.4.blocks.5.conv2.norm.weight": [
+   320
+  ],
+  "encoder.stages.4.blocks.5.conv2.norm.bias": [
+   320
+  ],
+  "encoder.stages.5.blocks.0.conv1.conv.weight": [
+   320,
+   320,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.5.blocks.0.conv1.conv.bias": [
+   320
+  ],
+  "encoder.stages.5.blocks.0.conv1.norm.weight": [
+   320
+  ],
+  "encoder.stages.5.blocks.0.conv1.norm.bias": [
+   320
+  ],
+  "encoder.stages.5.blocks.0.conv2.conv.weight": [
+   320,
+   320,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.5.blocks.0.conv2.conv.bias": [
+   320
+  ],
+  "encoder.stages.5.blocks.0.conv2.norm.weight": [
+   320
+  ],
+  "encoder.stages.5.blocks.0.conv2.norm.bias": [
+   320
+  ],
+  "encoder.stages.5.blocks.1.conv1.conv.weight": [
+   320,
+   320,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.5.blocks.1.conv1.conv.bias": [
+   320
+  ],
+  "encoder.stages.5.blocks.1.conv1.norm.weight": [
+   320
+  ],
+  "encoder.stages.5.blocks.1.conv1.norm.bias": [
+   320
+  ],
+  "encoder.stages.5.blocks.1.conv2.conv.weight": [
+   320,
+   320,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.5.blocks.1.conv2.conv.bias": [
+   320
+  ],
+  "encoder.stages.5.blocks.1.conv2.norm.weight": [
+   320
+  ],
+  "encoder.stages.5.blocks.1.conv2.norm.bias": [
+   320
+  ],
+  "encoder.stages.5.blocks.2.conv1.conv.weight": [
+   320,
+   320,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.5.blocks.2.conv1.conv.bias": [
+   320
+  ],
+  "encoder.stages.5.blocks.2.conv1.norm.weight": [
+   320
+  ],
+  "encoder.stages.5.blocks.2.conv1.norm.bias": [
+   320
+  ],
+  "encoder.stages.5.blocks.2.conv2.conv.weight": [
+   320,
+   320,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.5.blocks.2.conv2.conv.bias": [
+   320
+  ],
+  "encoder.stages.5.blocks.2.conv2.norm.weight": [
+   320
+  ],
+  "encoder.stages.5.blocks.2.conv2.norm.bias": [
+   320
+  ],
+  "encoder.stages.5.blocks.3.conv1.conv.weight": [
+   320,
+   320,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.5.blocks.3.conv1.conv.bias": [
+   320
+  ],
+  "encoder.stages.5.blocks.3.conv1.norm.weight": [
+   320
+  ],
+  "encoder.stages.5.blocks.3.conv1.norm.bias": [
+   320
+  ],
+  "encoder.stages.5.blocks.3.conv2.conv.weight": [
+   320,
+   320,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.5.blocks.3.conv2.conv.bias": [
+   320
+  ],
+  "encoder.stages.5.blocks.3.conv2.norm.weight": [
+   320
+  ],
+  "encoder.stages.5.blocks.3.conv2.norm.bias": [
+   320
+  ],
+  "encoder.stages.5.blocks.4.conv1.conv.weight": [
+   320,
+   320,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.5.blocks.4.conv1.conv.bias": [
+   320
+  ],
+  "encoder.stages.5.blocks.4.conv1.norm.weight": [
+   320
+  ],
+  "encoder.stages.5.blocks.4.conv1.norm.bias": [
+   320
+  ],
+  "encoder.stages.5.blocks.4.conv2.conv.weight": [
+   320,
+   320,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.5.blocks.4.conv2.conv.bias": [
+   320
+  ],
+  "encoder.stages.5.blocks.4.conv2.norm.weight": [
+   320
+  ],
+  "encoder.stages.5.blocks.4.conv2.norm.bias": [
+   320
+  ],
+  "encoder.stages.5.blocks.5.conv1.conv.weight": [
+   320,
+   320,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.5.blocks.5.conv1.conv.bias": [
+   320
+  ],
+  "encoder.stages.5.blocks.5.conv1.norm.weight": [
+   320
+  ],
+  "encoder.stages.5.blocks.5.conv1.norm.bias": [
+   320
+  ],
+  "encoder.stages.5.blocks.5.conv2.conv.weight": [
+   320,
+   320,
+   3,
+   3,
+   3
+  ],
+  "encoder.stages.5.blocks.5.conv2.conv.bias": [
+   320
+  ],
+  "encoder.stages.5.blocks.5.conv2.norm.weight": [
+   320
+  ],
+  "encoder.stages.5.blocks.5.conv2.norm.bias": [
+   320
+  ],
+  "decoder.stages.0.convs.0.conv.weight": [
+   320,
+   640,
+   3,
+   3,
+   3
+  ],
+  "decoder.stages.0.convs.0.conv.bias": [
+   320
+  ],
+  "decoder.stages.0.convs.0.norm.weight": [
+   320
+  ],
+  "decoder.stages.0.convs.0.norm.bias": [
+   320
+  ],
+  "decoder.stages.1.convs.0.conv.weight": [
+   256,
+   512,
+   3,
+   3,
+   3
+  ],
+  "decoder.stages.1.convs.0.conv.bias": [
+   256
+  ],
+  "decoder.stages.1.convs.0.norm.weight": [
+   256
+  ],
+  "decoder.stages.1.convs.0.norm.bias": [
+   256
+  ],
+  "decoder.stages.2.convs.0.conv.weight": [
+   128,
+   256,
+   3,
+   3,
+   3
+  ],
+  "decoder.stages.2.convs.0.conv.bias": [
+   128
+  ],
+  "decoder.stages.2.convs.0.norm.weight": [
+   128
+  ],
+  "decoder.stages.2.convs.0.norm.bias": [
+   128
+  ],
+  "decoder.stages.3.convs.0.conv.weight": [
+   64,
+   128,
+   3,
+   3,
+   3
+  ],
+  "decoder.stages.3.convs.0.conv.bias": [
+   64
+  ],
+  "decoder.stages.3.convs.0.norm.weight": [
+   64
+  ],
+  "decoder.stages.3.convs.0.norm.bias": [
+   64
+  ],
+  "decoder.stages.4.convs.0.conv.weight": [
+   32,
+   64,
+   3,
+   3,
+   3
+  ],
+  "decoder.stages.4.convs.0.conv.bias": [
+   32
+  ],
+  "decoder.stages.4.convs.0.norm.weight": [
+   32
+  ],
+  "decoder.stages.4.convs.0.norm.bias": [
+   32
+  ],
+  "decoder.transpconvs.0.weight": [
+   320,
+   320,
+   2,
+   2,
+   2
+  ],
+  "decoder.transpconvs.0.bias": [
+   320
+  ],
+  "decoder.transpconvs.1.weight": [
+   320,
+   256,
+   2,
+   2,
+   2
+  ],
+  "decoder.transpconvs.1.bias": [
+   256
+  ],
+  "decoder.transpconvs.2.weight": [
+   256,
+   128,
+   2,
+   2,
+   2
+  ],
+  "decoder.transpconvs.2.bias": [
+   128
+  ],
+  "decoder.transpconvs.3.weight": [
+   128,
+   64,
+   2,
+   2,
+   2
+  ],
+  "decoder.transpconvs.3.bias": [
+   64
+  ],
+  "decoder.transpconvs.4.weight": [
+   64,
+   32,
+   2,
+   2,
+   2
+  ],
+  "decoder.transpconvs.4.bias": [
+   32
+  ],
+  "decoder.seg_layers.4.weight": [
+   2,
+   32,
+   1,
+   1,
+   1
+  ],
+  "decoder.seg_layers.4.bias": [
+   2
+  ],
+  "inkrs.blend.gaussian": [
+   192,
+   192,
+   192
+  ]
+ },
+ "aliases": {
+  "encoder.stem.convs.0.all_modules.0.weight": "encoder.stem.convs.0.conv.weight",
+  "encoder.stem.convs.0.all_modules.0.bias": "encoder.stem.convs.0.conv.bias",
+  "encoder.stem.convs.0.all_modules.1.weight": "encoder.stem.convs.0.norm.weight",
+  "encoder.stem.convs.0.all_modules.1.bias": "encoder.stem.convs.0.norm.bias",
+  "encoder.stages.0.blocks.0.conv1.all_modules.0.weight": "encoder.stages.0.blocks.0.conv1.conv.weight",
+  "encoder.stages.0.blocks.0.conv1.all_modules.0.bias": "encoder.stages.0.blocks.0.conv1.conv.bias",
+  "encoder.stages.0.blocks.0.conv1.all_modules.1.weight": "encoder.stages.0.blocks.0.conv1.norm.weight",
+  "encoder.stages.0.blocks.0.conv1.all_modules.1.bias": "encoder.stages.0.blocks.0.conv1.norm.bias",
+  "encoder.stages.0.blocks.0.conv2.all_modules.0.weight": "encoder.stages.0.blocks.0.conv2.conv.weight",
+  "encoder.stages.0.blocks.0.conv2.all_modules.0.bias": "encoder.stages.0.blocks.0.conv2.conv.bias",
+  "encoder.stages.0.blocks.0.conv2.all_modules.1.weight": "encoder.stages.0.blocks.0.conv2.norm.weight",
+  "encoder.stages.0.blocks.0.conv2.all_modules.1.bias": "encoder.stages.0.blocks.0.conv2.norm.bias",
+  "encoder.stages.1.blocks.0.conv1.all_modules.0.weight": "encoder.stages.1.blocks.0.conv1.conv.weight",
+  "encoder.stages.1.blocks.0.conv1.all_modules.0.bias": "encoder.stages.1.blocks.0.conv1.conv.bias",
+  "encoder.stages.1.blocks.0.conv1.all_modules.1.weight": "encoder.stages.1.blocks.0.conv1.norm.weight",
+  "encoder.stages.1.blocks.0.conv1.all_modules.1.bias": "encoder.stages.1.blocks.0.conv1.norm.bias",
+  "encoder.stages.1.blocks.0.conv2.all_modules.0.weight": "encoder.stages.1.blocks.0.conv2.conv.weight",
+  "encoder.stages.1.blocks.0.conv2.all_modules.0.bias": "encoder.stages.1.blocks.0.conv2.conv.bias",
+  "encoder.stages.1.blocks.0.conv2.all_modules.1.weight": "encoder.stages.1.blocks.0.conv2.norm.weight",
+  "encoder.stages.1.blocks.0.conv2.all_modules.1.bias": "encoder.stages.1.blocks.0.conv2.norm.bias",
+  "encoder.stages.1.blocks.0.skip.1.all_modules.0.weight": "encoder.stages.1.blocks.0.skip.1.conv.weight",
+  "encoder.stages.1.blocks.0.skip.1.all_modules.1.weight": "encoder.stages.1.blocks.0.skip.1.norm.weight",
+  "encoder.stages.1.blocks.0.skip.1.all_modules.1.bias": "encoder.stages.1.blocks.0.skip.1.norm.bias",
+  "encoder.stages.1.blocks.1.conv1.all_modules.0.weight": "encoder.stages.1.blocks.1.conv1.conv.weight",
+  "encoder.stages.1.blocks.1.conv1.all_modules.0.bias": "encoder.stages.1.blocks.1.conv1.conv.bias",
+  "encoder.stages.1.blocks.1.conv1.all_modules.1.weight": "encoder.stages.1.blocks.1.conv1.norm.weight",
+  "encoder.stages.1.blocks.1.conv1.all_modules.1.bias": "encoder.stages.1.blocks.1.conv1.norm.bias",
+  "encoder.stages.1.blocks.1.conv2.all_modules.0.weight": "encoder.stages.1.blocks.1.conv2.conv.weight",
+  "encoder.stages.1.blocks.1.conv2.all_modules.0.bias": "encoder.stages.1.blocks.1.conv2.conv.bias",
+  "encoder.stages.1.blocks.1.conv2.all_modules.1.weight": "encoder.stages.1.blocks.1.conv2.norm.weight",
+  "encoder.stages.1.blocks.1.conv2.all_modules.1.bias": "encoder.stages.1.blocks.1.conv2.norm.bias",
+  "encoder.stages.1.blocks.2.conv1.all_modules.0.weight": "encoder.stages.1.blocks.2.conv1.conv.weight",
+  "encoder.stages.1.blocks.2.conv1.all_modules.0.bias": "encoder.stages.1.blocks.2.conv1.conv.bias",
+  "encoder.stages.1.blocks.2.conv1.all_modules.1.weight": "encoder.stages.1.blocks.2.conv1.norm.weight",
+  "encoder.stages.1.blocks.2.conv1.all_modules.1.bias": "encoder.stages.1.blocks.2.conv1.norm.bias",
+  "encoder.stages.1.blocks.2.conv2.all_modules.0.weight": "encoder.stages.1.blocks.2.conv2.conv.weight",
+  "encoder.stages.1.blocks.2.conv2.all_modules.0.bias": "encoder.stages.1.blocks.2.conv2.conv.bias",
+  "encoder.stages.1.blocks.2.conv2.all_modules.1.weight": "encoder.stages.1.blocks.2.conv2.norm.weight",
+  "encoder.stages.1.blocks.2.conv2.all_modules.1.bias": "encoder.stages.1.blocks.2.conv2.norm.bias",
+  "encoder.stages.2.blocks.0.conv1.all_modules.0.weight": "encoder.stages.2.blocks.0.conv1.conv.weight",
+  "encoder.stages.2.blocks.0.conv1.all_modules.0.bias": "encoder.stages.2.blocks.0.conv1.conv.bias",
+  "encoder.stages.2.blocks.0.conv1.all_modules.1.weight": "encoder.stages.2.blocks.0.conv1.norm.weight",
+  "encoder.stages.2.blocks.0.conv1.all_modules.1.bias": "encoder.stages.2.blocks.0.conv1.norm.bias",
+  "encoder.stages.2.blocks.0.conv2.all_modules.0.weight": "encoder.stages.2.blocks.0.conv2.conv.weight",
+  "encoder.stages.2.blocks.0.conv2.all_modules.0.bias": "encoder.stages.2.blocks.0.conv2.conv.bias",
+  "encoder.stages.2.blocks.0.conv2.all_modules.1.weight": "encoder.stages.2.blocks.0.conv2.norm.weight",
+  "encoder.stages.2.blocks.0.conv2.all_modules.1.bias": "encoder.stages.2.blocks.0.conv2.norm.bias",
+  "encoder.stages.2.blocks.0.skip.1.all_modules.0.weight": "encoder.stages.2.blocks.0.skip.1.conv.weight",
+  "encoder.stages.2.blocks.0.skip.1.all_modules.1.weight": "encoder.stages.2.blocks.0.skip.1.norm.weight",
+  "encoder.stages.2.blocks.0.skip.1.all_modules.1.bias": "encoder.stages.2.blocks.0.skip.1.norm.bias",
+  "encoder.stages.2.blocks.1.conv1.all_modules.0.weight": "encoder.stages.2.blocks.1.conv1.conv.weight",
+  "encoder.stages.2.blocks.1.conv1.all_modules.0.bias": "encoder.stages.2.blocks.1.conv1.conv.bias",
+  "encoder.stages.2.blocks.1.conv1.all_modules.1.weight": "encoder.stages.2.blocks.1.conv1.norm.weight",
+  "encoder.stages.2.blocks.1.conv1.all_modules.1.bias": "encoder.stages.2.blocks.1.conv1.norm.bias",
+  "encoder.stages.2.blocks.1.conv2.all_modules.0.weight": "encoder.stages.2.blocks.1.conv2.conv.weight",
+  "encoder.stages.2.blocks.1.conv2.all_modules.0.bias": "encoder.stages.2.blocks.1.conv2.conv.bias",
+  "encoder.stages.2.blocks.1.conv2.all_modules.1.weight": "encoder.stages.2.blocks.1.conv2.norm.weight",
+  "encoder.stages.2.blocks.1.conv2.all_modules.1.bias": "encoder.stages.2.blocks.1.conv2.norm.bias",
+  "encoder.stages.2.blocks.2.conv1.all_modules.0.weight": "encoder.stages.2.blocks.2.conv1.conv.weight",
+  "encoder.stages.2.blocks.2.conv1.all_modules.0.bias": "encoder.stages.2.blocks.2.conv1.conv.bias",
+  "encoder.stages.2.blocks.2.conv1.all_modules.1.weight": "encoder.stages.2.blocks.2.conv1.norm.weight",
+  "encoder.stages.2.blocks.2.conv1.all_modules.1.bias": "encoder.stages.2.blocks.2.conv1.norm.bias",
+  "encoder.stages.2.blocks.2.conv2.all_modules.0.weight": "encoder.stages.2.blocks.2.conv2.conv.weight",
+  "encoder.stages.2.blocks.2.conv2.all_modules.0.bias": "encoder.stages.2.blocks.2.conv2.conv.bias",
+  "encoder.stages.2.blocks.2.conv2.all_modules.1.weight": "encoder.stages.2.blocks.2.conv2.norm.weight",
+  "encoder.stages.2.blocks.2.conv2.all_modules.1.bias": "encoder.stages.2.blocks.2.conv2.norm.bias",
+  "encoder.stages.2.blocks.3.conv1.all_modules.0.weight": "encoder.stages.2.blocks.3.conv1.conv.weight",
+  "encoder.stages.2.blocks.3.conv1.all_modules.0.bias": "encoder.stages.2.blocks.3.conv1.conv.bias",
+  "encoder.stages.2.blocks.3.conv1.all_modules.1.weight": "encoder.stages.2.blocks.3.conv1.norm.weight",
+  "encoder.stages.2.blocks.3.conv1.all_modules.1.bias": "encoder.stages.2.blocks.3.conv1.norm.bias",
+  "encoder.stages.2.blocks.3.conv2.all_modules.0.weight": "encoder.stages.2.blocks.3.conv2.conv.weight",
+  "encoder.stages.2.blocks.3.conv2.all_modules.0.bias": "encoder.stages.2.blocks.3.conv2.conv.bias",
+  "encoder.stages.2.blocks.3.conv2.all_modules.1.weight": "encoder.stages.2.blocks.3.conv2.norm.weight",
+  "encoder.stages.2.blocks.3.conv2.all_modules.1.bias": "encoder.stages.2.blocks.3.conv2.norm.bias",
+  "encoder.stages.3.blocks.0.conv1.all_modules.0.weight": "encoder.stages.3.blocks.0.conv1.conv.weight",
+  "encoder.stages.3.blocks.0.conv1.all_modules.0.bias": "encoder.stages.3.blocks.0.conv1.conv.bias",
+  "encoder.stages.3.blocks.0.conv1.all_modules.1.weight": "encoder.stages.3.blocks.0.conv1.norm.weight",
+  "encoder.stages.3.blocks.0.conv1.all_modules.1.bias": "encoder.stages.3.blocks.0.conv1.norm.bias",
+  "encoder.stages.3.blocks.0.conv2.all_modules.0.weight": "encoder.stages.3.blocks.0.conv2.conv.weight",
+  "encoder.stages.3.blocks.0.conv2.all_modules.0.bias": "encoder.stages.3.blocks.0.conv2.conv.bias",
+  "encoder.stages.3.blocks.0.conv2.all_modules.1.weight": "encoder.stages.3.blocks.0.conv2.norm.weight",
+  "encoder.stages.3.blocks.0.conv2.all_modules.1.bias": "encoder.stages.3.blocks.0.conv2.norm.bias",
+  "encoder.stages.3.blocks.0.skip.1.all_modules.0.weight": "encoder.stages.3.blocks.0.skip.1.conv.weight",
+  "encoder.stages.3.blocks.0.skip.1.all_modules.1.weight": "encoder.stages.3.blocks.0.skip.1.norm.weight",
+  "encoder.stages.3.blocks.0.skip.1.all_modules.1.bias": "encoder.stages.3.blocks.0.skip.1.norm.bias",
+  "encoder.stages.3.blocks.1.conv1.all_modules.0.weight": "encoder.stages.3.blocks.1.conv1.conv.weight",
+  "encoder.stages.3.blocks.1.conv1.all_modules.0.bias": "encoder.stages.3.blocks.1.conv1.conv.bias",
+  "encoder.stages.3.blocks.1.conv1.all_modules.1.weight": "encoder.stages.3.blocks.1.conv1.norm.weight",
+  "encoder.stages.3.blocks.1.conv1.all_modules.1.bias": "encoder.stages.3.blocks.1.conv1.norm.bias",
+  "encoder.stages.3.blocks.1.conv2.all_modules.0.weight": "encoder.stages.3.blocks.1.conv2.conv.weight",
+  "encoder.stages.3.blocks.1.conv2.all_modules.0.bias": "encoder.stages.3.blocks.1.conv2.conv.bias",
+  "encoder.stages.3.blocks.1.conv2.all_modules.1.weight": "encoder.stages.3.blocks.1.conv2.norm.weight",
+  "encoder.stages.3.blocks.1.conv2.all_modules.1.bias": "encoder.stages.3.blocks.1.conv2.norm.bias",
+  "encoder.stages.3.blocks.2.conv1.all_modules.0.weight": "encoder.stages.3.blocks.2.conv1.conv.weight",
+  "encoder.stages.3.blocks.2.conv1.all_modules.0.bias": "encoder.stages.3.blocks.2.conv1.conv.bias",
+  "encoder.stages.3.blocks.2.conv1.all_modules.1.weight": "encoder.stages.3.blocks.2.conv1.norm.weight",
+  "encoder.stages.3.blocks.2.conv1.all_modules.1.bias": "encoder.stages.3.blocks.2.conv1.norm.bias",
+  "encoder.stages.3.blocks.2.conv2.all_modules.0.weight": "encoder.stages.3.blocks.2.conv2.conv.weight",
+  "encoder.stages.3.blocks.2.conv2.all_modules.0.bias": "encoder.stages.3.blocks.2.conv2.conv.bias",
+  "encoder.stages.3.blocks.2.conv2.all_modules.1.weight": "encoder.stages.3.blocks.2.conv2.norm.weight",
+  "encoder.stages.3.blocks.2.conv2.all_modules.1.bias": "encoder.stages.3.blocks.2.conv2.norm.bias",
+  "encoder.stages.3.blocks.3.conv1.all_modules.0.weight": "encoder.stages.3.blocks.3.conv1.conv.weight",
+  "encoder.stages.3.blocks.3.conv1.all_modules.0.bias": "encoder.stages.3.blocks.3.conv1.conv.bias",
+  "encoder.stages.3.blocks.3.conv1.all_modules.1.weight": "encoder.stages.3.blocks.3.conv1.norm.weight",
+  "encoder.stages.3.blocks.3.conv1.all_modules.1.bias": "encoder.stages.3.blocks.3.conv1.norm.bias",
+  "encoder.stages.3.blocks.3.conv2.all_modules.0.weight": "encoder.stages.3.blocks.3.conv2.conv.weight",
+  "encoder.stages.3.blocks.3.conv2.all_modules.0.bias": "encoder.stages.3.blocks.3.conv2.conv.bias",
+  "encoder.stages.3.blocks.3.conv2.all_modules.1.weight": "encoder.stages.3.blocks.3.conv2.norm.weight",
+  "encoder.stages.3.blocks.3.conv2.all_modules.1.bias": "encoder.stages.3.blocks.3.conv2.norm.bias",
+  "encoder.stages.3.blocks.4.conv1.all_modules.0.weight": "encoder.stages.3.blocks.4.conv1.conv.weight",
+  "encoder.stages.3.blocks.4.conv1.all_modules.0.bias": "encoder.stages.3.blocks.4.conv1.conv.bias",
+  "encoder.stages.3.blocks.4.conv1.all_modules.1.weight": "encoder.stages.3.blocks.4.conv1.norm.weight",
+  "encoder.stages.3.blocks.4.conv1.all_modules.1.bias": "encoder.stages.3.blocks.4.conv1.norm.bias",
+  "encoder.stages.3.blocks.4.conv2.all_modules.0.weight": "encoder.stages.3.blocks.4.conv2.conv.weight",
+  "encoder.stages.3.blocks.4.conv2.all_modules.0.bias": "encoder.stages.3.blocks.4.conv2.conv.bias",
+  "encoder.stages.3.blocks.4.conv2.all_modules.1.weight": "encoder.stages.3.blocks.4.conv2.norm.weight",
+  "encoder.stages.3.blocks.4.conv2.all_modules.1.bias": "encoder.stages.3.blocks.4.conv2.norm.bias",
+  "encoder.stages.3.blocks.5.conv1.all_modules.0.weight": "encoder.stages.3.blocks.5.conv1.conv.weight",
+  "encoder.stages.3.blocks.5.conv1.all_modules.0.bias": "encoder.stages.3.blocks.5.conv1.conv.bias",
+  "encoder.stages.3.blocks.5.conv1.all_modules.1.weight": "encoder.stages.3.blocks.5.conv1.norm.weight",
+  "encoder.stages.3.blocks.5.conv1.all_modules.1.bias": "encoder.stages.3.blocks.5.conv1.norm.bias",
+  "encoder.stages.3.blocks.5.conv2.all_modules.0.weight": "encoder.stages.3.blocks.5.conv2.conv.weight",
+  "encoder.stages.3.blocks.5.conv2.all_modules.0.bias": "encoder.stages.3.blocks.5.conv2.conv.bias",
+  "encoder.stages.3.blocks.5.conv2.all_modules.1.weight": "encoder.stages.3.blocks.5.conv2.norm.weight",
+  "encoder.stages.3.blocks.5.conv2.all_modules.1.bias": "encoder.stages.3.blocks.5.conv2.norm.bias",
+  "encoder.stages.4.blocks.0.conv1.all_modules.0.weight": "encoder.stages.4.blocks.0.conv1.conv.weight",
+  "encoder.stages.4.blocks.0.conv1.all_modules.0.bias": "encoder.stages.4.blocks.0.conv1.conv.bias",
+  "encoder.stages.4.blocks.0.conv1.all_modules.1.weight": "encoder.stages.4.blocks.0.conv1.norm.weight",
+  "encoder.stages.4.blocks.0.conv1.all_modules.1.bias": "encoder.stages.4.blocks.0.conv1.norm.bias",
+  "encoder.stages.4.blocks.0.conv2.all_modules.0.weight": "encoder.stages.4.blocks.0.conv2.conv.weight",
+  "encoder.stages.4.blocks.0.conv2.all_modules.0.bias": "encoder.stages.4.blocks.0.conv2.conv.bias",
+  "encoder.stages.4.blocks.0.conv2.all_modules.1.weight": "encoder.stages.4.blocks.0.conv2.norm.weight",
+  "encoder.stages.4.blocks.0.conv2.all_modules.1.bias": "encoder.stages.4.blocks.0.conv2.norm.bias",
+  "encoder.stages.4.blocks.0.skip.1.all_modules.0.weight": "encoder.stages.4.blocks.0.skip.1.conv.weight",
+  "encoder.stages.4.blocks.0.skip.1.all_modules.1.weight": "encoder.stages.4.blocks.0.skip.1.norm.weight",
+  "encoder.stages.4.blocks.0.skip.1.all_modules.1.bias": "encoder.stages.4.blocks.0.skip.1.norm.bias",
+  "encoder.stages.4.blocks.1.conv1.all_modules.0.weight": "encoder.stages.4.blocks.1.conv1.conv.weight",
+  "encoder.stages.4.blocks.1.conv1.all_modules.0.bias": "encoder.stages.4.blocks.1.conv1.conv.bias",
+  "encoder.stages.4.blocks.1.conv1.all_modules.1.weight": "encoder.stages.4.blocks.1.conv1.norm.weight",
+  "encoder.stages.4.blocks.1.conv1.all_modules.1.bias": "encoder.stages.4.blocks.1.conv1.norm.bias",
+  "encoder.stages.4.blocks.1.conv2.all_modules.0.weight": "encoder.stages.4.blocks.1.conv2.conv.weight",
+  "encoder.stages.4.blocks.1.conv2.all_modules.0.bias": "encoder.stages.4.blocks.1.conv2.conv.bias",
+  "encoder.stages.4.blocks.1.conv2.all_modules.1.weight": "encoder.stages.4.blocks.1.conv2.norm.weight",
+  "encoder.stages.4.blocks.1.conv2.all_modules.1.bias": "encoder.stages.4.blocks.1.conv2.norm.bias",
+  "encoder.stages.4.blocks.2.conv1.all_modules.0.weight": "encoder.stages.4.blocks.2.conv1.conv.weight",
+  "encoder.stages.4.blocks.2.conv1.all_modules.0.bias": "encoder.stages.4.blocks.2.conv1.conv.bias",
+  "encoder.stages.4.blocks.2.conv1.all_modules.1.weight": "encoder.stages.4.blocks.2.conv1.norm.weight",
+  "encoder.stages.4.blocks.2.conv1.all_modules.1.bias": "encoder.stages.4.blocks.2.conv1.norm.bias",
+  "encoder.stages.4.blocks.2.conv2.all_modules.0.weight": "encoder.stages.4.blocks.2.conv2.conv.weight",
+  "encoder.stages.4.blocks.2.conv2.all_modules.0.bias": "encoder.stages.4.blocks.2.conv2.conv.bias",
+  "encoder.stages.4.blocks.2.conv2.all_modules.1.weight": "encoder.stages.4.blocks.2.conv2.norm.weight",
+  "encoder.stages.4.blocks.2.conv2.all_modules.1.bias": "encoder.stages.4.blocks.2.conv2.norm.bias",
+  "encoder.stages.4.blocks.3.conv1.all_modules.0.weight": "encoder.stages.4.blocks.3.conv1.conv.weight",
+  "encoder.stages.4.blocks.3.conv1.all_modules.0.bias": "encoder.stages.4.blocks.3.conv1.conv.bias",
+  "encoder.stages.4.blocks.3.conv1.all_modules.1.weight": "encoder.stages.4.blocks.3.conv1.norm.weight",
+  "encoder.stages.4.blocks.3.conv1.all_modules.1.bias": "encoder.stages.4.blocks.3.conv1.norm.bias",
+  "encoder.stages.4.blocks.3.conv2.all_modules.0.weight": "encoder.stages.4.blocks.3.conv2.conv.weight",
+  "encoder.stages.4.blocks.3.conv2.all_modules.0.bias": "encoder.stages.4.blocks.3.conv2.conv.bias",
+  "encoder.stages.4.blocks.3.conv2.all_modules.1.weight": "encoder.stages.4.blocks.3.conv2.norm.weight",
+  "encoder.stages.4.blocks.3.conv2.all_modules.1.bias": "encoder.stages.4.blocks.3.conv2.norm.bias",
+  "encoder.stages.4.blocks.4.conv1.all_modules.0.weight": "encoder.stages.4.blocks.4.conv1.conv.weight",
+  "encoder.stages.4.blocks.4.conv1.all_modules.0.bias": "encoder.stages.4.blocks.4.conv1.conv.bias",
+  "encoder.stages.4.blocks.4.conv1.all_modules.1.weight": "encoder.stages.4.blocks.4.conv1.norm.weight",
+  "encoder.stages.4.blocks.4.conv1.all_modules.1.bias": "encoder.stages.4.blocks.4.conv1.norm.bias",
+  "encoder.stages.4.blocks.4.conv2.all_modules.0.weight": "encoder.stages.4.blocks.4.conv2.conv.weight",
+  "encoder.stages.4.blocks.4.conv2.all_modules.0.bias": "encoder.stages.4.blocks.4.conv2.conv.bias",
+  "encoder.stages.4.blocks.4.conv2.all_modules.1.weight": "encoder.stages.4.blocks.4.conv2.norm.weight",
+  "encoder.stages.4.blocks.4.conv2.all_modules.1.bias": "encoder.stages.4.blocks.4.conv2.norm.bias",
+  "encoder.stages.4.blocks.5.conv1.all_modules.0.weight": "encoder.stages.4.blocks.5.conv1.conv.weight",
+  "encoder.stages.4.blocks.5.conv1.all_modules.0.bias": "encoder.stages.4.blocks.5.conv1.conv.bias",
+  "encoder.stages.4.blocks.5.conv1.all_modules.1.weight": "encoder.stages.4.blocks.5.conv1.norm.weight",
+  "encoder.stages.4.blocks.5.conv1.all_modules.1.bias": "encoder.stages.4.blocks.5.conv1.norm.bias",
+  "encoder.stages.4.blocks.5.conv2.all_modules.0.weight": "encoder.stages.4.blocks.5.conv2.conv.weight",
+  "encoder.stages.4.blocks.5.conv2.all_modules.0.bias": "encoder.stages.4.blocks.5.conv2.conv.bias",
+  "encoder.stages.4.blocks.5.conv2.all_modules.1.weight": "encoder.stages.4.blocks.5.conv2.norm.weight",
+  "encoder.stages.4.blocks.5.conv2.all_modules.1.bias": "encoder.stages.4.blocks.5.conv2.norm.bias",
+  "encoder.stages.5.blocks.0.conv1.all_modules.0.weight": "encoder.stages.5.blocks.0.conv1.conv.weight",
+  "encoder.stages.5.blocks.0.conv1.all_modules.0.bias": "encoder.stages.5.blocks.0.conv1.conv.bias",
+  "encoder.stages.5.blocks.0.conv1.all_modules.1.weight": "encoder.stages.5.blocks.0.conv1.norm.weight",
+  "encoder.stages.5.blocks.0.conv1.all_modules.1.bias": "encoder.stages.5.blocks.0.conv1.norm.bias",
+  "encoder.stages.5.blocks.0.conv2.all_modules.0.weight": "encoder.stages.5.blocks.0.conv2.conv.weight",
+  "encoder.stages.5.blocks.0.conv2.all_modules.0.bias": "encoder.stages.5.blocks.0.conv2.conv.bias",
+  "encoder.stages.5.blocks.0.conv2.all_modules.1.weight": "encoder.stages.5.blocks.0.conv2.norm.weight",
+  "encoder.stages.5.blocks.0.conv2.all_modules.1.bias": "encoder.stages.5.blocks.0.conv2.norm.bias",
+  "encoder.stages.5.blocks.1.conv1.all_modules.0.weight": "encoder.stages.5.blocks.1.conv1.conv.weight",
+  "encoder.stages.5.blocks.1.conv1.all_modules.0.bias": "encoder.stages.5.blocks.1.conv1.conv.bias",
+  "encoder.stages.5.blocks.1.conv1.all_modules.1.weight": "encoder.stages.5.blocks.1.conv1.norm.weight",
+  "encoder.stages.5.blocks.1.conv1.all_modules.1.bias": "encoder.stages.5.blocks.1.conv1.norm.bias",
+  "encoder.stages.5.blocks.1.conv2.all_modules.0.weight": "encoder.stages.5.blocks.1.conv2.conv.weight",
+  "encoder.stages.5.blocks.1.conv2.all_modules.0.bias": "encoder.stages.5.blocks.1.conv2.conv.bias",
+  "encoder.stages.5.blocks.1.conv2.all_modules.1.weight": "encoder.stages.5.blocks.1.conv2.norm.weight",
+  "encoder.stages.5.blocks.1.conv2.all_modules.1.bias": "encoder.stages.5.blocks.1.conv2.norm.bias",
+  "encoder.stages.5.blocks.2.conv1.all_modules.0.weight": "encoder.stages.5.blocks.2.conv1.conv.weight",
+  "encoder.stages.5.blocks.2.conv1.all_modules.0.bias": "encoder.stages.5.blocks.2.conv1.conv.bias",
+  "encoder.stages.5.blocks.2.conv1.all_modules.1.weight": "encoder.stages.5.blocks.2.conv1.norm.weight",
+  "encoder.stages.5.blocks.2.conv1.all_modules.1.bias": "encoder.stages.5.blocks.2.conv1.norm.bias",
+  "encoder.stages.5.blocks.2.conv2.all_modules.0.weight": "encoder.stages.5.blocks.2.conv2.conv.weight",
+  "encoder.stages.5.blocks.2.conv2.all_modules.0.bias": "encoder.stages.5.blocks.2.conv2.conv.bias",
+  "encoder.stages.5.blocks.2.conv2.all_modules.1.weight": "encoder.stages.5.blocks.2.conv2.norm.weight",
+  "encoder.stages.5.blocks.2.conv2.all_modules.1.bias": "encoder.stages.5.blocks.2.conv2.norm.bias",
+  "encoder.stages.5.blocks.3.conv1.all_modules.0.weight": "encoder.stages.5.blocks.3.conv1.conv.weight",
+  "encoder.stages.5.blocks.3.conv1.all_modules.0.bias": "encoder.stages.5.blocks.3.conv1.conv.bias",
+  "encoder.stages.5.blocks.3.conv1.all_modules.1.weight": "encoder.stages.5.blocks.3.conv1.norm.weight",
+  "encoder.stages.5.blocks.3.conv1.all_modules.1.bias": "encoder.stages.5.blocks.3.conv1.norm.bias",
+  "encoder.stages.5.blocks.3.conv2.all_modules.0.weight": "encoder.stages.5.blocks.3.conv2.conv.weight",
+  "encoder.stages.5.blocks.3.conv2.all_modules.0.bias": "encoder.stages.5.blocks.3.conv2.conv.bias",
+  "encoder.stages.5.blocks.3.conv2.all_modules.1.weight": "encoder.stages.5.blocks.3.conv2.norm.weight",
+  "encoder.stages.5.blocks.3.conv2.all_modules.1.bias": "encoder.stages.5.blocks.3.conv2.norm.bias",
+  "encoder.stages.5.blocks.4.conv1.all_modules.0.weight": "encoder.stages.5.blocks.4.conv1.conv.weight",
+  "encoder.stages.5.blocks.4.conv1.all_modules.0.bias": "encoder.stages.5.blocks.4.conv1.conv.bias",
+  "encoder.stages.5.blocks.4.conv1.all_modules.1.weight": "encoder.stages.5.blocks.4.conv1.norm.weight",
+  "encoder.stages.5.blocks.4.conv1.all_modules.1.bias": "encoder.stages.5.blocks.4.conv1.norm.bias",
+  "encoder.stages.5.blocks.4.conv2.all_modules.0.weight": "encoder.stages.5.blocks.4.conv2.conv.weight",
+  "encoder.stages.5.blocks.4.conv2.all_modules.0.bias": "encoder.stages.5.blocks.4.conv2.conv.bias",
+  "encoder.stages.5.blocks.4.conv2.all_modules.1.weight": "encoder.stages.5.blocks.4.conv2.norm.weight",
+  "encoder.stages.5.blocks.4.conv2.all_modules.1.bias": "encoder.stages.5.blocks.4.conv2.norm.bias",
+  "encoder.stages.5.blocks.5.conv1.all_modules.0.weight": "encoder.stages.5.blocks.5.conv1.conv.weight",
+  "encoder.stages.5.blocks.5.conv1.all_modules.0.bias": "encoder.stages.5.blocks.5.conv1.conv.bias",
+  "encoder.stages.5.blocks.5.conv1.all_modules.1.weight": "encoder.stages.5.blocks.5.conv1.norm.weight",
+  "encoder.stages.5.blocks.5.conv1.all_modules.1.bias": "encoder.stages.5.blocks.5.conv1.norm.bias",
+  "encoder.stages.5.blocks.5.conv2.all_modules.0.weight": "encoder.stages.5.blocks.5.conv2.conv.weight",
+  "encoder.stages.5.blocks.5.conv2.all_modules.0.bias": "encoder.stages.5.blocks.5.conv2.conv.bias",
+  "encoder.stages.5.blocks.5.conv2.all_modules.1.weight": "encoder.stages.5.blocks.5.conv2.norm.weight",
+  "encoder.stages.5.blocks.5.conv2.all_modules.1.bias": "encoder.stages.5.blocks.5.conv2.norm.bias",
+  "decoder.encoder.stem.convs.0.conv.weight": "encoder.stem.convs.0.conv.weight",
+  "decoder.encoder.stem.convs.0.conv.bias": "encoder.stem.convs.0.conv.bias",
+  "decoder.encoder.stem.convs.0.norm.weight": "encoder.stem.convs.0.norm.weight",
+  "decoder.encoder.stem.convs.0.norm.bias": "encoder.stem.convs.0.norm.bias",
+  "decoder.encoder.stem.convs.0.all_modules.0.weight": "encoder.stem.convs.0.conv.weight",
+  "decoder.encoder.stem.convs.0.all_modules.0.bias": "encoder.stem.convs.0.conv.bias",
+  "decoder.encoder.stem.convs.0.all_modules.1.weight": "encoder.stem.convs.0.norm.weight",
+  "decoder.encoder.stem.convs.0.all_modules.1.bias": "encoder.stem.convs.0.norm.bias",
+  "decoder.encoder.stages.0.blocks.0.conv1.conv.weight": "encoder.stages.0.blocks.0.conv1.conv.weight",
+  "decoder.encoder.stages.0.blocks.0.conv1.conv.bias": "encoder.stages.0.blocks.0.conv1.conv.bias",
+  "decoder.encoder.stages.0.blocks.0.conv1.norm.weight": "encoder.stages.0.blocks.0.conv1.norm.weight",
+  "decoder.encoder.stages.0.blocks.0.conv1.norm.bias": "encoder.stages.0.blocks.0.conv1.norm.bias",
+  "decoder.encoder.stages.0.blocks.0.conv1.all_modules.0.weight": "encoder.stages.0.blocks.0.conv1.conv.weight",
+  "decoder.encoder.stages.0.blocks.0.conv1.all_modules.0.bias": "encoder.stages.0.blocks.0.conv1.conv.bias",
+  "decoder.encoder.stages.0.blocks.0.conv1.all_modules.1.weight": "encoder.stages.0.blocks.0.conv1.norm.weight",
+  "decoder.encoder.stages.0.blocks.0.conv1.all_modules.1.bias": "encoder.stages.0.blocks.0.conv1.norm.bias",
+  "decoder.encoder.stages.0.blocks.0.conv2.conv.weight": "encoder.stages.0.blocks.0.conv2.conv.weight",
+  "decoder.encoder.stages.0.blocks.0.conv2.conv.bias": "encoder.stages.0.blocks.0.conv2.conv.bias",
+  "decoder.encoder.stages.0.blocks.0.conv2.norm.weight": "encoder.stages.0.blocks.0.conv2.norm.weight",
+  "decoder.encoder.stages.0.blocks.0.conv2.norm.bias": "encoder.stages.0.blocks.0.conv2.norm.bias",
+  "decoder.encoder.stages.0.blocks.0.conv2.all_modules.0.weight": "encoder.stages.0.blocks.0.conv2.conv.weight",
+  "decoder.encoder.stages.0.blocks.0.conv2.all_modules.0.bias": "encoder.stages.0.blocks.0.conv2.conv.bias",
+  "decoder.encoder.stages.0.blocks.0.conv2.all_modules.1.weight": "encoder.stages.0.blocks.0.conv2.norm.weight",
+  "decoder.encoder.stages.0.blocks.0.conv2.all_modules.1.bias": "encoder.stages.0.blocks.0.conv2.norm.bias",
+  "decoder.encoder.stages.1.blocks.0.conv1.conv.weight": "encoder.stages.1.blocks.0.conv1.conv.weight",
+  "decoder.encoder.stages.1.blocks.0.conv1.conv.bias": "encoder.stages.1.blocks.0.conv1.conv.bias",
+  "decoder.encoder.stages.1.blocks.0.conv1.norm.weight": "encoder.stages.1.blocks.0.conv1.norm.weight",
+  "decoder.encoder.stages.1.blocks.0.conv1.norm.bias": "encoder.stages.1.blocks.0.conv1.norm.bias",
+  "decoder.encoder.stages.1.blocks.0.conv1.all_modules.0.weight": "encoder.stages.1.blocks.0.conv1.conv.weight",
+  "decoder.encoder.stages.1.blocks.0.conv1.all_modules.0.bias": "encoder.stages.1.blocks.0.conv1.conv.bias",
+  "decoder.encoder.stages.1.blocks.0.conv1.all_modules.1.weight": "encoder.stages.1.blocks.0.conv1.norm.weight",
+  "decoder.encoder.stages.1.blocks.0.conv1.all_modules.1.bias": "encoder.stages.1.blocks.0.conv1.norm.bias",
+  "decoder.encoder.stages.1.blocks.0.conv2.conv.weight": "encoder.stages.1.blocks.0.conv2.conv.weight",
+  "decoder.encoder.stages.1.blocks.0.conv2.conv.bias": "encoder.stages.1.blocks.0.conv2.conv.bias",
+  "decoder.encoder.stages.1.blocks.0.conv2.norm.weight": "encoder.stages.1.blocks.0.conv2.norm.weight",
+  "decoder.encoder.stages.1.blocks.0.conv2.norm.bias": "encoder.stages.1.blocks.0.conv2.norm.bias",
+  "decoder.encoder.stages.1.blocks.0.conv2.all_modules.0.weight": "encoder.stages.1.blocks.0.conv2.conv.weight",
+  "decoder.encoder.stages.1.blocks.0.conv2.all_modules.0.bias": "encoder.stages.1.blocks.0.conv2.conv.bias",
+  "decoder.encoder.stages.1.blocks.0.conv2.all_modules.1.weight": "encoder.stages.1.blocks.0.conv2.norm.weight",
+  "decoder.encoder.stages.1.blocks.0.conv2.all_modules.1.bias": "encoder.stages.1.blocks.0.conv2.norm.bias",
+  "decoder.encoder.stages.1.blocks.0.skip.1.conv.weight": "encoder.stages.1.blocks.0.skip.1.conv.weight",
+  "decoder.encoder.stages.1.blocks.0.skip.1.norm.weight": "encoder.stages.1.blocks.0.skip.1.norm.weight",
+  "decoder.encoder.stages.1.blocks.0.skip.1.norm.bias": "encoder.stages.1.blocks.0.skip.1.norm.bias",
+  "decoder.encoder.stages.1.blocks.0.skip.1.all_modules.0.weight": "encoder.stages.1.blocks.0.skip.1.conv.weight",
+  "decoder.encoder.stages.1.blocks.0.skip.1.all_modules.1.weight": "encoder.stages.1.blocks.0.skip.1.norm.weight",
+  "decoder.encoder.stages.1.blocks.0.skip.1.all_modules.1.bias": "encoder.stages.1.blocks.0.skip.1.norm.bias",
+  "decoder.encoder.stages.1.blocks.1.conv1.conv.weight": "encoder.stages.1.blocks.1.conv1.conv.weight",
+  "decoder.encoder.stages.1.blocks.1.conv1.conv.bias": "encoder.stages.1.blocks.1.conv1.conv.bias",
+  "decoder.encoder.stages.1.blocks.1.conv1.norm.weight": "encoder.stages.1.blocks.1.conv1.norm.weight",
+  "decoder.encoder.stages.1.blocks.1.conv1.norm.bias": "encoder.stages.1.blocks.1.conv1.norm.bias",
+  "decoder.encoder.stages.1.blocks.1.conv1.all_modules.0.weight": "encoder.stages.1.blocks.1.conv1.conv.weight",
+  "decoder.encoder.stages.1.blocks.1.conv1.all_modules.0.bias": "encoder.stages.1.blocks.1.conv1.conv.bias",
+  "decoder.encoder.stages.1.blocks.1.conv1.all_modules.1.weight": "encoder.stages.1.blocks.1.conv1.norm.weight",
+  "decoder.encoder.stages.1.blocks.1.conv1.all_modules.1.bias": "encoder.stages.1.blocks.1.conv1.norm.bias",
+  "decoder.encoder.stages.1.blocks.1.conv2.conv.weight": "encoder.stages.1.blocks.1.conv2.conv.weight",
+  "decoder.encoder.stages.1.blocks.1.conv2.conv.bias": "encoder.stages.1.blocks.1.conv2.conv.bias",
+  "decoder.encoder.stages.1.blocks.1.conv2.norm.weight": "encoder.stages.1.blocks.1.conv2.norm.weight",
+  "decoder.encoder.stages.1.blocks.1.conv2.norm.bias": "encoder.stages.1.blocks.1.conv2.norm.bias",
+  "decoder.encoder.stages.1.blocks.1.conv2.all_modules.0.weight": "encoder.stages.1.blocks.1.conv2.conv.weight",
+  "decoder.encoder.stages.1.blocks.1.conv2.all_modules.0.bias": "encoder.stages.1.blocks.1.conv2.conv.bias",
+  "decoder.encoder.stages.1.blocks.1.conv2.all_modules.1.weight": "encoder.stages.1.blocks.1.conv2.norm.weight",
+  "decoder.encoder.stages.1.blocks.1.conv2.all_modules.1.bias": "encoder.stages.1.blocks.1.conv2.norm.bias",
+  "decoder.encoder.stages.1.blocks.2.conv1.conv.weight": "encoder.stages.1.blocks.2.conv1.conv.weight",
+  "decoder.encoder.stages.1.blocks.2.conv1.conv.bias": "encoder.stages.1.blocks.2.conv1.conv.bias",
+  "decoder.encoder.stages.1.blocks.2.conv1.norm.weight": "encoder.stages.1.blocks.2.conv1.norm.weight",
+  "decoder.encoder.stages.1.blocks.2.conv1.norm.bias": "encoder.stages.1.blocks.2.conv1.norm.bias",
+  "decoder.encoder.stages.1.blocks.2.conv1.all_modules.0.weight": "encoder.stages.1.blocks.2.conv1.conv.weight",
+  "decoder.encoder.stages.1.blocks.2.conv1.all_modules.0.bias": "encoder.stages.1.blocks.2.conv1.conv.bias",
+  "decoder.encoder.stages.1.blocks.2.conv1.all_modules.1.weight": "encoder.stages.1.blocks.2.conv1.norm.weight",
+  "decoder.encoder.stages.1.blocks.2.conv1.all_modules.1.bias": "encoder.stages.1.blocks.2.conv1.norm.bias",
+  "decoder.encoder.stages.1.blocks.2.conv2.conv.weight": "encoder.stages.1.blocks.2.conv2.conv.weight",
+  "decoder.encoder.stages.1.blocks.2.conv2.conv.bias": "encoder.stages.1.blocks.2.conv2.conv.bias",
+  "decoder.encoder.stages.1.blocks.2.conv2.norm.weight": "encoder.stages.1.blocks.2.conv2.norm.weight",
+  "decoder.encoder.stages.1.blocks.2.conv2.norm.bias": "encoder.stages.1.blocks.2.conv2.norm.bias",
+  "decoder.encoder.stages.1.blocks.2.conv2.all_modules.0.weight": "encoder.stages.1.blocks.2.conv2.conv.weight",
+  "decoder.encoder.stages.1.blocks.2.conv2.all_modules.0.bias": "encoder.stages.1.blocks.2.conv2.conv.bias",
+  "decoder.encoder.stages.1.blocks.2.conv2.all_modules.1.weight": "encoder.stages.1.blocks.2.conv2.norm.weight",
+  "decoder.encoder.stages.1.blocks.2.conv2.all_modules.1.bias": "encoder.stages.1.blocks.2.conv2.norm.bias",
+  "decoder.encoder.stages.2.blocks.0.conv1.conv.weight": "encoder.stages.2.blocks.0.conv1.conv.weight",
+  "decoder.encoder.stages.2.blocks.0.conv1.conv.bias": "encoder.stages.2.blocks.0.conv1.conv.bias",
+  "decoder.encoder.stages.2.blocks.0.conv1.norm.weight": "encoder.stages.2.blocks.0.conv1.norm.weight",
+  "decoder.encoder.stages.2.blocks.0.conv1.norm.bias": "encoder.stages.2.blocks.0.conv1.norm.bias",
+  "decoder.encoder.stages.2.blocks.0.conv1.all_modules.0.weight": "encoder.stages.2.blocks.0.conv1.conv.weight",
+  "decoder.encoder.stages.2.blocks.0.conv1.all_modules.0.bias": "encoder.stages.2.blocks.0.conv1.conv.bias",
+  "decoder.encoder.stages.2.blocks.0.conv1.all_modules.1.weight": "encoder.stages.2.blocks.0.conv1.norm.weight",
+  "decoder.encoder.stages.2.blocks.0.conv1.all_modules.1.bias": "encoder.stages.2.blocks.0.conv1.norm.bias",
+  "decoder.encoder.stages.2.blocks.0.conv2.conv.weight": "encoder.stages.2.blocks.0.conv2.conv.weight",
+  "decoder.encoder.stages.2.blocks.0.conv2.conv.bias": "encoder.stages.2.blocks.0.conv2.conv.bias",
+  "decoder.encoder.stages.2.blocks.0.conv2.norm.weight": "encoder.stages.2.blocks.0.conv2.norm.weight",
+  "decoder.encoder.stages.2.blocks.0.conv2.norm.bias": "encoder.stages.2.blocks.0.conv2.norm.bias",
+  "decoder.encoder.stages.2.blocks.0.conv2.all_modules.0.weight": "encoder.stages.2.blocks.0.conv2.conv.weight",
+  "decoder.encoder.stages.2.blocks.0.conv2.all_modules.0.bias": "encoder.stages.2.blocks.0.conv2.conv.bias",
+  "decoder.encoder.stages.2.blocks.0.conv2.all_modules.1.weight": "encoder.stages.2.blocks.0.conv2.norm.weight",
+  "decoder.encoder.stages.2.blocks.0.conv2.all_modules.1.bias": "encoder.stages.2.blocks.0.conv2.norm.bias",
+  "decoder.encoder.stages.2.blocks.0.skip.1.conv.weight": "encoder.stages.2.blocks.0.skip.1.conv.weight",
+  "decoder.encoder.stages.2.blocks.0.skip.1.norm.weight": "encoder.stages.2.blocks.0.skip.1.norm.weight",
+  "decoder.encoder.stages.2.blocks.0.skip.1.norm.bias": "encoder.stages.2.blocks.0.skip.1.norm.bias",
+  "decoder.encoder.stages.2.blocks.0.skip.1.all_modules.0.weight": "encoder.stages.2.blocks.0.skip.1.conv.weight",
+  "decoder.encoder.stages.2.blocks.0.skip.1.all_modules.1.weight": "encoder.stages.2.blocks.0.skip.1.norm.weight",
+  "decoder.encoder.stages.2.blocks.0.skip.1.all_modules.1.bias": "encoder.stages.2.blocks.0.skip.1.norm.bias",
+  "decoder.encoder.stages.2.blocks.1.conv1.conv.weight": "encoder.stages.2.blocks.1.conv1.conv.weight",
+  "decoder.encoder.stages.2.blocks.1.conv1.conv.bias": "encoder.stages.2.blocks.1.conv1.conv.bias",
+  "decoder.encoder.stages.2.blocks.1.conv1.norm.weight": "encoder.stages.2.blocks.1.conv1.norm.weight",
+  "decoder.encoder.stages.2.blocks.1.conv1.norm.bias": "encoder.stages.2.blocks.1.conv1.norm.bias",
+  "decoder.encoder.stages.2.blocks.1.conv1.all_modules.0.weight": "encoder.stages.2.blocks.1.conv1.conv.weight",
+  "decoder.encoder.stages.2.blocks.1.conv1.all_modules.0.bias": "encoder.stages.2.blocks.1.conv1.conv.bias",
+  "decoder.encoder.stages.2.blocks.1.conv1.all_modules.1.weight": "encoder.stages.2.blocks.1.conv1.norm.weight",
+  "decoder.encoder.stages.2.blocks.1.conv1.all_modules.1.bias": "encoder.stages.2.blocks.1.conv1.norm.bias",
+  "decoder.encoder.stages.2.blocks.1.conv2.conv.weight": "encoder.stages.2.blocks.1.conv2.conv.weight",
+  "decoder.encoder.stages.2.blocks.1.conv2.conv.bias": "encoder.stages.2.blocks.1.conv2.conv.bias",
+  "decoder.encoder.stages.2.blocks.1.conv2.norm.weight": "encoder.stages.2.blocks.1.conv2.norm.weight",
+  "decoder.encoder.stages.2.blocks.1.conv2.norm.bias": "encoder.stages.2.blocks.1.conv2.norm.bias",
+  "decoder.encoder.stages.2.blocks.1.conv2.all_modules.0.weight": "encoder.stages.2.blocks.1.conv2.conv.weight",
+  "decoder.encoder.stages.2.blocks.1.conv2.all_modules.0.bias": "encoder.stages.2.blocks.1.conv2.conv.bias",
+  "decoder.encoder.stages.2.blocks.1.conv2.all_modules.1.weight": "encoder.stages.2.blocks.1.conv2.norm.weight",
+  "decoder.encoder.stages.2.blocks.1.conv2.all_modules.1.bias": "encoder.stages.2.blocks.1.conv2.norm.bias",
+  "decoder.encoder.stages.2.blocks.2.conv1.conv.weight": "encoder.stages.2.blocks.2.conv1.conv.weight",
+  "decoder.encoder.stages.2.blocks.2.conv1.conv.bias": "encoder.stages.2.blocks.2.conv1.conv.bias",
+  "decoder.encoder.stages.2.blocks.2.conv1.norm.weight": "encoder.stages.2.blocks.2.conv1.norm.weight",
+  "decoder.encoder.stages.2.blocks.2.conv1.norm.bias": "encoder.stages.2.blocks.2.conv1.norm.bias",
+  "decoder.encoder.stages.2.blocks.2.conv1.all_modules.0.weight": "encoder.stages.2.blocks.2.conv1.conv.weight",
+  "decoder.encoder.stages.2.blocks.2.conv1.all_modules.0.bias": "encoder.stages.2.blocks.2.conv1.conv.bias",
+  "decoder.encoder.stages.2.blocks.2.conv1.all_modules.1.weight": "encoder.stages.2.blocks.2.conv1.norm.weight",
+  "decoder.encoder.stages.2.blocks.2.conv1.all_modules.1.bias": "encoder.stages.2.blocks.2.conv1.norm.bias",
+  "decoder.encoder.stages.2.blocks.2.conv2.conv.weight": "encoder.stages.2.blocks.2.conv2.conv.weight",
+  "decoder.encoder.stages.2.blocks.2.conv2.conv.bias": "encoder.stages.2.blocks.2.conv2.conv.bias",
+  "decoder.encoder.stages.2.blocks.2.conv2.norm.weight": "encoder.stages.2.blocks.2.conv2.norm.weight",
+  "decoder.encoder.stages.2.blocks.2.conv2.norm.bias": "encoder.stages.2.blocks.2.conv2.norm.bias",
+  "decoder.encoder.stages.2.blocks.2.conv2.all_modules.0.weight": "encoder.stages.2.blocks.2.conv2.conv.weight",
+  "decoder.encoder.stages.2.blocks.2.conv2.all_modules.0.bias": "encoder.stages.2.blocks.2.conv2.conv.bias",
+  "decoder.encoder.stages.2.blocks.2.conv2.all_modules.1.weight": "encoder.stages.2.blocks.2.conv2.norm.weight",
+  "decoder.encoder.stages.2.blocks.2.conv2.all_modules.1.bias": "encoder.stages.2.blocks.2.conv2.norm.bias",
+  "decoder.encoder.stages.2.blocks.3.conv1.conv.weight": "encoder.stages.2.blocks.3.conv1.conv.weight",
+  "decoder.encoder.stages.2.blocks.3.conv1.conv.bias": "encoder.stages.2.blocks.3.conv1.conv.bias",
+  "decoder.encoder.stages.2.blocks.3.conv1.norm.weight": "encoder.stages.2.blocks.3.conv1.norm.weight",
+  "decoder.encoder.stages.2.blocks.3.conv1.norm.bias": "encoder.stages.2.blocks.3.conv1.norm.bias",
+  "decoder.encoder.stages.2.blocks.3.conv1.all_modules.0.weight": "encoder.stages.2.blocks.3.conv1.conv.weight",
+  "decoder.encoder.stages.2.blocks.3.conv1.all_modules.0.bias": "encoder.stages.2.blocks.3.conv1.conv.bias",
+  "decoder.encoder.stages.2.blocks.3.conv1.all_modules.1.weight": "encoder.stages.2.blocks.3.conv1.norm.weight",
+  "decoder.encoder.stages.2.blocks.3.conv1.all_modules.1.bias": "encoder.stages.2.blocks.3.conv1.norm.bias",
+  "decoder.encoder.stages.2.blocks.3.conv2.conv.weight": "encoder.stages.2.blocks.3.conv2.conv.weight",
+  "decoder.encoder.stages.2.blocks.3.conv2.conv.bias": "encoder.stages.2.blocks.3.conv2.conv.bias",
+  "decoder.encoder.stages.2.blocks.3.conv2.norm.weight": "encoder.stages.2.blocks.3.conv2.norm.weight",
+  "decoder.encoder.stages.2.blocks.3.conv2.norm.bias": "encoder.stages.2.blocks.3.conv2.norm.bias",
+  "decoder.encoder.stages.2.blocks.3.conv2.all_modules.0.weight": "encoder.stages.2.blocks.3.conv2.conv.weight",
+  "decoder.encoder.stages.2.blocks.3.conv2.all_modules.0.bias": "encoder.stages.2.blocks.3.conv2.conv.bias",
+  "decoder.encoder.stages.2.blocks.3.conv2.all_modules.1.weight": "encoder.stages.2.blocks.3.conv2.norm.weight",
+  "decoder.encoder.stages.2.blocks.3.conv2.all_modules.1.bias": "encoder.stages.2.blocks.3.conv2.norm.bias",
+  "decoder.encoder.stages.3.blocks.0.conv1.conv.weight": "encoder.stages.3.blocks.0.conv1.conv.weight",
+  "decoder.encoder.stages.3.blocks.0.conv1.conv.bias": "encoder.stages.3.blocks.0.conv1.conv.bias",
+  "decoder.encoder.stages.3.blocks.0.conv1.norm.weight": "encoder.stages.3.blocks.0.conv1.norm.weight",
+  "decoder.encoder.stages.3.blocks.0.conv1.norm.bias": "encoder.stages.3.blocks.0.conv1.norm.bias",
+  "decoder.encoder.stages.3.blocks.0.conv1.all_modules.0.weight": "encoder.stages.3.blocks.0.conv1.conv.weight",
+  "decoder.encoder.stages.3.blocks.0.conv1.all_modules.0.bias": "encoder.stages.3.blocks.0.conv1.conv.bias",
+  "decoder.encoder.stages.3.blocks.0.conv1.all_modules.1.weight": "encoder.stages.3.blocks.0.conv1.norm.weight",
+  "decoder.encoder.stages.3.blocks.0.conv1.all_modules.1.bias": "encoder.stages.3.blocks.0.conv1.norm.bias",
+  "decoder.encoder.stages.3.blocks.0.conv2.conv.weight": "encoder.stages.3.blocks.0.conv2.conv.weight",
+  "decoder.encoder.stages.3.blocks.0.conv2.conv.bias": "encoder.stages.3.blocks.0.conv2.conv.bias",
+  "decoder.encoder.stages.3.blocks.0.conv2.norm.weight": "encoder.stages.3.blocks.0.conv2.norm.weight",
+  "decoder.encoder.stages.3.blocks.0.conv2.norm.bias": "encoder.stages.3.blocks.0.conv2.norm.bias",
+  "decoder.encoder.stages.3.blocks.0.conv2.all_modules.0.weight": "encoder.stages.3.blocks.0.conv2.conv.weight",
+  "decoder.encoder.stages.3.blocks.0.conv2.all_modules.0.bias": "encoder.stages.3.blocks.0.conv2.conv.bias",
+  "decoder.encoder.stages.3.blocks.0.conv2.all_modules.1.weight": "encoder.stages.3.blocks.0.conv2.norm.weight",
+  "decoder.encoder.stages.3.blocks.0.conv2.all_modules.1.bias": "encoder.stages.3.blocks.0.conv2.norm.bias",
+  "decoder.encoder.stages.3.blocks.0.skip.1.conv.weight": "encoder.stages.3.blocks.0.skip.1.conv.weight",
+  "decoder.encoder.stages.3.blocks.0.skip.1.norm.weight": "encoder.stages.3.blocks.0.skip.1.norm.weight",
+  "decoder.encoder.stages.3.blocks.0.skip.1.norm.bias": "encoder.stages.3.blocks.0.skip.1.norm.bias",
+  "decoder.encoder.stages.3.blocks.0.skip.1.all_modules.0.weight": "encoder.stages.3.blocks.0.skip.1.conv.weight",
+  "decoder.encoder.stages.3.blocks.0.skip.1.all_modules.1.weight": "encoder.stages.3.blocks.0.skip.1.norm.weight",
+  "decoder.encoder.stages.3.blocks.0.skip.1.all_modules.1.bias": "encoder.stages.3.blocks.0.skip.1.norm.bias",
+  "decoder.encoder.stages.3.blocks.1.conv1.conv.weight": "encoder.stages.3.blocks.1.conv1.conv.weight",
+  "decoder.encoder.stages.3.blocks.1.conv1.conv.bias": "encoder.stages.3.blocks.1.conv1.conv.bias",
+  "decoder.encoder.stages.3.blocks.1.conv1.norm.weight": "encoder.stages.3.blocks.1.conv1.norm.weight",
+  "decoder.encoder.stages.3.blocks.1.conv1.norm.bias": "encoder.stages.3.blocks.1.conv1.norm.bias",
+  "decoder.encoder.stages.3.blocks.1.conv1.all_modules.0.weight": "encoder.stages.3.blocks.1.conv1.conv.weight",
+  "decoder.encoder.stages.3.blocks.1.conv1.all_modules.0.bias": "encoder.stages.3.blocks.1.conv1.conv.bias",
+  "decoder.encoder.stages.3.blocks.1.conv1.all_modules.1.weight": "encoder.stages.3.blocks.1.conv1.norm.weight",
+  "decoder.encoder.stages.3.blocks.1.conv1.all_modules.1.bias": "encoder.stages.3.blocks.1.conv1.norm.bias",
+  "decoder.encoder.stages.3.blocks.1.conv2.conv.weight": "encoder.stages.3.blocks.1.conv2.conv.weight",
+  "decoder.encoder.stages.3.blocks.1.conv2.conv.bias": "encoder.stages.3.blocks.1.conv2.conv.bias",
+  "decoder.encoder.stages.3.blocks.1.conv2.norm.weight": "encoder.stages.3.blocks.1.conv2.norm.weight",
+  "decoder.encoder.stages.3.blocks.1.conv2.norm.bias": "encoder.stages.3.blocks.1.conv2.norm.bias",
+  "decoder.encoder.stages.3.blocks.1.conv2.all_modules.0.weight": "encoder.stages.3.blocks.1.conv2.conv.weight",
+  "decoder.encoder.stages.3.blocks.1.conv2.all_modules.0.bias": "encoder.stages.3.blocks.1.conv2.conv.bias",
+  "decoder.encoder.stages.3.blocks.1.conv2.all_modules.1.weight": "encoder.stages.3.blocks.1.conv2.norm.weight",
+  "decoder.encoder.stages.3.blocks.1.conv2.all_modules.1.bias": "encoder.stages.3.blocks.1.conv2.norm.bias",
+  "decoder.encoder.stages.3.blocks.2.conv1.conv.weight": "encoder.stages.3.blocks.2.conv1.conv.weight",
+  "decoder.encoder.stages.3.blocks.2.conv1.conv.bias": "encoder.stages.3.blocks.2.conv1.conv.bias",
+  "decoder.encoder.stages.3.blocks.2.conv1.norm.weight": "encoder.stages.3.blocks.2.conv1.norm.weight",
+  "decoder.encoder.stages.3.blocks.2.conv1.norm.bias": "encoder.stages.3.blocks.2.conv1.norm.bias",
+  "decoder.encoder.stages.3.blocks.2.conv1.all_modules.0.weight": "encoder.stages.3.blocks.2.conv1.conv.weight",
+  "decoder.encoder.stages.3.blocks.2.conv1.all_modules.0.bias": "encoder.stages.3.blocks.2.conv1.conv.bias",
+  "decoder.encoder.stages.3.blocks.2.conv1.all_modules.1.weight": "encoder.stages.3.blocks.2.conv1.norm.weight",
+  "decoder.encoder.stages.3.blocks.2.conv1.all_modules.1.bias": "encoder.stages.3.blocks.2.conv1.norm.bias",
+  "decoder.encoder.stages.3.blocks.2.conv2.conv.weight": "encoder.stages.3.blocks.2.conv2.conv.weight",
+  "decoder.encoder.stages.3.blocks.2.conv2.conv.bias": "encoder.stages.3.blocks.2.conv2.conv.bias",
+  "decoder.encoder.stages.3.blocks.2.conv2.norm.weight": "encoder.stages.3.blocks.2.conv2.norm.weight",
+  "decoder.encoder.stages.3.blocks.2.conv2.norm.bias": "encoder.stages.3.blocks.2.conv2.norm.bias",
+  "decoder.encoder.stages.3.blocks.2.conv2.all_modules.0.weight": "encoder.stages.3.blocks.2.conv2.conv.weight",
+  "decoder.encoder.stages.3.blocks.2.conv2.all_modules.0.bias": "encoder.stages.3.blocks.2.conv2.conv.bias",
+  "decoder.encoder.stages.3.blocks.2.conv2.all_modules.1.weight": "encoder.stages.3.blocks.2.conv2.norm.weight",
+  "decoder.encoder.stages.3.blocks.2.conv2.all_modules.1.bias": "encoder.stages.3.blocks.2.conv2.norm.bias",
+  "decoder.encoder.stages.3.blocks.3.conv1.conv.weight": "encoder.stages.3.blocks.3.conv1.conv.weight",
+  "decoder.encoder.stages.3.blocks.3.conv1.conv.bias": "encoder.stages.3.blocks.3.conv1.conv.bias",
+  "decoder.encoder.stages.3.blocks.3.conv1.norm.weight": "encoder.stages.3.blocks.3.conv1.norm.weight",
+  "decoder.encoder.stages.3.blocks.3.conv1.norm.bias": "encoder.stages.3.blocks.3.conv1.norm.bias",
+  "decoder.encoder.stages.3.blocks.3.conv1.all_modules.0.weight": "encoder.stages.3.blocks.3.conv1.conv.weight",
+  "decoder.encoder.stages.3.blocks.3.conv1.all_modules.0.bias": "encoder.stages.3.blocks.3.conv1.conv.bias",
+  "decoder.encoder.stages.3.blocks.3.conv1.all_modules.1.weight": "encoder.stages.3.blocks.3.conv1.norm.weight",
+  "decoder.encoder.stages.3.blocks.3.conv1.all_modules.1.bias": "encoder.stages.3.blocks.3.conv1.norm.bias",
+  "decoder.encoder.stages.3.blocks.3.conv2.conv.weight": "encoder.stages.3.blocks.3.conv2.conv.weight",
+  "decoder.encoder.stages.3.blocks.3.conv2.conv.bias": "encoder.stages.3.blocks.3.conv2.conv.bias",
+  "decoder.encoder.stages.3.blocks.3.conv2.norm.weight": "encoder.stages.3.blocks.3.conv2.norm.weight",
+  "decoder.encoder.stages.3.blocks.3.conv2.norm.bias": "encoder.stages.3.blocks.3.conv2.norm.bias",
+  "decoder.encoder.stages.3.blocks.3.conv2.all_modules.0.weight": "encoder.stages.3.blocks.3.conv2.conv.weight",
+  "decoder.encoder.stages.3.blocks.3.conv2.all_modules.0.bias": "encoder.stages.3.blocks.3.conv2.conv.bias",
+  "decoder.encoder.stages.3.blocks.3.conv2.all_modules.1.weight": "encoder.stages.3.blocks.3.conv2.norm.weight",
+  "decoder.encoder.stages.3.blocks.3.conv2.all_modules.1.bias": "encoder.stages.3.blocks.3.conv2.norm.bias",
+  "decoder.encoder.stages.3.blocks.4.conv1.conv.weight": "encoder.stages.3.blocks.4.conv1.conv.weight",
+  "decoder.encoder.stages.3.blocks.4.conv1.conv.bias": "encoder.stages.3.blocks.4.conv1.conv.bias",
+  "decoder.encoder.stages.3.blocks.4.conv1.norm.weight": "encoder.stages.3.blocks.4.conv1.norm.weight",
+  "decoder.encoder.stages.3.blocks.4.conv1.norm.bias": "encoder.stages.3.blocks.4.conv1.norm.bias",
+  "decoder.encoder.stages.3.blocks.4.conv1.all_modules.0.weight": "encoder.stages.3.blocks.4.conv1.conv.weight",
+  "decoder.encoder.stages.3.blocks.4.conv1.all_modules.0.bias": "encoder.stages.3.blocks.4.conv1.conv.bias",
+  "decoder.encoder.stages.3.blocks.4.conv1.all_modules.1.weight": "encoder.stages.3.blocks.4.conv1.norm.weight",
+  "decoder.encoder.stages.3.blocks.4.conv1.all_modules.1.bias": "encoder.stages.3.blocks.4.conv1.norm.bias",
+  "decoder.encoder.stages.3.blocks.4.conv2.conv.weight": "encoder.stages.3.blocks.4.conv2.conv.weight",
+  "decoder.encoder.stages.3.blocks.4.conv2.conv.bias": "encoder.stages.3.blocks.4.conv2.conv.bias",
+  "decoder.encoder.stages.3.blocks.4.conv2.norm.weight": "encoder.stages.3.blocks.4.conv2.norm.weight",
+  "decoder.encoder.stages.3.blocks.4.conv2.norm.bias": "encoder.stages.3.blocks.4.conv2.norm.bias",
+  "decoder.encoder.stages.3.blocks.4.conv2.all_modules.0.weight": "encoder.stages.3.blocks.4.conv2.conv.weight",
+  "decoder.encoder.stages.3.blocks.4.conv2.all_modules.0.bias": "encoder.stages.3.blocks.4.conv2.conv.bias",
+  "decoder.encoder.stages.3.blocks.4.conv2.all_modules.1.weight": "encoder.stages.3.blocks.4.conv2.norm.weight",
+  "decoder.encoder.stages.3.blocks.4.conv2.all_modules.1.bias": "encoder.stages.3.blocks.4.conv2.norm.bias",
+  "decoder.encoder.stages.3.blocks.5.conv1.conv.weight": "encoder.stages.3.blocks.5.conv1.conv.weight",
+  "decoder.encoder.stages.3.blocks.5.conv1.conv.bias": "encoder.stages.3.blocks.5.conv1.conv.bias",
+  "decoder.encoder.stages.3.blocks.5.conv1.norm.weight": "encoder.stages.3.blocks.5.conv1.norm.weight",
+  "decoder.encoder.stages.3.blocks.5.conv1.norm.bias": "encoder.stages.3.blocks.5.conv1.norm.bias",
+  "decoder.encoder.stages.3.blocks.5.conv1.all_modules.0.weight": "encoder.stages.3.blocks.5.conv1.conv.weight",
+  "decoder.encoder.stages.3.blocks.5.conv1.all_modules.0.bias": "encoder.stages.3.blocks.5.conv1.conv.bias",
+  "decoder.encoder.stages.3.blocks.5.conv1.all_modules.1.weight": "encoder.stages.3.blocks.5.conv1.norm.weight",
+  "decoder.encoder.stages.3.blocks.5.conv1.all_modules.1.bias": "encoder.stages.3.blocks.5.conv1.norm.bias",
+  "decoder.encoder.stages.3.blocks.5.conv2.conv.weight": "encoder.stages.3.blocks.5.conv2.conv.weight",
+  "decoder.encoder.stages.3.blocks.5.conv2.conv.bias": "encoder.stages.3.blocks.5.conv2.conv.bias",
+  "decoder.encoder.stages.3.blocks.5.conv2.norm.weight": "encoder.stages.3.blocks.5.conv2.norm.weight",
+  "decoder.encoder.stages.3.blocks.5.conv2.norm.bias": "encoder.stages.3.blocks.5.conv2.norm.bias",
+  "decoder.encoder.stages.3.blocks.5.conv2.all_modules.0.weight": "encoder.stages.3.blocks.5.conv2.conv.weight",
+  "decoder.encoder.stages.3.blocks.5.conv2.all_modules.0.bias": "encoder.stages.3.blocks.5.conv2.conv.bias",
+  "decoder.encoder.stages.3.blocks.5.conv2.all_modules.1.weight": "encoder.stages.3.blocks.5.conv2.norm.weight",
+  "decoder.encoder.stages.3.blocks.5.conv2.all_modules.1.bias": "encoder.stages.3.blocks.5.conv2.norm.bias",
+  "decoder.encoder.stages.4.blocks.0.conv1.conv.weight": "encoder.stages.4.blocks.0.conv1.conv.weight",
+  "decoder.encoder.stages.4.blocks.0.conv1.conv.bias": "encoder.stages.4.blocks.0.conv1.conv.bias",
+  "decoder.encoder.stages.4.blocks.0.conv1.norm.weight": "encoder.stages.4.blocks.0.conv1.norm.weight",
+  "decoder.encoder.stages.4.blocks.0.conv1.norm.bias": "encoder.stages.4.blocks.0.conv1.norm.bias",
+  "decoder.encoder.stages.4.blocks.0.conv1.all_modules.0.weight": "encoder.stages.4.blocks.0.conv1.conv.weight",
+  "decoder.encoder.stages.4.blocks.0.conv1.all_modules.0.bias": "encoder.stages.4.blocks.0.conv1.conv.bias",
+  "decoder.encoder.stages.4.blocks.0.conv1.all_modules.1.weight": "encoder.stages.4.blocks.0.conv1.norm.weight",
+  "decoder.encoder.stages.4.blocks.0.conv1.all_modules.1.bias": "encoder.stages.4.blocks.0.conv1.norm.bias",
+  "decoder.encoder.stages.4.blocks.0.conv2.conv.weight": "encoder.stages.4.blocks.0.conv2.conv.weight",
+  "decoder.encoder.stages.4.blocks.0.conv2.conv.bias": "encoder.stages.4.blocks.0.conv2.conv.bias",
+  "decoder.encoder.stages.4.blocks.0.conv2.norm.weight": "encoder.stages.4.blocks.0.conv2.norm.weight",
+  "decoder.encoder.stages.4.blocks.0.conv2.norm.bias": "encoder.stages.4.blocks.0.conv2.norm.bias",
+  "decoder.encoder.stages.4.blocks.0.conv2.all_modules.0.weight": "encoder.stages.4.blocks.0.conv2.conv.weight",
+  "decoder.encoder.stages.4.blocks.0.conv2.all_modules.0.bias": "encoder.stages.4.blocks.0.conv2.conv.bias",
+  "decoder.encoder.stages.4.blocks.0.conv2.all_modules.1.weight": "encoder.stages.4.blocks.0.conv2.norm.weight",
+  "decoder.encoder.stages.4.blocks.0.conv2.all_modules.1.bias": "encoder.stages.4.blocks.0.conv2.norm.bias",
+  "decoder.encoder.stages.4.blocks.0.skip.1.conv.weight": "encoder.stages.4.blocks.0.skip.1.conv.weight",
+  "decoder.encoder.stages.4.blocks.0.skip.1.norm.weight": "encoder.stages.4.blocks.0.skip.1.norm.weight",
+  "decoder.encoder.stages.4.blocks.0.skip.1.norm.bias": "encoder.stages.4.blocks.0.skip.1.norm.bias",
+  "decoder.encoder.stages.4.blocks.0.skip.1.all_modules.0.weight": "encoder.stages.4.blocks.0.skip.1.conv.weight",
+  "decoder.encoder.stages.4.blocks.0.skip.1.all_modules.1.weight": "encoder.stages.4.blocks.0.skip.1.norm.weight",
+  "decoder.encoder.stages.4.blocks.0.skip.1.all_modules.1.bias": "encoder.stages.4.blocks.0.skip.1.norm.bias",
+  "decoder.encoder.stages.4.blocks.1.conv1.conv.weight": "encoder.stages.4.blocks.1.conv1.conv.weight",
+  "decoder.encoder.stages.4.blocks.1.conv1.conv.bias": "encoder.stages.4.blocks.1.conv1.conv.bias",
+  "decoder.encoder.stages.4.blocks.1.conv1.norm.weight": "encoder.stages.4.blocks.1.conv1.norm.weight",
+  "decoder.encoder.stages.4.blocks.1.conv1.norm.bias": "encoder.stages.4.blocks.1.conv1.norm.bias",
+  "decoder.encoder.stages.4.blocks.1.conv1.all_modules.0.weight": "encoder.stages.4.blocks.1.conv1.conv.weight",
+  "decoder.encoder.stages.4.blocks.1.conv1.all_modules.0.bias": "encoder.stages.4.blocks.1.conv1.conv.bias",
+  "decoder.encoder.stages.4.blocks.1.conv1.all_modules.1.weight": "encoder.stages.4.blocks.1.conv1.norm.weight",
+  "decoder.encoder.stages.4.blocks.1.conv1.all_modules.1.bias": "encoder.stages.4.blocks.1.conv1.norm.bias",
+  "decoder.encoder.stages.4.blocks.1.conv2.conv.weight": "encoder.stages.4.blocks.1.conv2.conv.weight",
+  "decoder.encoder.stages.4.blocks.1.conv2.conv.bias": "encoder.stages.4.blocks.1.conv2.conv.bias",
+  "decoder.encoder.stages.4.blocks.1.conv2.norm.weight": "encoder.stages.4.blocks.1.conv2.norm.weight",
+  "decoder.encoder.stages.4.blocks.1.conv2.norm.bias": "encoder.stages.4.blocks.1.conv2.norm.bias",
+  "decoder.encoder.stages.4.blocks.1.conv2.all_modules.0.weight": "encoder.stages.4.blocks.1.conv2.conv.weight",
+  "decoder.encoder.stages.4.blocks.1.conv2.all_modules.0.bias": "encoder.stages.4.blocks.1.conv2.conv.bias",
+  "decoder.encoder.stages.4.blocks.1.conv2.all_modules.1.weight": "encoder.stages.4.blocks.1.conv2.norm.weight",
+  "decoder.encoder.stages.4.blocks.1.conv2.all_modules.1.bias": "encoder.stages.4.blocks.1.conv2.norm.bias",
+  "decoder.encoder.stages.4.blocks.2.conv1.conv.weight": "encoder.stages.4.blocks.2.conv1.conv.weight",
+  "decoder.encoder.stages.4.blocks.2.conv1.conv.bias": "encoder.stages.4.blocks.2.conv1.conv.bias",
+  "decoder.encoder.stages.4.blocks.2.conv1.norm.weight": "encoder.stages.4.blocks.2.conv1.norm.weight",
+  "decoder.encoder.stages.4.blocks.2.conv1.norm.bias": "encoder.stages.4.blocks.2.conv1.norm.bias",
+  "decoder.encoder.stages.4.blocks.2.conv1.all_modules.0.weight": "encoder.stages.4.blocks.2.conv1.conv.weight",
+  "decoder.encoder.stages.4.blocks.2.conv1.all_modules.0.bias": "encoder.stages.4.blocks.2.conv1.conv.bias",
+  "decoder.encoder.stages.4.blocks.2.conv1.all_modules.1.weight": "encoder.stages.4.blocks.2.conv1.norm.weight",
+  "decoder.encoder.stages.4.blocks.2.conv1.all_modules.1.bias": "encoder.stages.4.blocks.2.conv1.norm.bias",
+  "decoder.encoder.stages.4.blocks.2.conv2.conv.weight": "encoder.stages.4.blocks.2.conv2.conv.weight",
+  "decoder.encoder.stages.4.blocks.2.conv2.conv.bias": "encoder.stages.4.blocks.2.conv2.conv.bias",
+  "decoder.encoder.stages.4.blocks.2.conv2.norm.weight": "encoder.stages.4.blocks.2.conv2.norm.weight",
+  "decoder.encoder.stages.4.blocks.2.conv2.norm.bias": "encoder.stages.4.blocks.2.conv2.norm.bias",
+  "decoder.encoder.stages.4.blocks.2.conv2.all_modules.0.weight": "encoder.stages.4.blocks.2.conv2.conv.weight",
+  "decoder.encoder.stages.4.blocks.2.conv2.all_modules.0.bias": "encoder.stages.4.blocks.2.conv2.conv.bias",
+  "decoder.encoder.stages.4.blocks.2.conv2.all_modules.1.weight": "encoder.stages.4.blocks.2.conv2.norm.weight",
+  "decoder.encoder.stages.4.blocks.2.conv2.all_modules.1.bias": "encoder.stages.4.blocks.2.conv2.norm.bias",
+  "decoder.encoder.stages.4.blocks.3.conv1.conv.weight": "encoder.stages.4.blocks.3.conv1.conv.weight",
+  "decoder.encoder.stages.4.blocks.3.conv1.conv.bias": "encoder.stages.4.blocks.3.conv1.conv.bias",
+  "decoder.encoder.stages.4.blocks.3.conv1.norm.weight": "encoder.stages.4.blocks.3.conv1.norm.weight",
+  "decoder.encoder.stages.4.blocks.3.conv1.norm.bias": "encoder.stages.4.blocks.3.conv1.norm.bias",
+  "decoder.encoder.stages.4.blocks.3.conv1.all_modules.0.weight": "encoder.stages.4.blocks.3.conv1.conv.weight",
+  "decoder.encoder.stages.4.blocks.3.conv1.all_modules.0.bias": "encoder.stages.4.blocks.3.conv1.conv.bias",
+  "decoder.encoder.stages.4.blocks.3.conv1.all_modules.1.weight": "encoder.stages.4.blocks.3.conv1.norm.weight",
+  "decoder.encoder.stages.4.blocks.3.conv1.all_modules.1.bias": "encoder.stages.4.blocks.3.conv1.norm.bias",
+  "decoder.encoder.stages.4.blocks.3.conv2.conv.weight": "encoder.stages.4.blocks.3.conv2.conv.weight",
+  "decoder.encoder.stages.4.blocks.3.conv2.conv.bias": "encoder.stages.4.blocks.3.conv2.conv.bias",
+  "decoder.encoder.stages.4.blocks.3.conv2.norm.weight": "encoder.stages.4.blocks.3.conv2.norm.weight",
+  "decoder.encoder.stages.4.blocks.3.conv2.norm.bias": "encoder.stages.4.blocks.3.conv2.norm.bias",
+  "decoder.encoder.stages.4.blocks.3.conv2.all_modules.0.weight": "encoder.stages.4.blocks.3.conv2.conv.weight",
+  "decoder.encoder.stages.4.blocks.3.conv2.all_modules.0.bias": "encoder.stages.4.blocks.3.conv2.conv.bias",
+  "decoder.encoder.stages.4.blocks.3.conv2.all_modules.1.weight": "encoder.stages.4.blocks.3.conv2.norm.weight",
+  "decoder.encoder.stages.4.blocks.3.conv2.all_modules.1.bias": "encoder.stages.4.blocks.3.conv2.norm.bias",
+  "decoder.encoder.stages.4.blocks.4.conv1.conv.weight": "encoder.stages.4.blocks.4.conv1.conv.weight",
+  "decoder.encoder.stages.4.blocks.4.conv1.conv.bias": "encoder.stages.4.blocks.4.conv1.conv.bias",
+  "decoder.encoder.stages.4.blocks.4.conv1.norm.weight": "encoder.stages.4.blocks.4.conv1.norm.weight",
+  "decoder.encoder.stages.4.blocks.4.conv1.norm.bias": "encoder.stages.4.blocks.4.conv1.norm.bias",
+  "decoder.encoder.stages.4.blocks.4.conv1.all_modules.0.weight": "encoder.stages.4.blocks.4.conv1.conv.weight",
+  "decoder.encoder.stages.4.blocks.4.conv1.all_modules.0.bias": "encoder.stages.4.blocks.4.conv1.conv.bias",
+  "decoder.encoder.stages.4.blocks.4.conv1.all_modules.1.weight": "encoder.stages.4.blocks.4.conv1.norm.weight",
+  "decoder.encoder.stages.4.blocks.4.conv1.all_modules.1.bias": "encoder.stages.4.blocks.4.conv1.norm.bias",
+  "decoder.encoder.stages.4.blocks.4.conv2.conv.weight": "encoder.stages.4.blocks.4.conv2.conv.weight",
+  "decoder.encoder.stages.4.blocks.4.conv2.conv.bias": "encoder.stages.4.blocks.4.conv2.conv.bias",
+  "decoder.encoder.stages.4.blocks.4.conv2.norm.weight": "encoder.stages.4.blocks.4.conv2.norm.weight",
+  "decoder.encoder.stages.4.blocks.4.conv2.norm.bias": "encoder.stages.4.blocks.4.conv2.norm.bias",
+  "decoder.encoder.stages.4.blocks.4.conv2.all_modules.0.weight": "encoder.stages.4.blocks.4.conv2.conv.weight",
+  "decoder.encoder.stages.4.blocks.4.conv2.all_modules.0.bias": "encoder.stages.4.blocks.4.conv2.conv.bias",
+  "decoder.encoder.stages.4.blocks.4.conv2.all_modules.1.weight": "encoder.stages.4.blocks.4.conv2.norm.weight",
+  "decoder.encoder.stages.4.blocks.4.conv2.all_modules.1.bias": "encoder.stages.4.blocks.4.conv2.norm.bias",
+  "decoder.encoder.stages.4.blocks.5.conv1.conv.weight": "encoder.stages.4.blocks.5.conv1.conv.weight",
+  "decoder.encoder.stages.4.blocks.5.conv1.conv.bias": "encoder.stages.4.blocks.5.conv1.conv.bias",
+  "decoder.encoder.stages.4.blocks.5.conv1.norm.weight": "encoder.stages.4.blocks.5.conv1.norm.weight",
+  "decoder.encoder.stages.4.blocks.5.conv1.norm.bias": "encoder.stages.4.blocks.5.conv1.norm.bias",
+  "decoder.encoder.stages.4.blocks.5.conv1.all_modules.0.weight": "encoder.stages.4.blocks.5.conv1.conv.weight",
+  "decoder.encoder.stages.4.blocks.5.conv1.all_modules.0.bias": "encoder.stages.4.blocks.5.conv1.conv.bias",
+  "decoder.encoder.stages.4.blocks.5.conv1.all_modules.1.weight": "encoder.stages.4.blocks.5.conv1.norm.weight",
+  "decoder.encoder.stages.4.blocks.5.conv1.all_modules.1.bias": "encoder.stages.4.blocks.5.conv1.norm.bias",
+  "decoder.encoder.stages.4.blocks.5.conv2.conv.weight": "encoder.stages.4.blocks.5.conv2.conv.weight",
+  "decoder.encoder.stages.4.blocks.5.conv2.conv.bias": "encoder.stages.4.blocks.5.conv2.conv.bias",
+  "decoder.encoder.stages.4.blocks.5.conv2.norm.weight": "encoder.stages.4.blocks.5.conv2.norm.weight",
+  "decoder.encoder.stages.4.blocks.5.conv2.norm.bias": "encoder.stages.4.blocks.5.conv2.norm.bias",
+  "decoder.encoder.stages.4.blocks.5.conv2.all_modules.0.weight": "encoder.stages.4.blocks.5.conv2.conv.weight",
+  "decoder.encoder.stages.4.blocks.5.conv2.all_modules.0.bias": "encoder.stages.4.blocks.5.conv2.conv.bias",
+  "decoder.encoder.stages.4.blocks.5.conv2.all_modules.1.weight": "encoder.stages.4.blocks.5.conv2.norm.weight",
+  "decoder.encoder.stages.4.blocks.5.conv2.all_modules.1.bias": "encoder.stages.4.blocks.5.conv2.norm.bias",
+  "decoder.encoder.stages.5.blocks.0.conv1.conv.weight": "encoder.stages.5.blocks.0.conv1.conv.weight",
+  "decoder.encoder.stages.5.blocks.0.conv1.conv.bias": "encoder.stages.5.blocks.0.conv1.conv.bias",
+  "decoder.encoder.stages.5.blocks.0.conv1.norm.weight": "encoder.stages.5.blocks.0.conv1.norm.weight",
+  "decoder.encoder.stages.5.blocks.0.conv1.norm.bias": "encoder.stages.5.blocks.0.conv1.norm.bias",
+  "decoder.encoder.stages.5.blocks.0.conv1.all_modules.0.weight": "encoder.stages.5.blocks.0.conv1.conv.weight",
+  "decoder.encoder.stages.5.blocks.0.conv1.all_modules.0.bias": "encoder.stages.5.blocks.0.conv1.conv.bias",
+  "decoder.encoder.stages.5.blocks.0.conv1.all_modules.1.weight": "encoder.stages.5.blocks.0.conv1.norm.weight",
+  "decoder.encoder.stages.5.blocks.0.conv1.all_modules.1.bias": "encoder.stages.5.blocks.0.conv1.norm.bias",
+  "decoder.encoder.stages.5.blocks.0.conv2.conv.weight": "encoder.stages.5.blocks.0.conv2.conv.weight",
+  "decoder.encoder.stages.5.blocks.0.conv2.conv.bias": "encoder.stages.5.blocks.0.conv2.conv.bias",
+  "decoder.encoder.stages.5.blocks.0.conv2.norm.weight": "encoder.stages.5.blocks.0.conv2.norm.weight",
+  "decoder.encoder.stages.5.blocks.0.conv2.norm.bias": "encoder.stages.5.blocks.0.conv2.norm.bias",
+  "decoder.encoder.stages.5.blocks.0.conv2.all_modules.0.weight": "encoder.stages.5.blocks.0.conv2.conv.weight",
+  "decoder.encoder.stages.5.blocks.0.conv2.all_modules.0.bias": "encoder.stages.5.blocks.0.conv2.conv.bias",
+  "decoder.encoder.stages.5.blocks.0.conv2.all_modules.1.weight": "encoder.stages.5.blocks.0.conv2.norm.weight",
+  "decoder.encoder.stages.5.blocks.0.conv2.all_modules.1.bias": "encoder.stages.5.blocks.0.conv2.norm.bias",
+  "decoder.encoder.stages.5.blocks.1.conv1.conv.weight": "encoder.stages.5.blocks.1.conv1.conv.weight",
+  "decoder.encoder.stages.5.blocks.1.conv1.conv.bias": "encoder.stages.5.blocks.1.conv1.conv.bias",
+  "decoder.encoder.stages.5.blocks.1.conv1.norm.weight": "encoder.stages.5.blocks.1.conv1.norm.weight",
+  "decoder.encoder.stages.5.blocks.1.conv1.norm.bias": "encoder.stages.5.blocks.1.conv1.norm.bias",
+  "decoder.encoder.stages.5.blocks.1.conv1.all_modules.0.weight": "encoder.stages.5.blocks.1.conv1.conv.weight",
+  "decoder.encoder.stages.5.blocks.1.conv1.all_modules.0.bias": "encoder.stages.5.blocks.1.conv1.conv.bias",
+  "decoder.encoder.stages.5.blocks.1.conv1.all_modules.1.weight": "encoder.stages.5.blocks.1.conv1.norm.weight",
+  "decoder.encoder.stages.5.blocks.1.conv1.all_modules.1.bias": "encoder.stages.5.blocks.1.conv1.norm.bias",
+  "decoder.encoder.stages.5.blocks.1.conv2.conv.weight": "encoder.stages.5.blocks.1.conv2.conv.weight",
+  "decoder.encoder.stages.5.blocks.1.conv2.conv.bias": "encoder.stages.5.blocks.1.conv2.conv.bias",
+  "decoder.encoder.stages.5.blocks.1.conv2.norm.weight": "encoder.stages.5.blocks.1.conv2.norm.weight",
+  "decoder.encoder.stages.5.blocks.1.conv2.norm.bias": "encoder.stages.5.blocks.1.conv2.norm.bias",
+  "decoder.encoder.stages.5.blocks.1.conv2.all_modules.0.weight": "encoder.stages.5.blocks.1.conv2.conv.weight",
+  "decoder.encoder.stages.5.blocks.1.conv2.all_modules.0.bias": "encoder.stages.5.blocks.1.conv2.conv.bias",
+  "decoder.encoder.stages.5.blocks.1.conv2.all_modules.1.weight": "encoder.stages.5.blocks.1.conv2.norm.weight",
+  "decoder.encoder.stages.5.blocks.1.conv2.all_modules.1.bias": "encoder.stages.5.blocks.1.conv2.norm.bias",
+  "decoder.encoder.stages.5.blocks.2.conv1.conv.weight": "encoder.stages.5.blocks.2.conv1.conv.weight",
+  "decoder.encoder.stages.5.blocks.2.conv1.conv.bias": "encoder.stages.5.blocks.2.conv1.conv.bias",
+  "decoder.encoder.stages.5.blocks.2.conv1.norm.weight": "encoder.stages.5.blocks.2.conv1.norm.weight",
+  "decoder.encoder.stages.5.blocks.2.conv1.norm.bias": "encoder.stages.5.blocks.2.conv1.norm.bias",
+  "decoder.encoder.stages.5.blocks.2.conv1.all_modules.0.weight": "encoder.stages.5.blocks.2.conv1.conv.weight",
+  "decoder.encoder.stages.5.blocks.2.conv1.all_modules.0.bias": "encoder.stages.5.blocks.2.conv1.conv.bias",
+  "decoder.encoder.stages.5.blocks.2.conv1.all_modules.1.weight": "encoder.stages.5.blocks.2.conv1.norm.weight",
+  "decoder.encoder.stages.5.blocks.2.conv1.all_modules.1.bias": "encoder.stages.5.blocks.2.conv1.norm.bias",
+  "decoder.encoder.stages.5.blocks.2.conv2.conv.weight": "encoder.stages.5.blocks.2.conv2.conv.weight",
+  "decoder.encoder.stages.5.blocks.2.conv2.conv.bias": "encoder.stages.5.blocks.2.conv2.conv.bias",
+  "decoder.encoder.stages.5.blocks.2.conv2.norm.weight": "encoder.stages.5.blocks.2.conv2.norm.weight",
+  "decoder.encoder.stages.5.blocks.2.conv2.norm.bias": "encoder.stages.5.blocks.2.conv2.norm.bias",
+  "decoder.encoder.stages.5.blocks.2.conv2.all_modules.0.weight": "encoder.stages.5.blocks.2.conv2.conv.weight",
+  "decoder.encoder.stages.5.blocks.2.conv2.all_modules.0.bias": "encoder.stages.5.blocks.2.conv2.conv.bias",
+  "decoder.encoder.stages.5.blocks.2.conv2.all_modules.1.weight": "encoder.stages.5.blocks.2.conv2.norm.weight",
+  "decoder.encoder.stages.5.blocks.2.conv2.all_modules.1.bias": "encoder.stages.5.blocks.2.conv2.norm.bias",
+  "decoder.encoder.stages.5.blocks.3.conv1.conv.weight": "encoder.stages.5.blocks.3.conv1.conv.weight",
+  "decoder.encoder.stages.5.blocks.3.conv1.conv.bias": "encoder.stages.5.blocks.3.conv1.conv.bias",
+  "decoder.encoder.stages.5.blocks.3.conv1.norm.weight": "encoder.stages.5.blocks.3.conv1.norm.weight",
+  "decoder.encoder.stages.5.blocks.3.conv1.norm.bias": "encoder.stages.5.blocks.3.conv1.norm.bias",
+  "decoder.encoder.stages.5.blocks.3.conv1.all_modules.0.weight": "encoder.stages.5.blocks.3.conv1.conv.weight",
+  "decoder.encoder.stages.5.blocks.3.conv1.all_modules.0.bias": "encoder.stages.5.blocks.3.conv1.conv.bias",
+  "decoder.encoder.stages.5.blocks.3.conv1.all_modules.1.weight": "encoder.stages.5.blocks.3.conv1.norm.weight",
+  "decoder.encoder.stages.5.blocks.3.conv1.all_modules.1.bias": "encoder.stages.5.blocks.3.conv1.norm.bias",
+  "decoder.encoder.stages.5.blocks.3.conv2.conv.weight": "encoder.stages.5.blocks.3.conv2.conv.weight",
+  "decoder.encoder.stages.5.blocks.3.conv2.conv.bias": "encoder.stages.5.blocks.3.conv2.conv.bias",
+  "decoder.encoder.stages.5.blocks.3.conv2.norm.weight": "encoder.stages.5.blocks.3.conv2.norm.weight",
+  "decoder.encoder.stages.5.blocks.3.conv2.norm.bias": "encoder.stages.5.blocks.3.conv2.norm.bias",
+  "decoder.encoder.stages.5.blocks.3.conv2.all_modules.0.weight": "encoder.stages.5.blocks.3.conv2.conv.weight",
+  "decoder.encoder.stages.5.blocks.3.conv2.all_modules.0.bias": "encoder.stages.5.blocks.3.conv2.conv.bias",
+  "decoder.encoder.stages.5.blocks.3.conv2.all_modules.1.weight": "encoder.stages.5.blocks.3.conv2.norm.weight",
+  "decoder.encoder.stages.5.blocks.3.conv2.all_modules.1.bias": "encoder.stages.5.blocks.3.conv2.norm.bias",
+  "decoder.encoder.stages.5.blocks.4.conv1.conv.weight": "encoder.stages.5.blocks.4.conv1.conv.weight",
+  "decoder.encoder.stages.5.blocks.4.conv1.conv.bias": "encoder.stages.5.blocks.4.conv1.conv.bias",
+  "decoder.encoder.stages.5.blocks.4.conv1.norm.weight": "encoder.stages.5.blocks.4.conv1.norm.weight",
+  "decoder.encoder.stages.5.blocks.4.conv1.norm.bias": "encoder.stages.5.blocks.4.conv1.norm.bias",
+  "decoder.encoder.stages.5.blocks.4.conv1.all_modules.0.weight": "encoder.stages.5.blocks.4.conv1.conv.weight",
+  "decoder.encoder.stages.5.blocks.4.conv1.all_modules.0.bias": "encoder.stages.5.blocks.4.conv1.conv.bias",
+  "decoder.encoder.stages.5.blocks.4.conv1.all_modules.1.weight": "encoder.stages.5.blocks.4.conv1.norm.weight",
+  "decoder.encoder.stages.5.blocks.4.conv1.all_modules.1.bias": "encoder.stages.5.blocks.4.conv1.norm.bias",
+  "decoder.encoder.stages.5.blocks.4.conv2.conv.weight": "encoder.stages.5.blocks.4.conv2.conv.weight",
+  "decoder.encoder.stages.5.blocks.4.conv2.conv.bias": "encoder.stages.5.blocks.4.conv2.conv.bias",
+  "decoder.encoder.stages.5.blocks.4.conv2.norm.weight": "encoder.stages.5.blocks.4.conv2.norm.weight",
+  "decoder.encoder.stages.5.blocks.4.conv2.norm.bias": "encoder.stages.5.blocks.4.conv2.norm.bias",
+  "decoder.encoder.stages.5.blocks.4.conv2.all_modules.0.weight": "encoder.stages.5.blocks.4.conv2.conv.weight",
+  "decoder.encoder.stages.5.blocks.4.conv2.all_modules.0.bias": "encoder.stages.5.blocks.4.conv2.conv.bias",
+  "decoder.encoder.stages.5.blocks.4.conv2.all_modules.1.weight": "encoder.stages.5.blocks.4.conv2.norm.weight",
+  "decoder.encoder.stages.5.blocks.4.conv2.all_modules.1.bias": "encoder.stages.5.blocks.4.conv2.norm.bias",
+  "decoder.encoder.stages.5.blocks.5.conv1.conv.weight": "encoder.stages.5.blocks.5.conv1.conv.weight",
+  "decoder.encoder.stages.5.blocks.5.conv1.conv.bias": "encoder.stages.5.blocks.5.conv1.conv.bias",
+  "decoder.encoder.stages.5.blocks.5.conv1.norm.weight": "encoder.stages.5.blocks.5.conv1.norm.weight",
+  "decoder.encoder.stages.5.blocks.5.conv1.norm.bias": "encoder.stages.5.blocks.5.conv1.norm.bias",
+  "decoder.encoder.stages.5.blocks.5.conv1.all_modules.0.weight": "encoder.stages.5.blocks.5.conv1.conv.weight",
+  "decoder.encoder.stages.5.blocks.5.conv1.all_modules.0.bias": "encoder.stages.5.blocks.5.conv1.conv.bias",
+  "decoder.encoder.stages.5.blocks.5.conv1.all_modules.1.weight": "encoder.stages.5.blocks.5.conv1.norm.weight",
+  "decoder.encoder.stages.5.blocks.5.conv1.all_modules.1.bias": "encoder.stages.5.blocks.5.conv1.norm.bias",
+  "decoder.encoder.stages.5.blocks.5.conv2.conv.weight": "encoder.stages.5.blocks.5.conv2.conv.weight",
+  "decoder.encoder.stages.5.blocks.5.conv2.conv.bias": "encoder.stages.5.blocks.5.conv2.conv.bias",
+  "decoder.encoder.stages.5.blocks.5.conv2.norm.weight": "encoder.stages.5.blocks.5.conv2.norm.weight",
+  "decoder.encoder.stages.5.blocks.5.conv2.norm.bias": "encoder.stages.5.blocks.5.conv2.norm.bias",
+  "decoder.encoder.stages.5.blocks.5.conv2.all_modules.0.weight": "encoder.stages.5.blocks.5.conv2.conv.weight",
+  "decoder.encoder.stages.5.blocks.5.conv2.all_modules.0.bias": "encoder.stages.5.blocks.5.conv2.conv.bias",
+  "decoder.encoder.stages.5.blocks.5.conv2.all_modules.1.weight": "encoder.stages.5.blocks.5.conv2.norm.weight",
+  "decoder.encoder.stages.5.blocks.5.conv2.all_modules.1.bias": "encoder.stages.5.blocks.5.conv2.norm.bias",
+  "decoder.stages.0.convs.0.all_modules.0.weight": "decoder.stages.0.convs.0.conv.weight",
+  "decoder.stages.0.convs.0.all_modules.0.bias": "decoder.stages.0.convs.0.conv.bias",
+  "decoder.stages.0.convs.0.all_modules.1.weight": "decoder.stages.0.convs.0.norm.weight",
+  "decoder.stages.0.convs.0.all_modules.1.bias": "decoder.stages.0.convs.0.norm.bias",
+  "decoder.stages.1.convs.0.all_modules.0.weight": "decoder.stages.1.convs.0.conv.weight",
+  "decoder.stages.1.convs.0.all_modules.0.bias": "decoder.stages.1.convs.0.conv.bias",
+  "decoder.stages.1.convs.0.all_modules.1.weight": "decoder.stages.1.convs.0.norm.weight",
+  "decoder.stages.1.convs.0.all_modules.1.bias": "decoder.stages.1.convs.0.norm.bias",
+  "decoder.stages.2.convs.0.all_modules.0.weight": "decoder.stages.2.convs.0.conv.weight",
+  "decoder.stages.2.convs.0.all_modules.0.bias": "decoder.stages.2.convs.0.conv.bias",
+  "decoder.stages.2.convs.0.all_modules.1.weight": "decoder.stages.2.convs.0.norm.weight",
+  "decoder.stages.2.convs.0.all_modules.1.bias": "decoder.stages.2.convs.0.norm.bias",
+  "decoder.stages.3.convs.0.all_modules.0.weight": "decoder.stages.3.convs.0.conv.weight",
+  "decoder.stages.3.convs.0.all_modules.0.bias": "decoder.stages.3.convs.0.conv.bias",
+  "decoder.stages.3.convs.0.all_modules.1.weight": "decoder.stages.3.convs.0.norm.weight",
+  "decoder.stages.3.convs.0.all_modules.1.bias": "decoder.stages.3.convs.0.norm.bias",
+  "decoder.stages.4.convs.0.all_modules.0.weight": "decoder.stages.4.convs.0.conv.weight",
+  "decoder.stages.4.convs.0.all_modules.0.bias": "decoder.stages.4.convs.0.conv.bias",
+  "decoder.stages.4.convs.0.all_modules.1.weight": "decoder.stages.4.convs.0.norm.weight",
+  "decoder.stages.4.convs.0.all_modules.1.bias": "decoder.stages.4.convs.0.norm.bias"
+ },
+ "dropped": {
+  "decoder.seg_layers.0.weight": "deep-supervision segmentation layer, unused at inference",
+  "decoder.seg_layers.0.bias": "deep-supervision segmentation layer, unused at inference",
+  "decoder.seg_layers.1.weight": "deep-supervision segmentation layer, unused at inference",
+  "decoder.seg_layers.1.bias": "deep-supervision segmentation layer, unused at inference",
+  "decoder.seg_layers.2.weight": "deep-supervision segmentation layer, unused at inference",
+  "decoder.seg_layers.2.bias": "deep-supervision segmentation layer, unused at inference",
+  "decoder.seg_layers.3.weight": "deep-supervision segmentation layer, unused at inference",
+  "decoder.seg_layers.3.bias": "deep-supervision segmentation layer, unused at inference"
+ },
+ "flops_per_patch": 4842471555072
+}

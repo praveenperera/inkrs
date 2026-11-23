@@ -1,4 +1,5 @@
-"""inkrs: GPU-resident ink inference for villa's flat ink readers (`hybrid_3d2d-seed42`, `reader-v2`, Reader V3)
+"""inkrs: GPU-resident inference for villa's ink and surface models (`hybrid_3d2d-seed42`, `reader-v2`, Reader V3,
+`surface_m7_nnunet`)
 
     import inkrs
     eng = inkrs.Engine("weights/hybrid_3d2d-seed42.safetensors")
@@ -42,6 +43,7 @@ from ._inkrs import (
 from ._inkrs import fast_presets as _fast_presets
 from ._inkrs import hecate as _hecate
 from ._inkrs import ink3d as _ink3d
+from ._inkrs import nnunet_predict as _nnunet_predict
 from ._inkrs import reader_stride as _reader_stride
 from ._inkrs import write_tiff as _write_tiff
 
@@ -56,6 +58,7 @@ __all__ = [
     "hecate",
     "ink3d",
     "load_cuda_libraries",
+    "nnunet_predict",
     "write_tiff",
 ]
 
@@ -101,6 +104,41 @@ def ink3d(
         os.fspath(checkpoint), os.fspath(volume), os.fspath(output), _device_index(device),
         None if bbox is None else tuple(int(v) for v in bbox), float(overlap), int(chunk), float(max_accum_gb),
         algo, bool(overwrite), bool(coverage),
+    )  # fmt: skip
+    return json.loads(report)
+
+
+def nnunet_predict(
+    model: str | os.PathLike,
+    volume: str | os.PathLike,
+    output: str | os.PathLike,
+    *,
+    device: Any = 0,
+    bbox: str | None = None,
+    overlap: float | None = None,
+    tta: bool = True,
+    threshold: float | None = None,
+    chunk: int | None = None,
+    max_accum_gb: float = 12.0,
+    algo: str = "find",
+    overwrite: bool = False,
+) -> dict[str, Any]:
+    """Runs an nnU-Net export as villa's `vesuvius.predict` does, writing the same binary prediction array
+
+    `model` is the `.safetensors` export from `scripts/export_nnunet.py`, with its `.json` sidecar beside it, or an
+    nnU-Net model folder, whose checkpoint is exported into the cache on first use (torch needed then);
+    `volume` a uint8 zarr v2 array or a group whose array `0` is read; `output` the new zarr array `(1, Z, Y, X)`
+    of uint8 foreground probability times 255, or 0/255 when `threshold` is set. `bbox` is villa's
+    `"z0:z1,y0:y1,x0:x1"`; `overlap`, `tta=False` and `threshold=T` match villa's `--overlap`, `--disable_tta`
+    and `--threshold --threshold_value T`, and `chunk` is the edge of a cubic `--blend_chunk_size`; None takes
+    the export's recipe. Returns the run report. The GIL is released while it runs
+    """
+    model = _resolve_nnunet(Path(model))
+    load_cuda_libraries()
+    report = _nnunet_predict(
+        os.fspath(model), os.fspath(volume), os.fspath(output), _device_index(device), bbox,
+        None if overlap is None else float(overlap), bool(tta), None if threshold is None else float(threshold),
+        None if chunk is None else int(chunk), float(max_accum_gb), algo, bool(overwrite),
     )  # fmt: skip
     return json.loads(report)
 
@@ -440,6 +478,110 @@ def _resolve_checkpoint(checkpoint: Path, weights_dir: Path) -> Path:
     if found is None:
         raise InkrsError(f"no export of {checkpoint} in {cache} after exporting it")
     return found
+
+
+#: the export recipe `nnunet_predict` runs, villa's `vesuvius.predict`
+_NNUNET_RECIPE = "vesuvius-predict"
+
+
+def _resolve_nnunet(model: Path) -> Path:
+    """The nnU-Net export to run for `model`: a .safetensors as given, or for an nnU-Net model folder the
+    `vesuvius-predict` export in `<cache>/nnunet/<key>-vesuvius-predict/`, which needs no torch, else made there
+    with `inkrs.export_nnunet` when torch and dynamic_network_architectures import. The key covers everything the
+    export depends on: the sha256 of the checkpoint villa's loader picks, of the plans, dataset and fingerprint
+    JSON beside it, and of the exporter itself, so editing any of them makes a new export. A checkpoint the
+    exporter does not implement raises UnsupportedError; a failed export of one it does is an InkrsError"""
+    if model.suffix == ".safetensors":
+        return model
+    if not model.is_dir():
+        raise InkrsError(f"model {model} is neither a .safetensors export nor an nnU-Net model folder")
+    manual = f"export it once where torch is installed, `python -m inkrs.export_nnunet {model} DIR --recipe {_NNUNET_RECIPE}`"
+    # the exporter imports without torch, so a cached export runs where torch is gone; only a new export needs it
+    from . import export_nnunet
+
+    try:
+        files = export_nnunet.inputs(model)
+    except export_nnunet.ExportUnsupported as e:
+        raise UnsupportedError(f"{e}; {manual}") from e
+    except OSError as e:
+        raise InkrsError(f"reading the nnU-Net folder {model}: {e}") from e
+    key = _nnunet_key(files)
+    sha = key["checkpoint_sha256"]
+    digest = hashlib.sha256(json.dumps(key, sort_keys=True).encode()).hexdigest()
+    cache = _cache_dir() / "nnunet" / f"{digest}-{_NNUNET_RECIPE}"
+    found = _nnunet_export_in(cache, sha, key)
+    if found is not None:
+        return found
+    missing = export_nnunet.missing_packages()
+    if missing:
+        raise UnsupportedError(f"{model} needs an export, and {', '.join(missing)} do not import to make one; {manual}")
+    # staged and renamed in, as `_resolve_checkpoint` does, so no reader ever sees a partial entry
+    cache.parent.mkdir(parents=True, exist_ok=True)
+    staging = Path(tempfile.mkdtemp(prefix=f".{digest}.", suffix=".partial", dir=cache.parent))
+    try:
+        try:
+            export_nnunet.export(model, staging, _NNUNET_RECIPE)
+        except export_nnunet.ExportUnsupported as e:
+            raise UnsupportedError(f"cannot export {model} for inkrs: {e}") from e
+        except Exception as e:
+            raise InkrsError(f"exporting {model} for inkrs failed: {type(e).__name__}: {e}") from e
+        # the inputs may have changed while the export read them; such an entry would be keyed to files it was
+        # not made from
+        if _nnunet_key(files) != key:
+            raise InkrsError(f"{model} changed while it was being exported; run again")
+        (staging / "key.json").write_text(json.dumps(key, sort_keys=True))
+        try:
+            os.replace(staging, cache)
+        except OSError:
+            if _nnunet_export_in(cache, sha, key) is None:
+                raise
+    finally:
+        shutil.rmtree(staging, ignore_errors=True)
+    found = _nnunet_export_in(cache, sha, key)
+    if found is None:
+        raise InkrsError(f"no export of {files[0]} in {cache} after exporting it")
+    return found
+
+
+def _nnunet_key(files: list[Path]) -> dict:
+    """What an nnU-Net export depends on: its input files by name and sha256 (the checkpoint first), the recipe,
+    and the exporter's own source"""
+    from . import export_nnunet
+
+    return {
+        "checkpoint_sha256": _sha256(files[0]),
+        "inputs": {f.name: _sha256(f) for f in files[1:]},
+        "recipe": _NNUNET_RECIPE,
+        "exporter_sha256": hashlib.sha256(Path(export_nnunet.__file__).read_bytes()).hexdigest(),
+    }
+
+
+def _nnunet_export_in(directory: Path, sha: str, key: dict) -> Path | None:
+    """The nnU-Net export in `directory` of the checkpoint with this sha256 under `vesuvius-predict`, made from the
+    inputs `key` names"""
+    if not directory.is_dir():
+        return None
+    try:
+        if json.loads((directory / "key.json").read_text()) != key:
+            return None
+    except (OSError, ValueError):
+        return None
+    for side in sorted(directory.glob("*.json")):
+        try:
+            meta = json.loads(side.read_text())
+        except (OSError, ValueError):
+            continue
+        tensors = side.with_suffix(".safetensors")
+        if (
+            isinstance(meta, dict)
+            and meta.get("format") == "inkrs-nnunet-v1"
+            and meta.get("checkpoint_sha256") == sha
+            and isinstance(meta.get("recipe"), dict)
+            and meta["recipe"].get("pipeline") == _NNUNET_RECIPE
+            and tensors.is_file()
+        ):
+            return tensors
+    return None
 
 
 #: tiles per batch by default for the v8-in family (24 x 64 x 64 tiles upsampled to 96 x 256 x 256, about

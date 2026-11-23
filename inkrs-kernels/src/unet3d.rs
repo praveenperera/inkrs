@@ -1,9 +1,10 @@
 //! Glue kernels for villa's autoconfigured 3D ResEnc U-Net (`inkrs ink3d`), around cuDNN's
-//! channels-last bf16 convolutions and cuBLAS's bf16 GEMMs
+//! channels-last bf16 convolutions and cuBLAS's bf16 GEMMs, and their fp16 twins ([`fp16`], `u3h_*`)
+//! for nnU-Net's fp16 autocast (`inkrs nnunet`)
 //!
-//! Activations are bf16 channels-last `[S, C]` (S = D*H*W, batch 1), carried as `u32` pairs of bf16
-//! bits, low half first. Every kernel repeats the rounding PyTorch's bf16 autocast forward takes in
-//! villa's eager reference:
+//! Activations are bf16 (fp16 in [`fp16`]) channels-last `[S, C]` (S = D*H*W, batch 1), carried as
+//! `u32` pairs of 16-bit values, low half first. Every kernel repeats the rounding PyTorch's autocast
+//! forward takes in the eager reference, in the instance's storage type:
 //! - a conv writes bf16, then its bf16 bias is added and rounded again (PyTorch adds a conv's bias in a
 //!   separate op), so the biased value is `rbf(conv + bias)`;
 //! - InstanceNorm takes float32 statistics of those bf16 values and writes
@@ -28,131 +29,6 @@ use crate::common::math;
 // the CUDA C++ math library calls this libdevice function for `rintf`, which `torch.round` uses
 unsafe extern "C" {
     fn __nv_rintf(x: f32) -> f32;
-}
-
-/// `x` as bf16 holds it, round to nearest even
-#[inline(always)]
-fn rbf(x: f32) -> f32 {
-    bf16_to_f32(f32_to_bf16_rne(x))
-}
-
-/// The low bf16 of a pair
-#[inline(always)]
-fn lo(p: u32) -> f32 {
-    bf16_to_f32(p as u16)
-}
-
-/// The high bf16 of a pair
-#[inline(always)]
-fn hi(p: u32) -> f32 {
-    bf16_to_f32((p >> 16) as u16)
-}
-
-/// Two floats rounded to bf16 and packed, `a` in the low half
-#[inline(always)]
-fn pack(a: f32, b: f32) -> u32 {
-    f32_to_bf16_rne(a) as u32 | ((f32_to_bf16_rne(b) as u32) << 16)
-}
-
-/// A conv output after PyTorch's separate bias add; an empty `bias` means the conv has none
-#[inline(always)]
-fn biased(v: f32, bias: &[f32], c: u32) -> f32 {
-    if bias.is_empty() { v } else { rbf(add_rn_f32(v, bias[c as usize])) }
-}
-
-/// ATen's InstanceNorm transform, rounded to bf16: `gamma * (x - mean) * invstd + beta`, the
-/// trailing multiply-add contracted as nvcc compiles it
-#[inline(always)]
-fn affine(v: f32, mean: f32, invstd: f32, gamma: f32, beta: f32) -> f32 {
-    rbf(fma_rn_f32(mul_rn_f32(gamma, v - mean), invstd, beta))
-}
-
-/// PyTorch's LeakyReLU on a bf16 value: computed in float, rounded to bf16
-#[inline(always)]
-fn leaky(v: f32, slope: f32) -> f32 {
-    if v > 0.0 { v } else { rbf(mul_rn_f32(v, slope)) }
-}
-
-/// Welford partial statistics of one spatial chunk, every channel, of a biased conv output
-///
-/// `x` is `[rows, cols]` bf16 pairs, `cols` even. Grid `chunks`, block `cols / 2 * lanes` threads
-/// (at most 256): thread `t` owns channel pair `t % (cols / 2)` and starts at row `t / (cols / 2)` of
-/// the chunk, stepping by `lanes`. Writes `partial[chunk, c] = [mean, m2]` of the chunk's biased
-/// values `v`, with `m2 = sum((v - mean)^2)`. Each thread runs Welford's update and the lanes merge by
-/// Chan's rule, in a fixed order, as ATen's InstanceNorm statistics do: shifted sums `E[d^2] - E[d]^2`
-/// cancel when the shift is an outlier, and can even go negative
-#[kernel]
-pub fn u3_partial(
-    mut partial: DisjointSlice<[f32; 2]>,
-    x: &[u32],
-    bias: &[f32],
-    rows: u32,
-    cols: u32,
-    lanes: u32,
-    chunk_rows: u32,
-) {
-    static mut ACC: SharedArray<[f32; 6], 256> = SharedArray::UNINIT;
-    let (chunk, tid) = (blockIdx_x(), threadIdx_x());
-    let pairs = cols / 2;
-    let chunks = (rows + chunk_rows - 1) / chunk_rows.max(1);
-    // block-uniform, so a block that fails it never reaches a barrier
-    if pairs == 0
-        || blockDim_x() != pairs * lanes
-        || blockDim_x() > 256
-        || (rows * pairs) as usize > x.len()
-        || (((chunk + 1) * cols) as usize) > partial.len()
-        || chunk >= chunks
-        || (!bias.is_empty() && bias.len() < cols as usize)
-    {
-        return;
-    }
-    let (cp, lane) = (tid % pairs, tid / pairs);
-
-    let (mut n, mut m0, mut m1, mut q0, mut q1) = (0f32, 0f32, 0f32, 0f32, 0f32);
-    let end = ((chunk + 1) * chunk_rows).min(rows);
-    let mut r = chunk * chunk_rows + lane;
-    while r < end {
-        let p = x[(r * pairs + cp) as usize];
-        let v0 = biased(lo(p), bias, 2 * cp);
-        let v1 = biased(hi(p), bias, 2 * cp + 1);
-        n += 1.0;
-        let d0 = v0 - m0;
-        let d1 = v1 - m1;
-        m0 += d0 / n;
-        m1 += d1 / n;
-        q0 += d0 * (v0 - m0);
-        q1 += d1 * (v1 - m1);
-        r += lanes;
-    }
-    let acc = addr_of_mut!(ACC) as *mut [f32; 6];
-    // SAFETY: each thread writes its own slot, read only after the barrier
-    unsafe { *acc.add(tid as usize) = [n, m0, m1, q0, q1, 0.0] };
-    sync_threads();
-    if lane == 0 {
-        let mut l = 1;
-        while l < lanes {
-            // SAFETY: `l * pairs + cp < blockDim <= 256`
-            let [nb, b0, b1, r0, r1, _] = unsafe { *acc.add((l * pairs + cp) as usize) };
-            if nb > 0.0 {
-                let nt = n + nb;
-                let w = nb / nt;
-                let (e0, e1) = (b0 - m0, b1 - m1);
-                m0 += e0 * w;
-                m1 += e1 * w;
-                q0 += r0 + e0 * e0 * n * w;
-                q1 += r1 + e1 * e1 * n * w;
-                n = nt;
-            }
-            l += 1;
-        }
-        let o = (chunk * cols + 2 * cp) as usize;
-        // SAFETY: `o + 1 < partial.len()` by the check above, and only thread `cp` of this block
-        // writes channels `2cp, 2cp + 1` of this chunk
-        unsafe {
-            *partial.get_unchecked_mut(o) = [m0, q0];
-            *partial.get_unchecked_mut(o + 1) = [m1, q1];
-        }
-    }
 }
 
 /// Chan's merge of two `[count, mean, m2]` Welford states, in float32 as ATen's `welford_combine`
@@ -226,256 +102,419 @@ pub fn u3_finalize(
     }
 }
 
-/// InstanceNorm apply with an optional residual and LeakyReLU, two channels per thread:
-/// `out = leaky?(rbf(affine(biased(x)) + residual?))`
-///
-/// - `x`: the conv output `[pixels, cols]` bf16 pairs, `bias` its bf16 bias or empty;
-/// - `stats`, `w`, `b`: its [`u3_finalize`] statistics and float32 affine;
-/// - residual, at most one of: `res`, a bf16 tensor `[pixels, cols]`; or `rraw` with `rstats`, `rw`,
-///   `rb`, a bias-free conv output normalised on load (the BasicBlockD skip projection);
-/// - `act != 0` applies LeakyReLU with `slope`.
-///
-/// The result goes to `out` at pair `pix * out_stride + out_off + cp`, so a decoder's concat buffer can
-/// take it, and also to `out2` at `pix * out2_stride + out2_off + cp` when `out2` is non-empty
-#[kernel(launch_context = lc)]
-#[launch_contract(domain = 1, coordinates = u32)]
-pub fn u3_apply(
-    mut out: DisjointSlice<u32>,
-    mut out2: DisjointSlice<u32>,
-    x: &[u32],
-    bias: &[f32],
-    stats: &[[f32; 2]],
-    w: &[f32],
-    b: &[f32],
-    res: &[u32],
-    rraw: &[u32],
-    rstats: &[[f32; 2]],
-    rw: &[f32],
-    rb: &[f32],
-    pixels: u32,
-    cols: u32,
-    act: u32,
-    slope: f32,
-    out_stride: u32,
-    out_off: u32,
-    out2_stride: u32,
-    out2_off: u32,
-) {
-    let e = thread::index_1d_u32(lc).get();
-    let pairs = cols / 2;
-    if pairs == 0 || e >= pixels * pairs {
-        return;
-    }
-    let (pix, cp) = (e / pairs, e % pairs);
-    let v = apply_pair(x, bias, stats, w, b, res, rraw, rstats, rw, rb, e, 2 * cp, act, slope);
-    let o = (pix * out_stride + out_off + cp) as usize;
-    if o < out.len() {
-        // SAFETY: in bounds; threads own distinct (pixel, pair) slots, so no two write one element
-        unsafe { *out.get_unchecked_mut(o) = v };
-    }
-    if !out2.is_empty() {
-        let o2 = (pix * out2_stride + out2_off + cp) as usize;
-        if o2 < out2.len() {
-            // SAFETY: as for `out`
-            unsafe { *out2.get_unchecked_mut(o2) = v };
+/// The glue kernels around the convs, for one activation storage type: `$to` widens a stored 16-bit value
+/// to float32 and `$from` rounds a float32 to it, round to nearest even. The bf16 instance keeps v0.2's
+/// kernel names; the fp16 instance ([`fp16`], `u3h_*`) runs nnU-Net's fp16 autocast with the same rounding
+/// points. Docs below speak of bf16; read the instance's storage type
+macro_rules! glue {
+    ($to:path, $from:path, $partial:ident, $apply:ident, $apply_pool:ident, $pool2:ident, $up:ident) => {
+        /// `x` as bf16 holds it, round to nearest even
+        #[inline(always)]
+        fn rbf(x: f32) -> f32 {
+            $to($from(x))
         }
-    }
-}
 
-/// One packed pair of [`u3_apply`]'s result: element `e` of `x` (and of the residual), channels `c, c + 1`
-#[inline(always)]
-#[allow(clippy::too_many_arguments)]
-fn apply_pair(
-    x: &[u32],
-    bias: &[f32],
-    stats: &[[f32; 2]],
-    w: &[f32],
-    b: &[f32],
-    res: &[u32],
-    rraw: &[u32],
-    rstats: &[[f32; 2]],
-    rw: &[f32],
-    rb: &[f32],
-    e: u32,
-    c: u32,
-    act: u32,
-    slope: f32,
-) -> u32 {
-    let p = x[e as usize];
-    let [m0, i0] = stats[c as usize];
-    let [m1, i1] = stats[c as usize + 1];
-    let mut y0 = affine(biased(lo(p), bias, c), m0, i0, w[c as usize], b[c as usize]);
-    let mut y1 = affine(biased(hi(p), bias, c + 1), m1, i1, w[c as usize + 1], b[c as usize + 1]);
-    if !res.is_empty() {
-        let r = res[e as usize];
-        y0 = rbf(add_rn_f32(y0, lo(r)));
-        y1 = rbf(add_rn_f32(y1, hi(r)));
-    } else if !rraw.is_empty() {
-        let r = rraw[e as usize];
-        let [n0, j0] = rstats[c as usize];
-        let [n1, j1] = rstats[c as usize + 1];
-        y0 = rbf(add_rn_f32(y0, affine(lo(r), n0, j0, rw[c as usize], rb[c as usize])));
-        y1 = rbf(add_rn_f32(y1, affine(hi(r), n1, j1, rw[c as usize + 1], rb[c as usize + 1])));
-    }
-    if act != 0 {
-        y0 = leaky(y0, slope);
-        y1 = leaky(y1, slope);
-    }
-    pack(y0, y1)
-}
+        /// The low bf16 of a pair
+        #[inline(always)]
+        fn lo(p: u32) -> f32 {
+            $to(p as u16)
+        }
 
-/// [`u3_apply`] for an encoder stage's last block, also writing the next stage's pooled skip input
-///
-/// One thread per pooled pixel and channel pair: it applies the 2x2x2 block it pools, writes each pair to
-/// `out` (and `out2`) exactly as [`u3_apply`] does, and writes `pool[q] = rbf(sum / 8)` of the packed
-/// results summed in [`u3_pool2`]'s order, so `pool` equals `u3_pool2` of `out` bit for bit without
-/// re-reading the full-resolution output (0.74 ms of a 1 GiB level-0 tensor). `d`, `h`, `wd` are the pooled
-/// dims; `x`, the residual and `out` cover `[2d, 2h, 2wd]` pixels of `cols` channels
-#[kernel(launch_context = lc)]
-#[launch_contract(domain = 1, coordinates = u32)]
-pub fn u3_apply_pool(
-    mut out: DisjointSlice<u32>,
-    mut out2: DisjointSlice<u32>,
-    mut pool: DisjointSlice<u32>,
-    x: &[u32],
-    bias: &[f32],
-    stats: &[[f32; 2]],
-    w: &[f32],
-    b: &[f32],
-    res: &[u32],
-    rraw: &[u32],
-    rstats: &[[f32; 2]],
-    rw: &[f32],
-    rb: &[f32],
-    d: u32,
-    h: u32,
-    wd: u32,
-    cols: u32,
-    act: u32,
-    slope: f32,
-    out_stride: u32,
-    out_off: u32,
-    out2_stride: u32,
-    out2_off: u32,
-) {
-    let e = thread::index_1d_u32(lc).get();
-    let pairs = cols / 2;
-    if pairs == 0 || e >= d * h * wd * pairs {
-        return;
-    }
-    let (q, cp) = (e / pairs, e % pairs);
-    let (ox, oy, oz) = (q % wd, (q / wd) % h, q / (wd * h));
-    let (iw, ih) = (2 * wd, 2 * h);
-    let (mut s0, mut s1) = (0f32, 0f32);
-    let mut dz = 0;
-    while dz < 2 {
-        let mut dy = 0;
-        while dy < 2 {
-            let mut dx = 0;
-            while dx < 2 {
-                let ip = ((2 * oz + dz) * ih + 2 * oy + dy) * iw + 2 * ox + dx;
-                let v = apply_pair(x, bias, stats, w, b, res, rraw, rstats, rw, rb, ip * pairs + cp, 2 * cp, act, slope);
-                let o = (ip * out_stride + out_off + cp) as usize;
-                if o < out.len() {
-                    // SAFETY: in bounds; each full-resolution (pixel, pair) belongs to one pooled thread
-                    unsafe { *out.get_unchecked_mut(o) = v };
-                }
-                if !out2.is_empty() {
-                    let o2 = (ip * out2_stride + out2_off + cp) as usize;
-                    if o2 < out2.len() {
-                        // SAFETY: as for `out`
-                        unsafe { *out2.get_unchecked_mut(o2) = v };
+        /// The high bf16 of a pair
+        #[inline(always)]
+        fn hi(p: u32) -> f32 {
+            $to((p >> 16) as u16)
+        }
+
+        /// Two floats rounded to bf16 and packed, `a` in the low half
+        #[inline(always)]
+        fn pack(a: f32, b: f32) -> u32 {
+            $from(a) as u32 | (($from(b) as u32) << 16)
+        }
+
+        /// A conv output after PyTorch's separate bias add; an empty `bias` means the conv has none
+        #[inline(always)]
+        fn biased(v: f32, bias: &[f32], c: u32) -> f32 {
+            if bias.is_empty() { v } else { rbf(add_rn_f32(v, bias[c as usize])) }
+        }
+
+        /// ATen's InstanceNorm transform, rounded to bf16: `gamma * (x - mean) * invstd + beta`, the
+        /// trailing multiply-add contracted as nvcc compiles it
+        #[inline(always)]
+        fn affine(v: f32, mean: f32, invstd: f32, gamma: f32, beta: f32) -> f32 {
+            rbf(fma_rn_f32(mul_rn_f32(gamma, v - mean), invstd, beta))
+        }
+
+        /// PyTorch's LeakyReLU on a bf16 value: computed in float, rounded to bf16
+        #[inline(always)]
+        fn leaky(v: f32, slope: f32) -> f32 {
+            if v > 0.0 { v } else { rbf(mul_rn_f32(v, slope)) }
+        }
+
+        /// Welford partial statistics of one spatial chunk, every channel, of a biased conv output
+        ///
+        /// `x` is `[rows, cols]` bf16 pairs, `cols` even. Grid `chunks`, block `cols / 2 * lanes` threads
+        /// (at most 256): thread `t` owns channel pair `t % (cols / 2)` and starts at row `t / (cols / 2)` of
+        /// the chunk, stepping by `lanes`. Writes `partial[chunk, c] = [mean, m2]` of the chunk's biased
+        /// values `v`, with `m2 = sum((v - mean)^2)`. Each thread runs Welford's update and the lanes merge by
+        /// Chan's rule, in a fixed order, as ATen's InstanceNorm statistics do: shifted sums `E[d^2] - E[d]^2`
+        /// cancel when the shift is an outlier, and can even go negative
+        #[kernel]
+        pub fn $partial(
+            mut partial: DisjointSlice<[f32; 2]>,
+            x: &[u32],
+            bias: &[f32],
+            rows: u32,
+            cols: u32,
+            lanes: u32,
+            chunk_rows: u32,
+        ) {
+            static mut ACC: SharedArray<[f32; 6], 256> = SharedArray::UNINIT;
+            let (chunk, tid) = (blockIdx_x(), threadIdx_x());
+            let pairs = cols / 2;
+            let chunks = (rows + chunk_rows - 1) / chunk_rows.max(1);
+            // block-uniform, so a block that fails it never reaches a barrier
+            if pairs == 0
+                || blockDim_x() != pairs * lanes
+                || blockDim_x() > 256
+                || (rows * pairs) as usize > x.len()
+                || (((chunk + 1) * cols) as usize) > partial.len()
+                || chunk >= chunks
+                || (!bias.is_empty() && bias.len() < cols as usize)
+            {
+                return;
+            }
+            let (cp, lane) = (tid % pairs, tid / pairs);
+
+            let (mut n, mut m0, mut m1, mut q0, mut q1) = (0f32, 0f32, 0f32, 0f32, 0f32);
+            let end = ((chunk + 1) * chunk_rows).min(rows);
+            let mut r = chunk * chunk_rows + lane;
+            while r < end {
+                let p = x[(r * pairs + cp) as usize];
+                let v0 = biased(lo(p), bias, 2 * cp);
+                let v1 = biased(hi(p), bias, 2 * cp + 1);
+                n += 1.0;
+                let d0 = v0 - m0;
+                let d1 = v1 - m1;
+                m0 += d0 / n;
+                m1 += d1 / n;
+                q0 += d0 * (v0 - m0);
+                q1 += d1 * (v1 - m1);
+                r += lanes;
+            }
+            let acc = addr_of_mut!(ACC) as *mut [f32; 6];
+            // SAFETY: each thread writes its own slot, read only after the barrier
+            unsafe { *acc.add(tid as usize) = [n, m0, m1, q0, q1, 0.0] };
+            sync_threads();
+            if lane == 0 {
+                let mut l = 1;
+                while l < lanes {
+                    // SAFETY: `l * pairs + cp < blockDim <= 256`
+                    let [nb, b0, b1, r0, r1, _] = unsafe { *acc.add((l * pairs + cp) as usize) };
+                    if nb > 0.0 {
+                        let nt = n + nb;
+                        let w = nb / nt;
+                        let (e0, e1) = (b0 - m0, b1 - m1);
+                        m0 += e0 * w;
+                        m1 += e1 * w;
+                        q0 += r0 + e0 * e0 * n * w;
+                        q1 += r1 + e1 * e1 * n * w;
+                        n = nt;
                     }
+                    l += 1;
                 }
-                s0 = add_rn_f32(s0, lo(v));
-                s1 = add_rn_f32(s1, hi(v));
-                dx += 1;
+                let o = (chunk * cols + 2 * cp) as usize;
+                // SAFETY: `o + 1 < partial.len()` by the check above, and only thread `cp` of this block
+                // writes channels `2cp, 2cp + 1` of this chunk
+                unsafe {
+                    *partial.get_unchecked_mut(o) = [m0, q0];
+                    *partial.get_unchecked_mut(o + 1) = [m1, q1];
+                }
             }
-            dy += 1;
         }
-        dz += 1;
-    }
-    if (e as usize) < pool.len() {
-        // SAFETY: in bounds; thread `e` alone owns pooled pair `e`
-        unsafe { *pool.get_unchecked_mut(e as usize) = pack(mul_rn_f32(s0, 0.125), mul_rn_f32(s1, 0.125)) };
-    }
+
+        /// InstanceNorm apply with an optional residual and LeakyReLU, two channels per thread:
+        /// `out = leaky?(rbf(affine(biased(x)) + residual?))`
+        ///
+        /// - `x`: the conv output `[pixels, cols]` bf16 pairs, `bias` its bf16 bias or empty;
+        /// - `stats`, `w`, `b`: its [`u3_finalize`] statistics and float32 affine;
+        /// - residual, at most one of: `res`, a bf16 tensor `[pixels, cols]`; or `rraw` with `rstats`, `rw`,
+        ///   `rb`, a bias-free conv output normalised on load (the BasicBlockD skip projection);
+        /// - `act != 0` applies LeakyReLU with `slope`.
+        ///
+        /// The result goes to `out` at pair `pix * out_stride + out_off + cp`, so a decoder's concat buffer can
+        /// take it, and also to `out2` at `pix * out2_stride + out2_off + cp` when `out2` is non-empty
+        #[kernel(launch_context = lc)]
+        #[launch_contract(domain = 1, coordinates = u32)]
+        pub fn $apply(
+            mut out: DisjointSlice<u32>,
+            mut out2: DisjointSlice<u32>,
+            x: &[u32],
+            bias: &[f32],
+            stats: &[[f32; 2]],
+            w: &[f32],
+            b: &[f32],
+            res: &[u32],
+            rraw: &[u32],
+            rstats: &[[f32; 2]],
+            rw: &[f32],
+            rb: &[f32],
+            pixels: u32,
+            cols: u32,
+            act: u32,
+            slope: f32,
+            out_stride: u32,
+            out_off: u32,
+            out2_stride: u32,
+            out2_off: u32,
+        ) {
+            let e = thread::index_1d_u32(lc).get();
+            let pairs = cols / 2;
+            if pairs == 0 || e >= pixels * pairs {
+                return;
+            }
+            let (pix, cp) = (e / pairs, e % pairs);
+            let v = apply_pair(x, bias, stats, w, b, res, rraw, rstats, rw, rb, e, 2 * cp, act, slope);
+            let o = (pix * out_stride + out_off + cp) as usize;
+            if o < out.len() {
+                // SAFETY: in bounds; threads own distinct (pixel, pair) slots, so no two write one element
+                unsafe { *out.get_unchecked_mut(o) = v };
+            }
+            if !out2.is_empty() {
+                let o2 = (pix * out2_stride + out2_off + cp) as usize;
+                if o2 < out2.len() {
+                    // SAFETY: as for `out`
+                    unsafe { *out2.get_unchecked_mut(o2) = v };
+                }
+            }
+        }
+
+        /// One packed pair of [`u3_apply`]'s result: element `e` of `x` (and of the residual), channels `c, c + 1`
+        #[inline(always)]
+        #[allow(clippy::too_many_arguments)]
+        fn apply_pair(
+            x: &[u32],
+            bias: &[f32],
+            stats: &[[f32; 2]],
+            w: &[f32],
+            b: &[f32],
+            res: &[u32],
+            rraw: &[u32],
+            rstats: &[[f32; 2]],
+            rw: &[f32],
+            rb: &[f32],
+            e: u32,
+            c: u32,
+            act: u32,
+            slope: f32,
+        ) -> u32 {
+            let p = x[e as usize];
+            let [m0, i0] = stats[c as usize];
+            let [m1, i1] = stats[c as usize + 1];
+            let mut y0 = affine(biased(lo(p), bias, c), m0, i0, w[c as usize], b[c as usize]);
+            let mut y1 = affine(biased(hi(p), bias, c + 1), m1, i1, w[c as usize + 1], b[c as usize + 1]);
+            if !res.is_empty() {
+                let r = res[e as usize];
+                y0 = rbf(add_rn_f32(y0, lo(r)));
+                y1 = rbf(add_rn_f32(y1, hi(r)));
+            } else if !rraw.is_empty() {
+                let r = rraw[e as usize];
+                let [n0, j0] = rstats[c as usize];
+                let [n1, j1] = rstats[c as usize + 1];
+                y0 = rbf(add_rn_f32(y0, affine(lo(r), n0, j0, rw[c as usize], rb[c as usize])));
+                y1 = rbf(add_rn_f32(y1, affine(hi(r), n1, j1, rw[c as usize + 1], rb[c as usize + 1])));
+            }
+            if act != 0 {
+                y0 = leaky(y0, slope);
+                y1 = leaky(y1, slope);
+            }
+            pack(y0, y1)
+        }
+
+        /// [`u3_apply`] for an encoder stage's last block, also writing the next stage's pooled skip input
+        ///
+        /// One thread per pooled pixel and channel pair: it applies the 2x2x2 block it pools, writes each pair to
+        /// `out` (and `out2`) exactly as [`u3_apply`] does, and writes `pool[q] = rbf(sum / 8)` of the packed
+        /// results summed in [`u3_pool2`]'s order, so `pool` equals `u3_pool2` of `out` bit for bit without
+        /// re-reading the full-resolution output (0.74 ms of a 1 GiB level-0 tensor). `d`, `h`, `wd` are the pooled
+        /// dims; `x`, the residual and `out` cover `[2d, 2h, 2wd]` pixels of `cols` channels
+        #[kernel(launch_context = lc)]
+        #[launch_contract(domain = 1, coordinates = u32)]
+        pub fn $apply_pool(
+            mut out: DisjointSlice<u32>,
+            mut out2: DisjointSlice<u32>,
+            mut pool: DisjointSlice<u32>,
+            x: &[u32],
+            bias: &[f32],
+            stats: &[[f32; 2]],
+            w: &[f32],
+            b: &[f32],
+            res: &[u32],
+            rraw: &[u32],
+            rstats: &[[f32; 2]],
+            rw: &[f32],
+            rb: &[f32],
+            d: u32,
+            h: u32,
+            wd: u32,
+            cols: u32,
+            act: u32,
+            slope: f32,
+            out_stride: u32,
+            out_off: u32,
+            out2_stride: u32,
+            out2_off: u32,
+        ) {
+            let e = thread::index_1d_u32(lc).get();
+            let pairs = cols / 2;
+            if pairs == 0 || e >= d * h * wd * pairs {
+                return;
+            }
+            let (q, cp) = (e / pairs, e % pairs);
+            let (ox, oy, oz) = (q % wd, (q / wd) % h, q / (wd * h));
+            let (iw, ih) = (2 * wd, 2 * h);
+            let (mut s0, mut s1) = (0f32, 0f32);
+            let mut dz = 0;
+            while dz < 2 {
+                let mut dy = 0;
+                while dy < 2 {
+                    let mut dx = 0;
+                    while dx < 2 {
+                        let ip = ((2 * oz + dz) * ih + 2 * oy + dy) * iw + 2 * ox + dx;
+                        let v = apply_pair(
+                            x,
+                            bias,
+                            stats,
+                            w,
+                            b,
+                            res,
+                            rraw,
+                            rstats,
+                            rw,
+                            rb,
+                            ip * pairs + cp,
+                            2 * cp,
+                            act,
+                            slope,
+                        );
+                        let o = (ip * out_stride + out_off + cp) as usize;
+                        if o < out.len() {
+                            // SAFETY: in bounds; each full-resolution (pixel, pair) belongs to one pooled thread
+                            unsafe { *out.get_unchecked_mut(o) = v };
+                        }
+                        if !out2.is_empty() {
+                            let o2 = (ip * out2_stride + out2_off + cp) as usize;
+                            if o2 < out2.len() {
+                                // SAFETY: as for `out`
+                                unsafe { *out2.get_unchecked_mut(o2) = v };
+                            }
+                        }
+                        s0 = add_rn_f32(s0, lo(v));
+                        s1 = add_rn_f32(s1, hi(v));
+                        dx += 1;
+                    }
+                    dy += 1;
+                }
+                dz += 1;
+            }
+            if (e as usize) < pool.len() {
+                // SAFETY: in bounds; thread `e` alone owns pooled pair `e`
+                unsafe { *pool.get_unchecked_mut(e as usize) = pack(mul_rn_f32(s0, 0.125), mul_rn_f32(s1, 0.125)) };
+            }
+        }
+
+        /// `AvgPool3d(2, 2)` on bf16 pairs: `out[z, y, x] = rbf(sum / 8)` of the 2x2x2 input block, summed in
+        /// float32 in ATen's order (z, then y, then x). `d`, `h`, `w` are the output's dims; the input is
+        /// `[2d, 2h, 2w, cols]`
+        #[kernel(launch_context = lc)]
+        #[launch_contract(domain = 1, coordinates = u32)]
+        pub fn $pool2(mut out: DisjointSlice<u32>, x: &[u32], d: u32, h: u32, w: u32, cols: u32) {
+            let t = thread::index_1d_u32(lc);
+            let e = t.get();
+            let pairs = cols / 2;
+            let Some(mut o) = out.element_thread32(t) else { return };
+            if pairs == 0 || e >= d * h * w * pairs {
+                return;
+            }
+            let cp = e % pairs;
+            let pix = e / pairs;
+            let (ox, oy, oz) = (pix % w, (pix / w) % h, pix / (w * h));
+            let (iw, ih) = (2 * w, 2 * h);
+            let (mut s0, mut s1) = (0f32, 0f32);
+            let mut dz = 0;
+            while dz < 2 {
+                let mut dy = 0;
+                while dy < 2 {
+                    let mut dx = 0;
+                    while dx < 2 {
+                        let ip = ((2 * oz + dz) * ih + 2 * oy + dy) * iw + 2 * ox + dx;
+                        let v = x[(ip * pairs + cp) as usize];
+                        s0 = add_rn_f32(s0, lo(v));
+                        s1 = add_rn_f32(s1, hi(v));
+                        dx += 1;
+                    }
+                    dy += 1;
+                }
+                dz += 1;
+            }
+            // dividing by 8 is exact as a multiply by 0.125
+            o.write(pack(mul_rn_f32(s0, 0.125), mul_rn_f32(s1, 0.125)));
+        }
+
+        /// Scatters a k2 s2 transposed conv's GEMM output into its place, adding the bf16 bias:
+        /// `out[(2z + a, 2y + b, 2x + c), ch] = rbf(g[(z, y, x), tap * cols + ch] + bias[ch])`, tap `4a + 2b + c`
+        ///
+        /// `g` is `[d/2 * h/2 * w/2, 8 * cols]` bf16 pairs; `d`, `h`, `w` are the output's dims. The result goes
+        /// to pair `pix * out_stride + out_off + cp` of `out`, the decoder stage's concat buffer
+        #[kernel(launch_context = lc)]
+        #[launch_contract(domain = 1, coordinates = u32)]
+        pub fn $up(
+            mut out: DisjointSlice<u32>,
+            g: &[u32],
+            bias: &[f32],
+            d: u32,
+            h: u32,
+            w: u32,
+            cols: u32,
+            out_stride: u32,
+            out_off: u32,
+        ) {
+            let e = thread::index_1d_u32(lc).get();
+            let pairs = cols / 2;
+            if pairs == 0 || e >= d * h * w * pairs {
+                return;
+            }
+            let cp = e % pairs;
+            let pix = e / pairs;
+            let (x, y, z) = (pix % w, (pix / w) % h, pix / (w * h));
+            let (hw, hh) = (w / 2, h / 2);
+            let src = ((z / 2) * hh + y / 2) * hw + x / 2;
+            let tap = (z % 2) * 4 + (y % 2) * 2 + x % 2;
+            let v = g[((src * 8 + tap) * pairs + cp) as usize];
+            let c = 2 * cp;
+            let r = pack(add_rn_f32(lo(v), bias[c as usize]), add_rn_f32(hi(v), bias[c as usize + 1]));
+            let o = (pix * out_stride + out_off + cp) as usize;
+            if o < out.len() {
+                // SAFETY: in bounds; each thread writes its own (pixel, pair) slot
+                unsafe { *out.get_unchecked_mut(o) = r };
+            }
+        }
+    };
 }
 
-/// `AvgPool3d(2, 2)` on bf16 pairs: `out[z, y, x] = rbf(sum / 8)` of the 2x2x2 input block, summed in
-/// float32 in ATen's order (z, then y, then x). `d`, `h`, `w` are the output's dims; the input is
-/// `[2d, 2h, 2w, cols]`
-#[kernel(launch_context = lc)]
-#[launch_contract(domain = 1, coordinates = u32)]
-pub fn u3_pool2(mut out: DisjointSlice<u32>, x: &[u32], d: u32, h: u32, w: u32, cols: u32) {
-    let t = thread::index_1d_u32(lc);
-    let e = t.get();
-    let pairs = cols / 2;
-    let Some(mut o) = out.element_thread32(t) else { return };
-    if pairs == 0 || e >= d * h * w * pairs {
-        return;
-    }
-    let cp = e % pairs;
-    let pix = e / pairs;
-    let (ox, oy, oz) = (pix % w, (pix / w) % h, pix / (w * h));
-    let (iw, ih) = (2 * w, 2 * h);
-    let (mut s0, mut s1) = (0f32, 0f32);
-    let mut dz = 0;
-    while dz < 2 {
-        let mut dy = 0;
-        while dy < 2 {
-            let mut dx = 0;
-            while dx < 2 {
-                let ip = ((2 * oz + dz) * ih + 2 * oy + dy) * iw + 2 * ox + dx;
-                let v = x[(ip * pairs + cp) as usize];
-                s0 = add_rn_f32(s0, lo(v));
-                s1 = add_rn_f32(s1, hi(v));
-                dx += 1;
-            }
-            dy += 1;
-        }
-        dz += 1;
-    }
-    // dividing by 8 is exact as a multiply by 0.125
-    o.write(pack(mul_rn_f32(s0, 0.125), mul_rn_f32(s1, 0.125)));
-}
+glue!(bf16_to_f32, f32_to_bf16_rne, u3_partial, u3_apply, u3_apply_pool, u3_pool2, u3_up);
 
-/// Scatters a k2 s2 transposed conv's GEMM output into its place, adding the bf16 bias:
-/// `out[(2z + a, 2y + b, 2x + c), ch] = rbf(g[(z, y, x), tap * cols + ch] + bias[ch])`, tap `4a + 2b + c`
-///
-/// `g` is `[d/2 * h/2 * w/2, 8 * cols]` bf16 pairs; `d`, `h`, `w` are the output's dims. The result goes
-/// to pair `pix * out_stride + out_off + cp` of `out`, the decoder stage's concat buffer
-#[kernel(launch_context = lc)]
-#[launch_contract(domain = 1, coordinates = u32)]
-pub fn u3_up(
-    mut out: DisjointSlice<u32>,
-    g: &[u32],
-    bias: &[f32],
-    d: u32,
-    h: u32,
-    w: u32,
-    cols: u32,
-    out_stride: u32,
-    out_off: u32,
-) {
-    let e = thread::index_1d_u32(lc).get();
-    let pairs = cols / 2;
-    if pairs == 0 || e >= d * h * w * pairs {
-        return;
-    }
-    let cp = e % pairs;
-    let pix = e / pairs;
-    let (x, y, z) = (pix % w, (pix / w) % h, pix / (w * h));
-    let (hw, hh) = (w / 2, h / 2);
-    let src = ((z / 2) * hh + y / 2) * hw + x / 2;
-    let tap = (z % 2) * 4 + (y % 2) * 2 + x % 2;
-    let v = g[((src * 8 + tap) * pairs + cp) as usize];
-    let c = 2 * cp;
-    let r = pack(add_rn_f32(lo(v), bias[c as usize]), add_rn_f32(hi(v), bias[c as usize + 1]));
-    let o = (pix * out_stride + out_off + cp) as usize;
-    if o < out.len() {
-        // SAFETY: in bounds; each thread writes its own (pixel, pair) slot
-        unsafe { *out.get_unchecked_mut(o) = r };
-    }
+/// The fp16 twins of the bf16 glue kernels, for nnU-Net's fp16 autocast (`inkrs nnunet`)
+pub mod fp16 {
+    use core::ptr::addr_of_mut;
+
+    use cuda_device::float::{add_rn_f32, fma_rn_f32, mul_rn_f32};
+    use cuda_device::thread::{blockDim_x, blockIdx_x, sync_threads, threadIdx_x};
+    use cuda_device::{DisjointSlice, SharedArray, kernel, launch_contract, thread};
+
+    use crate::common::{narrow, widen};
+
+    glue!(widen, narrow, u3h_partial, u3h_apply, u3h_apply_pool, u3h_pool2, u3h_up);
 }
 
 /// The 256-bin histogram of the in-volume voxels of one patch, added into `hist` (zeroed by the host)
@@ -527,7 +566,9 @@ pub fn u3_hist(
     let count = unsafe { *bins.add(tid as usize) };
     if count != 0 {
         // SAFETY: `tid < 256 <= hist.len()`; device-scope atomics add the blocks' counts
-        unsafe { DeviceAtomicU32::from_ptr(hist.as_mut_ptr().add(tid as usize)).fetch_add(count, AtomicOrdering::Relaxed) };
+        unsafe {
+            DeviceAtomicU32::from_ptr(hist.as_mut_ptr().add(tid as usize)).fetch_add(count, AtomicOrdering::Relaxed)
+        };
     }
 }
 
