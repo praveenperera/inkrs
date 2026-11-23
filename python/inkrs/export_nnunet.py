@@ -65,6 +65,8 @@ OPS = {
                 "torch.nn.InstanceNorm3d": "InstanceNorm3d"},
     "nonlin": {"torch.nn.LeakyReLU": "LeakyReLU", "torch.nn.modules.activation.LeakyReLU": "LeakyReLU"},
 }
+#: the oldest torch `safe_load` runs on
+TORCH_MIN = (2, 6)
 #: the tensor holding the patch blend weights, stored with the network's
 GAUSSIAN_KEY = "inkrs.blend.gaussian"
 
@@ -75,7 +77,17 @@ def missing_packages() -> list[str]:
     # the blend weights come from villa when it is installed, else from the inline copy, which needs scipy
     if importlib.util.find_spec("vesuvius") is None:
         needed.append("scipy")
-    return [name for name in needed if importlib.util.find_spec(name) is None]
+    missing = [name for name in needed if importlib.util.find_spec(name) is None]
+    # `safe_load`'s allowlist names a global by module and name, which torch takes from 2.6 on
+    if torch is not None and _release(torch.__version__) < TORCH_MIN:
+        missing.append(f"torch>={'.'.join(map(str, TORCH_MIN))} (torch {torch.__version__} is installed)")
+    return missing
+
+
+def _release(version: str) -> tuple[int, int]:
+    """The major and minor release of a version string such as `2.6.0+cpu`"""
+    major, minor = version.split("+")[0].split(".")[:2]
+    return int(major), int("".join(ch for ch in minor if ch.isdigit()) or 0)
 
 
 def sha256(path: Path) -> str:

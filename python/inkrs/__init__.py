@@ -514,7 +514,7 @@ def _resolve_nnunet(model: Path) -> Path:
         return found
     missing = export_nnunet.missing_packages()
     if missing:
-        raise UnsupportedError(f"{model} needs an export, and {', '.join(missing)} do not import to make one; {manual}")
+        raise UnsupportedError(f"{model} needs an export, and making one needs {', '.join(missing)}; {manual}")
     # staged and renamed in, as `_resolve_checkpoint` does, so no reader ever sees a partial entry
     cache.parent.mkdir(parents=True, exist_ok=True)
     staging = Path(tempfile.mkdtemp(prefix=f".{digest}.", suffix=".partial", dir=cache.parent))

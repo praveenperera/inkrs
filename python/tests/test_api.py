@@ -932,7 +932,7 @@ def test_a_cached_nnunet_export_runs_without_the_export_packages(tmp_path, monke
 
     # a folder with no export yet still needs them, and the error names the manual command
     files["plans"].write_text("v2")
-    with pytest.raises(inkrs.UnsupportedError, match="torch, safetensors do not import.*python -m inkrs.export_nnunet"):
+    with pytest.raises(inkrs.UnsupportedError, match="making one needs torch, safetensors;.*python -m inkrs.export_nnunet"):
         inkrs._resolve_nnunet(model)
     assert len(exports) == 1
 
@@ -975,3 +975,13 @@ def test_nnunet_export_loads_numpy_scalars_from_either_numpy(tmp_path):
     (tmp_path / "numpy1.pth").write_bytes(raw.replace(b"numpy._core.multiarray", b"numpy.core.multiarray"))
     for name in ("numpy2.pth", "numpy1.pth"):
         assert export_nnunet.safe_load(tmp_path / name)["loss"] == 0.5, name
+
+
+def test_nnunet_export_names_a_torch_too_old_for_safe_loading(monkeypatch):
+    pytest.importorskip("torch")
+    export_nnunet = pytest.importorskip("inkrs.export_nnunet")
+
+    monkeypatch.setattr(export_nnunet.torch, "__version__", "2.5.1+cu124")
+    assert any(m.startswith("torch>=2.6 (torch 2.5.1+cu124") for m in export_nnunet.missing_packages())
+    monkeypatch.setattr(export_nnunet.torch, "__version__", "2.10.0")
+    assert not any(m.startswith("torch>=") for m in export_nnunet.missing_packages())
