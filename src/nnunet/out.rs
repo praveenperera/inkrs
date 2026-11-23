@@ -149,16 +149,10 @@ mod tests {
         for path in [&villa, &lookalike, &pred] {
             let e = Writer::create(path, [4, 4, 4], 4, true).err().unwrap_or_else(|| panic!("{}", path.display()));
             assert!(format!("{e:#}").contains("not a prediction this command wrote"), "{}: {e:#}", path.display());
-            // unsupported, so villa runs PyTorch, which replaces any output
-            assert!(crate::error::is_unsupported(&e), "{}: {e:#}", path.display());
+            // an error, so villa never falls back onto a writer that replaces it
+            assert!(!crate::error::is_unsupported(&e), "{}: {e:#}", path.display());
         }
         assert!(villa.join(".zarray").exists() && lookalike.join("0.0.0.0").exists() && pred.join("m7.json").exists());
-        // a model folder is an error, not unsupported, so villa never falls back onto replacing it
-        let model = root.join("surface_m7_nnunet");
-        std::fs::create_dir_all(&model).unwrap();
-        std::fs::write(model.join("m7.json"), b"{}").unwrap();
-        let e = Writer::create(&model, [4, 4, 4], 4, true).err().expect("a model folder");
-        assert!(!crate::error::is_unsupported(&e) && model.join("m7.json").exists(), "{e:#}");
         std::fs::remove_dir_all(root).unwrap();
     }
 }

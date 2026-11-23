@@ -166,9 +166,7 @@ impl Array {
 
 /// `path` without a trailing separator, which would make the filesystem follow a symlink it names. An empty
 /// path is refused, as it would write into the working directory, and so is a `..` component: it can land on an
-/// existing directory, and on Linux creating the path makes the directory before it inside whatever holds it.
-/// Both are errors rather than unsupported, since the path may still alias the input, which a caller falling
-/// back on its own writer would then replace
+/// existing directory, and on Linux creating the path makes the directory before it inside whatever holds it
 fn output_path(path: &Path) -> Result<PathBuf> {
     ensure!(!path.as_os_str().is_empty(), "the output path is empty");
     ensure!(
@@ -199,10 +197,9 @@ fn resolve_through_ancestor(path: &Path) -> Result<PathBuf> {
 
 /// Makes `path` the empty directory a new prediction is written into. An existing path is replaced only with
 /// `overwrite` and only when `is_prediction` recognises it as an earlier prediction of the same writer, so
-/// `--overwrite` deletes nothing else; a symlink is never followed or removed. Refusing to replace another
-/// tool's zarr store is this writer's policy rather than a bad request, so it fails as unsupported and callers
-/// such as villa, which replace their own zarr outputs, can fall back on their own writer. Anything else, such
-/// as a model folder, is an error, so no caller falls back onto deleting it
+/// `--overwrite` deletes nothing else; a symlink is never followed or removed. A refusal is an error, never
+/// unsupported: unsupported lets a caller such as villa fall back on a writer that replaces whatever the path
+/// holds, which would delete exactly what this refused to
 pub fn fresh_output_dir(path: &Path, overwrite: bool, is_prediction: impl Fn(&Path) -> bool) -> Result<()> {
     let path = &output_path(path)?;
     match std::fs::symlink_metadata(path) {
@@ -213,15 +210,12 @@ pub fn fresh_output_dir(path: &Path, overwrite: bool, is_prediction: impl Fn(&Pa
                 path.display()
             );
             ensure!(overwrite, "{} exists; pass --overwrite", path.display());
-            if !(meta.is_dir() && is_prediction(path)) {
-                let refusal = format!(
-                    "{} is not a prediction this command wrote, so --overwrite will not delete it (outputs of \
-                     inkrs before 0.4.0 carry no mark); remove it yourself or give another output",
-                    path.display()
-                );
-                let zarr = meta.is_dir() && [".zarray", ".zgroup"].iter().any(|f| path.join(f).is_file());
-                return Err(if zarr { Unsupported(refusal).into() } else { eyre!(refusal) });
-            }
+            ensure!(
+                meta.is_dir() && is_prediction(path),
+                "{} is not a prediction this command wrote, so --overwrite will not delete it (outputs of inkrs \
+                 before 0.4.0 carry no mark); remove it yourself or give another output",
+                path.display()
+            );
 
             std::fs::remove_dir_all(path).wrap_err_with(|| format!("remove {}", path.display()))?;
         }
@@ -403,7 +397,7 @@ mod tests {
         for ok in [root.join("pred.zarr"), group.join("pred.zarr"), root.join("missing/pred.zarr")] {
             vol.ensure_apart(&ok).unwrap_or_else(|e| panic!("{}: {e:#}", ok.display()));
         }
-        // an error, not unsupported: `work/../scan.zarr` is the input, which a caller falling back would replace
+        // `work/../scan.zarr` is the input
         for bad in [group.join("0/new/.."), root.join("work/../scan.zarr")] {
             let e = vol.ensure_apart(&bad).expect_err(&bad.display().to_string());
             assert!(!crate::error::is_unsupported(&e) && format!("{e:#}").contains("`..`"), "{e:#}");
@@ -429,7 +423,7 @@ mod tests {
 
     /// `--overwrite` replaces an earlier prediction and nothing else: not a directory holding other files, an
     /// input group, a symlink however it is spelled, another prediction saved as a coverage group, or a path
-    /// through `..`. Only refusing another zarr store is unsupported, so villa falls back on PyTorch for that alone
+    /// through `..`. Each refusal is an error, so villa never falls back onto a writer that would replace it
     #[test]
     fn overwrite_replaces_only_an_earlier_prediction() {
         let root = std::env::temp_dir().join(format!("inkrs-zio-overwrite-{}", std::process::id()));
@@ -442,26 +436,25 @@ mod tests {
         assert!(format!("{e:#}").contains("pass --overwrite"), "{e:#}");
         Writer::create(&pred, [4, 4, 4], 2, true).expect("an earlier prediction is replaced");
 
-        let refused_as = |path: &Path, why: &str, unsupported: bool| {
+        let refused = |path: &Path, why: &str| {
             let e = Writer::create(path, [4, 4, 4], 2, true).err().unwrap_or_else(|| panic!("{}", path.display()));
             assert!(format!("{e:#}").contains(why), "{}: {e:#}", path.display());
-            assert_eq!(crate::error::is_unsupported(&e), unsupported, "{}: {e:#}", path.display());
+            assert!(!crate::error::is_unsupported(&e), "{}: {e:#}", path.display());
         };
-        let refused = |path: &Path, why: &str| refused_as(path, why, true);
-        // a directory that is no zarr store, such as a model folder, is an error so villa never replaces it
+        // a directory holding anything else, such as a model folder
         let run = root.join("run");
         std::fs::create_dir_all(&run).unwrap();
         std::fs::write(run.join("m7.json"), b"{}").unwrap();
-        refused_as(&run, "not a prediction this command wrote", false);
+        refused(&run, "not a prediction this command wrote");
         assert!(run.join("m7.json").exists());
-        refused_as(Path::new(""), "empty", false);
+        refused(Path::new(""), "empty");
         // an input group: a level besides 0
         let scan = root.join("scan.zarr");
         Writer::create(&scan, [4, 4, 4], 2, false).unwrap();
         std::fs::create_dir_all(scan.join("1")).unwrap();
         refused(&scan, "not a prediction this command wrote");
         // a path through `..` is refused before anything is made
-        refused_as(&scan.join("0/new/.."), "`..`", false);
+        refused(&scan.join("0/new/.."), "`..`");
         assert!(!scan.join("0/new").exists());
         // an earlier prediction whose array holds anything besides its chunks, such as a checkpoint
         let stash = root.join("stash.zarr");
@@ -486,9 +479,9 @@ mod tests {
         {
             let link = root.join("link.zarr");
             std::os::unix::fs::symlink(&pred, &link).unwrap();
-            refused_as(&link, "symlink", false);
+            refused(&link, "symlink");
             // a trailing separator would otherwise make the filesystem follow the link
-            refused_as(&root.join("link.zarr/"), "symlink", false);
+            refused(&root.join("link.zarr/"), "symlink");
             assert!(pred.join("0/.zarray").exists(), "the link's target survives");
         }
         std::fs::remove_dir_all(root).unwrap();
