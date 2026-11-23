@@ -935,3 +935,29 @@ def test_a_cached_nnunet_export_runs_without_the_export_packages(tmp_path, monke
     with pytest.raises(inkrs.UnsupportedError, match="torch, safetensors do not import.*python -m inkrs.export_nnunet"):
         inkrs._resolve_nnunet(model)
     assert len(exports) == 1
+
+
+def test_cli_stops_when_forced_cuda_libraries_fail(monkeypatch, capsys):
+    from inkrs import _cli, _inkrs
+
+    def fail():
+        raise inkrs.CudaLibraryError("INKRS_CUDA_LIBS forced cudnn from pip, but the engine would open the system's")
+
+    ran = []
+    monkeypatch.setattr(inkrs, "load_cuda_libraries", fail)
+    monkeypatch.setattr(_inkrs, "cli", lambda argv: ran.append(argv) or 0)
+    monkeypatch.setenv("INKRS_CUDA_LIBS", "pip")
+
+    monkeypatch.setattr(sys, "argv", ["inkrs", "nnunet", "predict", "--model", "m7.safetensors"])
+    with pytest.raises(SystemExit) as stop:
+        _cli.main()
+    assert stop.value.code == 1 and ran == []
+    assert "forced cudnn from pip" in capsys.readouterr().err
+
+    # help and version open no library, and without the setting the engine reports what is missing itself
+    for argv, env in ((["inkrs", "--version"], "pip"), (["inkrs", "nnunet", "predict"], "auto")):
+        monkeypatch.setenv("INKRS_CUDA_LIBS", env)
+        monkeypatch.setattr(sys, "argv", argv)
+        with pytest.raises(SystemExit) as done:
+            _cli.main()
+        assert done.value.code == 0 and ran[-1] == argv
