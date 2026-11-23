@@ -141,6 +141,7 @@ From Python this is `inkrs.nnunet_predict`. `inkrs --help` lists every option, a
 A few other limits worth knowing:
 
 - Inputs have to be uint8 zarr v2, and the whole volume has to fit on the GPU in under 4 GiB.
+- Zarr chunks have to be uncompressed, zstd, or blosc with lz4 and no bit shuffle. villa's `tifs_to_ome_zarr.py` writes blosc with zstd and bit shuffle, so re-encode such a volume first.
 - Only the Hann blend and villa's unpadded tile phase.
 - The full equivalence checks ran on an RTX 5090. A T4, an A10, an A100, an L4, an RTX 4090 and an M4 Pro passed the per-map checks ([results/README.md](results/README.md)). Other GPUs should work but haven't been tried.
 - The Windows build has never run on actual Windows. It's cross-built on Linux and its tests pass under Wine.
