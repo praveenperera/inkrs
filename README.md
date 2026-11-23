@@ -2,48 +2,31 @@
 
 Fast native inference for the Vesuvius Challenge's models, written in Rust.
 
-inkrs runs villa's models natively, entirely on the GPU: its ink readers and a handful of other ink models, and its nnU-Net surface model, `surface_m7_nnunet`. It writes the same outputs villa's Python code writes, just a lot faster. The volume and the model stay on the GPU, every depth and both directions run in one process, and the TIFFs get written on other threads while the next maps compute.
+inkrs runs villa's models natively, entirely on the GPU: its ink readers and a handful of other ink models, and its nnU-Net surface model, `surface_m7_nnunet`. It writes the same outputs villa's Python code writes, just a lot faster: the volume and the model stay on the GPU, and one process runs every depth and both directions.
 
 It runs on NVIDIA GPUs (compute capability 7.5 and up, so T4 / RTX 20 series and newer) and on Apple silicon Macs through Metal. The surface model and the 3D ink U-Net run on NVIDIA only, at compute capability 8.0 and up.
 
 ## How fast
 
-All 18 maps of PHerc. 343's First Letters render (66 × 2560 × 6720, depths −4..4, both directions) with villa's `hybrid_3d2d-seed42`, on one RTX 5090:
+All 18 maps of PHerc. 343's First Letters render with villa's `hybrid_3d2d-seed42`, on one RTX 5090:
 
-| | Time | Faster |
+| | Time | inkrs faster by |
 |---|---|---|
 | inkrs | **8.50 s** | |
 | inksweep fast mode, with `torch.compile` | 64.5 s | **7.57×** |
 | villa main with the faster flags from #2428 | 161.7 s | **19.0×** |
 
-The other villa readers get the same kind of speedup, and UFSM, the closest native port, is still well behind:
-
-| Against | Model and input | inkrs | Theirs | Faster |
-|---|---|---|---|---|
-| villa main with #2428's flags | reader-v2, PHerc. 1447 segment, 10 maps | 3.39 s | 51.4 s | 15.2× |
-| inksweep fast mode, compiled | Reader V3, PHerc. 1447 segment, 10 maps | 3.33 s | 52.4 s | 14.5× |
-| villa's own `infer`, compiled | `hybrid_3d2d-seed42` through villa's `infer` with the inkrs adapter (not in villa yet), S1, 2 maps | 2.46 s | 14.0 s | 5.68× |
-| UFSM | `hybrid_3d2d-seed42`, S1, 1 map | 0.80 s | 1.91 s | 2.35× |
-| UFSM | Reader V3, S1, 1 map | 0.78 s | 1.98 s | 2.49× |
-| SurgeFok's MPS path, on an M4 Pro Mac | `hybrid_3d2d-seed42`, S1, 1 map | 3.45 s | 19.4 s | 5.62× |
-
-S1 is a 2048 × 2048 crop of the PHerc. 343 render. UFSM is a native C/CUDA port with its own fp16 kernels.
-
-Hecate and v8-in gain less. They're big networks, and inkrs runs their convolutions through cuDNN, the same as PyTorch, so there's less overhead to cut. Hecate in bf16 is 1.70× faster than inksweep, v8-in 1.82× faster than inksweep and 2.38× faster than ink-sdk, and both about 1.2× faster than UFSM. The PHerc. 0306B claim's recipe, mostly v8-in, is 1.68× faster than its own scripts.
-
-For the nnU-Net models: on one 512³ zone of PHerc. 0826, `surface_m7_nnunet` runs end to end in 130.6 s against 206.5 s for villa's compiled in-memory path, 1.58× faster.
-
-The numbers behind these are in [results/](results/), along with how to rerun them; the nnU-Net ones are in [docs/MODELS.md](docs/MODELS.md).
+The other villa readers get a similar speedup, and inkrs is about 2.4× faster than UFSM, the closest native port. Hecate and v8-in gain less (1.2× to 2.4×), since cuDNN does most of their work either way. On one 512³ zone of PHerc. 0826, `surface_m7_nnunet` runs 1.58× faster than villa's compiled in-memory path. [docs/COMPARISON.md](docs/COMPARISON.md) has every timing and a feature table for the other runners.
 
 ## Same maps, or it doesn't count
 
-None of the speed matters if the maps are different. For villa's readers I hold inkrs to villa's own bar against villa eager: r ≥ 0.9994, p99.9 and the largest difference at most 4/255, and the same covered pixels. In practice it's a lot closer than that. The 18 maps from the timed 343 run are within 2/255 of villa main's (r ≥ 0.999994), and at d 0, 98.3% of the pixels are identical:
+None of the speed matters if the maps are different. For villa's readers I hold inkrs to villa's own bar against villa eager: r ≥ 0.9994, p99.9 and the largest difference at most 4/255, and the same covered pixels. In practice it's a lot closer than that. The 18 maps from the timed 343 run are within 2/255 of villa main's, and at d 0, 98.3% of the pixels are identical:
 
 ![villa's map, inkrs's map and where they differ](results/r343-map-figure.png)
 
 *PHerc. 343 at d 0, reading side, over the band with the published first letters: villa main's map (top), inkrs's (middle), and where they differ (bottom, each 4 × 4 block's largest difference × 64, so one grey level shows as dark grey).*
 
-Hecate gets the same treatment against `hecate.py`'s maps. For `surface_m7_nnunet`, inkrs missed the bar I set before the run, and I amended the bar after seeing the results, to accept villa eager as well as villa compiled as the reference. [docs/MODELS.md](docs/MODELS.md) gives both comparisons, along with every model's checks.
+For `surface_m7_nnunet`, inkrs missed the bar I set before the run, and I amended the bar after seeing the results, to accept villa eager as well as villa compiled as the reference. [docs/MODELS.md](docs/MODELS.md) gives both comparisons, along with every model's checks.
 
 ## Models
 
@@ -57,50 +40,37 @@ Some of these weights are non-commercial (TRACE v3B, Rectina and A-hn). [docs/MO
 
 ## Install
 
-The Python package, on Linux x86-64 or Windows x86-64:
+Python, on Linux or Windows (x86-64):
 
 ```
 pip install "inkrs[cu12]"
 ```
 
-The `cu12` extra pulls in cuDNN 9 and cuBLAS 12 from pip. Leave it off if you already have them, for example from a CUDA 12 PyTorch. On an Apple silicon Mac it's `pip install inkrs`. The wheel also installs the `inkrs` command, the CLI's own code run inside Python, so it needs no Rust. [python/README.md](python/README.md) has the details.
+On an Apple silicon Mac, drop the extra: `pip install inkrs`. The `cu12` extra pulls in cuDNN 9 and cuBLAS 12; leave it off if you already have them, for example from a CUDA 12 PyTorch. The wheel also installs the `inkrs` command, the CLI's own code run inside Python, so it needs no Rust. [python/README.md](python/README.md) has the details.
 
-The `inkrs` CLI comes prebuilt for Linux x86-64, Windows x86-64 and Apple silicon Macs, through [cargo-binstall](https://github.com/cargo-bins/cargo-binstall):
+The CLI, prebuilt for Linux, Windows and Apple silicon:
 
 ```
 cargo binstall inkrs
 ```
 
-Or build it from crates.io. The GPU kernels ship compiled for the common NVIDIA GPUs, from the T4 to the RTX 50 series, and as PTX that the driver compiles for any other GPU, so all you need is Rust, not the CUDA toolkit:
+or built from crates.io, which needs Rust but not the CUDA toolkit:
 
 ```
 cargo install inkrs --locked
 ```
 
-The prebuilt Linux binary needs glibc 2.28 or newer (RHEL 8, Debian 10, Ubuntu 20.04 and later). The archives are also attached to each [GitHub release](https://github.com/praveenperera/inkrs/releases).
-
-### What the CLI needs to run
-
-**Linux.** An NVIDIA driver new enough for CUDA 12 (r525 or later, r570 or later on the RTX 50 series), plus cuDNN 9 and cuBLAS 12. The CLI opens them by name, so it finds them wherever the system's dynamic loader does: installed system-wide, or in a directory on `LD_LIBRARY_PATH`. It tries the unversioned names first (`libcudnn.so`, `libcublas.so`), then versioned ones such as `libcudnn.so.9` and `libcublas.so.12`. Unlike the Python package, it doesn't look inside a Python environment, so to use the pip copies, put their directories on the path:
-
-```
-site=$(python -c 'import sysconfig; print(sysconfig.get_paths()["purelib"])')
-export LD_LIBRARY_PATH="$site/nvidia/cudnn/lib:$site/nvidia/cublas/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
-```
-
-**Windows.** The same driver, plus cuDNN 9 (`cudnn64_9.dll`) and cuBLAS 12 (`cublas64_12.dll`). The CLI looks for them next to `inkrs.exe`, in System32, in each absolute `PATH` entry, then under `%CUDA_PATH%`, so a CUDA 12 toolkit works, and so do the pip copies once their `nvidia\cudnn\bin` and `nvidia\cublas\bin` folders are on `PATH`. It never loads a DLL from the current folder or a relative `PATH` entry; if one is there, it stops and names the file.
-
-**macOS.** Apple silicon (M1 or newer) and macOS 26 or newer, for Metal 4. The binary starts on macOS 11 and later, but before 26 it stops with an error naming the version it needs. It needs no CUDA libraries and no Xcode, since the Metal shaders ship as source and compile when the engine starts.
-
-The readers run in fp16 by default on Metal too, and their maps already land within 2/255 of villa's own float32 PyTorch run on MPS. For a closer match, `--precision fp32` (`inkrs.Engine(..., precision="fp32")`) runs them in float32: on an M4 Pro its maps came within 1/255 of PyTorch's, with 0.004% of pixels off by one against 5% at fp16, at 1.2-1.3x the run time and twice the activation and logit memory (`results/metal-fp32.json`). fp32 is Metal only; on CUDA it raises an error, and the Neural Engine offload and v8-in don't take it.
+On NVIDIA you need a CUDA 12 driver (r525 or later, r570 on the RTX 50 series) plus cuDNN 9 and cuBLAS 12. On a Mac you need macOS 26 or newer. [docs/INSTALL.md](docs/INSTALL.md) covers where the CLI looks for the libraries on each system, and the precision setting on Metal.
 
 ## Usage
 
-inkrs reads weights from a safetensors export of the checkpoint. You make it once, on the CPU, with villa installed, using the script in this repository or the copy in the Python package (`python -m inkrs.export_weights`):
+inkrs reads weights from a safetensors export of the checkpoint. You make it once, on the CPU, with villa installed:
 
 ```
 python -I scripts/export_weights.py ink_9um/hybrid_3d2d-seed42/step-075000.pth weights/
 ```
+
+The Python package has the same script as `python -m inkrs.export_weights`.
 
 Then all 18 maps of a segment in one go:
 
@@ -131,42 +101,25 @@ inkrs nnunet predict --model weights/m7.safetensors --input VOLUME.zarr --output
 
 From Python this is `inkrs.nnunet_predict`. `inkrs --help` lists every option, and [python/API.md](python/API.md) covers the Python API.
 
-## Where it's not faster
+## Limits
 
-- **No GPU.** There's no CPU path.
-- **Hecate's first run on a machine.** inkrs spends about 12 s of it timing cuDNN's convolution algorithms, then keeps its picks for later runs. UFSM's first run is no slower than its others, so it wins that one run: 17.7 s against 27.0 s on the whole PHerc. 1447 segment. The compiled kernels take about 1.3 s off inkrs's side, which still leaves UFSM ahead.
-- **Hecate in fp32.** UFSM's fp16 Hecate takes 17.7 s, inkrs's fp32 takes 30.9 s. Use `--fast` (bf16), which keeps the ink: on the labelled segments I scored, its AUC moved by at most 0.0006 ([docs/FAST.md](docs/FAST.md)).
-- **Training.** inkrs only does inference.
-
-A few other limits worth knowing:
-
+- Inference only, and only on a GPU. There's no CPU path.
 - Inputs have to be uint8 zarr v2, and the whole volume has to fit on the GPU in under 4 GiB.
 - Zarr chunks have to be uncompressed, zstd, or blosc with lz4 and no bit shuffle. villa's `tifs_to_ome_zarr.py` writes blosc with zstd and bit shuffle, so re-encode such a volume first.
 - Only the Hann blend and villa's unpadded tile phase.
-- The full equivalence checks ran on an RTX 5090. A T4, an A10, an A100, an L4, an RTX 4090 and an M4 Pro passed the per-map checks ([results/README.md](results/README.md)). Other GPUs should work but haven't been tried.
-- The Windows build has never run on actual Windows. It's cross-built on Linux and its tests pass under Wine.
+- Hecate's first run on a machine spends about 12 s timing cuDNN's algorithms (later runs reuse its picks), and Hecate in fp32 is slower than UFSM's fp16. Use `--fast` (bf16), which keeps the ink ([docs/FAST.md](docs/FAST.md)).
 - The Metal backend doesn't do the 3D U-Net, the nnU-Net models or test-time augmentation. The nnU-Net models need compute capability 8.0 or above.
-
-## Other runners
-
-| | inkrs | villa | inksweep | UFSM | ink-sdk |
-|---|---|---|---|---|---|
-| villa readers, speed | fastest | 19× slower | 7.6× to 14.5× slower | 2.4× slower | runs villa, so about villa's speed |
-| Matches villa's maps | ✅ | the reference | ✅ | ✅ | ✅ |
-| Hecate | ✅ | ❌ | ✅ | ⚠️ fp16 only | ✅ |
-| v8-in and A-hn | ✅ | ❌ | ⚠️ v8-in only | ⚠️ its A-hn misses the 0306B recipe | ✅ |
-| Apple silicon | ✅ Metal | ⚠️ PyTorch MPS, slower | ❌ | ❌ | ⚠️ PyTorch MPS, slower, not tested by its authors |
-| Install | `pip` or `cargo` | `pip` | `pip` | build from source | `git clone`, then `pip` |
-| Licence | MIT or Apache-2.0 | MIT | MIT | none | MIT |
-| Training | ❌ | ✅ | ❌ | ✅ its own models | ❌ |
-| Renders segments from a mesh | ❌ | ✅ VC3D | ✅ | ✅ its own surfaces | ✅ |
+- The full equivalence checks ran on an RTX 5090, and a T4, an A10, an A100, an L4, an RTX 4090 and an M4 Pro passed the per-map checks ([results/README.md](results/README.md)). Other GPUs should work but haven't been tried.
+- The Windows build is cross-built on Linux and its tests pass under Wine, but it has never run on actual Windows.
 
 ## More
 
 - [docs/WRITEUP.md](docs/WRITEUP.md): why I built this and how it got fast
+- [docs/COMPARISON.md](docs/COMPARISON.md): every timing, and inkrs against the other runners
 - [docs/MODELS.md](docs/MODELS.md): every model, its licence and its checks
 - [docs/FAST.md](docs/FAST.md): the faster settings and what they cost in accuracy
-- [results/README.md](results/README.md): what each results file holds, and how to rerun the main checks and timings
+- [docs/INSTALL.md](docs/INSTALL.md): installing the CLI and the libraries it needs
+- [results/README.md](results/README.md): what each results file holds, and how to rerun the checks and timings
 
 ## Credits
 

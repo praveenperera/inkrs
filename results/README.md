@@ -4,9 +4,9 @@ The JSON behind the numbers in the README and the docs. To check the main ones y
 
 The inputs: **R343** is the PHerc. 343 `concat_w047-w048_R5B2_z9500-11000` render (66 × 2560 × 6720, level 0 only), **R343 multiscale** is the same level 0 with our 2 × 2 × 2 mean pyramid, and **S1** is its 2048 × 2048 crop. The PHerc. 1447 segment is `20250702235910-auto_grown_20250702235910292`. Everything ran on one RTX 5090 unless the line names another GPU.
 
-The README's timings are in `release-timing.json`, `public-ports.json`, `first-run.json` and `tta-306b-timing.json`. The other timing files hold older measurements, so their numbers differ from the README's.
+The timings in the README and [docs/COMPARISON.md](../docs/COMPARISON.md) are in `release-timing.json`, `public-ports.json`, `first-run.json` and `tta-306b-timing.json`. The other timing files hold older measurements, so their numbers differ from those.
 
-## The README's numbers
+## The README's and the comparison's numbers
 
 | Number | File and key |
 |---|---|

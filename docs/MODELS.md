@@ -11,7 +11,7 @@ Besides `hybrid_3d2d-seed42`, inkrs runs:
 
 This page gives each one's licence, how to export it, and how it checks out against the reference code. No weights ship with inkrs. You download each model, accept its licence, and export it once on the CPU.
 
-For the readers and Hecate, the JSON behind each number is in [results/](../results/), and [its README](../results/README.md#rerun-it) has the commands. Everything ran on one RTX 5090 unless a section says otherwise. The README's [How fast](../README.md#how-fast) has the headline timings.
+For the readers and Hecate, the JSON behind each number is in [results/](../results/), and [its README](../results/README.md#rerun-it) has the commands. Everything ran on one RTX 5090 unless a section says otherwise. The README's [How fast](../README.md#how-fast) has the headline timings, and [COMPARISON.md](COMPARISON.md) has the rest.
 
 ## What counts as the same map
 
@@ -56,7 +56,7 @@ Domenico Russo, MIT. Weights `reader-v3.pth` from `huggingface.co/domenicor046/r
 | S1 crop, d −2..2, both directions | 10 | 0.999994 | 1/255 | 1/255 | equal to villa's, same tiles kept |
 | `native`, d 0, both directions | 2 | 0.999997 | 1/255 | 1/255 | equal to villa's, same tiles kept |
 
-**Speed.** The README's [How fast](../README.md#how-fast) has Reader V3 against inksweep. inkrs's forward takes 1.80 ms of GPU time per 384 tile.
+**Speed.** [COMPARISON.md](COMPARISON.md#the-villa-readers) has Reader V3 against inksweep and UFSM. inkrs's forward takes 1.80 ms of GPU time per 384 tile.
 
 ## Hecate 9.6 µm
 
@@ -78,7 +78,7 @@ On the edge fixture inkrs keeps the same 3 tiles and skips the same 88 as `hecat
 
 **Whole segment** (`results/hecate-timing.json`, `map_diffs`). On `r96`, bf16, stride 32, inkrs's forward map matches `hecate.py --precision bf16 --batch-size 8` at r 0.999987, max |diff| 3/255, 98.41% identical, and it passes at batch 8, at batch 32 and with `--both`. Against gomyway's published Hecate maps, which used the same settings, it gets r 0.999986 forward (max 3/255) and r 0.999986 reverse (max 2/255), and the reverse passes every check. The published forward map has no JSON sidecar, so that one check can't run there; `hecate.py`'s own run gets r 0.999988 against it.
 
-**Speed** (`results/hecate-timing.json`). The README's [How fast](../README.md#how-fast) has Hecate against inksweep's Hecate fast mode. On the whole segment, inkrs in bf16 is 2.2× faster than `hecate.py` at the same precision and batch, and 2.1× faster at both tools' defaults. It's 1.45× faster than `hecate_fast --no-compile` (`ArcheyChen/vesuvius-eligible-scouting@c73d0dd5`, MIT, the September 2026 "Faster Hecate inference" award). The gain is modest because both run the convolutions in cuDNN.
+**Speed** (`results/hecate-timing.json`). [COMPARISON.md](COMPARISON.md#hecate-and-v8-in) has Hecate against inksweep's Hecate fast mode and UFSM. On the whole segment, inkrs in bf16 is 2.2× faster than `hecate.py` at the same precision and batch, and 2.1× faster at both tools' defaults. It's 1.45× faster than `hecate_fast --no-compile` (`ArcheyChen/vesuvius-eligible-scouting@c73d0dd5`, MIT, the September 2026 "Faster Hecate inference" award). The gain is modest because both run the convolutions in cuDNN.
 
 ## v8-in and A-hn
 
