@@ -1022,4 +1022,3 @@ def test_an_nnunet_export_named_key_is_found_in_the_cache(tmp_path, monkeypatch)
 
     monkeypatch.setattr(export_nnunet, "export", export_as_key)
     assert inkrs._resolve_nnunet(model).name == "key.safetensors"
-

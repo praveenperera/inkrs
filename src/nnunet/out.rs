@@ -1,6 +1,7 @@
 //! The binary prediction array as villa's `vesuvius.predict` lays it out: a zarr v2 array (not a group) of
 //! shape `(1, Z, Y, X)`, chunks `(1, c, c, c)`, uint8, fill 0, `.` separators, all-zero chunks not stored
-//! (`ZarrWriter(skip_empty=True)`)
+//! (`ZarrWriter(skip_empty=True)`). Its `.zattrs` marks it as this command's output, which is what lets
+//! `--overwrite` replace it
 //!
 //! villa compresses with blosc (zstd level 1, byte shuffle, a no-op at one byte per value); this writer
 //! uses numcodecs' plain `zstd` codec at level 1, which every zarr v2 reader decodes to the same bytes
@@ -10,7 +11,7 @@ use std::path::{Path, PathBuf};
 use color_eyre::eyre::{Result, WrapErr, ensure};
 use rayon::prelude::*;
 
-use crate::unet3d::zio::{array_meta_is, fresh_output_dir, holds_only};
+use crate::unet3d::zio::{array_meta_is, fresh_output_dir, holds_only, is_marked, mark};
 
 /// A new prediction array
 pub struct Writer {
@@ -20,6 +21,9 @@ pub struct Writer {
 }
 
 impl Writer {
+    /// The command named in each output's mark
+    const COMMAND: &str = "nnunet-predict";
+
     /// Creates the array at `path` for a volume of `shape`; an existing path is replaced only with `overwrite` and
     /// only when it is an earlier prediction of this writer ([`fresh_output_dir`])
     pub fn create(path: &Path, shape: [usize; 3], chunk: usize, overwrite: bool) -> Result<Self> {
@@ -31,17 +35,19 @@ impl Writer {
             "compressor": {"id": "zstd", "level": 1}, "dimension_separator": ".",
         });
         std::fs::write(path.join(".zarray"), serde_json::to_string_pretty(&meta)?)?;
+        mark(path, Self::COMMAND)?;
         Ok(Self { dir: path.to_path_buf(), shape, chunk })
     }
 
-    /// Whether `path` holds only what this writer makes: its `.zarray` and chunk files keyed `0.z.y.x`
+    /// Whether `path` holds only what this writer makes: its `.zarray`, its mark and chunk files keyed `0.z.y.x`
     fn is_prediction(path: &Path) -> bool {
         let chunk_key = |name: &str| {
             let mut parts = name.split('.');
             parts.next() == Some("0") && parts.clone().count() == 3 && parts.all(|p| p.parse::<u64>().is_ok())
         };
         let compressor = serde_json::json!({"id": "zstd", "level": 1});
-        holds_only(path, |name, dir| !dir && (name == ".zarray" || chunk_key(name)))
+        holds_only(path, |name, dir| !dir && (name == ".zarray" || name == ".zattrs" || chunk_key(name)))
+            && is_marked(path, Self::COMMAND)
             && array_meta_is(path, &compressor, ".", 4)
     }
 
@@ -130,14 +136,23 @@ mod tests {
         let meta = serde_json::json!({"zarr_format": 2, "shape": [1, 4, 4, 4], "dtype": "|u1",
             "compressor": {"id": "blosc", "cname": "zstd", "clevel": 1, "shuffle": 1}, "dimension_separator": "."});
         std::fs::write(villa.join(".zarray"), meta.to_string()).unwrap();
+        // another tool's array laid out as this writer's, with no mark
+        let lookalike = root.join("lookalike.zarr");
+        Writer::create(&lookalike, [4, 4, 4], 4, false)
+            .unwrap()
+            .write_row([0, 0, 0], [4, 4, 4], &[9; 64], &[true])
+            .unwrap();
+        std::fs::remove_file(lookalike.join(".zattrs")).unwrap();
         let w = Writer::create(&pred, [4, 4, 4], 4, true).unwrap();
         w.write_row([0, 0, 0], [4, 4, 4], &[9; 64], &[true]).unwrap();
         std::fs::write(pred.join("m7.json"), b"{}").unwrap();
-        for path in [&villa, &pred] {
+        for path in [&villa, &lookalike, &pred] {
             let e = Writer::create(path, [4, 4, 4], 4, true).err().unwrap_or_else(|| panic!("{}", path.display()));
-            assert!(format!("{e:#}").contains("not an inkrs prediction"), "{}: {e:#}", path.display());
+            assert!(format!("{e:#}").contains("not a prediction this command wrote"), "{}: {e:#}", path.display());
+            // unsupported, so villa runs PyTorch, which replaces any output
+            assert!(crate::error::is_unsupported(&e), "{}: {e:#}", path.display());
         }
-        assert!(villa.join(".zarray").exists() && pred.join("m7.json").exists());
+        assert!(villa.join(".zarray").exists() && lookalike.join("0.0.0.0").exists() && pred.join("m7.json").exists());
         std::fs::remove_dir_all(root).unwrap();
     }
 }

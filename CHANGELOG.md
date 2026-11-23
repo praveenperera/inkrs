@@ -34,9 +34,11 @@ All notable changes to inkrs are documented here. The format follows
 ### Fixed
 
 - `inkrs ink3d --overwrite` deleted whatever `--output` named, the input volume
-  or a directory holding the checkpoint included. `--overwrite` now replaces only
-  an earlier prediction of the same command, never through a symlink, and
-  refuses anything else, as `inkrs nnunet predict` does.
+  or a directory holding the checkpoint included. Each prediction now carries a
+  mark in its `.zattrs`, and `--overwrite` replaces only a marked prediction of
+  the same command that holds nothing else, never through a symlink, as
+  `inkrs nnunet predict` does. It refuses anything else, including an ink3d
+  output from before 0.4.0, as unsupported, so villa runs PyTorch instead.
 
 ## [0.3.1] - 2026-11-22
 
