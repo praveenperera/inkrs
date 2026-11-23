@@ -121,7 +121,7 @@ sweep = eng.sweep("RENDER.zarr", range(-4, 5))
 
 Hecate, v8-in and the 3D U-Net have their own commands (`inkrs hecate`, `inkrs infer` and `inkrs ink3d`).
 
-The nnU-Net models read an export that `scripts/export_nnunet.py` (or `python -m inkrs.export_nnunet`) makes once, with torch and `dynamic_network_architectures` installed. `inkrs nnunet predict` runs `surface_m7_nnunet` as villa's `vesuvius.predict --blend_in_memory --mode binary` does, and takes villa's flags:
+The nnU-Net models read an export that `scripts/export_nnunet.py` (or `python -m inkrs.export_nnunet`) makes once, with torch, `safetensors` and `dynamic_network_architectures` installed, plus SciPy when villa's `vesuvius` isn't. `inkrs nnunet predict` runs `surface_m7_nnunet` as villa's `vesuvius.predict --blend_in_memory --mode binary` does, and takes villa's flags:
 
 ```
 python -I scripts/export_nnunet.py surface_m7_nnunet/ weights/ --recipe vesuvius-predict --name m7

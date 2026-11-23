@@ -71,10 +71,11 @@ GAUSSIAN_KEY = "inkrs.blend.gaussian"
 
 def missing_packages() -> list[str]:
     """The packages an export needs that do not import here"""
-    missing = [] if torch is not None else ["torch", "safetensors"]
-    if importlib.util.find_spec("dynamic_network_architectures") is None:
-        missing.append("dynamic_network_architectures")
-    return missing
+    needed = ["torch", "safetensors", "dynamic_network_architectures"]
+    # the blend weights come from villa when it is installed, else from the inline copy, which needs scipy
+    if importlib.util.find_spec("vesuvius") is None:
+        needed.append("scipy")
+    return [name for name in needed if importlib.util.find_spec(name) is None]
 
 
 def sha256(path: Path) -> str:
