@@ -363,6 +363,14 @@ mod tests {
         let c = Contract::from_sidecar(&v).expect("an anisotropic program parses");
         assert_eq!(c.program.levels(c.patch_size, 1).expect("levels").last().map(|l| l.0), Some([6, 6, 12]));
         assert!(crate::error::is_unsupported(&c.program.check_isotropic().unwrap_err()));
+
+    /// A region too big for the kernels' u32 indexing is unsupported, which villa's `--engine inkrs` falls back on
+    #[test]
+    fn u32_overflow_is_unsupported() {
+        let e = crate::unet3d::model::u32_extent("accumulator", 1 << 33).unwrap_err();
+        assert!(crate::error::is_unsupported(&e), "{e:#}");
+        crate::unet3d::model::u32_extent("accumulator", u32::MAX as usize).unwrap();
+    }
         assert!(crate::error::is_unsupported(&c.predict().unwrap_err()));
     }
 

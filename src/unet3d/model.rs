@@ -11,10 +11,11 @@ use std::cell::RefCell;
 use std::collections::HashMap;
 use std::rc::Rc;
 
-use color_eyre::eyre::{Result, WrapErr, ensure};
+use color_eyre::eyre::{Result, ensure};
 
 use super::{ConvSpec, Precision, Program};
 use crate::dnn::{Blas, ConvPlan, ConvShape, Dnn, Dtype, Pick};
+use crate::ensure_supported;
 use crate::gpu::{Arg, Buf, Gpu};
 use crate::weights::Checkpoint;
 
@@ -999,9 +1000,11 @@ enum Residual<'a> {
     Normed(&'a Buf, &'a Conv),
 }
 
-/// Fails unless `n` elements index with u32
+/// Fails as unsupported unless `n` elements index with u32
 pub fn u32_extent(what: &str, n: usize) -> Result<()> {
-    u32::try_from(n).map(|_| ()).wrap_err_with(|| format!("{what}: {n} elements overflow u32 indexing"))
+    // a limit of the kernels' indexing, not a bad input, so callers such as villa can fall back on PyTorch
+    ensure_supported!(u32::try_from(n).is_ok(), "{what}: {n} elements overflow the kernels' u32 indexing");
+    Ok(())
 }
 
 /// The buffer (`'y'` or `'x'`) decoder conv `i` of a stage writes: they alternate from `y`, so a

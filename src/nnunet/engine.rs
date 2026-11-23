@@ -246,13 +246,13 @@ pub fn run(model: &Path, input: &Path, output: &Path, opts: &Options) -> Result<
     let rw = (canvas.hi[2].div_ceil(c) * c).min(shape[2]) - x0;
     let ring = p.div_ceil(c) + 1;
     let plane = ring * c * rh * rw;
-    u32_extent("accumulator", 2 * plane)?;
     let gb = (3 * plane * 4) as f64 / 1e9;
     ensure_supported!(
         gb.total_cmp(&opts.max_accum_gb).is_le(),
         "the accumulators need {gb:.1} GB, over the {} GB cap; use a smaller --bbox",
         opts.max_accum_gb
     );
+    u32_extent("accumulator", 2 * plane)?;
     let (ny, nx) = (rh.div_ceil(c), rw.div_ceil(c));
 
     let gpu = Gpu::open_device(opts.device)?;
