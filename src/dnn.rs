@@ -32,6 +32,10 @@ fn check(status: dnn::cudnnStatus_t, what: &str) -> Result<()> {
     Err(eyre!("{what}: {status:?} ({})", text.to_string_lossy()))
 }
 
+/// Entries a ranking query asks cuDNN for: its 8 forward algorithms once per math type it times, doubled again
+/// for headroom, so [`choose`]'s filter on the plan's math type never loses an entry ranked past the first 8
+const RANKING_CAP: usize = 32;
+
 /// Our own cuDNN handle on the GPU's stream
 ///
 /// cudakit keeps its handle private to its FP32 wrappers, so the FP16 plans make another
@@ -354,7 +358,7 @@ impl ConvPlan {
     }
 
     fn heuristic(&self, handle: &Dnn) -> Result<Vec<AlgoPerf>> {
-        let mut perf = [zero_perf(); 8];
+        let mut perf = [zero_perf(); RANKING_CAP];
         let mut count = 0;
         // SAFETY: the descriptors are set and `perf` holds the requested count
         unsafe {
@@ -365,7 +369,7 @@ impl ConvPlan {
                     self.w,
                     self.conv,
                     self.y,
-                    8,
+                    RANKING_CAP as c_int,
                     &mut count,
                     perf.as_mut_ptr(),
                 ),
@@ -435,7 +439,7 @@ impl ConvPlan {
             .unwrap_or(0);
         let ws = gpu.alloc(ws_bytes)?;
         gpu.sync()?;
-        let mut perf = [zero_perf(); 8];
+        let mut perf = [zero_perf(); RANKING_CAP];
         let mut count = 0;
         // SAFETY: buffers sized for the shape, and the call is synchronous
         unsafe {
@@ -449,7 +453,7 @@ impl ConvPlan {
                     self.conv,
                     self.y,
                     y.ptr() as *mut c_void,
-                    8,
+                    RANKING_CAP as c_int,
                     &mut count,
                     perf.as_mut_ptr(),
                     ws.ptr() as *mut c_void,
