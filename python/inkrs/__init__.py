@@ -133,6 +133,13 @@ def nnunet_predict(
     and `--threshold --threshold_value T`, and `chunk` is the edge of a cubic `--blend_chunk_size`; None takes
     the export's recipe. Returns the run report. The GIL is released while it runs
     """
+    # before the model folder resolves, which can export into the cache
+    if _METAL:
+        raise UnsupportedError("nnunet_predict runs on CUDA only; the Metal backend has no nnU-Net engine")
+    # the engine sees only the cached export of a model folder, so the folder itself is checked here
+    out = Path(output).resolve()
+    if Path(model).resolve().is_relative_to(out):
+        raise InkrsError(f"output {output} would delete the model {model}")
     model = _resolve_nnunet(Path(model))
     load_cuda_libraries()
     report = _nnunet_predict(
@@ -482,6 +489,8 @@ def _resolve_checkpoint(checkpoint: Path, weights_dir: Path) -> Path:
 
 #: the export recipe `nnunet_predict` runs, villa's `vesuvius.predict`
 _NNUNET_RECIPE = "vesuvius-predict"
+#: what an nnU-Net cache entry was made from; not .json, so no export (NAME.json) can share its name
+_NNUNET_KEY_FILE = "key.inkrs"
 
 
 def _resolve_nnunet(model: Path) -> Path:
@@ -529,7 +538,7 @@ def _resolve_nnunet(model: Path) -> Path:
         # not made from
         if _nnunet_key(files) != key:
             raise InkrsError(f"{model} changed while it was being exported; run again")
-        (staging / "key.json").write_text(json.dumps(key, sort_keys=True))
+        (staging / _NNUNET_KEY_FILE).write_text(json.dumps(key, sort_keys=True))
         try:
             os.replace(staging, cache)
         except OSError:
@@ -562,7 +571,7 @@ def _nnunet_export_in(directory: Path, sha: str, key: dict) -> Path | None:
     if not directory.is_dir():
         return None
     try:
-        if json.loads((directory / "key.json").read_text()) != key:
+        if json.loads((directory / _NNUNET_KEY_FILE).read_text()) != key:
             return None
     except (OSError, ValueError):
         return None

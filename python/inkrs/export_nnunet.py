@@ -121,6 +121,9 @@ def safe_load(path: Path) -> dict:
     # a checkpoint names the scalar reconstructor by the module of the numpy that saved it, numpy.core before 2.0
     scalar = [(multiarray.scalar, f"{m}.multiarray.scalar") for m in ("numpy._core", "numpy.core")]
     safe = [*scalar, np.dtype, *(type(np.dtype(t)) for t in ["float32", "float64", "int64", "bool"])]
+    # the context removes every entry it was given on exit, so pass only those the caller has not allowed already
+    allowed = torch.serialization.get_safe_globals()
+    safe = [g for g in safe if g not in allowed]
     with torch.serialization.safe_globals(safe):
         return torch.load(path, map_location="cpu", weights_only=True)
 
@@ -543,7 +546,8 @@ def export(model: Path, out_dir: Path, recipe_name: str, name: str | None = None
     for k, v in extra.items():
         unique[k] = v.contiguous()
     program = {"stem": stem, "stages": stages, "decoder": decoder, "head": head}
-    name = name or model.name
+    # resolved, so `.` or `..` names the folder it points to
+    name = name or model.resolve().name
     sidecar = {
         "format": FORMAT,
         "name": name,

@@ -985,3 +985,47 @@ def test_nnunet_export_names_a_torch_too_old_for_safe_loading(monkeypatch):
     assert any(m.startswith("torch>=2.6 (torch 2.5.1+cu124") for m in export_nnunet.missing_packages())
     monkeypatch.setattr(export_nnunet.torch, "__version__", "2.10.0")
     assert not any(m.startswith("torch>=") for m in export_nnunet.missing_packages())
+
+
+def test_nnunet_export_keeps_the_callers_torch_allowlist(tmp_path):
+    torch = pytest.importorskip("torch")
+    export_nnunet = pytest.importorskip("inkrs.export_nnunet")
+
+    path = tmp_path / "ck.pth"
+    torch.save({"w": torch.zeros(2), "loss": np.float64(0.5)}, path)
+    torch.serialization.add_safe_globals([np.dtype])
+    try:
+        export_nnunet.safe_load(path)
+        assert np.dtype in torch.serialization.get_safe_globals()
+    finally:
+        torch.serialization.clear_safe_globals()
+
+
+@pytest.mark.skipif(sys.platform != "darwin", reason="the macOS wheel has no nnU-Net engine")
+def test_nnunet_predict_on_metal_refuses_before_resolving_the_model(tmp_path, monkeypatch):
+    monkeypatch.setattr(inkrs, "_resolve_nnunet", lambda *a, **k: pytest.fail("resolved the model"))
+    with pytest.raises(inkrs.UnsupportedError, match="CUDA only"):
+        inkrs.nnunet_predict(tmp_path / "m7", tmp_path / "in.zarr", tmp_path / "out.zarr")
+
+
+def test_an_nnunet_export_named_key_is_found_in_the_cache(tmp_path, monkeypatch):
+    from inkrs import export_nnunet
+
+    model, _, _ = nnunet_folder(tmp_path, monkeypatch)
+    stand_in = export_nnunet.export
+
+    def export_as_key(model_dir, out_dir, recipe, name=None):
+        # a model folder named `key` exports key.json and key.safetensors
+        made = stand_in(model_dir, out_dir, recipe, name)
+        made.with_suffix(".json").rename(out_dir / "key.json")
+        return made.rename(out_dir / "key.safetensors")
+
+    monkeypatch.setattr(export_nnunet, "export", export_as_key)
+    assert inkrs._resolve_nnunet(model).name == "key.safetensors"
+
+
+@cuda_only
+def test_nnunet_predict_refuses_an_output_holding_the_model(tmp_path, monkeypatch):
+    monkeypatch.setattr(inkrs, "_resolve_nnunet", lambda *a, **k: pytest.fail("resolved the model"))
+    with pytest.raises(inkrs.InkrsError, match="would delete the model"):
+        inkrs.nnunet_predict(tmp_path / "models" / "m7", tmp_path / "in.zarr", tmp_path / "models", overwrite=True)
