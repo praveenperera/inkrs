@@ -1008,6 +1008,20 @@ def test_nnunet_predict_on_metal_refuses_before_resolving_the_model(tmp_path, mo
         inkrs.nnunet_predict(tmp_path / "m7", tmp_path / "in.zarr", tmp_path / "out.zarr")
 
 
+@pytest.mark.skipif(sys.platform == "darwin", reason="the macOS wheel refuses nnunet_predict before any path check")
+def test_nnunet_predict_refuses_an_output_holding_the_model(tmp_path, monkeypatch):
+    # another tool's zarr store at the output is unsupported, so villa would fall back and replace it with the model
+    out = tmp_path / "pred.zarr"
+    model = out / "surface_m7_nnunet"
+    model.mkdir(parents=True)
+    (out / ".zarray").write_text("{}")
+    monkeypatch.setattr(inkrs, "_resolve_nnunet", lambda *a, **k: pytest.fail("resolved the model"))
+    with pytest.raises(inkrs.InkrsError, match="holds the model") as e:
+        inkrs.nnunet_predict(model, tmp_path / "in.zarr", out, overwrite=True)
+    assert not isinstance(e.value, inkrs.UnsupportedError)
+    assert model.is_dir()
+
+
 def test_an_nnunet_export_named_key_is_found_in_the_cache(tmp_path, monkeypatch):
     from inkrs import export_nnunet
 
