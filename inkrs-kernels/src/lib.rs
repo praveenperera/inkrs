@@ -9,7 +9,8 @@
 //! because cuDNN runs every convolution in that layout. These kernels are the glue around the
 //! cuDNN convolutions and cuBLAS GEMMs: tile gather and normalisation, InstanceNorm, the depth
 //! attention pool, pooling, concatenation, the head and the blend. Hecate ([`hecate`]) instead
-//! runs float32 or bf16 activations, the two precisions its reference offers. The `*384` modules
+//! runs float32 or bf16 activations, the two precisions its reference offers; the 3D ink glue
+//! ([`unet3d`]) runs bf16, and in fp16 for the nnU-Net engine ([`nnunet`]). The `*384` modules
 //! are the 128-edge kernels at Reader V3's 384-pixel tile edge, kept separate so the 128-edge PTX
 //! does not change
 
@@ -39,4 +40,7 @@ pub mod tta;
 // (src/unet3d.rs check_device)
 #[cfg(not(feature = "sm75"))]
 pub mod unet3d;
+// nnU-Net's fp16 pipeline around the fp16 glue of `unet3d`, out of the sm_75 tier with it
+#[cfg(not(feature = "sm75"))]
+pub mod nnunet;
 pub mod v8in;

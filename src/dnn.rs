@@ -32,6 +32,10 @@ fn check(status: dnn::cudnnStatus_t, what: &str) -> Result<()> {
     Err(eyre!("{what}: {status:?} ({})", text.to_string_lossy()))
 }
 
+/// Entries a ranking query asks cuDNN for: its 8 forward algorithms once per math type it times, doubled again
+/// for headroom, so [`choose`]'s filter on the plan's math type never loses an entry ranked past the first 8
+const RANKING_CAP: usize = 32;
+
 /// Our own cuDNN handle on the GPU's stream
 ///
 /// cudakit keeps its handle private to its FP32 wrappers, so the FP16 plans make another
@@ -345,27 +349,16 @@ impl ConvPlan {
         if pick == Pick::Find {
             plan.ranking = plan.find_cached(gpu, handle, max_workspace)?;
         }
-        let ok = |p: &&AlgoPerf| p.status == dnn::cudnnStatus_t::CUDNN_STATUS_SUCCESS && p.workspace <= max_workspace;
-        // FP16 plans take the best tensor-op algorithm when there is one. cudnnFind's one-shot
-        // timing ranked a non-tensor-op algorithm first for reader-v2's enc.3.0.skip (1x1, 128->256
-        // at 16x16), which then ran at 0.77 µs per tile against a 0.11 µs floor in the forward
-        let tensor = |p: &&AlgoPerf| {
-            dtype != Dtype::Half
-                || matches!(
-                    p.math,
-                    dnn::cudnnMathType_t::CUDNN_TENSOR_OP_MATH
-                        | dnn::cudnnMathType_t::CUDNN_TENSOR_OP_MATH_ALLOW_CONVERSION
-                )
-        };
-        let pick = plan.ranking.iter().filter(ok).find(tensor).or_else(|| plan.ranking.iter().find(ok));
-        plan.algo = *pick.ok_or_else(|| {
-            eyre!("{shape}: no supported cuDNN algorithm within {max_workspace} B: {:?}", plan.ranking)
+        let math = dtype.math();
+        let pick = choose(&plan.ranking, math, max_workspace).map(|i| plan.ranking[i]);
+        plan.algo = pick.ok_or_else(|| {
+            eyre!("{shape}: no supported cuDNN algorithm under {math:?} within {max_workspace} B: {:?}", plan.ranking)
         })?;
         Ok(plan)
     }
 
     fn heuristic(&self, handle: &Dnn) -> Result<Vec<AlgoPerf>> {
-        let mut perf = [zero_perf(); 8];
+        let mut perf = [zero_perf(); RANKING_CAP];
         let mut count = 0;
         // SAFETY: the descriptors are set and `perf` holds the requested count
         unsafe {
@@ -376,7 +369,7 @@ impl ConvPlan {
                     self.w,
                     self.conv,
                     self.y,
-                    8,
+                    RANKING_CAP as c_int,
                     &mut count,
                     perf.as_mut_ptr(),
                 ),
@@ -403,11 +396,11 @@ impl ConvPlan {
         Ok(ranking)
     }
 
-    /// A stored ranking whose choice, the first supported entry within `max_workspace`, cuDNN
-    /// still runs within `max_workspace`, with that choice's workspace as cuDNN now sizes it
+    /// A stored ranking whose choice ([`choose`]) cuDNN still runs within `max_workspace`, with
+    /// that choice's workspace as cuDNN now sizes it
     fn replay(&self, handle: &Dnn, mut ranking: Vec<AlgoPerf>, max_workspace: usize) -> Option<Vec<AlgoPerf>> {
-        let ok = |p: &AlgoPerf| p.status == dnn::cudnnStatus_t::CUDNN_STATUS_SUCCESS && p.workspace <= max_workspace;
-        let chosen = ranking.iter_mut().find(|p| ok(p))?;
+        let i = choose(&ranking, self.dtype.math(), max_workspace)?;
+        let chosen = &mut ranking[i];
         let mut bytes = 0;
         // SAFETY: the descriptors are set; cuDNN writes one size
         let status = unsafe {
@@ -446,7 +439,7 @@ impl ConvPlan {
             .unwrap_or(0);
         let ws = gpu.alloc(ws_bytes)?;
         gpu.sync()?;
-        let mut perf = [zero_perf(); 8];
+        let mut perf = [zero_perf(); RANKING_CAP];
         let mut count = 0;
         // SAFETY: buffers sized for the shape, and the call is synchronous
         unsafe {
@@ -460,7 +453,7 @@ impl ConvPlan {
                     self.conv,
                     self.y,
                     y.ptr() as *mut c_void,
-                    8,
+                    RANKING_CAP as c_int,
                     &mut count,
                     perf.as_mut_ptr(),
                     ws.ptr() as *mut c_void,
@@ -523,6 +516,22 @@ impl ConvPlan {
             )
         }
     }
+}
+
+/// The index of a plan's algorithm in `ranking`: the first supported entry within `max_workspace`
+/// that cuDNN timed under `math`, the math type the plan's descriptor runs
+///
+/// cuDNN's ranking lists an algorithm once per math type, but the forward runs the descriptor's math
+/// whatever the entry says, so an entry timed under another math type runs a different kernel from
+/// the one timed, on a workspace sized for that other kernel. cuDNN 9.24 ranked a one-channel bf16 3D stem
+/// conv first under default math (1744 B workspace); run under tensor-op math it needed 276 MB and the
+/// forward failed with BAD_PARAM. It also keeps FP16 and BF16 plans on tensor-op entries: cudnnFind's
+/// one-shot timing ranked a non-tensor-op algorithm first for reader-v2's enc.3.0.skip (1x1, 128->256
+/// at 16x16), which then ran at 0.77 µs per tile against a 0.11 µs floor in the forward
+fn choose(ranking: &[AlgoPerf], math: dnn::cudnnMathType_t, max_workspace: usize) -> Option<usize> {
+    ranking.iter().position(|p| {
+        p.status == dnn::cudnnStatus_t::CUDNN_STATUS_SUCCESS && p.workspace <= max_workspace && p.math == math
+    })
 }
 
 fn zero_perf() -> dnn::cudnnConvolutionFwdAlgoPerf_t {
@@ -600,5 +609,39 @@ impl Drop for Blas {
     fn drop(&mut self) {
         // SAFETY: our handle
         let _ = unsafe { blas_result::destroy_handle(self.0) };
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn perf(algo: dnn::cudnnConvolutionFwdAlgo_t, math: dnn::cudnnMathType_t, workspace: usize) -> AlgoPerf {
+        AlgoPerf {
+            algo,
+            status: dnn::cudnnStatus_t::CUDNN_STATUS_SUCCESS,
+            ms: 0.1,
+            workspace,
+            math,
+            deterministic: true,
+        }
+    }
+
+    #[test]
+    fn choose_takes_the_entry_timed_under_the_descriptor_math() {
+        use dnn::cudnnConvolutionFwdAlgo_t::{
+            CUDNN_CONVOLUTION_FWD_ALGO_IMPLICIT_GEMM as GEMM,
+            CUDNN_CONVOLUTION_FWD_ALGO_IMPLICIT_PRECOMP_GEMM as PRECOMP,
+        };
+        use dnn::cudnnMathType_t::{CUDNN_DEFAULT_MATH as DEFAULT, CUDNN_TENSOR_OP_MATH as TENSOR};
+
+        // cuDNN 9.24's ranking for a one-channel 3D stem (bf16, 1->32 at 128^3): default math first
+        let mut unsupported = perf(GEMM, TENSOR, 0);
+        unsupported.status = dnn::cudnnStatus_t::CUDNN_STATUS_NOT_SUPPORTED;
+        let ranking = [perf(PRECOMP, DEFAULT, 1744), unsupported, perf(PRECOMP, TENSOR, 276_827_536)];
+        assert_eq!(choose(&ranking, TENSOR, 1 << 30), Some(2));
+        assert_eq!(choose(&ranking, DEFAULT, 1 << 30), Some(0));
+        // the tensor-op entry over the limit leaves no choice rather than the default-math one
+        assert_eq!(choose(&ranking, TENSOR, 1 << 20), None);
     }
 }

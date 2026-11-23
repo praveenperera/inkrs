@@ -1,6 +1,6 @@
 # inkrs Python API
 
-The `inkrs` module runs the inkrs engine in-process. It runs villa's `hybrid_3d2d-seed42` ink reader and the readers with its architecture (`reader-v2`, Reader V3, ink_9um seed 43, dense_native, TRACE v3B, Rectina M4) with the model resident on the GPU, and returns or writes the maps villa's `infer` writes. It also runs the v8-in exports, Hecate 9.6 µm (`inkrs.hecate`) and villa's 3D ink models (`inkrs.ink3d`). The Linux wheel embeds the kernels compiled for the common NVIDIA GPUs, with PTX as the fallback for any other, so it needs no Rust or CUDA toolkit, only an NVIDIA driver plus cuDNN 9 and cuBLAS 12 at run time ([Install](README.md#install)). The macOS arm64 wheel runs the villa readers, Hecate and the v8-in exports on Metal; there `inkrs.ink3d` and `tta=8` raise `UnsupportedError`.
+The `inkrs` module runs the inkrs engine in-process. It runs villa's `hybrid_3d2d-seed42` ink reader and the readers with its architecture (`reader-v2`, Reader V3, ink_9um seed 43, dense_native, TRACE v3B, Rectina M4) with the model resident on the GPU, and returns or writes the maps villa's `infer` writes. It also runs the v8-in exports, Hecate 9.6 µm (`inkrs.hecate`), villa's 3D ink models (`inkrs.ink3d`), and villa's nnU-Net surface model (`inkrs.nnunet_predict`). The Linux wheel embeds the kernels compiled for the common NVIDIA GPUs, with PTX as the fallback for any other, so it needs no Rust or CUDA toolkit, only an NVIDIA driver plus cuDNN 9 and cuBLAS 12 at run time ([Install](README.md#install)). The macOS arm64 wheel runs the villa readers, Hecate and the v8-in exports on Metal; there `inkrs.ink3d`, the nnU-Net engine and `tta=8` raise `UnsupportedError`.
 
 ## Where it plugs into villa
 
@@ -19,7 +19,7 @@ The least glue is an engine switch inside `infer_single_zarr` that hands the sam
 ```python
 import inkrs
 
-inkrs.__version__          # "0.3.1"
+inkrs.__version__          # "0.4.0"
 inkrs.build_info()         # dict: backend ("cuda" or "metal"), embedded PTX targets and ISA version, the GPU families
                            # with compiled kernels, minimum driver, wanted cuDNN/cuBLAS sonames; on macOS no PTX or
                            # cubins and None for the driver and libraries
@@ -31,6 +31,8 @@ inkrs.hecate(...)          # Hecate 9.6 um, as `inkrs hecate` (see "inkrs.hecate
 
 inkrs.ink3d(checkpoint, volume, output, *, device=0, bbox=None, overlap=0.5, chunk=128, max_accum_gb=8.0,
             algo="find", overwrite=False, coverage=False)  # 3D ink: see "3D ink models" below
+inkrs.nnunet_predict(model, volume, output, *, device=0, bbox=None, overlap=None, tta=True, threshold=None,
+                     chunk=None, max_accum_gb=12.0, algo="find", overwrite=False)  # see "nnU-Net models" below
 
 class inkrs.InkrsError(RuntimeError): ...            # any engine failure; the message holds the full cause chain
 class inkrs.UnsupportedError(inkrs.InkrsError): ...  # input, model or GPU inkrs does not implement; fall back
@@ -49,7 +51,8 @@ class inkrs.CudaLibraryError(inkrs.InkrsError): ...  # no driver, cuDNN 9 or cuB
 - a valid zarr that inkrs can't read: not uint8, not 3D, not `[Z, H, W]`, Fortran order, filters, or a compressor other than blosc-lz4, zstd or none (a zarr with broken metadata or chunks is an `InkrsError`);
 - a checkpoint that isn't the `hybrid_3d2d-seed42` contract: another architecture, crop, padding, preprocessing, amp dtype, target set or weight dtype;
 - a `.pth` with no export, where torch and villa aren't importable to make one, or a `.pth` the exporter refuses (see "Weights"): not a flat model, a state whose keys or shapes don't match the model its config builds (the message names the missing and unexpected keys and the mismatched shapes), or non-float32 weights. villa's PyTorch path loads such a state with `strict=False`, but the export never runs from a partial one;
-- a GPU the embedded PTX doesn't serve, or a driver too old to load it.
+- a GPU the embedded PTX doesn't serve, or a driver too old to load it;
+- for the nnU-Net engine (`inkrs.nnunet_predict`): an export or model folder of another pipeline or one the exporter refuses, a GPU below compute capability 8.0, or macOS, where it doesn't run.
 
 The engine classifies its own errors, so callers don't need to copy these limits. The GPU case reads cudakit's and the driver's own errors (`CUDA_ERROR_NO_BINARY_FOR_GPU`, `CUDA_ERROR_UNSUPPORTED_PTX_VERSION`), so it follows whatever PTX set the wheel embeds. Input checks run before any GPU work. The GPU check raises when the `Engine` is made and a volume limit raises from the call, so catch it in both places.
 
@@ -252,7 +255,7 @@ For the same volume, layers, stride, batch size and `algo`, the Python API runs 
 
 ## Not covered
 
-- Models other than `hybrid_3d2d-seed42`'s architecture and the v8-in family in `Engine` (Hecate has `inkrs.hecate`, 3D ink `inkrs.ink3d`), villa's zero-padded tile phase, non-Hann blends, and non-uint8 input. These are the CLI's limits; the input and model ones raise `UnsupportedError`.
+- Models other than `hybrid_3d2d-seed42`'s architecture and the v8-in family in `Engine` (Hecate has `inkrs.hecate`, 3D ink `inkrs.ink3d`, nnU-Net models `inkrs.nnunet_predict`), villa's zero-padded tile phase, non-Hann blends, and non-uint8 input. These are the CLI's limits; the input and model ones raise `UnsupportedError`.
 - Float probability maps. The engine finishes each map on the GPU in villa's uint8 encoding.
 - Zero-copy input from GPU memory. A CUDA tensor makes one host round trip, because the skip schedule is computed on the host.
 
@@ -266,3 +269,20 @@ report = inkrs.ink3d("v3-78k.safetensors", "volume.zarr", "pred.zarr", bbox=(0, 
 ```
 
 Differences from villa: only level 0 is written (villa also writes five downsampled levels), chunks are raw rather than zstd, and the GPU accumulators span the whole region's Y × X, so `max_accum_gb` bounds the region's area. It needs compute capability 8.0 or above, because its convs are cuDNN bf16, so on a Turing GPU, or with the sm75 tier forced, it raises `UnsupportedError`.
+
+## nnU-Net models: `inkrs.nnunet_predict`
+
+`inkrs.nnunet_predict` runs an nnU-Net ResEnc-L model, first villa's `surface_m7_nnunet`, as villa's `vesuvius.predict --blend_in_memory --mode binary` does, and writes the same `(1, Z, Y, X)` uint8 array, byte for byte the CLI's `inkrs nnunet predict`. `model` is the `.safetensors` export from `scripts/export_nnunet.py` or an nnU-Net model folder. A folder's checkpoint (the one villa's loader picks) is exported on first use into `~/.cache/inkrs/nnunet/` when the exporter's packages import (torch 2.6 or newer, `safetensors` and `dynamic_network_architectures`, plus SciPy without villa's `vesuvius`), and reused while the checkpoint, the folder's `plans.json`, `dataset.json` and `dataset_fingerprint.json`, and the exporter itself are unchanged (by SHA-256); a change to any of them makes a new export. A cached export runs without torch; a folder with none, where one of those doesn't import, raises `UnsupportedError` naming the missing packages and the export command. A plans file may only name the convolution, norm and nonlinearity classes a ResEnc-L uses, so the export never imports a class a downloaded file names.
+
+```python
+report = inkrs.nnunet_predict("surface_m7_nnunet/", "volume.zarr", "pred.zarr",
+                              bbox="12032:12544,5248:5760,4736:5248", threshold=0.2)
+# -> {"patches": 448, "positions": [...], "patches_skipped": ..., "patches_empty_logits": ..., "flips": 8,
+#     "chunks_written": ..., "run_s": ..., ...}
+```
+
+As villa does, a patch whose input normalises to one value is not run (`skipped`), and one whose mean logits come out all 0 is left out of the blend (`empty_logits`); `positions` lists every patch corner of villa's grid. A non-finite logit fails the run with `InkrsError` before any output it reaches is written.
+
+The keywords map onto villa's flags: `bbox` is `--bbox` (half-open `z0:z1,y0:y1,x0:x1`, a bound may be left out), `overlap` is `--overlap`, `tta=False` is `--disable_tta`, `threshold=T` is `--threshold --threshold_value T`, and `chunk` is the edge of a cubic `--blend_chunk_size`; None takes the export's recipe (overlap 0.5, chunks of the patch edge). An export of another pipeline (HercUNet, Socratic F0), a multiclass model, more than one input channel or a GPU below compute capability 8.0 raises `UnsupportedError`. Its checks against villa are in [MODELS.md](../docs/MODELS.md#villas-nnu-net-surface-model-m7).
+
+`inkrs.ink3d` and `inkrs.nnunet_predict` write a new output and mark it in its `.zattrs`. `overwrite=True` (the CLI's `--overwrite`) replaces an existing output only when it carries the same function's mark, holds nothing else and is not a symlink. Anything else at that path, including an output of inkrs before 0.4.0, is left as it is and raises `InkrsError`, never `UnsupportedError`, so a caller that falls back on its own writer does not replace it either. So do an empty path, a path with a `..` component, and an output that is the input or holds it.

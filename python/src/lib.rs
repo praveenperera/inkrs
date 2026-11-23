@@ -25,7 +25,7 @@ use pyo3::prelude::*;
 
 mod v8in;
 #[cfg(target_os = "macos")]
-use cuda_only::ink3d;
+use cuda_only::{ink3d, nnunet_predict};
 
 create_exception!(_inkrs, InkrsError, PyRuntimeError, "An inkrs engine failure; the message holds the cause chain");
 create_exception!(
@@ -550,6 +550,52 @@ fn ink3d(
     serde_json::to_string(&report).map_err(|e| InkrsError::new_err(e.to_string()))
 }
 
+/// One nnU-Net prediction over a zarr volume into villa's binary prediction array (`inkrs nnunet predict`);
+/// returns the run report as JSON
+#[cfg(not(target_os = "macos"))]
+#[pyfunction]
+#[pyo3(signature = (model, input, output, device, bbox, overlap, tta, threshold, chunk, max_accum_gb, algo, overwrite))]
+#[allow(clippy::too_many_arguments)]
+fn nnunet_predict(
+    py: Python<'_>,
+    model: PathBuf,
+    input: PathBuf,
+    output: PathBuf,
+    device: usize,
+    bbox: Option<String>,
+    overlap: Option<f64>,
+    tta: bool,
+    threshold: Option<f64>,
+    chunk: Option<usize>,
+    max_accum_gb: f64,
+    algo: &str,
+    overwrite: bool,
+) -> PyResult<String> {
+    let opts = inkrs::nnunet::engine::Options {
+        bbox,
+        overlap,
+        // the CLI's `--disable-tta` maps the same way: only an explicit off overrides the recipe
+        tta: (!tta).then_some(false),
+        threshold,
+        chunk,
+        pick: pick(algo)?,
+        max_accum_gb,
+        overwrite,
+        device,
+    };
+    let report = py.detach(|| inkrs::nnunet::engine::run(&model, &input, &output, &opts)).map_err(py_err)?;
+    serde_json::to_string(&report).map_err(|e| InkrsError::new_err(e.to_string()))
+}
+
+#[cfg(not(target_os = "macos"))]
+fn pick(algo: &str) -> PyResult<Pick> {
+    match algo {
+        "find" => Ok(Pick::Find),
+        "heuristic" => Ok(Pick::Heuristic),
+        other => Err(pyo3::exceptions::PyValueError::new_err(format!("algo {other:?}: need find or heuristic"))),
+    }
+}
+
 /// The embedded PTX: its targets and ISA versions, as `(target, version)` pairs
 #[cfg(not(target_os = "macos"))]
 #[pyfunction]
@@ -579,7 +625,7 @@ fn cubin_targets() -> Vec<(String, String)> {
     Vec::new()
 }
 
-/// The 3D ink engine runs on CUDA only: on macOS its entry point raises [`UnsupportedError`], so the
+/// The 3D ink and nnU-Net engines run on CUDA only: on macOS its entry point raises [`UnsupportedError`], so the
 /// Python package imports the same names on every platform. v8-in runs on both backends
 #[cfg(target_os = "macos")]
 mod cuda_only {
@@ -593,6 +639,40 @@ mod cuda_only {
     pub fn ink3d(_args: &Bound<'_, PyTuple>, _kwargs: Option<&Bound<'_, PyDict>>) -> PyResult<String> {
         Err(UnsupportedError::new_err("ink3d runs on CUDA only; the Metal backend has no 3D ink engine"))
     }
+
+    #[pyfunction]
+    #[pyo3(signature = (*_args, **_kwargs))]
+    pub fn nnunet_predict(_args: &Bound<'_, PyTuple>, _kwargs: Option<&Bound<'_, PyDict>>) -> PyResult<String> {
+        Err(UnsupportedError::new_err("nnunet_predict runs on CUDA only; the Metal backend has no nnU-Net engine"))
+    }
+}
+
+/// The `inkrs` command line (`inkrs::cli::run`) on `argv`, the program name first: the wheel's `inkrs` console
+/// script. Returns the exit status, 1 after printing the error as the binary does. The GIL is released while it runs
+#[pyfunction]
+fn cli(py: Python<'_>, argv: Vec<std::ffi::OsString>) -> i32 {
+    use std::io::Write;
+
+    let result = py.detach(|| inkrs::cli::run(argv));
+    // Rust's stdout flushes at the binary's exit, which this process never reaches through Rust
+    let _ = std::io::stdout().flush();
+    match result {
+        Ok(()) => 0,
+        Err(err) => {
+            eprintln!("Error: {err:?}");
+            1
+        }
+    }
+}
+
+/// Where the `inkrs` binary points the CUDA driver's JIT cache (`CUDA_CACHE_PATH`) before its first CUDA call, or
+/// None to leave the driver's default; the console script sets it the same way. Always None on macOS
+#[pyfunction]
+fn cuda_cache_path() -> Option<PathBuf> {
+    #[cfg(not(target_os = "macos"))]
+    return inkrs::dnn::algo_cache::cuda_cache_path(&|name| std::env::var_os(name));
+    #[cfg(target_os = "macos")]
+    None
 }
 
 #[pymodule]
@@ -606,6 +686,9 @@ fn _inkrs(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(reader_stride, m)?)?;
     m.add_function(wrap_pyfunction!(hecate, m)?)?;
     m.add_function(wrap_pyfunction!(ink3d, m)?)?;
+    m.add_function(wrap_pyfunction!(nnunet_predict, m)?)?;
+    m.add_function(wrap_pyfunction!(cli, m)?)?;
+    m.add_function(wrap_pyfunction!(cuda_cache_path, m)?)?;
     m.add("InkrsError", m.py().get_type::<InkrsError>())?;
     m.add("CudaLibraryError", m.py().get_type::<CudaLibraryError>())?;
     m.add("UnsupportedError", m.py().get_type::<UnsupportedError>())?;

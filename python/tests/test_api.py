@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import ctypes
 import ctypes.util
+import hashlib
 import json
 import os
 import re
@@ -835,3 +836,189 @@ def test_a_checkpoint_that_matches_its_model_still_exports(tmp_path, monkeypatch
     meta = json.loads(export.with_suffix(".json").read_text())
     assert meta["keys"] == {k: list(v.shape) for k, v in state.items()}
     assert meta["model_type"] == "toy" and meta["checkpoint_sha256"] == inkrs._sha256(pth)
+
+
+@pytest.mark.parametrize("key, name", [
+    ("conv_op", "os.system"),  # anything outside the table, which would otherwise be imported
+    ("nonlin", "torch.nn.GELU"),
+    ("dropout_op", "torch.nn.Dropout3d"),
+])
+def test_nnunet_plans_ops_come_from_a_fixed_table(key, name):
+    pytest.importorskip("torch")
+    pytest.importorskip("dynamic_network_architectures")
+    from inkrs import export_nnunet
+
+    kwargs = dict(export_nnunet.SOCRATIC_M7_RESENC_L, **{key: name})
+    plans = {"configurations": {"c": {"architecture": {
+        "network_class_name": export_nnunet.ARCH, "arch_kwargs": kwargs,
+        "_kw_requires_import": ["conv_op", "norm_op", "dropout_op", "nonlin"]}}}}
+    with pytest.raises(export_nnunet.ExportUnsupported, match=key):
+        export_nnunet.build_network(plans, "c", 1, 2)
+
+
+def test_an_nnunet_folder_of_another_network_is_unsupported(tmp_path, monkeypatch):
+    # a PlainConvUNet checkpoint has no encoder.stem tensors; it must be refused before they are read, so a
+    # caller that falls back on UnsupportedError can
+    torch = pytest.importorskip("torch")
+    pytest.importorskip("safetensors")
+    pytest.importorskip("dynamic_network_architectures")
+    model = tmp_path / "model"
+    (model / "fold_0").mkdir(parents=True)
+    plain = "dynamic_network_architectures.architectures.unet.PlainConvUNet"
+    (model / "plans.json").write_text(json.dumps({"configurations": {"3d_fullres": {"architecture": {
+        "network_class_name": plain, "arch_kwargs": {}, "_kw_requires_import": []}}}}))
+    dataset = {"labels": {"background": 0, "fg": 1}, "channel_names": {"0": "CT"}}
+    (model / "dataset.json").write_text(json.dumps(dataset))
+    torch.save({"network_weights": {"encoder.stages.0.0.convs.0.conv.weight": torch.zeros(32, 1, 3, 3, 3)},
+                "init_args": {"configuration": "3d_fullres"}}, model / "fold_0" / "checkpoint_final.pth")
+    monkeypatch.setenv("INKRS_CACHE_DIR", str(tmp_path / "cache"))
+    with pytest.raises(inkrs.UnsupportedError, match="PlainConvUNet"):
+        inkrs._resolve_nnunet(model)
+
+
+def nnunet_folder(tmp_path, monkeypatch):
+    """An nnU-Net folder of placeholder files, and the exports a stand-in exporter made from it; the exporter
+    imports without torch, so no export package is needed"""
+    from inkrs import export_nnunet
+
+    model = tmp_path / "model"
+    (model / "fold_0").mkdir(parents=True)
+    files = {"ck": model / "fold_0" / "checkpoint_final.pth", "plans": model / "plans.json",
+             "dataset": model / "dataset.json", "fingerprint": model / "dataset_fingerprint.json"}
+    for f in files.values():
+        f.write_text("v1")
+    exports = []
+
+    def export(model_dir, out_dir, recipe, name=None):
+        # a stand-in export: its sidecar records which plans it read, so a stale cache entry is visible
+        exports.append(files["plans"].read_text())
+        sha = hashlib.sha256(files["ck"].read_bytes()).hexdigest()
+        (out_dir / "m.json").write_text(json.dumps({"format": "inkrs-nnunet-v1", "checkpoint_sha256": sha,
+                                                    "recipe": {"pipeline": recipe},
+                                                    "plans": files["plans"].read_text()}))
+        (out_dir / "m.safetensors").write_bytes(b"")
+        return out_dir / "m.safetensors"
+
+    monkeypatch.setattr(export_nnunet, "export", export)
+    monkeypatch.setattr(export_nnunet, "missing_packages", list)
+    monkeypatch.setenv("INKRS_CACHE_DIR", str(tmp_path / "cache"))
+    return model, files, exports
+
+
+def test_nnunet_export_cache_follows_every_input(tmp_path, monkeypatch):
+    model, files, exports = nnunet_folder(tmp_path, monkeypatch)
+
+    def plans_seen():
+        found = inkrs._resolve_nnunet(model)
+        return json.loads(found.with_suffix(".json").read_text())["plans"]
+
+    assert plans_seen() == "v1" and len(exports) == 1
+    assert plans_seen() == "v1" and len(exports) == 1, "an unchanged folder reuses its export"
+    files["plans"].write_text("v2")
+    assert plans_seen() == "v2" and len(exports) == 2
+    for name in ("dataset", "fingerprint", "ck"):
+        files[name].write_text("v2")
+        plans_seen()
+    assert len(exports) == 5, "a new dataset, fingerprint or checkpoint is a new export"
+
+
+def test_a_cached_nnunet_export_runs_without_the_export_packages(tmp_path, monkeypatch):
+    from inkrs import export_nnunet
+
+    model, files, exports = nnunet_folder(tmp_path, monkeypatch)
+    cached = inkrs._resolve_nnunet(model)
+    monkeypatch.setattr(export_nnunet, "missing_packages", lambda: ["torch", "safetensors"])
+    assert inkrs._resolve_nnunet(model) == cached and len(exports) == 1
+
+    # a folder with no export yet still needs them, and the error names the manual command
+    files["plans"].write_text("v2")
+    with pytest.raises(inkrs.UnsupportedError, match="making one needs torch, safetensors;.*python -m inkrs.export_nnunet"):
+        inkrs._resolve_nnunet(model)
+    assert len(exports) == 1
+
+
+def test_cli_stops_when_forced_cuda_libraries_fail(monkeypatch, capsys):
+    from inkrs import _cli, _inkrs
+
+    def fail():
+        raise inkrs.CudaLibraryError("INKRS_CUDA_LIBS forced cudnn from pip, but the engine would open the system's")
+
+    ran = []
+    monkeypatch.setattr(inkrs, "load_cuda_libraries", fail)
+    monkeypatch.setattr(_inkrs, "cli", lambda argv: ran.append(argv) or 0)
+    monkeypatch.setenv("INKRS_CUDA_LIBS", "pip")
+
+    monkeypatch.setattr(sys, "argv", ["inkrs", "nnunet", "predict", "--model", "m7.safetensors"])
+    with pytest.raises(SystemExit) as stop:
+        _cli.main()
+    assert stop.value.code == 1 and ran == []
+    assert "forced cudnn from pip" in capsys.readouterr().err
+
+    # help and version open no library, and without the setting the engine reports what is missing itself
+    for argv, env in ((["inkrs", "--version"], "pip"), (["inkrs", "nnunet", "predict"], "auto")):
+        monkeypatch.setenv("INKRS_CUDA_LIBS", env)
+        monkeypatch.setattr(sys, "argv", argv)
+        with pytest.raises(SystemExit) as done:
+            _cli.main()
+        assert done.value.code == 0 and ran[-1] == argv
+
+
+def test_nnunet_export_loads_numpy_scalars_from_either_numpy(tmp_path):
+    torch = pytest.importorskip("torch")
+    export_nnunet = pytest.importorskip("inkrs.export_nnunet")
+
+    # nnU-Net's training log pickles numpy scalars, named after the module of the numpy that saved them
+    path = tmp_path / "numpy2.pth"
+    torch.save({"w": torch.zeros(2), "loss": np.float64(0.5)}, path, _use_new_zipfile_serialization=False)
+    raw = path.read_bytes()
+    assert b"numpy._core.multiarray" in raw
+    (tmp_path / "numpy1.pth").write_bytes(raw.replace(b"numpy._core.multiarray", b"numpy.core.multiarray"))
+    for name in ("numpy2.pth", "numpy1.pth"):
+        assert export_nnunet.safe_load(tmp_path / name)["loss"] == 0.5, name
+
+
+def test_nnunet_export_names_a_torch_too_old_for_safe_loading(monkeypatch):
+    pytest.importorskip("torch")
+    export_nnunet = pytest.importorskip("inkrs.export_nnunet")
+
+    monkeypatch.setattr(export_nnunet.torch, "__version__", "2.5.1+cu124")
+    assert any(m.startswith("torch>=2.6 (torch 2.5.1+cu124") for m in export_nnunet.missing_packages())
+    monkeypatch.setattr(export_nnunet.torch, "__version__", "2.10.0")
+    assert not any(m.startswith("torch>=") for m in export_nnunet.missing_packages())
+
+
+def test_nnunet_export_keeps_the_callers_torch_allowlist(tmp_path):
+    torch = pytest.importorskip("torch")
+    export_nnunet = pytest.importorskip("inkrs.export_nnunet")
+
+    path = tmp_path / "ck.pth"
+    torch.save({"w": torch.zeros(2), "loss": np.float64(0.5)}, path)
+    torch.serialization.add_safe_globals([np.dtype])
+    try:
+        export_nnunet.safe_load(path)
+        assert np.dtype in torch.serialization.get_safe_globals()
+    finally:
+        torch.serialization.clear_safe_globals()
+
+
+@pytest.mark.skipif(sys.platform != "darwin", reason="the macOS wheel has no nnU-Net engine")
+def test_nnunet_predict_on_metal_refuses_before_resolving_the_model(tmp_path, monkeypatch):
+    monkeypatch.setattr(inkrs, "_resolve_nnunet", lambda *a, **k: pytest.fail("resolved the model"))
+    with pytest.raises(inkrs.UnsupportedError, match="CUDA only"):
+        inkrs.nnunet_predict(tmp_path / "m7", tmp_path / "in.zarr", tmp_path / "out.zarr")
+
+
+def test_an_nnunet_export_named_key_is_found_in_the_cache(tmp_path, monkeypatch):
+    from inkrs import export_nnunet
+
+    model, _, _ = nnunet_folder(tmp_path, monkeypatch)
+    stand_in = export_nnunet.export
+
+    def export_as_key(model_dir, out_dir, recipe, name=None):
+        # a model folder named `key` exports key.json and key.safetensors
+        made = stand_in(model_dir, out_dir, recipe, name)
+        made.with_suffix(".json").rename(out_dir / "key.json")
+        return made.rename(out_dir / "key.safetensors")
+
+    monkeypatch.setattr(export_nnunet, "export", export_as_key)
+    assert inkrs._resolve_nnunet(model).name == "key.safetensors"

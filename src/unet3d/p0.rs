@@ -12,10 +12,10 @@ use std::path::Path;
 use color_eyre::eyre::{Result, ensure};
 use half::bf16;
 
-use super::Contract;
 use super::engine::{Geometry, prep_input};
-use super::model::{Ctx, Model};
+use super::model::{Ctx, HostNet, Model};
 use super::zio::Array;
+use super::{Contract, Precision};
 use crate::checks::write_npy;
 use crate::dnn::{Blas, Dnn, Pick};
 use crate::gpu::Arg;
@@ -36,7 +36,8 @@ pub fn run(input: &Path, ckpt: &Path, corner: [usize; 3], crop: usize, out: &Pat
     let dnn = Dnn::new(&gpu)?;
     let blas = Blas::new(&gpu)?;
     let ctx = Ctx { gpu: &gpu, dnn: &dnn, blas: &blas, pick, max_workspace: 1 << 30 };
-    let mut model = Model::new(&ctx, &ck, &contract)?;
+    let weights = HostNet::take(&ck, &contract.program, Precision::Bf16)?;
+    let mut model = Model::new(&ctx, &weights, &contract.program, contract.patch())?;
     ck.finish()?;
     let slab = gpu.upload(&host)?;
     let (hist, table) = (gpu.alloc(1024)?, gpu.alloc(1024)?);
@@ -82,11 +83,14 @@ pub fn run(input: &Path, ckpt: &Path, corner: [usize; 3], crop: usize, out: &Pat
         model.forward_with(&ctx, &mut |tap| {
             // the tap's buffer is reused by later layers: copy it out now, on the forward's stream
             let all: Vec<bf16> = gpu.download(tap.buf)?;
-            let n = tap.edge.pow(3) * tap.stride;
+            // v0.2's programs are isotropic (Program::check), so every tap is a cube
+            let edge = tap.dims[0];
+            ensure!(tap.dims == [edge; 3], "tap {}: dims {:?}, p0-ink3d takes cubes", tap.name, tap.dims);
+            let n = edge.pow(3) * tap.stride;
             ensure!(all.len() >= n, "tap {}: buffer smaller than its tensor", tap.name);
             h.push((tap.name.clone(), fnv1a(all[..n].iter().map(|v| v.to_bits()))));
             if run == 0 {
-                save(&tap.name, tap.edge, tap.channels, centre(&all, tap.edge, tap.stride, tap.offset, tap.channels))?;
+                save(&tap.name, edge, tap.channels, centre(&all, edge, tap.stride, tap.offset, tap.channels))?;
             }
             Ok(())
         })?;

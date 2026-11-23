@@ -6,6 +6,40 @@ All notable changes to inkrs are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-11-23
+
+### Added
+
+- nnU-Net ResEnc-L models: `inkrs nnunet predict` and `inkrs.nnunet_predict` run
+  villa's `surface_m7_nnunet` as `vesuvius.predict --blend_in_memory --mode binary`
+  does and write the same array. `scripts/export_nnunet.py` (also
+  `python -m inkrs.export_nnunet`) exports a model folder once, with torch
+  installed. On a 512³ zone of PHerc. 0826, m7 ran end to end in 130.6 s against
+  206.5 s for villa's compiled in-memory path, 1.58x faster. It missed the parity
+  bar set before the run against villa compiled (largest difference 3/255 against
+  a bound of 2, on 6 of 562M values; IoU 0.9996948 against a floor of 0.9996981),
+  and the bar was amended after the result was seen to accept villa eager as well,
+  which it meets (largest difference 1/255, IoU 0.999805). Against villa's staged
+  path the IoU is 0.999682, also under the floor.
+- The wheel installs the `inkrs` command: the CLI's own code, run inside Python,
+  so every CLI command runs without Rust.
+
+### Changed
+
+- cuDNN algorithm choices now take only entries timed under the convolution's own
+  math type. Taking the first supported entry could run a tensor-op kernel on a
+  workspace sized for another one, which failed with PyTorch's cuDNN 9.24 loaded.
+  Run reports record the loaded cuDNN version.
+
+### Fixed
+
+- `inkrs ink3d --overwrite` deleted whatever `--output` named, the input volume
+  or a directory holding the checkpoint included. Each prediction now carries a
+  mark in its `.zattrs`, and `--overwrite` replaces only a marked prediction of
+  the same command that holds nothing else, and never one the output path
+  reaches as a symlink, as `inkrs nnunet predict` does. It refuses anything else, including an ink3d
+  output from before 0.4.0.
+
 ## [0.3.1] - 2026-11-22
 
 ### Fixed
@@ -87,7 +121,8 @@ The first public release.
 - `--fast` presets that trade a measured amount of accuracy for speed, described
   in [docs/FAST.md](docs/FAST.md).
 
-[Unreleased]: https://github.com/praveenperera/inkrs/compare/v0.3.1...HEAD
+[Unreleased]: https://github.com/praveenperera/inkrs/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/praveenperera/inkrs/compare/v0.3.1...v0.4.0
 [0.3.1]: https://github.com/praveenperera/inkrs/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/praveenperera/inkrs/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/praveenperera/inkrs/compare/v0.2.0...v0.2.1

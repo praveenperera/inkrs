@@ -14,9 +14,9 @@ use std::time::Instant;
 
 use color_eyre::eyre::{Result, ensure};
 
-use super::Contract;
-use super::model::{Ctx, Model, u32_extent};
+use super::model::{Ctx, HostNet, Model, u32_extent};
 use super::zio::{Array, Writer};
+use super::{Contract, Precision};
 use crate::dnn::{Blas, Dnn, Pick, algo_cache};
 use crate::gpu::{Arg, Buf, Gpu};
 use crate::weights::Checkpoint;
@@ -271,6 +271,7 @@ pub fn run(input: &Path, ckpt: &Path, out: &Path, opts: &Options) -> Result<Repo
     let (ck, sidecar) = Checkpoint::read(ckpt)?;
     let contract = Contract::from_sidecar(&sidecar)?;
     let vol = Array::open(input)?;
+    vol.ensure_apart(out)?;
     let p = contract.patch();
     let c = opts.chunk;
     ensure!(c > 0, "chunk size 0");
@@ -304,7 +305,8 @@ pub fn run(input: &Path, ckpt: &Path, out: &Path, opts: &Options) -> Result<Repo
     let dnn = Dnn::new(&gpu)?;
     let blas = Blas::new(&gpu)?;
     let ctx = Ctx { gpu: &gpu, dnn: &dnn, blas: &blas, pick: opts.pick, max_workspace: 1 << 30 };
-    let mut model = Model::new(&ctx, &ck, &contract)?;
+    let weights = HostNet::take(&ck, &contract.program, Precision::Bf16)?;
+    let mut model = Model::new(&ctx, &weights, &contract.program, contract.patch())?;
     ck.finish()?;
 
     // ring accumulators over the region's y and x
@@ -336,8 +338,7 @@ pub fn run(input: &Path, ckpt: &Path, out: &Path, opts: &Options) -> Result<Repo
         slab: gpu.alloc(slab_max)?,
     };
     let writer = Writer::create(out, vol.shape, c, opts.overwrite)?;
-    let cov_writer =
-        if opts.coverage { Some(Writer::create(&out.join("coverage"), vol.shape, c, false)?) } else { None };
+    let cov_writer = if opts.coverage { Some(Writer::create_coverage(out, vol.shape, c)?) } else { None };
     let (head_c, head_b) = {
         let h = model.head();
         (h.1, h.3)

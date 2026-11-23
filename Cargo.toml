@@ -1,24 +1,26 @@
 [package]
 name = "inkrs"
-version = "0.3.1"
+version = "0.4.0"
 edition = "2024"
 license = "MIT OR Apache-2.0"
 authors = ["Praveen Perera"]
 repository = "https://github.com/praveenperera/inkrs"
 documentation = "https://docs.rs/inkrs"
 readme = "README.md"
-description = "Fast native inference for the Vesuvius Challenge's models: villa's ink readers and a few others, writing their outputs"
-keywords = ["vesuvius-challenge", "inference", "ink-detection", "cuda", "metal"]
+description = "Fast native GPU inference for the Vesuvius Challenge's models: villa's ink readers and its nnU-Net surface model, writing the same outputs"
+keywords = ["vesuvius-challenge", "inference", "ink-detection", "segmentation", "cuda"]
 categories = ["science", "computer-vision", "command-line-utilities"]
 # what a build reads: the kernels are embedded from ptx/ and fixtures/ at compile time and the Metal shaders from
 # src/metal, so the crate needs neither the kernel sources nor a CUDA toolkit. ptx/tools.txt holds the libdevice hash
-# THIRD_PARTY_NOTICES cites, and metal/coreml_body.py builds the Core ML body the engine's errors point to
+# THIRD_PARTY_NOTICES cites, and metal/coreml_body.py builds the Core ML body the engine's errors point to.
+# fixtures/nnunet holds the sidecars the nnU-Net contract tests read, so the packaged crate's tests run too
 include = [
     "/src/**",
     "/ptx/*.ptx",
     "/ptx/*.cubin",
     "/ptx/tools.txt",
     "/fixtures/*.f32",
+    "/fixtures/nnunet/*.json",
     "/metal/coreml_body.py",
     "/README.md",
     "/CHANGELOG.md",
