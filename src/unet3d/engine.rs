@@ -271,6 +271,7 @@ pub fn run(input: &Path, ckpt: &Path, out: &Path, opts: &Options) -> Result<Repo
     let (ck, sidecar) = Checkpoint::read(ckpt)?;
     let contract = Contract::from_sidecar(&sidecar)?;
     let vol = Array::open(input)?;
+    vol.ensure_apart(out)?;
     let p = contract.patch();
     let c = opts.chunk;
     ensure!(c > 0, "chunk size 0");

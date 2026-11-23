@@ -142,6 +142,31 @@ impl Array {
     }
 }
 
+impl Array {
+    /// Fails when `output` holds this array or sits inside it, so `--overwrite` never deletes the input and the
+    /// output's chunks never land among the input's
+    pub fn ensure_apart(&self, output: &Path) -> Result<()> {
+        let input = self.dir.canonicalize().wrap_err_with(|| format!("resolve {}", self.dir.display()))?;
+        // a missing output resolves through its parent, which may be missing too and then holds nothing
+        let resolved = match (output.canonicalize(), output.parent(), output.file_name()) {
+            (Ok(p), ..) => Some(p),
+            (Err(_), Some(parent), Some(name)) => {
+                let parent = if parent.as_os_str().is_empty() { Path::new(".") } else { parent };
+                parent.canonicalize().ok().map(|p| p.join(name))
+            }
+            _ => None,
+        };
+        let Some(out) = resolved else { return Ok(()) };
+        ensure!(
+            !input.starts_with(&out) && !out.starts_with(&input),
+            "output {} would replace or write into the input array {}",
+            output.display(),
+            self.dir.display()
+        );
+        Ok(())
+    }
+}
+
 /// The uint8 prediction array `0` of a new group, chunk `chunk^3`, raw chunks
 pub struct Writer {
     dir: PathBuf,
@@ -211,5 +236,30 @@ impl Writer {
             })
             .collect::<Result<_>>()?;
         Ok(written.iter().filter(|&&w| w).count())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// An output that is the input group, its array, or a directory above them is refused before anything is
+    /// deleted; a sibling or a path under a missing directory is not
+    #[test]
+    fn output_must_stay_apart_from_the_input() {
+        let root = std::env::temp_dir().join(format!("inkrs-zio-apart-{}", std::process::id()));
+        let group = root.join("scan.zarr");
+        Writer::create(&group, [2, 3, 4], 2, true).unwrap();
+        let vol = Array::open(&group).unwrap();
+
+        for bad in [group.clone(), group.join("0"), root.clone(), group.join("0/pred.zarr")] {
+            let e = vol.ensure_apart(&bad).expect_err(&bad.display().to_string());
+            assert!(format!("{e:#}").contains("input array"), "{}: {e:#}", bad.display());
+        }
+        for ok in [root.join("pred.zarr"), group.join("pred.zarr"), root.join("missing/pred.zarr")] {
+            vol.ensure_apart(&ok).unwrap_or_else(|e| panic!("{}: {e:#}", ok.display()));
+        }
+        assert!(group.join("0/.zarray").exists(), "the input survives");
+        std::fs::remove_dir_all(root).unwrap();
     }
 }
