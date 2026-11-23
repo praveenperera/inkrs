@@ -132,6 +132,7 @@ enum NnunetCommand {
         max_accum_gb: f64,
         #[arg(long, value_enum, default_value_t = Algo::Find)]
         algo: Algo,
+        /// Replace an existing output, which must be an earlier prediction of the same command
         #[arg(long)]
         overwrite: bool,
         /// CUDA device ordinal
@@ -388,6 +389,7 @@ enum Command {
         max_accum_gb: f64,
         #[arg(long, value_enum, default_value_t = Algo::Find)]
         algo: Algo,
+        /// Replace an existing output, which must be an earlier prediction of the same command
         #[arg(long)]
         overwrite: bool,
         /// After the run, time this many forwards of the last patch

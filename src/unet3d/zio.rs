@@ -146,10 +146,10 @@ impl Array {
 }
 
 impl Array {
-    /// Fails when `output` holds this array, the group it was opened through or one of `others` (the model), or
-    /// sits inside the array, so `--overwrite` never deletes an input and the output's chunks never land among the
+    /// Fails when `output` holds this array or the group it was opened through, or sits inside the array, so an
+    /// input that is itself an earlier prediction is never replaced and the output's chunks never land among the
     /// input's. The group counts apart from the array because its `0` may be a symlink to an array elsewhere
-    pub fn ensure_apart(&self, output: &Path, others: &[&Path]) -> Result<()> {
+    pub fn ensure_apart(&self, output: &Path) -> Result<()> {
         let resolve = |p: &Path| p.canonicalize().wrap_err_with(|| format!("resolve {}", p.display()));
         let (array, opened) = (resolve(&self.dir)?, resolve(&self.opened)?);
         // a missing output resolves through its parent, which may be missing too and then holds nothing
@@ -168,11 +168,56 @@ impl Array {
             output.display(),
             self.opened.display()
         );
-        for other in others {
-            ensure!(!resolve(other)?.starts_with(&out), "output {} would delete {}", output.display(), other.display());
-        }
         Ok(())
     }
+}
+
+/// Makes `path` the empty directory a new prediction is written into. An existing path is replaced only with
+/// `overwrite` and only when `is_prediction` recognises it as an earlier prediction of the same writer, so
+/// `--overwrite` deletes nothing else however the path aliases other files; a symlink is never followed or
+/// removed. The new directory must be empty, so a path such as `a/new/..` that lands on an existing directory
+/// never gets metadata written over another array's
+pub fn fresh_output_dir(path: &Path, overwrite: bool, is_prediction: impl Fn(&Path) -> bool) -> Result<()> {
+    match std::fs::symlink_metadata(path) {
+        Ok(meta) => {
+            ensure!(!meta.file_type().is_symlink(), "{} is a symlink; give the prediction's own path", path.display());
+            ensure!(overwrite, "{} exists; pass --overwrite", path.display());
+            ensure!(
+                meta.is_dir() && is_prediction(path),
+                "{} is not an inkrs prediction, so --overwrite will not delete it; remove it yourself or give \
+                 another output",
+                path.display()
+            );
+            std::fs::remove_dir_all(path).wrap_err_with(|| format!("remove {}", path.display()))?;
+        }
+        Err(e) if e.kind() == std::io::ErrorKind::NotFound => {}
+        Err(e) => return Err(e).wrap_err_with(|| format!("inspect {}", path.display())),
+    }
+    std::fs::create_dir_all(path).wrap_err_with(|| format!("create {}", path.display()))?;
+    let mut entries = std::fs::read_dir(path).wrap_err_with(|| format!("list {}", path.display()))?;
+    ensure!(entries.next().is_none(), "{} names an existing directory; give a new output path", path.display());
+    Ok(())
+}
+
+/// Whether `dir` holds only regular files and directories named by `keep`, none of them a symlink
+pub fn holds_only(dir: &Path, keep: impl Fn(&str, bool) -> bool) -> bool {
+    let Ok(entries) = std::fs::read_dir(dir) else { return false };
+    entries.into_iter().all(|e| {
+        let Ok(e) = e else { return false };
+        let Ok(kind) = e.file_type() else { return false };
+        !kind.is_symlink() && e.file_name().to_str().is_some_and(|name| keep(name, kind.is_dir()))
+    })
+}
+
+/// Whether `dir/.zarray` is uint8 zarr v2 metadata with these compressor and separator and `rank` axes
+pub fn array_meta_is(dir: &Path, compressor: &serde_json::Value, separator: &str, rank: usize) -> bool {
+    let Ok(bytes) = std::fs::read(dir.join(".zarray")) else { return false };
+    let Ok(meta) = serde_json::from_slice::<serde_json::Value>(&bytes) else { return false };
+    meta["zarr_format"] == 2
+        && meta["dtype"] == "|u1"
+        && meta["compressor"] == *compressor
+        && meta["dimension_separator"] == separator
+        && meta["shape"].as_array().is_some_and(|s| s.len() == rank)
 }
 
 /// The uint8 prediction array `0` of a new group, chunk `chunk^3`, raw chunks
@@ -183,12 +228,10 @@ pub struct Writer {
 }
 
 impl Writer {
-    /// Creates `path` (refusing an existing one unless `overwrite`) with array `0` of `shape`
+    /// Creates `path` with array `0` of `shape`; an existing path is replaced only with `overwrite` and only when it
+    /// is an earlier prediction of this writer ([`fresh_output_dir`])
     pub fn create(path: &Path, shape: [usize; 3], chunk: usize, overwrite: bool) -> Result<Self> {
-        if path.exists() {
-            ensure!(overwrite, "{} exists; pass --overwrite", path.display());
-            std::fs::remove_dir_all(path).wrap_err_with(|| format!("remove {}", path.display()))?;
-        }
+        fresh_output_dir(path, overwrite, Self::is_prediction)?;
         let dir = path.join("0");
         std::fs::create_dir_all(&dir)?;
         std::fs::write(path.join(".zgroup"), "{\"zarr_format\": 2}")?;
@@ -200,6 +243,18 @@ impl Writer {
         std::fs::write(dir.join(".zarray"), serde_json::to_string_pretty(&meta)?)?;
         std::fs::write(dir.join(".zattrs"), "{\"_ARRAY_DIMENSIONS\": [\"z\", \"y\", \"x\"]}")?;
         Ok(Self { dir, shape, chunk })
+    }
+
+    /// Whether `path` holds only what [`Writer::create`] and [`Writer::write_slab`] make: `.zgroup`, array `0`
+    /// with this writer's metadata, and the coverage group beside it
+    fn is_prediction(path: &Path) -> bool {
+        let names = holds_only(path, |name, dir| match name {
+            ".zgroup" => !dir,
+            "0" => dir,
+            "coverage" => dir && Self::is_prediction(&path.join("coverage")),
+            _ => false,
+        });
+        names && array_meta_is(&path.join("0"), &serde_json::Value::Null, "/", 3)
     }
 
     /// Writes the chunks covered by `slab`, `[d, h, w]` C order at global corner `lo`, which must lie on
@@ -261,21 +316,13 @@ mod tests {
         let vol = Array::open(&group).unwrap();
 
         for bad in [group.clone(), group.join("0"), root.clone(), group.join("0/pred.zarr")] {
-            let e = vol.ensure_apart(&bad, &[]).expect_err(&bad.display().to_string());
+            let e = vol.ensure_apart(&bad).expect_err(&bad.display().to_string());
             assert!(format!("{e:#}").contains("write into the input"), "{}: {e:#}", bad.display());
         }
         for ok in [root.join("pred.zarr"), group.join("pred.zarr"), root.join("missing/pred.zarr")] {
-            vol.ensure_apart(&ok, &[]).unwrap_or_else(|e| panic!("{}: {e:#}", ok.display()));
+            vol.ensure_apart(&ok).unwrap_or_else(|e| panic!("{}: {e:#}", ok.display()));
         }
         assert!(group.join("0/.zarray").exists(), "the input survives");
-
-        // nor may it hold the model
-        let model = root.join("weights/m7.safetensors");
-        std::fs::create_dir_all(model.parent().unwrap()).unwrap();
-        std::fs::write(&model, b"").unwrap();
-        let e = vol.ensure_apart(&root.join("weights"), &[&model]).expect_err("holds the model");
-        assert!(format!("{e:#}").contains("would delete"), "{e:#}");
-        vol.ensure_apart(&root.join("pred.zarr"), &[&model]).unwrap();
 
         // a group whose array 0 links to an array elsewhere is still the input, as is the linked array
         #[cfg(unix)]
@@ -286,10 +333,53 @@ mod tests {
             std::os::unix::fs::symlink(group.join("0"), linked.join("0")).unwrap();
             let vol = Array::open(&linked).unwrap();
             for bad in [linked.clone(), group.join("0")] {
-                let e = vol.ensure_apart(&bad, &[]).expect_err(&bad.display().to_string());
+                let e = vol.ensure_apart(&bad).expect_err(&bad.display().to_string());
                 assert!(format!("{e:#}").contains("write into the input"), "{}: {e:#}", bad.display());
             }
-            vol.ensure_apart(&root.join("pred.zarr"), &[]).unwrap();
+            vol.ensure_apart(&root.join("pred.zarr")).unwrap();
+        }
+        std::fs::remove_dir_all(root).unwrap();
+    }
+
+    /// `--overwrite` replaces an earlier prediction and nothing else: not a directory holding other files, an
+    /// input group, a symlink, or an existing directory reached through `new/..`
+    #[test]
+    fn overwrite_replaces_only_an_earlier_prediction() {
+        let root = std::env::temp_dir().join(format!("inkrs-zio-overwrite-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&root);
+        let pred = root.join("pred.zarr");
+        let w = Writer::create(&pred, [4, 4, 4], 2, false).unwrap();
+        w.write_slab([0, 0, 0], [4, 4, 4], &[7; 64]).unwrap();
+        Writer::create(&pred.join("coverage"), [4, 4, 4], 2, false).unwrap();
+        let e = Writer::create(&pred, [4, 4, 4], 2, false).err().expect("exists");
+        assert!(format!("{e:#}").contains("pass --overwrite"), "{e:#}");
+        Writer::create(&pred, [4, 4, 4], 2, true).expect("an earlier prediction is replaced");
+
+        let refused = |path: &Path, why: &str| {
+            let e = Writer::create(path, [4, 4, 4], 2, true).err().unwrap_or_else(|| panic!("{}", path.display()));
+            assert!(format!("{e:#}").contains(why), "{}: {e:#}", path.display());
+        };
+        // a directory holding anything else, such as a link to the input or a model's sidecar
+        let run = root.join("run");
+        std::fs::create_dir_all(&run).unwrap();
+        std::fs::write(run.join("m7.json"), b"{}").unwrap();
+        refused(&run, "not an inkrs prediction");
+        assert!(run.join("m7.json").exists());
+        // an input group: a level besides 0
+        let scan = root.join("scan.zarr");
+        Writer::create(&scan, [4, 4, 4], 2, false).unwrap();
+        std::fs::create_dir_all(scan.join("1")).unwrap();
+        refused(&scan, "not an inkrs prediction");
+        // a path landing on an existing directory never gets metadata written over its own
+        let before = std::fs::read(scan.join("0/.zarray")).unwrap();
+        refused(&scan.join("0/new/.."), "existing directory");
+        assert_eq!(std::fs::read(scan.join("0/.zarray")).unwrap(), before);
+        #[cfg(unix)]
+        {
+            let link = root.join("link.zarr");
+            std::os::unix::fs::symlink(&pred, &link).unwrap();
+            refused(&link, "symlink");
+            assert!(pred.join("0/.zarray").exists(), "the link's target survives");
         }
         std::fs::remove_dir_all(root).unwrap();
     }

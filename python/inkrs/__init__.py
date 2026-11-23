@@ -136,10 +136,6 @@ def nnunet_predict(
     # before the model folder resolves, which can export into the cache
     if _METAL:
         raise UnsupportedError("nnunet_predict runs on CUDA only; the Metal backend has no nnU-Net engine")
-    # the engine sees only the cached export of a model folder, so the folder itself is checked here
-    out = Path(output).resolve()
-    if Path(model).resolve().is_relative_to(out):
-        raise InkrsError(f"output {output} would delete the model {model}")
     model = _resolve_nnunet(Path(model))
     load_cuda_libraries()
     report = _nnunet_predict(

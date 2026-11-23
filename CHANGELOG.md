@@ -33,9 +33,10 @@ All notable changes to inkrs are documented here. The format follows
 
 ### Fixed
 
-- `inkrs ink3d --overwrite` deleted the input volume or the checkpoint when
-  `--output` named it or a directory holding it. It now refuses such an output
-  before any GPU work, as `inkrs nnunet predict` does.
+- `inkrs ink3d --overwrite` deleted whatever `--output` named, the input volume
+  or a directory holding the checkpoint included. `--overwrite` now replaces only
+  an earlier prediction of the same command, never through a symlink, and
+  refuses anything else, as `inkrs nnunet predict` does.
 
 ## [0.3.1] - 2026-11-22
 

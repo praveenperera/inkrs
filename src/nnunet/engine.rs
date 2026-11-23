@@ -224,7 +224,7 @@ pub fn run(model: &Path, input: &Path, output: &Path, opts: &Options) -> Result<
     ck.finish()?;
 
     let vol = Array::open(input)?;
-    vol.ensure_apart(output, &[model])?;
+    vol.ensure_apart(output)?;
     let shape = vol.shape;
     let overlap = opts.overlap.unwrap_or(recipe.overlap);
     let bbox = opts.bbox.as_deref().map(|b| Bbox::parse(b, shape)).transpose()?;

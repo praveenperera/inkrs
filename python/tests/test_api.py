@@ -1023,9 +1023,3 @@ def test_an_nnunet_export_named_key_is_found_in_the_cache(tmp_path, monkeypatch)
     monkeypatch.setattr(export_nnunet, "export", export_as_key)
     assert inkrs._resolve_nnunet(model).name == "key.safetensors"
 
-
-@cuda_only
-def test_nnunet_predict_refuses_an_output_holding_the_model(tmp_path, monkeypatch):
-    monkeypatch.setattr(inkrs, "_resolve_nnunet", lambda *a, **k: pytest.fail("resolved the model"))
-    with pytest.raises(inkrs.InkrsError, match="would delete the model"):
-        inkrs.nnunet_predict(tmp_path / "models" / "m7", tmp_path / "in.zarr", tmp_path / "models", overwrite=True)

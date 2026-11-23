@@ -10,6 +10,8 @@ use std::path::{Path, PathBuf};
 use color_eyre::eyre::{Result, WrapErr, ensure};
 use rayon::prelude::*;
 
+use crate::unet3d::zio::{array_meta_is, fresh_output_dir, holds_only};
+
 /// A new prediction array
 pub struct Writer {
     dir: PathBuf,
@@ -18,14 +20,11 @@ pub struct Writer {
 }
 
 impl Writer {
-    /// Creates the array at `path` for a volume of `shape` (refusing an existing path unless `overwrite`)
+    /// Creates the array at `path` for a volume of `shape`; an existing path is replaced only with `overwrite` and
+    /// only when it is an earlier prediction of this writer ([`fresh_output_dir`])
     pub fn create(path: &Path, shape: [usize; 3], chunk: usize, overwrite: bool) -> Result<Self> {
         ensure!(chunk > 0, "chunk 0");
-        if path.exists() {
-            ensure!(overwrite, "{} exists; pass --overwrite", path.display());
-            std::fs::remove_dir_all(path).wrap_err_with(|| format!("remove {}", path.display()))?;
-        }
-        std::fs::create_dir_all(path)?;
+        fresh_output_dir(path, overwrite, Self::is_prediction)?;
         let meta = serde_json::json!({
             "zarr_format": 2, "shape": [1, shape[0], shape[1], shape[2]], "chunks": [1, chunk, chunk, chunk],
             "dtype": "|u1", "fill_value": 0, "order": "C", "filters": null,
@@ -33,6 +32,17 @@ impl Writer {
         });
         std::fs::write(path.join(".zarray"), serde_json::to_string_pretty(&meta)?)?;
         Ok(Self { dir: path.to_path_buf(), shape, chunk })
+    }
+
+    /// Whether `path` holds only what this writer makes: its `.zarray` and chunk files keyed `0.z.y.x`
+    fn is_prediction(path: &Path) -> bool {
+        let chunk_key = |name: &str| {
+            let mut parts = name.split('.');
+            parts.next() == Some("0") && parts.clone().count() == 3 && parts.all(|p| p.parse::<u64>().is_ok())
+        };
+        let compressor = serde_json::json!({"id": "zstd", "level": 1});
+        holds_only(path, |name, dir| !dir && (name == ".zarray" || chunk_key(name)))
+            && array_meta_is(path, &compressor, ".", 4)
     }
 
     /// Writes the chunks of one chunk row: `data` is `[d, h, w]` C order at global corner `lo`, on the chunk
@@ -102,5 +112,32 @@ mod tests {
         let meta: serde_json::Value = serde_json::from_slice(&std::fs::read(dir.join(".zarray")).unwrap()).unwrap();
         assert_eq!(meta["shape"], serde_json::json!([1, 5, 6, 7]));
         std::fs::remove_dir_all(&dir).unwrap();
+    }
+
+    /// `--overwrite` replaces an earlier prediction of this writer only: villa's own output (blosc) and a
+    /// directory holding anything besides chunks are refused
+    #[test]
+    fn overwrite_replaces_only_an_earlier_prediction() {
+        let root = std::env::temp_dir().join(format!("inkrs-nnunet-overwrite-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&root);
+        let pred = root.join("pred.zarr");
+        let w = Writer::create(&pred, [4, 4, 4], 4, false).unwrap();
+        w.write_row([0, 0, 0], [4, 4, 4], &[9; 64], &[true]).unwrap();
+        Writer::create(&pred, [4, 4, 4], 4, true).expect("an earlier prediction is replaced");
+
+        let villa = root.join("villa.zarr");
+        std::fs::create_dir_all(&villa).unwrap();
+        let meta = serde_json::json!({"zarr_format": 2, "shape": [1, 4, 4, 4], "dtype": "|u1",
+            "compressor": {"id": "blosc", "cname": "zstd", "clevel": 1, "shuffle": 1}, "dimension_separator": "."});
+        std::fs::write(villa.join(".zarray"), meta.to_string()).unwrap();
+        let w = Writer::create(&pred, [4, 4, 4], 4, true).unwrap();
+        w.write_row([0, 0, 0], [4, 4, 4], &[9; 64], &[true]).unwrap();
+        std::fs::write(pred.join("m7.json"), b"{}").unwrap();
+        for path in [&villa, &pred] {
+            let e = Writer::create(path, [4, 4, 4], 4, true).err().unwrap_or_else(|| panic!("{}", path.display()));
+            assert!(format!("{e:#}").contains("not an inkrs prediction"), "{}: {e:#}", path.display());
+        }
+        assert!(villa.join(".zarray").exists() && pred.join("m7.json").exists());
+        std::fs::remove_dir_all(root).unwrap();
     }
 }
