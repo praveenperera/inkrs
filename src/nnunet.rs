@@ -366,6 +366,17 @@ mod tests {
         assert!(crate::error::is_unsupported(&c.predict().unwrap_err()));
     }
 
+    /// A conv whose kernel or stride is not 3D fails to parse rather than panicking where the program reads its axes
+    #[test]
+    fn short_strides_are_refused() {
+        for field in ["stride", "kernel"] {
+            let mut v = fixture("m7");
+            v["program"]["stages"][0][0]["conv1"][field] = serde_json::json!([1, 1]);
+            let e = Contract::from_sidecar(&v).expect_err(field);
+            assert!(format!("{e:#}").contains("expected an array of length 3"), "{field}: {e:#}");
+        }
+    }
+
     /// The real exports load as the engine loads them: every tensor in each `.safetensors` is taken exactly
     /// once by the fp16 host net or the recipe, at the shape the program says. Needs `m7`, `herc` and `socratic`
     /// exported by `scripts/export_nnunet.py` into the directory `INKRS_NNUNET_EXPORTS` names

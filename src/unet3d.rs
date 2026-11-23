@@ -72,8 +72,9 @@ pub struct ConvSpec {
     pub b: Option<String>,
     pub cin: usize,
     pub cout: usize,
-    pub kernel: Vec<usize>,
-    pub stride: Vec<usize>,
+    /// z, y, x: a sidecar giving another axis count fails to parse
+    pub kernel: [usize; 3],
+    pub stride: [usize; 3],
     pub norm: Option<NormSpec>,
     /// LeakyReLU's negative slope, or `None` for no activation
     pub leaky: Option<f32>,
@@ -228,7 +229,6 @@ impl ConvSpec {
     /// The kernel and stride as three axes, each kernel odd "same" and each stride 1 or 2 when `odd`
     fn check(&self, what: &str, cin: usize, odd: bool) -> Result<()> {
         ensure_supported!(self.cin == cin, "{what}: {} input channels, the previous layer gives {cin}", self.cin);
-        ensure_supported!(self.kernel.len() == 3 && self.stride.len() == 3, "{what}: not 3D");
         if odd {
             ensure_supported!(
                 self.kernel.iter().all(|&k| k % 2 == 1) && self.stride.iter().all(|&s| s == 1 || s == 2),
@@ -246,10 +246,6 @@ impl ConvSpec {
             ensure_supported!(n.eps > 0.0 && n.eps.is_finite(), "{what}: eps {}", n.eps);
         }
         Ok(())
-    }
-
-    fn axes(v: &[usize]) -> [usize; 3] {
-        [v[0], v[1], v[2]]
     }
 
     /// Whether kernel and stride are the same on every axis
@@ -287,7 +283,7 @@ impl Program {
         let mut levels = Vec::new();
         let mut strides = Vec::new();
         for (si, stage) in self.stages.iter().enumerate() {
-            let stride = ConvSpec::axes(&stage[0].conv1.stride);
+            let stride = stage[0].conv1.stride;
             for (bi, b) in stage.iter().enumerate() {
                 let what = format!("stage {si} block {bi}");
                 b.conv1.check(&format!("{what} conv1"), cin, true)?;
@@ -295,7 +291,7 @@ impl Program {
                 ensure_supported!(b.conv2.stride.iter().all(|&v| v == 1), "{what}: conv2 stride {:?}", b.conv2.stride);
                 ensure_supported!(b.conv1.norm.is_some() && b.conv1.leaky.is_some(), "{what}: conv1 norm/act");
                 ensure_supported!(b.conv2.norm.is_some() && b.conv2.leaky.is_none(), "{what}: conv2 norm/act");
-                let s = ConvSpec::axes(&b.conv1.stride);
+                let s = b.conv1.stride;
                 ensure_supported!(b.skip.pool.axes() == s, "{what}: skip pool {:?} with stride {s:?}", b.skip.pool);
                 ensure_supported!(bi == 0 || s == [1; 3], "{what}: stride {s:?} past a stage's first block");
                 for a in 0..3 {
@@ -335,7 +331,7 @@ impl Program {
             t.check(&format!("decoder {d} transp"), cin, false)?;
             let undo = strides[level + 1];
             ensure_supported!(
-                ConvSpec::axes(&t.kernel) == undo && ConvSpec::axes(&t.stride) == undo && t.b.is_some(),
+                t.kernel == undo && t.stride == undo && t.b.is_some(),
                 "decoder {d}: transp k{:?} s{:?} must undo stride {undo:?}, with bias",
                 t.kernel,
                 t.stride
