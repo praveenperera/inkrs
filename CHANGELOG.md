@@ -10,7 +10,8 @@ All notable changes to inkrs are documented here. The format follows
 
 - The nnU-Net engine runs on Metal: `inkrs nnunet predict` and
   `inkrs.nnunet_predict` run `surface_m7_nnunet` on an Apple silicon Mac with
-  macOS 26, with the same recipe and rounding as the CUDA engine.
+  macOS 26, with the CUDA engine's recipe. Its output stays inside the CUDA
+  engine's parity band against villa eager, peaking under 3 GB of memory.
 
 ## [0.4.0] - 2026-11-23
 

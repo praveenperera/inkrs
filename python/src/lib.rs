@@ -27,8 +27,9 @@ mod v8in;
 #[cfg(target_os = "macos")]
 use cuda_only::ink3d;
 
-// the CLI's allocator, for the same reason: macOS malloc keeps freed large blocks in the footprint
-#[cfg(target_os = "macos")]
+// the CLI's allocator, for the same reason: macOS malloc keeps freed large blocks in the footprint (arm64 only, as
+// it assumes Apple silicon's 16 KiB pages)
+#[cfg(all(target_os = "macos", target_arch = "aarch64"))]
 #[global_allocator]
 static ALLOC: inkrs::metal::alloc::LargePages = inkrs::metal::alloc::LargePages;
 

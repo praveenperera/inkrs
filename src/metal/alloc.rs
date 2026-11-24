@@ -20,7 +20,8 @@ const PROT_WRITE: i32 = 0x2;
 const MAP_PRIVATE: i32 = 0x2;
 const MAP_ANON: i32 = 0x1000;
 const MAP_FAILED: *mut c_void = !0usize as *mut c_void;
-/// The largest alignment a mapping guarantees: the 16 KiB page of Apple silicon
+/// The largest alignment a mapping guarantees: the 16 KiB page of Apple silicon. An Intel Mac's 4 KiB pages would
+/// break it, so the binaries install this allocator only on aarch64
 const PAGE: usize = 16 * 1024;
 
 /// The system allocator, with blocks of at least [`LargePages::THRESHOLD`] bytes mapped from the kernel

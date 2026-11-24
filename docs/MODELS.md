@@ -104,6 +104,7 @@ Checked on one 512³ zone of PHerc. 0826 (448 patches), thresholded at 0.2 as th
 
 - **Bar.** The bar fixed before the run compared inkrs with villa's compiled in-memory path. inkrs misses it: the largest difference is 3 steps of 255 against a bound of 2, on 6 of 562M values, and the binary IoU is 0.9996948 against a floor of 0.9996981. **The bar was then amended, after the result was seen,** to accept either of villa's paths as the reference. Against villa eager, inkrs is inside the band: largest difference 1 step, IoU 0.999805. Against villa's staged path (blend on disk), IoU is 0.999682, also under the floor; villa's own in-memory and staged paths agree to IoU 0.999809.
 - **Speed.** End to end on that zone against villa compiled with `--blend_in_memory`, 6 ABBA pairs: 130.6 s against 206.5 s (medians), 1.58× faster (pairs 1.49× to 1.66×, every pair in inkrs's favour).
+- **Metal.** On an M4 Pro with macOS 26, the Metal engine is inside the band against villa eager (largest difference 2 steps, IoU 0.999787) and against the CUDA engine (2 steps, IoU 0.999787). Against villa compiled it misses the bar by the same margin as the CUDA engine (3 steps, IoU 0.999690). An M5 gave the same results and agrees with the M4 Pro to 1 step. The run peaks under 3 GB of memory. Two deliberately wrong runs fail the same gate: TTA off (248 steps) and an instance-norm eps of 1e-3 (240 steps). The Metal engine blends the difference of the two class logits rather than each class's sum, so its values can round one step away from the CUDA engine's.
 
 The exporter also reads HercUNet and Socratic F0 checkpoints; `inkrs nnunet predict` refuses their pipelines. Chunks are written with zstd rather than villa's blosc-wrapped zstd, so the files differ but every zarr reader decodes the same bytes.
 
@@ -202,5 +203,5 @@ All six match on both inputs, with p99.9 1 and max 1 except ink_9um seed 43 at m
 - Hecate 2.4 µm and `hecate.py --output-3d` aren't supported.
 - inkrs runs no ensemble itself. `scripts/recipe.py` leaves the combine to the recipe authors' scripts.
 - From Python: on CUDA, reader-v2 has run through `Engine` from a patched villa, and the A-hn seeds have been checked against the CLI. On Metal, reader-v2 and Reader V3 have run through villa's adapter and match the CLI's maps there. The prize models have only run through the CLI. `inkrs.hecate` runs the CLI's Hecate code.
-- Every check on this page is on CUDA. The Metal backend (macOS) runs the villa readers and Hecate, and has only run on an M4 Pro.
+- Every check on this page is on CUDA, except the Metal m7 check above. The Metal backend (macOS) also runs the villa readers and Hecate, which have only run on an M4 Pro.
 - The published maps came from villa main and an unpinned `hecate.py`, so comparing with them is a cross-check, not the parity check.

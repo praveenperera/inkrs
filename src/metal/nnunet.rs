@@ -288,6 +288,9 @@ struct Net {
     bytes: usize,
 }
 
+/// Channel columns the instance-norm statistics buffers hold
+const STAT_COLS: usize = 512;
+
 /// Bytes of a padded `[e + 2]^3 x c` fp16 buffer
 fn padded_bytes(e: usize, c: usize) -> usize {
     (e + 2).pow(3) * c * 2
@@ -300,6 +303,7 @@ impl Net {
         ensure_supported!(prog.stem.len() == 1 && prog.stem[0].cin == 1, "a stem other than one 1-channel conv");
         let stem = &host.stem[0];
         ensure_supported!(stem.cout == 32, "a stem of {} channels (the Metal stem writes 32)", stem.cout);
+        ensure_supported!(prog.stem[0].kernel == [3; 3], "a stem kernel other than 3^3");
         let stem_w: Vec<f32> = stem.w.iter().map(|&v| Precision::Fp16.round(v)).collect();
         let mut levels = vec![(p, stem.cout)];
         let mut blocks = Vec::new();
@@ -353,6 +357,7 @@ impl Net {
             };
             blocks.push(Block { level, conv1, conv2, skip, leaky: bs.leaky });
         }
+        ensure_supported!(levels.iter().all(|&(_, c)| c <= STAT_COLS), "more than {STAT_COLS} channels at a level");
         ensure_supported!(
             levels.len() == prog.decoder.len() + 1,
             "{} levels for {} decoder stages",
@@ -361,18 +366,18 @@ impl Net {
         );
 
         // the pooled input and the projection's output share H past the block's intermediate (H is free then)
-        let mut h_pool = 0usize;
-        let mut h_proj = 0usize;
+        // every block uses the same two offsets, so size them from the largest of each part rather than per block
+        let (mut h_pool, mut pooled, mut projected) = (0usize, 0usize, 0usize);
         for b in &blocks {
             if let Skip::Pool { cin, proj } = &b.skip {
                 let (e, c) = levels[b.level];
-                let pool_at = padded_bytes(e, c).next_multiple_of(256);
-                let proj_at = (pool_at + e.pow(3) * cin * 2).next_multiple_of(256);
-                h_pool = h_pool.max(pool_at);
-                h_proj = h_proj.max(proj_at);
-                hb = hb.max(proj_at + if proj.is_some() { e.pow(3) * c * 2 } else { 0 });
+                h_pool = h_pool.max(padded_bytes(e, c).next_multiple_of(256));
+                pooled = pooled.max(e.pow(3) * cin * 2);
+                projected = projected.max(if proj.is_some() { e.pow(3) * c * 2 } else { 0 });
             }
         }
+        let h_proj = (h_pool + pooled).next_multiple_of(256);
+        hb = hb.max(h_proj + projected);
 
         let mut decs = Vec::new();
         for (d, (ds, hd)) in prog.decoder.iter().zip(&host.decs).enumerate() {
@@ -430,9 +435,10 @@ impl Net {
             h_pool,
             h_proj,
             part: gpu.alloc(parts * 16)?,
-            st: gpu.alloc(512 * 8)?,
-            rst: gpu.alloc(512 * 8)?,
-            dummy: gpu.alloc(16)?,
+            st: gpu.alloc(STAT_COLS * 8)?,
+            rst: gpu.alloc(STAT_COLS * 8)?,
+            // zeros standing in for a missing bias, so it must hold the widest bias a kernel reads: the stem's 32
+            dummy: gpu.alloc(32 * 4)?,
             levels,
         };
         Ok(Self { bytes: net.buffer_bytes(), ..net })
@@ -1109,12 +1115,11 @@ mod tests {
         (b - a) / reps as f64
     }
 
-    /// The structure gate: TFLOPS of every tile shape on each of m7's conv shapes (`INKRS_NN_BENCH=1`, through the
-    /// GPU queue)
-    /// The negative control for `scripts/metal_validate.sh`: a store past the end of a buffer, which shader validation
-    /// must report, so a validation run of this module is known to be able to fail
+    /// The negative control for a shader-validation run (`MTL_SHADER_VALIDATION=1`,
+    /// `MTL_SHADER_VALIDATION_REPORT_TO_STDERR=1`): a store past the end of a buffer, which validation must report, so
+    /// a validation run of this module is known to be able to fail
     #[test]
-    #[ignore = "writes out of bounds on purpose; run only under metal_validate.sh as its negative control"]
+    #[ignore = "writes out of bounds on purpose; run only under shader validation as its negative control"]
     fn validation_negative_control() {
         let gpu = Gpu::open(0).unwrap();
         let acc = gpu.alloc(64 * 4).unwrap();
@@ -1124,6 +1129,8 @@ mod tests {
         gpu.synchronize().unwrap();
     }
 
+    /// The structure gate: TFLOPS of every tile shape on each of m7's conv shapes (`INKRS_NN_BENCH=1`, through the
+    /// GPU queue)
     #[test]
     #[ignore = "a GPU benchmark; run through the gpu0 queue"]
     fn conv_bench() {
