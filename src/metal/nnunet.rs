@@ -30,9 +30,9 @@ pub use crate::nnunet::host::{FLIPS, Options, logit_cutoff};
 use crate::nnunet::host::{NONFINITE, NONZERO, constant_patch};
 use crate::nnunet::out::Writer;
 use crate::nnunet::{Contract, Precision, Predict};
-use crate::unet3d::Program;
 use crate::unet3d::host::{HostConv, HostNet, u32_extent};
 use crate::unet3d::zio::Array;
+use crate::unet3d::{DecSpec, Program};
 use crate::weights::Checkpoint;
 
 /// What a run did and how long it took
@@ -291,6 +291,20 @@ struct Net {
 /// Channel columns the instance-norm statistics buffers hold
 const STAT_COLS: usize = 512;
 
+/// Refuses a decoder stage the Metal kernels can't run at a level of `c` channels, before anything is allocated
+fn check_decoder(ds: &DecSpec, c: usize) -> Result<()> {
+    let co = ds.transp.cout;
+    ensure_supported!(ds.transp.kernel == [2; 3] && ds.transp.stride == [2; 3], "a transposed conv other than k2 s2");
+    ensure_supported!(
+        ds.convs.len() == 1 && ds.convs[0].cin == co + c,
+        "a decoder stage other than one conv on the concat"
+    );
+    ensure_supported!(co.is_multiple_of(8), "a transposed conv of {co} channels");
+    // the forward sizes the decoder conv's statistics and output by its level's channels
+    ensure_supported!(ds.convs[0].cout == c, "a decoder conv of {} channels at a level of {c}", ds.convs[0].cout);
+    Ok(())
+}
+
 /// Bytes of a padded `[e + 2]^3 x c` fp16 buffer
 fn padded_bytes(e: usize, c: usize) -> usize {
     (e + 2).pow(3) * c * 2
@@ -384,15 +398,7 @@ impl Net {
             let level = levels.len() - 2 - d;
             let (e, c) = levels[level];
             let (ci, co) = (hd.tcin, ds.transp.cout);
-            ensure_supported!(
-                ds.transp.kernel == [2; 3] && ds.transp.stride == [2; 3],
-                "a transposed conv other than k2 s2"
-            );
-            ensure_supported!(
-                ds.convs.len() == 1 && ds.convs[0].cin == co + c,
-                "a decoder stage other than one conv on the concat"
-            );
-            ensure_supported!((8 * co) % 64 == 0, "a transposed conv of {co} channels");
+            check_decoder(ds, c)?;
             let mut wt = vec![f16::ZERO; 8 * co * ci];
             for i in 0..ci {
                 for col in 0..8 * co {
@@ -564,7 +570,7 @@ impl Net {
         }
 
         for d in &self.decs {
-            let (e, c) = self.levels[d.level];
+            let e = self.levels[d.level].0;
             let co = d.up_cout;
             self.clear_h_border(gpu, e, co)?;
             let m = (e / 2).pow(3);
@@ -582,7 +588,6 @@ impl Net {
             d.conv.run(gpu, &self.h, Some(&self.x[d.level]), r, part, &self.dummy)?;
             let cout = d.conv.cout;
             self.stats(gpu, &self.st, d.conv.tiles(), cout, d.conv.norm.eps)?;
-            ensure!(cout == c, "decoder conv of {cout} channels at a level of {c}");
             self.apply(gpu, &d.conv.norm, e, cout, Res::None, r.arg(), 0, d.conv.norm.leaky)?;
         }
         Ok(())
@@ -710,6 +715,9 @@ pub fn run(model: &Path, input: &Path, output: &Path, opts: &Options) -> Result<
     let cutoff = opts.threshold.map(logit_cutoff).transpose()?;
     let c = opts.chunk.unwrap_or(p);
     ensure!(c > 0, "chunk size 0");
+    // nn_finalize's chunk test sees only l1 - l0, so it can't match villa's on a one-voxel chunk, where a difference
+    // within the tolerance's relative part (1e-6 of |l0|) of 0 decides whether the voxel is written
+    ensure_supported!(c > 1, "a chunk size of 1 (the Metal engine's chunk test needs chunks of 2 or more voxels)");
 
     // the output chunk rows the canvas touches; the accumulators cover the canvas only
     let canvas = plan.canvas();
@@ -921,7 +929,9 @@ pub fn run(model: &Path, input: &Path, output: &Path, opts: &Options) -> Result<
 mod tests {
     use half::f16;
 
+    use super::check_decoder;
     use crate::metal::gpu::{Arg, Buf, Gpu};
+    use crate::unet3d::Program;
 
     /// A deterministic value in [-1, 1) for index `i` of stream `k`
     fn wave(i: usize, k: usize) -> f32 {
@@ -1031,6 +1041,59 @@ mod tests {
         let mut out = vec![[0f32; 2]; cols];
         gpu.download(&st, 0, &mut out).unwrap();
         out
+    }
+
+    /// m7's decoder stages pass the Metal checks, and one whose conv leaves its level's channels (past the 512
+    /// columns the statistics hold) is refused at load, before the forward would write its statistics
+    #[test]
+    fn decoder_conv_off_its_level_is_refused() {
+        let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("fixtures/nnunet/m7.json");
+        let v: serde_json::Value = serde_json::from_slice(&std::fs::read(path).unwrap()).unwrap();
+        let mut prog: Program = serde_json::from_value(v["program"].clone()).unwrap();
+        let levels = prog.levels([192; 3], 1).unwrap();
+        let level_c = |d: usize| levels[levels.len() - 2 - d].1;
+        for (d, ds) in prog.decoder.iter().enumerate() {
+            check_decoder(ds, level_c(d)).unwrap_or_else(|e| panic!("decoder {d}: {e:#}"));
+        }
+
+        prog.decoder[0].convs[0].cout = 640;
+        let err = check_decoder(&prog.decoder[0], level_c(0)).unwrap_err();
+        assert!(crate::error::is_unsupported(&err), "{err:#}");
+        assert!(format!("{err:#}").contains("decoder conv of 640 channels at a level of 320"), "{err:#}");
+    }
+
+    /// nn_finalize's chunk flags on a 2^3 canvas, one chunk, under a single patch of weight 1: villa keeps a covered
+    /// chunk unless every logit of both classes is allclose to the corner's class 0, so a constant but nonzero
+    /// difference (unequal classes) is kept, an all-zero difference is skipped, and a varying one is kept
+    #[test]
+    fn finalize_keeps_chunks_whose_classes_differ() {
+        let gpu = Gpu::open(0).unwrap();
+        let fin: [u32; 14] = [0, 0, 0, 2, 2, 2, 2, 0, 0, 2, 2, 2, 0, 0];
+        let (fin, grid) = (gpu.upload(&fin).unwrap(), gpu.upload(&[1u32, 1, 1, 2]).unwrap());
+        let (start, stat, gauss) =
+            (gpu.upload(&[0u32]).unwrap(), gpu.upload(&[1u32]).unwrap(), gpu.upload(&[1f32; 8]).unwrap());
+        for (diff, kept, voxel0) in [
+            ([3f32; 8], true, 242u8),
+            ([0f32; 8], false, 127),
+            ([0.0, 1.0, 2.0, 3.0, -1.0, -2.0, -3.0, 0.5], true, 127),
+        ] {
+            let acc = gpu.upload(&diff).unwrap();
+            let (first, flags, out) =
+                (gpu.alloc_fill(4, 0xFF).unwrap(), gpu.alloc_fill(8, 0).unwrap(), gpu.alloc_fill(8, 0xAA).unwrap());
+            let fixed =
+                [acc.arg(), start.arg(), start.arg(), start.arg(), stat.arg(), gauss.arg(), fin.arg(), grid.arg()];
+            let args: Vec<Arg> = [first.arg()].into_iter().chain(fixed).chain([Arg::U32(0)]).collect();
+            gpu.dispatch_1d("nn_first", 1, &args).unwrap();
+            let tail = [Arg::U32(0), Arg::U32(2), Arg::U32(0)];
+            let args: Vec<Arg> = [out.arg(), flags.arg(), first.arg()].into_iter().chain(fixed).chain(tail).collect();
+            gpu.dispatch_1d("nn_finalize", 8, &args).unwrap();
+            let (mut f, mut o) = ([0u32; 2], [0u8; 8]);
+            gpu.download(&flags, 0, &mut f).unwrap();
+            gpu.download(&out, 0, &mut o).unwrap();
+            assert_eq!(f[0], 1, "{diff:?}: the chunk has weight");
+            assert_eq!(f[1] != 0, kept, "{diff:?}: kept");
+            assert_eq!(o[0], voxel0, "{diff:?}: voxel 0");
+        }
     }
 
     /// A two-source stride-1 conv with bias and a stride-2 conv, against f64, every tile shape the host may pick

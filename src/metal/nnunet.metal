@@ -566,10 +566,14 @@ kernel void nn_first(device float* p_first [[buffer(0)]], device const float* p_
 // `slices` z-slices of an output chunk row from global slice gz0, finalised as the CUDA engine's nn_finalize does
 // (villa's _write_blended_chunk and apply_finalization for a binary model) into p_out [row slice, rh, rw] at row
 // slice gz0 - rz0, with the row's chunk flags OR-ed into p_flags [2 chunk]: 1 when the chunk has weight above 0,
-// and 1 at 2 chunk + 1 when a logit difference is not allclose to its corner's (p_first). The weight is recomputed,
-// not read. Two cases differ from the CUDA engine, which keeps both class sums: a covered voxel whose blended logits
-// are both exactly 0 gives 127 here (0 there), and a chunk whose logits are constant but unequal across classes is
-// skipped here (written there); real predictions have neither, and the gate's chunk diff would show either
+// and 1 at 2 chunk + 1 when the chunk's logits are not all allclose to its corner's. The weight is recomputed, not
+// read. The CUDA engine keeps both class sums and compares both with the corner's class 0; this accumulator holds
+// only l1 - l0, so a voxel is not allclose when its difference is not allclose to the corner's (p_first) or is off
+// 0 by more than the tolerance's absolute 1e-8 (the classes differ). Two cases still differ from the CUDA engine: a
+// covered voxel whose blended logits are both exactly 0 gives 127 here (0 there), and a chunk whose difference is
+// constant either way of the tolerance's relative part (1e-6 of |l0|, unknown here), or within 1e-8 of 0 while l0
+// varies, is kept or skipped on the difference alone. Real predictions have neither outside one-voxel chunks, which
+// the host refuses, and the gate's chunk diff would show either
 kernel void nn_finalize(device uchar* p_out [[buffer(0)]], device atomic_uint* p_flags [[buffer(1)]],
                         device const float* p_first [[buffer(2)]], device const float* p_acc [[buffer(3)]],
                         device const uint* p_sz [[buffer(4)]], device const uint* p_sy [[buffer(5)]],
@@ -606,7 +610,7 @@ kernel void nn_finalize(device uchar* p_out [[buffer(0)]], device atomic_uint* p
     float tol = 1e-8f + 1e-6f * fabs(first);
     uint bits = 0;
     if (live && l.y > 0.0f) bits |= 1u;
-    if (live && !(fabs(d - first) <= tol)) bits |= 2u;
+    if (live && !(fabs(d - first) <= tol && fabs(d) <= 1e-8f)) bits |= 2u;
     // one atomic per SIMD group when its lanes share a chunk (all but the lanes at a chunk edge), so 7M voxels do
     // not contend on a few dozen words
     if (simd_all(c == simd_broadcast_first(c))) {
