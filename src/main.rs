@@ -4,6 +4,12 @@
 
 use color_eyre::eyre::Result;
 
+// macOS malloc keeps freed large blocks resident; this maps them instead, so a model's freed load copies leave the
+// footprint (src/metal/alloc.rs); arm64 only, since it assumes Apple silicon's 16 KiB pages
+#[cfg(all(target_os = "macos", target_arch = "aarch64"))]
+#[global_allocator]
+static ALLOC: inkrs::metal::alloc::LargePages = inkrs::metal::alloc::LargePages;
+
 fn main() -> Result<()> {
     // Windows: before any library loads, so that a load by bare name after the DLL checks never searches the current
     // directory or PATH (src/dll.rs)

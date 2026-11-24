@@ -18,9 +18,14 @@ use crate::error::Unsupported;
 pub use crate::unet3d::Precision;
 use crate::unet3d::{ConvSpec, Program};
 
+#[cfg(not(target_os = "macos"))]
 pub mod engine;
 pub mod grid;
+pub mod host;
 pub mod out;
+
+#[cfg(target_os = "macos")]
+pub use crate::metal::nnunet as engine;
 
 /// The sidecar format this engine reads
 pub const FORMAT: &str = "inkrs-nnunet-v1";
@@ -367,9 +372,9 @@ mod tests {
     /// A region too big for the kernels' u32 indexing is unsupported, which villa's `--engine inkrs` falls back on
     #[test]
     fn u32_overflow_is_unsupported() {
-        let e = crate::unet3d::model::u32_extent("accumulator", 1 << 33).unwrap_err();
+        let e = crate::unet3d::host::u32_extent("accumulator", 1 << 33).unwrap_err();
         assert!(crate::error::is_unsupported(&e), "{e:#}");
-        crate::unet3d::model::u32_extent("accumulator", u32::MAX as usize).unwrap();
+        crate::unet3d::host::u32_extent("accumulator", u32::MAX as usize).unwrap();
     }
 
     /// A conv whose kernel or stride is not 3D fails to parse rather than panicking where the program reads its axes
@@ -397,7 +402,7 @@ mod tests {
             for t in contract.recipe_tensors() {
                 ck.take(t, &contract.keys[t]).unwrap_or_else(|e| panic!("{name} {t}: {e:#}"));
             }
-            crate::unet3d::model::HostNet::take(&ck, &contract.program, Precision::Fp16)
+            crate::unet3d::host::HostNet::take(&ck, &contract.program, Precision::Fp16)
                 .unwrap_or_else(|e| panic!("{name}: {e:#}"));
             let (tensors, _, params) = ck.finish().unwrap_or_else(|e| panic!("{name}: {e:#}"));
             assert_eq!(tensors, contract.keys.len(), "{name}");

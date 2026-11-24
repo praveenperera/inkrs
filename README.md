@@ -108,7 +108,7 @@ From Python this is `inkrs.nnunet_predict`. `inkrs --help` lists every option, a
 - Zarr chunks have to be uncompressed, zstd, or blosc with lz4 and no bit shuffle. villa's `tifs_to_ome_zarr.py` writes blosc with zstd and bit shuffle, so re-encode such a volume first.
 - Only the Hann blend and villa's unpadded tile phase.
 - Hecate's first run on a machine spends about 12 s timing cuDNN's algorithms (later runs reuse its picks), and Hecate in fp32 is slower than UFSM's fp16. Use `--fast` (bf16), which keeps the ink ([docs/FAST.md](docs/FAST.md)).
-- The Metal backend doesn't do the 3D U-Net, the nnU-Net models or test-time augmentation. The nnU-Net models need compute capability 8.0 or above.
+- The Metal backend doesn't do the 3D U-Net or the ink readers' test-time augmentation (`--tta 8`). It runs `surface_m7_nnunet` with its eight-flip TTA. On CUDA the nnU-Net models need compute capability 8.0 or above.
 - The full equivalence checks ran on an RTX 5090, and a T4, an A10, an A100, an L4, an RTX 4090 and an M4 Pro passed the per-map checks ([results/README.md](results/README.md)). Other GPUs should work but haven't been tried.
 - The Windows build is cross-built on Linux and its tests pass under Wine, but it has never run on actual Windows.
 
