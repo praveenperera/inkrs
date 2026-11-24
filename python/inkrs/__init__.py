@@ -131,11 +131,9 @@ def nnunet_predict(
     of uint8 foreground probability times 255, or 0/255 when `threshold` is set. `bbox` is villa's
     `"z0:z1,y0:y1,x0:x1"`; `overlap`, `tta=False` and `threshold=T` match villa's `--overlap`, `--disable_tta`
     and `--threshold --threshold_value T`, and `chunk` is the edge of a cubic `--blend_chunk_size`; None takes
-    the export's recipe. Returns the run report. The GIL is released while it runs
+    the export's recipe. On macOS it runs on Metal (device 0 or "mps"), where `algo` has no cuDNN to pick for and is
+    ignored. Returns the run report. The GIL is released while it runs
     """
-    # before the model folder resolves, which can export into the cache
-    if _METAL:
-        raise UnsupportedError("nnunet_predict runs on CUDA only; the Metal backend has no nnU-Net engine")
     model = _resolve_nnunet(Path(model))
     load_cuda_libraries()
     report = _nnunet_predict(

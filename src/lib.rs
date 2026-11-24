@@ -32,14 +32,12 @@ pub mod metal;
 pub use metal::{dnn, engine};
 #[cfg(not(target_os = "macos"))]
 pub mod model;
-#[cfg(not(target_os = "macos"))]
 pub mod nnunet;
 #[cfg(not(target_os = "macos"))]
 pub mod probe;
 pub mod sched;
 pub mod tiff;
 pub mod tta;
-#[cfg(not(target_os = "macos"))]
 pub mod unet3d;
 pub mod v8in;
 pub mod weights;

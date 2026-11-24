@@ -6,6 +6,12 @@ All notable changes to inkrs are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- The nnU-Net engine runs on Metal: `inkrs nnunet predict` and
+  `inkrs.nnunet_predict` run `surface_m7_nnunet` on an Apple silicon Mac with
+  macOS 26, with the same recipe and rounding as the CUDA engine.
+
 ## [0.4.0] - 2026-11-23
 
 ### Added

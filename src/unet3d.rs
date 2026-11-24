@@ -11,14 +11,19 @@
 //! accumulators on the GPU and writes villa's uint8 output zarr
 
 use color_eyre::eyre::{Result, bail};
+#[cfg(not(target_os = "macos"))]
 use cudakit::{ComputeCapability, PtxTier};
 use serde::Deserialize;
 
 use crate::ensure_supported;
 use crate::error::Unsupported;
 
+#[cfg(not(target_os = "macos"))]
 pub mod engine;
+pub mod host;
+#[cfg(not(target_os = "macos"))]
 pub mod model;
+#[cfg(not(target_os = "macos"))]
 pub mod p0;
 pub mod zio;
 
@@ -162,6 +167,7 @@ pub struct Contract {
 /// Fails with [`Unsupported`] on a device the engine can't run on: its convs are cuDNN bf16, which
 /// needs compute capability 8.0, and the sm75 PTX tier (also forced with `INKRS_PTX_TIER=sm75`) leaves
 /// its kernels out
+#[cfg(not(target_os = "macos"))]
 pub fn check_device(cc: ComputeCapability, tier: PtxTier) -> Result<()> {
     ensure_supported!(
         cc >= ComputeCapability::new(8, 0) && tier != PtxTier::Sm75,
@@ -441,7 +447,8 @@ impl Program {
     }
 }
 
-#[cfg(test)]
+// the one test checks the CUDA device gate
+#[cfg(all(test, not(target_os = "macos")))]
 mod tests {
     use super::*;
 

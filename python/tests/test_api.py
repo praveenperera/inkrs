@@ -1001,13 +1001,6 @@ def test_nnunet_export_keeps_the_callers_torch_allowlist(tmp_path):
         torch.serialization.clear_safe_globals()
 
 
-@pytest.mark.skipif(sys.platform != "darwin", reason="the macOS wheel has no nnU-Net engine")
-def test_nnunet_predict_on_metal_refuses_before_resolving_the_model(tmp_path, monkeypatch):
-    monkeypatch.setattr(inkrs, "_resolve_nnunet", lambda *a, **k: pytest.fail("resolved the model"))
-    with pytest.raises(inkrs.UnsupportedError, match="CUDA only"):
-        inkrs.nnunet_predict(tmp_path / "m7", tmp_path / "in.zarr", tmp_path / "out.zarr")
-
-
 def test_an_nnunet_export_named_key_is_found_in_the_cache(tmp_path, monkeypatch):
     from inkrs import export_nnunet
 

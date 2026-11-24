@@ -8,11 +8,13 @@
 //! - [`hecate`]: Hecate 9.6 um, with the CUDA Hecate engine's public API
 //! - [`v8in`]: v8-in (ink8um) and its A-hn fine-tunes, with the CUDA v8-in engine's public API
 
+pub mod alloc;
 pub mod coreml;
 pub mod engine;
 pub mod gpu;
 pub mod hecate;
 pub mod model;
+pub mod nnunet;
 pub mod v8in;
 
 /// The CUDA backend's algorithm choice, kept so callers build the same options on both backends; Metal has one

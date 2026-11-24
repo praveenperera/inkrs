@@ -31,16 +31,17 @@ use objc2_metal::{
 use crate::fast::ReaderPrecision;
 
 /// The kernel library's sources, compiled together in this order: the shared header first
-const SOURCES: [&str; 5] = [
+const SOURCES: [&str; 6] = [
     include_str!("common.metal"),
     include_str!("conv.metal"),
     include_str!("glue.metal"),
     include_str!("hecate.metal"),
     include_str!("v8in.metal"),
+    include_str!("nnunet.metal"),
 ];
 
-/// The sources of the hybrid_3d2d reader's kernels, the fp32 library's only ones: Hecate and v8-in have no fp32
-/// reader to serve, and leaving them out keeps that library's build short
+/// The sources of the hybrid_3d2d reader's kernels, the fp32 library's only ones: Hecate, v8-in and the nnU-Net
+/// engine have no fp32 reader to serve, and leaving them out keeps that library's build short
 const READER_SOURCES: usize = 3;
 
 /// The macro that switches the reader kernels' storage type `real` (common.metal) from half to float

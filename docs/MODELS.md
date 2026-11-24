@@ -98,7 +98,7 @@ On a crop of a scan volume, with 256³ patches at villa's overlap 0.5, against v
 
 | Model | Weights and licence | Reference | Export | Runs through |
 |---|---|---|---|---|
-| `surface_m7_nnunet`, nnU-Net ResEnc-L, 192³ patches | `scrollprize/surface_m7_nnunet@cd83ccf7`; Apache-2.0 on its model card, which adds that the original authors' terms govern where they differ | villa `vesuvius.predict --blend_in_memory --mode binary`, fp16 autocast, eight-flip TTA, Gaussian blend | `python -I scripts/export_nnunet.py MODEL_FOLDER W --recipe vesuvius-predict --name m7` | `inkrs nnunet predict` and `inkrs.nnunet_predict` (CUDA, compute capability 8.0 or above) |
+| `surface_m7_nnunet`, nnU-Net ResEnc-L, 192³ patches | `scrollprize/surface_m7_nnunet@cd83ccf7`; Apache-2.0 on its model card, which adds that the original authors' terms govern where they differ | villa `vesuvius.predict --blend_in_memory --mode binary`, fp16 autocast, eight-flip TTA, Gaussian blend | `python -I scripts/export_nnunet.py MODEL_FOLDER W --recipe vesuvius-predict --name m7` | `inkrs nnunet predict` and `inkrs.nnunet_predict` (CUDA with compute capability 8.0 or above, or Metal on macOS 26) |
 
 Checked on one 512³ zone of PHerc. 0826 (448 patches), thresholded at 0.2 as the published surface tracks are. The CLI, the Python call and every timed run wrote the same bytes.
 

@@ -25,7 +25,12 @@ use pyo3::prelude::*;
 
 mod v8in;
 #[cfg(target_os = "macos")]
-use cuda_only::{ink3d, nnunet_predict};
+use cuda_only::ink3d;
+
+// the CLI's allocator, for the same reason: macOS malloc keeps freed large blocks in the footprint
+#[cfg(target_os = "macos")]
+#[global_allocator]
+static ALLOC: inkrs::metal::alloc::LargePages = inkrs::metal::alloc::LargePages;
 
 create_exception!(_inkrs, InkrsError, PyRuntimeError, "An inkrs engine failure; the message holds the cause chain");
 create_exception!(
@@ -551,8 +556,7 @@ fn ink3d(
 }
 
 /// One nnU-Net prediction over a zarr volume into villa's binary prediction array (`inkrs nnunet predict`);
-/// returns the run report as JSON
-#[cfg(not(target_os = "macos"))]
+/// returns the run report as JSON. CUDA on Linux, the one Metal device (0) on macOS
 #[pyfunction]
 #[pyo3(signature = (model, input, output, device, bbox, overlap, tta, threshold, chunk, max_accum_gb, algo, overwrite))]
 #[allow(clippy::too_many_arguments)]
@@ -587,7 +591,6 @@ fn nnunet_predict(
     serde_json::to_string(&report).map_err(|e| InkrsError::new_err(e.to_string()))
 }
 
-#[cfg(not(target_os = "macos"))]
 fn pick(algo: &str) -> PyResult<Pick> {
     match algo {
         "find" => Ok(Pick::Find),
@@ -625,8 +628,8 @@ fn cubin_targets() -> Vec<(String, String)> {
     Vec::new()
 }
 
-/// The 3D ink and nnU-Net engines run on CUDA only: on macOS its entry point raises [`UnsupportedError`], so the
-/// Python package imports the same names on every platform. v8-in runs on both backends
+/// The 3D ink engine runs on CUDA only: on macOS its entry point raises [`UnsupportedError`], so the Python package
+/// imports the same names on every platform. v8-in and nnU-Net run on both backends
 #[cfg(target_os = "macos")]
 mod cuda_only {
     use pyo3::prelude::*;
@@ -638,12 +641,6 @@ mod cuda_only {
     #[pyo3(signature = (*_args, **_kwargs))]
     pub fn ink3d(_args: &Bound<'_, PyTuple>, _kwargs: Option<&Bound<'_, PyDict>>) -> PyResult<String> {
         Err(UnsupportedError::new_err("ink3d runs on CUDA only; the Metal backend has no 3D ink engine"))
-    }
-
-    #[pyfunction]
-    #[pyo3(signature = (*_args, **_kwargs))]
-    pub fn nnunet_predict(_args: &Bound<'_, PyTuple>, _kwargs: Option<&Bound<'_, PyDict>>) -> PyResult<String> {
-        Err(UnsupportedError::new_err("nnunet_predict runs on CUDA only; the Metal backend has no nnU-Net engine"))
     }
 }
 

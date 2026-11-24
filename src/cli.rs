@@ -136,10 +136,10 @@ enum NnunetCommand {
         /// inkrs 0.4.0 or later
         #[arg(long)]
         overwrite: bool,
-        /// CUDA device ordinal
+        /// GPU ordinal: a CUDA device, or 0 for the one Metal device
         #[arg(long, default_value_t = 0)]
         device: usize,
-        /// Write the run's report (timings, skipped patches, cuDNN choices) to this JSON file
+        /// Write the run's report (timings, skipped patches, cuDNN choices on CUDA) to this JSON file
         #[arg(long)]
         report: Option<PathBuf>,
     },
@@ -553,8 +553,7 @@ where
         | Command::P0 { .. }
         | Command::P0Hecate { .. }
         | Command::Ink3d { .. }
-        | Command::P0Ink3d { .. }
-        | Command::Nnunet { .. } => {
+        | Command::P0Ink3d { .. } => {
             Err(crate::error::Unsupported("this command is not available on the Metal backend yet".into()).into())
         }
         #[cfg(not(target_os = "macos"))]
@@ -622,7 +621,6 @@ where
             let corner = <[usize; 3]>::try_from(corner).map_err(|_| eyre!("--corner takes three numbers"))?;
             crate::unet3d::p0::run(&input, &checkpoint, corner, crop, &out, algo.pick())
         }
-        #[cfg(not(target_os = "macos"))]
         Command::Nnunet { action } => match action {
             NnunetCommand::Predict {
                 model,
