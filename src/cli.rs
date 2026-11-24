@@ -124,7 +124,7 @@ enum NnunetCommand {
         /// villa's --threshold_value: the cutoff in (0, 1), default 0.5; needs --threshold
         #[arg(long = "threshold-value", alias = "threshold_value", requires = "threshold")]
         threshold_value: Option<f64>,
-        /// Output chunk edge, villa's cubic --blend_chunk_size; default the patch edge, as villa
+        /// Output chunk edge, villa's cubic --blend_chunk_size; default the patch edge, as villa. Metal needs 2 or more
         #[arg(long)]
         chunk: Option<usize>,
         /// Cap on the GPU accumulators, GB
