@@ -10,8 +10,8 @@ checksum = "95832e849adfb21180ccb6826a99da14e5d266ae5c2e668e1602cf234f153797"
 
 [[package]]
 name = "cuda-device"
-version = "0.3.0"
-source = "git+https://github.com/NVIDIA/cuda-rust.git?rev=8d825486993f806903d8968232214ddafa8ed7da#8d825486993f806903d8968232214ddafa8ed7da"
+version = "0.4.0"
+source = "git+https://github.com/NVIDIA/cuda-rust.git?rev=f35d6ccc2e03a54e73e3796f415f11313e439d50#f35d6ccc2e03a54e73e3796f415f11313e439d50"
 dependencies = [
  "bytemuck",
  "cuda-macros",
@@ -20,8 +20,8 @@ dependencies = [
 
 [[package]]
 name = "cuda-macros"
-version = "0.3.0"
-source = "git+https://github.com/NVIDIA/cuda-rust.git?rev=8d825486993f806903d8968232214ddafa8ed7da#8d825486993f806903d8968232214ddafa8ed7da"
+version = "0.4.0"
+source = "git+https://github.com/NVIDIA/cuda-rust.git?rev=f35d6ccc2e03a54e73e3796f415f11313e439d50#f35d6ccc2e03a54e73e3796f415f11313e439d50"
 dependencies = [
  "oxide-tile-export",
  "proc-macro2",
@@ -33,7 +33,7 @@ dependencies = [
 [[package]]
 name = "cuda-repr"
 version = "0.5.0"
-source = "git+https://github.com/NVIDIA/cuda-rust.git?rev=8d825486993f806903d8968232214ddafa8ed7da#8d825486993f806903d8968232214ddafa8ed7da"
+source = "git+https://github.com/NVIDIA/cuda-rust.git?rev=f35d6ccc2e03a54e73e3796f415f11313e439d50#f35d6ccc2e03a54e73e3796f415f11313e439d50"
 
 [[package]]
 name = "inkrs-kernels"
@@ -56,8 +56,8 @@ checksum = "cf8baf1c55e62ffcace7a9f06f4bd9cd3f0c4beb022d3b367256b91b87513d98"
 
 [[package]]
 name = "oxide-tile-export"
-version = "0.3.0"
-source = "git+https://github.com/NVIDIA/cuda-rust.git?rev=8d825486993f806903d8968232214ddafa8ed7da#8d825486993f806903d8968232214ddafa8ed7da"
+version = "0.4.0"
+source = "git+https://github.com/NVIDIA/cuda-rust.git?rev=f35d6ccc2e03a54e73e3796f415f11313e439d50#f35d6ccc2e03a54e73e3796f415f11313e439d50"
 dependencies = [
  "serde",
  "serde_json",
@@ -84,8 +84,8 @@ dependencies = [
 
 [[package]]
 name = "reserved-oxide-symbols"
-version = "0.3.0"
-source = "git+https://github.com/NVIDIA/cuda-rust.git?rev=8d825486993f806903d8968232214ddafa8ed7da#8d825486993f806903d8968232214ddafa8ed7da"
+version = "0.4.0"
+source = "git+https://github.com/NVIDIA/cuda-rust.git?rev=f35d6ccc2e03a54e73e3796f415f11313e439d50#f35d6ccc2e03a54e73e3796f415f11313e439d50"
 
 [[package]]
 name = "serde"

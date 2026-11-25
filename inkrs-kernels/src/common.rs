@@ -15,8 +15,9 @@ pub use cuda_device::float::{add_rn_f32, mul_rn_f32};
 pub use cuda_device::wmma::mma_m16n8k16_f32_f16;
 
 /// `add.rn.f32`: a float add the compiler may not fuse into an FMA
-// cuda-oxide 8d8254869's intrinsic catalog lists its add_rn_f32 and mul_rn_f32 as sm_80+, though PTX
-// has had both instructions since sm_20, so the sm_75 tier writes them itself
+// cuda-oxide f35d6ccc2's intrinsic catalog lists its add_rn_f32 and mul_rn_f32 as sm_80+, though PTX
+// has had both instructions since sm_20, so the sm_75 tier writes them itself (NVIDIA/cuda-rust#1462,
+// fixed upstream by #1725, which f35d6ccc2 predates)
 #[cfg(feature = "sm75")]
 #[inline(always)]
 pub fn add_rn_f32(a: f32, b: f32) -> f32 {

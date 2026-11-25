@@ -93,7 +93,7 @@ SOFTWARE.
 
 ========================================================================================================
 4. cuda-oxide device crate, NVIDIA (Apache License 2.0), from github.com/NVIDIA/cuda-rust at
-   8d825486993f806903d8968232214ddafa8ed7da
+   f35d6ccc2e03a54e73e3796f415f11313e439d50
 
    Covers: ptx/inkrs.sm80.ptx and ptx/inkrs.sm120.ptx, and the cubins compiled from them. The kernels
    in inkrs-kernels/ call the cuda-device crate's intrinsics and conversions, which are compiled into
