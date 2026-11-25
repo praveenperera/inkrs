@@ -6,6 +6,8 @@ All notable changes to inkrs are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-11-24
+
 ### Added
 
 - The nnU-Net engine runs on Metal: `inkrs nnunet predict` and
@@ -128,7 +130,8 @@ The first public release.
 - `--fast` presets that trade a measured amount of accuracy for speed, described
   in [docs/FAST.md](docs/FAST.md).
 
-[Unreleased]: https://github.com/praveenperera/inkrs/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/praveenperera/inkrs/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/praveenperera/inkrs/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/praveenperera/inkrs/compare/v0.3.1...v0.4.0
 [0.3.1]: https://github.com/praveenperera/inkrs/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/praveenperera/inkrs/compare/v0.2.1...v0.3.0
