@@ -9,20 +9,26 @@
 //! `E[x^2] - E[x]^2` does not cancel when a channel's mean is large against its spread (the
 //! convolutions here drop the bias that InstanceNorm removes anyway)
 
-use core::ptr::addr_of_mut;
-
-use cuda_device::thread::{blockDim_x, blockIdx_x, blockIdx_y, sync_threads, threadIdx_x};
-use cuda_device::{DisjointSlice, SharedArray, kernel, launch_contract, thread};
+use cuda_device::thread::{blockIdx_x, blockIdx_y, sync_threads, threadIdx_x};
+use cuda_device::{DisjointSlice, SharedArray, kernel, launch_contract, thread, verify};
 
 use crate::common::{leaky16, pack_f16, r16, unpack_f16, widen};
 
 /// Partial shifted sums of one spatial chunk for every channel
 ///
-/// `x` is `[B, rows, cols]` FP16 as `u32` pairs, `cols` even. Grid `(chunks, B)`, block
-/// `cols / 2 * lanes` threads (at most 256): thread `t` owns channel pair `t % (cols / 2)` and
-/// starts at row `t / (cols / 2)` of the chunk, stepping by `lanes`. Writes
-/// `partial[b, chunk, c] = [sum(x - x0), sum((x - x0)^2)]` with `x0 = x[b, 0, c]`
+/// `x` is `[B, rows, cols]` FP16 as `u32` pairs, `cols` even. Grid `(chunks, B)`, block 256
+/// threads, of which the first `n = cols / 2 * lanes` (at most 256) work: thread `t < n` owns
+/// channel pair `t % (cols / 2)` and starts at row `t / (cols / 2)` of the chunk, stepping by
+/// `lanes`. Writes `partial[b, chunk, c] = [sum(x - x0), sum((x - x0)^2)]` with `x0 = x[b, 0, c]`
+///
+/// `#[verify]` proves the `ACC` indexing in bounds and race-free and the barrier reached by every
+/// thread. The verifier at cuda-oxide f35d6ccc2 needs three shapes for that: the exact block in
+/// the launch contract (`.reqntid 256`), no `return` before the barrier (a failed check becomes
+/// `ok`), and loops counted from zero with a block-uniform trip count, so the row loop runs the
+/// longest lane's count and skips rows past `end`
 #[kernel]
+#[launch_contract(domain = 2, block = (256, 1, 1))]
+#[verify(no_oob_idx(ACC), no_data_race(ACC), uniform_barriers)]
 pub fn in_partial(
     mut partial: DisjointSlice<[f32; 2]>,
     x: &[u32],
@@ -34,51 +40,59 @@ pub fn in_partial(
     static mut ACC: SharedArray<[f32; 4], 256> = SharedArray::UNINIT;
     let (chunk, b, tid) = (blockIdx_x(), blockIdx_y(), threadIdx_x());
     let pairs = cols / 2;
-    let chunks = (rows + chunk_rows - 1) / chunk_rows.max(1);
-    // block-uniform, so a block that fails it never reaches a barrier
-    if pairs == 0
-        || blockDim_x() != pairs * lanes
-        || blockDim_x() > 256
-        || ((b + 1) * rows * pairs) as usize > x.len()
-        || (((b * chunks + chunk + 1) * cols) as usize) > partial.len()
-    {
-        return;
-    }
-    let (cp, lane) = (tid % pairs, tid / pairs);
+    let n = pairs * lanes;
+    // `if` rather than `max`/`min`: the verifier's uniformity analysis treats a call's result as
+    // thread-dependent, and the row loop's trip count, ahead of the barrier, must be uniform
+    let chunks = (rows + chunk_rows - 1) / if chunk_rows > 1 { chunk_rows } else { 1 };
+    // block-uniform; a block that fails it still reaches the barrier, with nothing to add
+    let ok = pairs != 0
+        && lanes != 0
+        && n <= 256
+        && ((b + 1) * rows * pairs) as usize <= x.len()
+        && (((b * chunks + chunk + 1) * cols) as usize) <= partial.len();
+    let work = ok && tid < n;
+    let (cp, lane) = if work { (tid % pairs, tid / pairs) } else { (0, 0) };
     let sample = b * rows * pairs;
-    let (s0, s1) = unpack_f16(x[(sample + cp) as usize]);
+    let (s0, s1) = if work { unpack_f16(x[(sample + cp) as usize]) } else { (0.0, 0.0) };
 
     let (mut a0, mut a1, mut q0, mut q1) = (0f32, 0f32, 0f32, 0f32);
-    let end = ((chunk + 1) * chunk_rows).min(rows);
-    let mut r = chunk * chunk_rows + lane;
-    while r < end {
-        let (v0, v1) = unpack_f16(x[(sample + r * pairs + cp) as usize]);
-        let (d0, d1) = (v0 - s0, v1 - s1);
-        a0 += d0;
-        a1 += d1;
-        q0 += d0 * d0;
-        q1 += d1 * d1;
-        r += lanes;
+    let first = chunk * chunk_rows;
+    let stop = (chunk + 1) * chunk_rows;
+    let end = if stop < rows { stop } else { rows };
+    let iters = if ok && end > first { (end - first + lanes - 1) / lanes } else { 0 };
+    let mut i = 0;
+    while i < iters {
+        let r = first + lane + i * lanes;
+        if work && r < end {
+            let (v0, v1) = unpack_f16(x[(sample + r * pairs + cp) as usize]);
+            let (d0, d1) = (v0 - s0, v1 - s1);
+            a0 += d0;
+            a1 += d1;
+            q0 += d0 * d0;
+            q1 += d1 * d1;
+        }
+        i += 1;
     }
-    let acc = addr_of_mut!(ACC) as *mut [f32; 4];
-    // SAFETY: each thread writes its own slot, read only after the barrier
-    unsafe { *acc.add(tid as usize) = [a0, a1, q0, q1] };
+    ACC[tid as usize] = [a0, a1, q0, q1];
     sync_threads();
-    if lane == 0 {
+    if ok && tid < pairs {
         let (mut t0, mut t1, mut u0, mut u1) = (0f32, 0f32, 0f32, 0f32);
         let mut l = 0;
         while l < lanes {
-            // SAFETY: `l * pairs + cp < blockDim <= 256`
-            let [p0, p1, p2, p3] = unsafe { *acc.add((l * pairs + cp) as usize) };
-            t0 += p0;
-            t1 += p1;
-            u0 += p2;
-            u1 += p3;
+            // always below `n <= 256`; the test gives the prover the bound `l * pairs` hides
+            let j = l * pairs + tid;
+            if j < 256 {
+                let [p0, p1, p2, p3] = ACC[j as usize];
+                t0 += p0;
+                t1 += p1;
+                u0 += p2;
+                u1 += p3;
+            }
             l += 1;
         }
-        let o = ((b * chunks + chunk) * cols + 2 * cp) as usize;
-        // SAFETY: `o + 1 < partial.len()` by the check above, and only thread `cp` of this
-        // block writes channels `2cp, 2cp + 1` of this chunk
+        let o = ((b * chunks + chunk) * cols + 2 * tid) as usize;
+        // SAFETY: `o + 1 < partial.len()` by `ok`, and only thread `tid` of this block writes
+        // channels `2tid, 2tid + 1` of this chunk
         unsafe {
             *partial.get_unchecked_mut(o) = [t0, u0];
             *partial.get_unchecked_mut(o + 1) = [t1, u1];

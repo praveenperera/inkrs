@@ -649,10 +649,14 @@ impl Model {
         let (lanes, chunk, chunks) = in_layout(rows, cols);
         let partial_len = b * chunks * cols;
         ensure!(partial_len * 8 <= self.partial.bytes() && b * cols * 8 <= stats.bytes(), "IN scratch too small");
+        // the kernel returns early past this, leaving `partial` unwritten
+        ensure!(pairs > 0 && pairs * lanes <= 256, "InstanceNorm over {cols} channels needs more than 256 threads");
         gpu.launch(
             "in_partial",
             (chunks as u32, b as u32, 1),
-            ((pairs * lanes) as u32, 1, 1),
+            // the kernel's launch contract fixes the block at 256 (`.reqntid`); threads past
+            // `pairs * lanes` idle
+            (256, 1, 1),
             0,
             &[
                 self.partial.view::<[f32; 2]>(0, partial_len),
@@ -940,8 +944,8 @@ impl Model {
     }
 }
 
-/// `in_partial`'s launch shape for `[rows, cols]`: lanes per channel pair (the block is
-/// `cols / 2 * lanes` threads, at most 256), rows per block (about 64 per lane) and blocks
+/// `in_partial`'s launch shape for `[rows, cols]`: lanes per channel pair (the working threads,
+/// `cols / 2 * lanes` of the block's 256), rows per block (about 64 per lane) and blocks
 /// per sample
 fn in_layout(rows: usize, cols: usize) -> (usize, usize, usize) {
     let lanes = (256 / (cols / 2)).max(1);
