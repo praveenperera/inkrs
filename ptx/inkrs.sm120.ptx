@@ -33,8 +33,8 @@
 .visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_0b838a713065ca75[1024];
 .visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_469bc8e97a5d3955[6144];
 .visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_96ef6f0bccb83790[3072];
-.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_abb7df8a3a7e6ebc[4096];
 .visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_91cca3d726903df3[6144];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_abb7df8a3a7e6ebc[4096];
 .visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_ed525546845e73c4[8192];
 .visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_e6bfcf169125860d[4];
 .visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_69e5836ac0c054d7[1024];
@@ -33077,212 +33077,274 @@ $L__BB31_11:                            // %bb31
 	.param .u32 in_partial_param_5,
 	.param .u32 in_partial_param_6,
 	.param .u32 in_partial_param_7
-)                                       // @in_partial
+)
+.reqntid 256, 1, 1                      // @in_partial
 {
-	.reg .pred 	%p<16>;
+	.reg .pred 	%p<27>;
 	.reg .b16 	%rs<5>;
-	.reg .b32 	%r<78>;
+	.reg .b32 	%r<79>;
 	.reg .b64 	%rd<17>;
 
 // %bb.0:                               // %entry
-	ld.param.b32 	%r17, [in_partial_param_5];
+	ld.param.b32 	%r20, [in_partial_param_7];
+	ld.param.b32 	%r19, [in_partial_param_6];
+	ld.param.b32 	%r18, [in_partial_param_5];
+	ld.param.b32 	%r17, [in_partial_param_4];
+	ld.param.b64 	%rd6, [in_partial_param_3];
 	ld.param.b64 	%rd7, [in_partial_param_0];
 	ld.param.b64 	%rd8, [in_partial_param_2];
 	cvta.to.global.u64 	%rd1, %rd8;
 	cvta.to.global.u64 	%rd2, %rd7;
-	shr.u32 	%r4, %r17, 1;
-	setp.eq.b32 	%p1, %r4, 0;
-	@%p1 bra 	$L__BB32_17;
-	bra.uni 	$L__BB32_1;
-$L__BB32_1:                             // %bb7
-	ld.param.b32 	%r18, [in_partial_param_6];
-	mov.u32 	%r23, %ntid.x;
-	mul.lo.s32 	%r24, %r4, %r18;
-	setp.ne.b32 	%p2, %r23, %r24;
-	setp.gt.u32 	%p3, %r23, 256;
-	or.pred 	%p4, %p2, %p3;
-	@%p4 bra 	$L__BB32_17;
-	bra.uni 	$L__BB32_2;
-$L__BB32_2:                             // %bb13
-	ld.param.b32 	%r16, [in_partial_param_4];
-	ld.param.b64 	%rd6, [in_partial_param_3];
-	mov.u32 	%r2, %ctaid.y;
-	mad.lo.s32 	%r25, %r16, %r2, %r16;
-	mul.lo.s32 	%r26, %r25, %r4;
-	cvt.u64.u32 	%rd9, %r26;
-	setp.lt.u64 	%p5, %rd6, %rd9;
-	@%p5 bra 	$L__BB32_17;
-	bra.uni 	$L__BB32_3;
-$L__BB32_3:                             // %bb15
-	ld.param.b32 	%r19, [in_partial_param_7];
-	ld.param.b64 	%rd5, [in_partial_param_1];
 	mov.u32 	%r1, %ctaid.x;
-	max.u32 	%r20, %r19, 1;
-	add.s32 	%r21, %r16, %r19;
-	add.s32 	%r22, %r21, -1;
-	div.u32 	%r5, %r22, %r20;
-	mad.lo.s32 	%r6, %r5, %r2, %r1;
-	mad.lo.s32 	%r27, %r17, %r6, %r17;
-	cvt.u64.u32 	%rd10, %r27;
-	setp.lt.u64 	%p6, %rd5, %rd10;
-	@%p6 bra 	$L__BB32_17;
-	bra.uni 	$L__BB32_4;
-$L__BB32_4:                             // %bb18
+	mov.u32 	%r2, %ctaid.y;
 	mov.u32 	%r3, %tid.x;
-	div.u32 	%r7, %r3, %r4;
-	mul.lo.s32 	%r28, %r7, %r4;
-	sub.s32 	%r8, %r3, %r28;
-	mul.lo.s32 	%r9, %r16, %r2;
-	mad.lo.s32 	%r29, %r4, %r9, %r8;
+	shr.u32 	%r4, %r18, 1;
+	mul.lo.s32 	%r5, %r4, %r19;
+	max.u32 	%r21, %r20, 1;
+	add.s32 	%r22, %r17, %r20;
+	add.s32 	%r23, %r22, -1;
+	div.u32 	%r6, %r23, %r21;
+	setp.eq.b32 	%p2, %r4, 0;
+	setp.eq.b32 	%p3, %r19, 0;
+	setp.gt.u32 	%p4, %r5, 256;
+	or.pred 	%p5, %p3, %p4;
+	or.pred 	%p6, %p2, %p5;
+	mov.pred 	%p26, -1;
+	@%p6 bra 	$L__BB32_2;
+	bra.uni 	$L__BB32_1;
+$L__BB32_1:                             // %bb16
+	ld.param.b64 	%rd5, [in_partial_param_1];
+	mad.lo.s32 	%r24, %r17, %r2, %r17;
+	mul.lo.s32 	%r25, %r24, %r4;
+	cvt.u64.u32 	%rd9, %r25;
+	setp.lt.u64 	%p7, %rd6, %rd9;
+	mad.lo.s32 	%r26, %r6, %r2, %r1;
+	mad.lo.s32 	%r27, %r18, %r26, %r18;
+	cvt.u64.u32 	%rd10, %r27;
+	setp.lt.u64 	%p8, %rd5, %rd10;
+	or.pred 	%p26, %p7, %p8;
+$L__BB32_2:                             // %bb20
+	setp.ge.u32 	%p9, %r3, %r5;
+	or.pred 	%p1, %p26, %p9;
+	mov.b32 	%r61, 0;
+	mov.b32 	%r62, %r61;
+	@%p1 bra 	$L__BB32_5;
+	bra.uni 	$L__BB32_3;
+$L__BB32_3:                             // %bb24
+	@%p2 bra 	$L__BB32_31;
+	bra.uni 	$L__BB32_4;
+$L__BB32_4:                             // %bb26
+	div.u32 	%r62, %r3, %r4;
+	mul.lo.s32 	%r28, %r62, %r4;
+	sub.s32 	%r61, %r3, %r28;
+$L__BB32_5:                             // %bb30
+	mul.lo.s32 	%r7, %r17, %r2;
+	mov.b32 	%r63, 0f00000000;
+	mov.b32 	%r64, %r63;
+	@%p1 bra 	$L__BB32_8;
+	bra.uni 	$L__BB32_6;
+$L__BB32_6:                             // %bb31
+	mad.lo.s32 	%r29, %r4, %r7, %r61;
 	cvt.u64.u32 	%rd3, %r29;
-	setp.le.u64 	%p7, %rd6, %rd3;
-	@%p7 bra 	$L__BB32_18;
-	bra.uni 	$L__BB32_5;
-$L__BB32_5:                             // %bb20
+	setp.le.u64 	%p10, %rd6, %rd3;
+	@%p10 bra 	$L__BB32_32;
+	bra.uni 	$L__BB32_7;
+$L__BB32_7:                             // %bb33
 	shl.b64 	%rd11, %rd3, 2;
 	add.s64 	%rd12, %rd1, %rd11;
 	ld.global.nc.b32 	%r30, [%rd12];
-	mul.lo.s32 	%r31, %r19, %r1;
-	add.s32 	%r32, %r31, %r19;
-	min.u32 	%r12, %r16, %r32;
-	add.s32 	%r68, %r7, %r31;
-	setp.ge.u32 	%p8, %r68, %r12;
-	mov.b32 	%r69, 0f00000000;
-	mov.b32 	%r70, %r69;
-	mov.b32 	%r71, %r69;
-	mov.b32 	%r72, %r69;
-	@%p8 bra 	$L__BB32_9;
-	bra.uni 	$L__BB32_6;
-$L__BB32_6:                             // %bb23.preheader
 	cvt.u16.u32 	%rs1, %r30;
 	mov.b32 	{_, %rs2}, %r30;
-	cvt.f32.f16 	%r10, %rs1;
-	cvt.f32.f16 	%r11, %rs2;
-	mov.b32 	%r72, 0f00000000;
-	mov.b32 	%r71, %r72;
-	mov.b32 	%r70, %r72;
-	mov.b32 	%r69, %r72;
-$L__BB32_7:                             // %bb23
+	cvt.f32.f16 	%r63, %rs1;
+	cvt.f32.f16 	%r64, %rs2;
+$L__BB32_8:                             // %bb35
+	mul.lo.s32 	%r8, %r20, %r1;
+	add.s32 	%r31, %r8, %r20;
+	min.u32 	%r9, %r31, %r17;
+	setp.le.u32 	%p11, %r9, %r8;
+	or.pred 	%p12, %p26, %p11;
+	mov.b32 	%r67, 0;
+	@%p12 bra 	$L__BB32_11;
+	bra.uni 	$L__BB32_9;
+$L__BB32_9:                             // %bb40
+	@%p3 bra 	$L__BB32_33;
+	bra.uni 	$L__BB32_10;
+$L__BB32_10:                            // %bb42
+	not.b32 	%r32, %r8;
+	add.s32 	%r33, %r19, %r32;
+	add.s32 	%r34, %r33, %r9;
+	div.u32 	%r67, %r34, %r19;
+$L__BB32_11:                            // %bb45
+	setp.eq.b32 	%p13, %r67, 0;
+	mov.b32 	%r68, 0f00000000;
+	mov.b32 	%r69, %r68;
+	mov.b32 	%r70, %r68;
+	mov.b32 	%r71, %r68;
+	@%p13 bra 	$L__BB32_17;
+	bra.uni 	$L__BB32_12;
+$L__BB32_12:                            // %bb47.lr.ph
+	add.s32 	%r65, %r62, %r8;
+	add.s32 	%r35, %r65, %r7;
+	mad.lo.s32 	%r66, %r4, %r35, %r61;
+	mov.b32 	%r71, 0f00000000;
+	mov.b32 	%r70, %r71;
+	mov.b32 	%r69, %r71;
+	mov.b32 	%r68, %r71;
+$L__BB32_13:                            // %bb47
                                         // =>This Inner Loop Header: Depth=1
-	add.s32 	%r33, %r68, %r9;
-	mad.lo.s32 	%r34, %r33, %r4, %r8;
-	cvt.u64.u32 	%rd4, %r34;
-	setp.le.u64 	%p9, %rd6, %rd4;
-	@%p9 bra 	$L__BB32_19;
-	bra.uni 	$L__BB32_8;
-$L__BB32_8:                             // %bb25
-                                        //   in Loop: Header=BB32_7 Depth=1
+	setp.ge.u32 	%p14, %r65, %r9;
+	or.pred 	%p15, %p1, %p14;
+	@%p15 bra 	$L__BB32_16;
+	bra.uni 	$L__BB32_14;
+$L__BB32_14:                            // %bb49
+                                        //   in Loop: Header=BB32_13 Depth=1
+	cvt.u64.u32 	%rd4, %r66;
+	setp.le.u64 	%p16, %rd6, %rd4;
+	@%p16 bra 	$L__BB32_34;
+	bra.uni 	$L__BB32_15;
+$L__BB32_15:                            // %bb51
+                                        //   in Loop: Header=BB32_13 Depth=1
 	shl.b64 	%rd13, %rd4, 2;
 	add.s64 	%rd14, %rd1, %rd13;
-	ld.global.nc.b32 	%r35, [%rd14];
-	cvt.u16.u32 	%rs3, %r35;
-	mov.b32 	{_, %rs4}, %r35;
-	sub.rn.f32.f16 	%r36, %rs3, %r10;
-	sub.rn.f32.f16 	%r37, %rs4, %r11;
-	add.f32 	%r69, %r69, %r36;
-	add.f32 	%r70, %r70, %r37;
-	fma.rn.f32 	%r71, %r36, %r36, %r71;
-	fma.rn.f32 	%r72, %r37, %r37, %r72;
-	add.s32 	%r68, %r68, %r18;
-	setp.lt.u32 	%p10, %r68, %r12;
-	@%p10 bra 	$L__BB32_7;
-	bra.uni 	$L__BB32_9;
-$L__BB32_9:                             // %bb26
-	shl.b32 	%r38, %r3, 4;
-	mov.b32 	%r39, __shared_mem_b36ae61f4ba23cec_abb7df8a3a7e6ebc;
-	add.s32 	%r40, %r39, %r38;
-	st.shared.b32 	[%r40], %r69;
-	st.shared.b32 	[%r40+4], %r70;
-	st.shared.b32 	[%r40+8], %r71;
-	st.shared.b32 	[%r40+12], %r72;
+	ld.global.nc.b32 	%r36, [%rd14];
+	cvt.u16.u32 	%rs3, %r36;
+	mov.b32 	{_, %rs4}, %r36;
+	sub.rn.f32.f16 	%r37, %rs3, %r63;
+	sub.rn.f32.f16 	%r38, %rs4, %r64;
+	add.f32 	%r68, %r68, %r37;
+	add.f32 	%r69, %r69, %r38;
+	fma.rn.f32 	%r70, %r37, %r37, %r70;
+	fma.rn.f32 	%r71, %r38, %r38, %r71;
+$L__BB32_16:                            // %bb53
+                                        //   in Loop: Header=BB32_13 Depth=1
+	add.s32 	%r67, %r67, -1;
+	add.s32 	%r66, %r66, %r5;
+	add.s32 	%r65, %r65, %r19;
+	setp.ne.b32 	%p17, %r67, 0;
+	@%p17 bra 	$L__BB32_13;
+	bra.uni 	$L__BB32_17;
+$L__BB32_17:                            // %bb54
+	shl.b32 	%r39, %r3, 4;
+	mov.b32 	%r40, __shared_mem_b36ae61f4ba23cec_abb7df8a3a7e6ebc;
+	add.s32 	%r10, %r40, %r39;
+	st.shared.b32 	[%r10], %r68;
+	st.shared.b32 	[%r10+4], %r69;
+	st.shared.b32 	[%r10+8], %r70;
+	st.shared.b32 	[%r10+12], %r71;
 	bar.sync 	0;
-	setp.le.u32 	%p11, %r4, %r3;
-	@%p11 bra 	$L__BB32_17;
-	bra.uni 	$L__BB32_10;
-$L__BB32_10:                            // %bb29.preheader
-	setp.eq.b32 	%p12, %r18, 0;
-	mov.b32 	%r77, 0f00000000;
-	mov.b32 	%r76, %r77;
-	mov.b32 	%r75, %r77;
-	mov.b32 	%r74, %r77;
-	@%p12 bra 	$L__BB32_16;
-	bra.uni 	$L__BB32_11;
-$L__BB32_11:                            // %bb30.preheader
-	shl.b32 	%r41, %r8, 4;
-	add.s32 	%r13, %r39, %r41;
-	setp.eq.b32 	%p13, %r18, 1;
-	mov.b32 	%r74, 0f00000000;
-	mov.b32 	%r73, 0;
-	mov.b32 	%r75, %r74;
-	mov.b32 	%r76, %r74;
-	mov.b32 	%r77, %r74;
-	@%p13 bra 	$L__BB32_15;
-	bra.uni 	$L__BB32_12;
-$L__BB32_12:                            // %bb30.preheader.new
-	and.b32 	%r14, %r18, 1;
-	and.b32 	%r15, %r18, -2;
-	mov.b32 	%r74, 0f00000000;
-	mov.b32 	%r73, 0;
-	mov.b32 	%r75, %r74;
-	mov.b32 	%r76, %r74;
-	mov.b32 	%r77, %r74;
-$L__BB32_13:                            // %bb30
+	setp.ge.u32 	%p18, %r3, %r4;
+	or.pred 	%p19, %p26, %p18;
+	@%p19 bra 	$L__BB32_30;
+	bra.uni 	$L__BB32_18;
+$L__BB32_18:                            // %bb59.preheader
+	mov.b32 	%r75, 0f00000000;
+	mov.b32 	%r76, %r75;
+	mov.b32 	%r77, %r75;
+	mov.b32 	%r78, %r75;
+	@%p3 bra 	$L__BB32_29;
+	bra.uni 	$L__BB32_19;
+$L__BB32_19:                            // %bb60.preheader
+	setp.eq.b32 	%p20, %r19, 1;
+	mov.b32 	%r78, 0f00000000;
+	mov.b32 	%r74, 0;
+	mov.b32 	%r77, %r78;
+	mov.b32 	%r76, %r78;
+	mov.b32 	%r75, %r78;
+	@%p20 bra 	$L__BB32_27;
+	bra.uni 	$L__BB32_20;
+$L__BB32_20:                            // %bb60.preheader.new
+	and.b32 	%r11, %r19, 1;
+	and.b32 	%r12, %r19, -2;
+	shl.b32 	%r13, %r4, 1;
+	shl.b32 	%r14, %r4, 5;
+	shl.b32 	%r15, %r4, 4;
+	mov.b32 	%r78, 0f00000000;
+	mov.b32 	%r74, 0;
+	mov.b32 	%r72, %r10;
+	mov.b32 	%r73, %r3;
+	mov.b32 	%r77, %r78;
+	mov.b32 	%r76, %r78;
+	mov.b32 	%r75, %r78;
+$L__BB32_21:                            // %bb60
                                         // =>This Inner Loop Header: Depth=1
-	mul.lo.s32 	%r42, %r73, %r4;
-	shl.b32 	%r43, %r42, 4;
-	add.s32 	%r44, %r13, %r43;
-	ld.shared.b32 	%r45, [%r44];
-	ld.shared.b32 	%r46, [%r44+4];
-	ld.shared.b32 	%r47, [%r44+8];
-	ld.shared.b32 	%r48, [%r44+12];
-	add.f32 	%r49, %r77, %r45;
-	add.f32 	%r50, %r76, %r46;
-	add.f32 	%r51, %r75, %r47;
-	add.f32 	%r52, %r74, %r48;
-	shl.b32 	%r53, %r4, 4;
-	add.s32 	%r54, %r44, %r53;
-	ld.shared.b32 	%r55, [%r54];
-	ld.shared.b32 	%r56, [%r54+4];
-	ld.shared.b32 	%r57, [%r54+8];
-	ld.shared.b32 	%r58, [%r54+12];
-	add.f32 	%r77, %r49, %r55;
-	add.f32 	%r76, %r50, %r56;
-	add.f32 	%r75, %r51, %r57;
-	add.f32 	%r74, %r52, %r58;
-	add.s32 	%r73, %r73, 2;
-	setp.ne.b32 	%p14, %r15, %r73;
-	@%p14 bra 	$L__BB32_13;
-	bra.uni 	$L__BB32_14;
-$L__BB32_14:                            // %bb31.loopexit.unr-lcssa
-	setp.eq.b32 	%p15, %r14, 0;
-	@%p15 bra 	$L__BB32_16;
-	bra.uni 	$L__BB32_15;
-$L__BB32_15:                            // %bb30.epil.preheader
-	mul.lo.s32 	%r59, %r73, %r4;
-	shl.b32 	%r60, %r59, 4;
-	add.s32 	%r61, %r13, %r60;
-	ld.shared.b32 	%r62, [%r61];
-	ld.shared.b32 	%r63, [%r61+4];
-	ld.shared.b32 	%r64, [%r61+8];
-	ld.shared.b32 	%r65, [%r61+12];
-	add.f32 	%r77, %r77, %r62;
-	add.f32 	%r76, %r76, %r63;
-	add.f32 	%r75, %r75, %r64;
-	add.f32 	%r74, %r74, %r65;
-$L__BB32_16:                            // %bb31
-	shl.b32 	%r66, %r8, 1;
-	mad.lo.s32 	%r67, %r6, %r17, %r66;
-	mul.wide.u32 	%rd15, %r67, 8;
+	setp.gt.u32 	%p21, %r73, 255;
+	@%p21 bra 	$L__BB32_23;
+	bra.uni 	$L__BB32_22;
+$L__BB32_22:                            // %bb61
+                                        //   in Loop: Header=BB32_21 Depth=1
+	ld.shared.b32 	%r41, [%r72];
+	ld.shared.b32 	%r42, [%r72+4];
+	ld.shared.b32 	%r43, [%r72+8];
+	ld.shared.b32 	%r44, [%r72+12];
+	add.f32 	%r75, %r75, %r41;
+	add.f32 	%r76, %r76, %r42;
+	add.f32 	%r77, %r77, %r43;
+	add.f32 	%r78, %r78, %r44;
+$L__BB32_23:                            // %bb63
+                                        //   in Loop: Header=BB32_21 Depth=1
+	add.s32 	%r45, %r4, %r73;
+	setp.gt.u32 	%p22, %r45, 255;
+	@%p22 bra 	$L__BB32_25;
+	bra.uni 	$L__BB32_24;
+$L__BB32_24:                            // %bb61.1
+                                        //   in Loop: Header=BB32_21 Depth=1
+	add.s32 	%r46, %r72, %r15;
+	ld.shared.b32 	%r47, [%r46];
+	ld.shared.b32 	%r48, [%r46+4];
+	ld.shared.b32 	%r49, [%r46+8];
+	ld.shared.b32 	%r50, [%r46+12];
+	add.f32 	%r75, %r75, %r47;
+	add.f32 	%r76, %r76, %r48;
+	add.f32 	%r77, %r77, %r49;
+	add.f32 	%r78, %r78, %r50;
+$L__BB32_25:                            // %bb63.1
+                                        //   in Loop: Header=BB32_21 Depth=1
+	add.s32 	%r74, %r74, 2;
+	add.s32 	%r73, %r73, %r13;
+	add.s32 	%r72, %r72, %r14;
+	setp.ne.b32 	%p23, %r12, %r74;
+	@%p23 bra 	$L__BB32_21;
+	bra.uni 	$L__BB32_26;
+$L__BB32_26:                            // %bb64.loopexit.unr-lcssa
+	setp.eq.b32 	%p24, %r11, 0;
+	@%p24 bra 	$L__BB32_29;
+	bra.uni 	$L__BB32_27;
+$L__BB32_27:                            // %bb60.epil.preheader
+	mul.lo.s32 	%r16, %r74, %r4;
+	add.s32 	%r51, %r16, %r3;
+	setp.gt.u32 	%p25, %r51, 255;
+	@%p25 bra 	$L__BB32_29;
+	bra.uni 	$L__BB32_28;
+$L__BB32_28:                            // %bb61.epil
+	shl.b32 	%r52, %r16, 4;
+	add.s32 	%r53, %r10, %r52;
+	ld.shared.b32 	%r54, [%r53];
+	ld.shared.b32 	%r55, [%r53+4];
+	ld.shared.b32 	%r56, [%r53+8];
+	ld.shared.b32 	%r57, [%r53+12];
+	add.f32 	%r75, %r75, %r54;
+	add.f32 	%r76, %r76, %r55;
+	add.f32 	%r77, %r77, %r56;
+	add.f32 	%r78, %r78, %r57;
+$L__BB32_29:                            // %bb64
+	mad.lo.s32 	%r58, %r6, %r2, %r1;
+	shl.b32 	%r59, %r3, 1;
+	mad.lo.s32 	%r60, %r58, %r18, %r59;
+	mul.wide.u32 	%rd15, %r60, 8;
 	add.s64 	%rd16, %rd2, %rd15;
-	st.global.b32 	[%rd16], %r77;
-	st.global.b32 	[%rd16+4], %r75;
+	st.global.b32 	[%rd16], %r75;
+	st.global.b32 	[%rd16+4], %r77;
 	st.global.b32 	[%rd16+8], %r76;
-	st.global.b32 	[%rd16+12], %r74;
-$L__BB32_17:                            // %bb33
+	st.global.b32 	[%rd16+12], %r78;
+$L__BB32_30:                            // %bb65
 	ret;
-$L__BB32_18:                            // %bb35
+$L__BB32_31:                            // %bb67
 	trap;
-$L__BB32_19:                            // %bb36
+$L__BB32_32:                            // %bb69
+	trap;
+$L__BB32_33:                            // %bb70
+	trap;
+$L__BB32_34:                            // %bb71
 	trap;
                                         // -- End function
 }
