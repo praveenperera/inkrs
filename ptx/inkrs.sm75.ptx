@@ -7,33 +7,33 @@
 .address_size 64
 
 	// .globl	avgpool2                // -- Begin function avgpool2
-.visible .shared .align 4 .b8 __shared_mem_33b99fbdeea67422_96286c702f26193b[64];
-.visible .shared .align 4 .b8 __shared_mem_33b99fbdeea67422_d65db44b718deb00[512];
-.visible .shared .align 2 .b8 __shared_mem_33b99fbdeea67422_dc08e7ef6558087d[7800];
-.visible .shared .align 2 .b8 __shared_mem_33b99fbdeea67422_d35ec3fedcbdb81e[7800];
-.visible .shared .align 2 .b8 __shared_mem_33b99fbdeea67422_9ad3965e6abb307d[7800];
-.visible .shared .align 4 .b8 __shared_mem_33b99fbdeea67422_80918b15e272c672[64];
-.visible .shared .align 4 .b8 __shared_mem_33b99fbdeea67422_d71a822a071350d1[512];
-.visible .shared .align 2 .b8 __shared_mem_33b99fbdeea67422_c0e4ac65b696caa2[7800];
-.visible .shared .align 4 .b8 __shared_mem_33b99fbdeea67422_5a45170ecbb91176[256];
-.visible .shared .align 16 .b8 __shared_mem_33b99fbdeea67422_bc51f91b79231763[32640];
-.visible .shared .align 4 .b8 __shared_mem_33b99fbdeea67422_81cec7e1eb2478a2[256];
-.visible .shared .align 16 .b8 __shared_mem_33b99fbdeea67422_982e96fe0627c4c7[32640];
-.visible .shared .align 4 .b8 __shared_mem_33b99fbdeea67422_319495fe98087668[2048];
-.visible .shared .align 4 .b8 __shared_mem_33b99fbdeea67422_aab346f7cc62f846[32];
-.visible .shared .align 4 .b8 __shared_mem_33b99fbdeea67422_95636c19d4ee9180[4];
-.visible .shared .align 4 .b8 __shared_mem_33b99fbdeea67422_3df900a000607d00[128];
-.visible .shared .align 4 .b8 __shared_mem_33b99fbdeea67422_08574e1558d829a1[1024];
-.visible .shared .align 4 .b8 __shared_mem_33b99fbdeea67422_6aef470347b9960f[128];
-.visible .shared .align 4 .b8 __shared_mem_33b99fbdeea67422_3d906fb10e4d3e30[32];
-.visible .shared .align 4 .b8 __shared_mem_33b99fbdeea67422_f1c30e1a5587ddd9[4096];
-.visible .shared .align 2 .b8 __shared_mem_33b99fbdeea67422_89e1557a9d58a1bd[36992];
-.visible .global .align 4 .b8 __device_global_33b99fbdeea67422_dcbc8cf2b0414e9a[8] = {0, 0, 0, 0, 128};
-.visible .shared .align 4 .b8 __shared_mem_33b99fbdeea67422_ee374c7a453fa873[2304];
-.visible .shared .align 4 .b8 __shared_mem_33b99fbdeea67422_9e587e1e7bba2713[2048];
-.visible .shared .align 4 .b8 __shared_mem_33b99fbdeea67422_471375c92846e9df[8192];
-.visible .shared .align 4 .b8 __shared_mem_33b99fbdeea67422_7dd07c80dde07976[4];
-.visible .shared .align 4 .b8 __shared_mem_33b99fbdeea67422_9adbb578f89004f6[1024];
+.visible .shared .align 4 .b8 __shared_mem_d72d91c76a656d4d_750ec32f3ea1e6cc[64];
+.visible .shared .align 4 .b8 __shared_mem_d72d91c76a656d4d_d22b3dd26f9af4cf[512];
+.visible .shared .align 2 .b8 __shared_mem_d72d91c76a656d4d_c78cece9b224dd18[7800];
+.visible .shared .align 2 .b8 __shared_mem_d72d91c76a656d4d_3c45d0396820d43f[7800];
+.visible .shared .align 2 .b8 __shared_mem_d72d91c76a656d4d_241a681f78b31b7c[7800];
+.visible .shared .align 4 .b8 __shared_mem_d72d91c76a656d4d_3fc1189c1c4e7f39[64];
+.visible .shared .align 4 .b8 __shared_mem_d72d91c76a656d4d_d6b01b586fafdf82[512];
+.visible .shared .align 2 .b8 __shared_mem_d72d91c76a656d4d_fa4988eff1ba14ef[7800];
+.visible .shared .align 4 .b8 __shared_mem_d72d91c76a656d4d_32fdae225b07bf93[256];
+.visible .shared .align 16 .b8 __shared_mem_d72d91c76a656d4d_317979a95133acdc[32640];
+.visible .shared .align 4 .b8 __shared_mem_d72d91c76a656d4d_4a63b33f7b7a7567[256];
+.visible .shared .align 16 .b8 __shared_mem_d72d91c76a656d4d_06d2658fd2da0080[32640];
+.visible .shared .align 4 .b8 __shared_mem_d72d91c76a656d4d_0a99c4dfdce7535f[2048];
+.visible .shared .align 4 .b8 __shared_mem_d72d91c76a656d4d_20b270f714dc2d48[128];
+.visible .shared .align 4 .b8 __shared_mem_d72d91c76a656d4d_4f1dc124db436fb5[32];
+.visible .shared .align 4 .b8 __shared_mem_d72d91c76a656d4d_797164037726445e[1024];
+.visible .shared .align 4 .b8 __shared_mem_d72d91c76a656d4d_ba6964f8e0e5c647[32];
+.visible .shared .align 4 .b8 __shared_mem_d72d91c76a656d4d_3cb7988c2135c15f[4];
+.visible .shared .align 4 .b8 __shared_mem_d72d91c76a656d4d_985e43556caf46b9[128];
+.visible .shared .align 4 .b8 __shared_mem_d72d91c76a656d4d_6c91d5841ce9d030[4096];
+.visible .shared .align 4 .b8 __shared_mem_d72d91c76a656d4d_4893de2ecef92146[2048];
+.visible .shared .align 2 .b8 __shared_mem_d72d91c76a656d4d_2d69aee48d6a0fe4[36992];
+.visible .global .align 4 .b8 __device_global_d72d91c76a656d4d_dcbc8cf2b0414e9a[8] = {0, 0, 0, 0, 128};
+.visible .shared .align 4 .b8 __shared_mem_d72d91c76a656d4d_c99bbfe4e5f6b05e[2304];
+.visible .shared .align 4 .b8 __shared_mem_d72d91c76a656d4d_a2b97e72fd575f13[1024];
+.visible .shared .align 4 .b8 __shared_mem_d72d91c76a656d4d_4a47fd1b222294c0[8192];
+.visible .shared .align 4 .b8 __shared_mem_d72d91c76a656d4d_ef317e6357768819[4];
                                         // @avgpool2
 .visible .entry avgpool2(
 	.param .u64 .ptr .align 1 avgpool2_param_0,
@@ -3233,7 +3233,7 @@ $L__BB6_21:                             // %inkrs_kernels__hecate__load.exit24
 	bra.uni 	$L__BB6_22;
 $L__BB6_22:                             // %bb30
 	shl.b32 	%r42, %r4, 3;
-	mov.b32 	%r43, __shared_mem_33b99fbdeea67422_319495fe98087668;
+	mov.b32 	%r43, __shared_mem_d72d91c76a656d4d_0a99c4dfdce7535f;
 	add.s32 	%r44, %r43, %r42;
 	st.shared.b32 	[%r44], %r75;
 	st.shared.b32 	[%r44+4], %r74;
@@ -5714,7 +5714,7 @@ $L__BB16_8:                             // %bb25
 	bra.uni 	$L__BB16_9;
 $L__BB16_9:                             // %bb26
 	shl.b32 	%r40, %r3, 4;
-	mov.b32 	%r41, __shared_mem_33b99fbdeea67422_f1c30e1a5587ddd9;
+	mov.b32 	%r41, __shared_mem_d72d91c76a656d4d_6c91d5841ce9d030;
 	add.s32 	%r42, %r41, %r40;
 	st.shared.b32 	[%r42], %r71;
 	st.shared.b32 	[%r42+4], %r72;
@@ -5886,7 +5886,7 @@ $L__BB17_1:                             // %bb2
 	mul.lo.s32 	%r7, %r3, 17;
 	add.s32 	%r8, %r7, 262143;
 	shl.b32 	%r9, %r4, 1;
-	mov.b32 	%r34, __shared_mem_33b99fbdeea67422_d35ec3fedcbdb81e;
+	mov.b32 	%r34, __shared_mem_d72d91c76a656d4d_3c45d0396820d43f;
 	add.s32 	%r35, %r9, %r34;
 	add.s32 	%r254, %r35, 2;
 	mad.lo.s32 	%r253, %r4, 258, %r34;
@@ -5971,7 +5971,7 @@ $L__BB17_10:                            // %bb4.i128
 	ld.global.nc.b16 	%r63, [%rd9+50];
 	shl.b32 	%r64, %r63, 16;
 	or.b32 	%r255, %r64, %r255;
-$L__BB17_11:                            // %_RNCNvNtCs4rky8eibNT2_13inkrs_kernels10stem_conv17b_fragss_0B5_.exit137
+$L__BB17_11:                            // %_RNCNvNtCsito1s8sq8Ij_13inkrs_kernels10stem_conv17b_fragss_0B5_.exit137
 	ld.global.nc.b16 	%r65, [%rd9+464];
 	ld.global.nc.b16 	%r66, [%rd9+466];
 	mov.b32 	%r256, 0;
@@ -5986,7 +5986,7 @@ $L__BB17_14:                            // %bb4.i170
 	ld.global.nc.b16 	%r68, [%rd9+482];
 	shl.b32 	%r69, %r68, 16;
 	or.b32 	%r256, %r69, %r256;
-$L__BB17_15:                            // %_RNCNvNtCs4rky8eibNT2_13inkrs_kernels10stem_conv17b_fragss_0B5_.exit179
+$L__BB17_15:                            // %_RNCNvNtCsito1s8sq8Ij_13inkrs_kernels10stem_conv17b_fragss_0B5_.exit179
 	and.b32 	%r47, %r4, 3;
 	shl.b32 	%r50, %r49, 16;
 	shl.b32 	%r53, %r52, 16;
@@ -6113,7 +6113,7 @@ $L__BB17_18:                            // %bb10.i266
 	cvt.u64.u16 	%rd68, %rs60;
 	or.b64 	%rd69, %rd68, 2860;
 	and.b64 	%rd82, %rd69, 3071;
-$L__BB17_19:                            // %_RNCNvNtCs4rky8eibNT2_13inkrs_kernels10stem_conv14tapss0_0B5_.exit284
+$L__BB17_19:                            // %_RNCNvNtCsito1s8sq8Ij_13inkrs_kernels10stem_conv14tapss0_0B5_.exit284
 	add.s64 	%rd11, %rd41, %rd43;
 	add.s64 	%rd12, %rd44, %rd46;
 	add.s64 	%rd13, %rd49, %rd52;
@@ -6298,7 +6298,7 @@ $L__BB17_23:                            // %bb10.i482
 	cvt.rn.f16.f32 %rs67, %r206;
 	// end inline asm
 	cvt.f32.f16 	%r260, %rs67;
-$L__BB17_24:                            // %_RNCNvNtCs4rky8eibNT2_13inkrs_kernels10stem_conv160cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_stem1_applys_0B5_.exit487
+$L__BB17_24:                            // %_RNCNvNtCsito1s8sq8Ij_13inkrs_kernels10stem_conv160cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_stem1_applys_0B5_.exit487
                                         //   in Loop: Header=BB17_20 Depth=1
 	// begin inline asm
 	cvt.rn.f16.f32 %rs68, %r259;
@@ -6360,7 +6360,7 @@ $L__BB17_27:                            // %bb10.i566
 	cvt.rn.f16.f32 %rs76, %r220;
 	// end inline asm
 	cvt.f32.f16 	%r262, %rs76;
-$L__BB17_28:                            // %_RNCNvNtCs4rky8eibNT2_13inkrs_kernels10stem_conv160cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_stem1_applys_0B5_.exit571
+$L__BB17_28:                            // %_RNCNvNtCsito1s8sq8Ij_13inkrs_kernels10stem_conv160cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_stem1_applys_0B5_.exit571
                                         //   in Loop: Header=BB17_20 Depth=1
 	// begin inline asm
 	cvt.rn.f16.f32 %rs77, %r261;
@@ -6418,7 +6418,7 @@ $L__BB17_31:                            // %bb10.i650
 	cvt.rn.f16.f32 %rs85, %r234;
 	// end inline asm
 	cvt.f32.f16 	%r264, %rs85;
-$L__BB17_32:                            // %_RNCNvNtCs4rky8eibNT2_13inkrs_kernels10stem_conv160cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_stem1_applys_0B5_.exit655
+$L__BB17_32:                            // %_RNCNvNtCsito1s8sq8Ij_13inkrs_kernels10stem_conv160cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_stem1_applys_0B5_.exit655
                                         //   in Loop: Header=BB17_20 Depth=1
 	// begin inline asm
 	cvt.rn.f16.f32 %rs86, %r263;
@@ -6476,7 +6476,7 @@ $L__BB17_35:                            // %bb10.i734
 	cvt.rn.f16.f32 %rs94, %r248;
 	// end inline asm
 	cvt.f32.f16 	%r266, %rs94;
-$L__BB17_36:                            // %_RNCNvNtCs4rky8eibNT2_13inkrs_kernels10stem_conv160cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_stem1_applys_0B5_.exit739
+$L__BB17_36:                            // %_RNCNvNtCsito1s8sq8Ij_13inkrs_kernels10stem_conv160cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_stem1_applys_0B5_.exit739
                                         //   in Loop: Header=BB17_20 Depth=1
 	// begin inline asm
 	cvt.rn.f16.f32 %rs95, %r265;
@@ -6582,7 +6582,7 @@ $L__BB18_1:                             // %bb2
 	selp.b32 	%r41, -1, 128, %p19;
 	add.s32 	%r11, %r6, %r41;
 	shl.b32 	%r12, %r4, 1;
-	mov.b32 	%r42, __shared_mem_33b99fbdeea67422_9ad3965e6abb307d;
+	mov.b32 	%r42, __shared_mem_d72d91c76a656d4d_241a681f78b31b7c;
 	add.s32 	%r43, %r12, %r42;
 	add.s32 	%r260, %r43, 2;
 	mad.lo.s32 	%r259, %r4, 258, %r42;
@@ -6679,7 +6679,7 @@ $L__BB18_12:                            // %bb4.i136
 	ld.global.nc.b16 	%r70, [%rd10+50];
 	shl.b32 	%r71, %r70, 16;
 	or.b32 	%r261, %r71, %r261;
-$L__BB18_13:                            // %_RNCNvNtCs4rky8eibNT2_13inkrs_kernels14stem_conv1_3847b_fragss_0B5_.exit145
+$L__BB18_13:                            // %_RNCNvNtCsito1s8sq8Ij_13inkrs_kernels14stem_conv1_3847b_fragss_0B5_.exit145
 	ld.global.nc.b16 	%r72, [%rd10+464];
 	ld.global.nc.b16 	%r73, [%rd10+466];
 	mov.b32 	%r262, 0;
@@ -6694,7 +6694,7 @@ $L__BB18_16:                            // %bb4.i178
 	ld.global.nc.b16 	%r75, [%rd10+482];
 	shl.b32 	%r76, %r75, 16;
 	or.b32 	%r262, %r76, %r262;
-$L__BB18_17:                            // %_RNCNvNtCs4rky8eibNT2_13inkrs_kernels14stem_conv1_3847b_fragss_0B5_.exit187
+$L__BB18_17:                            // %_RNCNvNtCsito1s8sq8Ij_13inkrs_kernels14stem_conv1_3847b_fragss_0B5_.exit187
 	and.b32 	%r54, %r4, 3;
 	shl.b32 	%r57, %r56, 16;
 	shl.b32 	%r60, %r59, 16;
@@ -6821,7 +6821,7 @@ $L__BB18_20:                            // %bb10.i275
 	cvt.u64.u16 	%rd72, %rs60;
 	or.b64 	%rd73, %rd72, 2860;
 	and.b64 	%rd89, %rd73, 3071;
-$L__BB18_21:                            // %_RNCNvNtCs4rky8eibNT2_13inkrs_kernels14stem_conv1_3844tapss0_0B5_.exit294
+$L__BB18_21:                            // %_RNCNvNtCsito1s8sq8Ij_13inkrs_kernels14stem_conv1_3844tapss0_0B5_.exit294
 	add.s64 	%rd12, %rd45, %rd47;
 	add.s64 	%rd13, %rd48, %rd50;
 	add.s64 	%rd14, %rd53, %rd56;
@@ -7005,7 +7005,7 @@ $L__BB18_25:                            // %bb10.i496
 	cvt.rn.f16.f32 %rs67, %r212;
 	// end inline asm
 	cvt.f32.f16 	%r266, %rs67;
-$L__BB18_26:                            // %_RNCNvNtCs4rky8eibNT2_13inkrs_kernels14stem_conv1_38464cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_stem1_apply_384s_0B5_.exit501
+$L__BB18_26:                            // %_RNCNvNtCsito1s8sq8Ij_13inkrs_kernels14stem_conv1_38464cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_stem1_apply_384s_0B5_.exit501
                                         //   in Loop: Header=BB18_22 Depth=1
 	// begin inline asm
 	cvt.rn.f16.f32 %rs68, %r265;
@@ -7067,7 +7067,7 @@ $L__BB18_29:                            // %bb10.i580
 	cvt.rn.f16.f32 %rs76, %r226;
 	// end inline asm
 	cvt.f32.f16 	%r268, %rs76;
-$L__BB18_30:                            // %_RNCNvNtCs4rky8eibNT2_13inkrs_kernels14stem_conv1_38464cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_stem1_apply_384s_0B5_.exit585
+$L__BB18_30:                            // %_RNCNvNtCsito1s8sq8Ij_13inkrs_kernels14stem_conv1_38464cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_stem1_apply_384s_0B5_.exit585
                                         //   in Loop: Header=BB18_22 Depth=1
 	shl.b64 	%rd21, %rd20, 3;
 	// begin inline asm
@@ -7130,7 +7130,7 @@ $L__BB18_33:                            // %bb10.i664
 	cvt.rn.f16.f32 %rs85, %r240;
 	// end inline asm
 	cvt.f32.f16 	%r270, %rs85;
-$L__BB18_34:                            // %_RNCNvNtCs4rky8eibNT2_13inkrs_kernels14stem_conv1_38464cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_stem1_apply_384s_0B5_.exit669
+$L__BB18_34:                            // %_RNCNvNtCsito1s8sq8Ij_13inkrs_kernels14stem_conv1_38464cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_stem1_apply_384s_0B5_.exit669
                                         //   in Loop: Header=BB18_22 Depth=1
 	// begin inline asm
 	cvt.rn.f16.f32 %rs86, %r269;
@@ -7188,7 +7188,7 @@ $L__BB18_37:                            // %bb10.i748
 	cvt.rn.f16.f32 %rs94, %r254;
 	// end inline asm
 	cvt.f32.f16 	%r272, %rs94;
-$L__BB18_38:                            // %_RNCNvNtCs4rky8eibNT2_13inkrs_kernels14stem_conv1_38464cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_stem1_apply_384s_0B5_.exit753
+$L__BB18_38:                            // %_RNCNvNtCsito1s8sq8Ij_13inkrs_kernels14stem_conv1_38464cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_stem1_apply_384s_0B5_.exit753
                                         //   in Loop: Header=BB18_22 Depth=1
 	// begin inline asm
 	cvt.rn.f16.f32 %rs95, %r271;
@@ -7559,7 +7559,7 @@ $L__BB21_1:                             // %bb2
 	cvt.u64.u32 	%rd5, %r4;
 	mad.lo.s32 	%r7, %r3, 17, 262143;
 	shl.b32 	%r8, %r4, 1;
-	mov.b32 	%r40, __shared_mem_33b99fbdeea67422_dc08e7ef6558087d;
+	mov.b32 	%r40, __shared_mem_d72d91c76a656d4d_c78cece9b224dd18;
 	add.s32 	%r41, %r8, %r40;
 	add.s32 	%r315, %r41, 2;
 	mad.lo.s32 	%r314, %r4, 258, %r40;
@@ -7613,7 +7613,7 @@ $L__BB21_6:                             // %bb7.i
 	bra.uni 	$L__BB21_7;
 $L__BB21_7:                             // %inkrs_kernels__stem_conv1__load_halo.exit
 	setp.gt.u32 	%p19, %r4, 15;
-	mov.b32 	%r312, __shared_mem_33b99fbdeea67422_96286c702f26193b;
+	mov.b32 	%r312, __shared_mem_d72d91c76a656d4d_750ec32f3ea1e6cc;
 	shl.b32 	%r313, %r4, 2;
 	@%p19 bra 	$L__BB21_9;
 	bra.uni 	$L__BB21_8;
@@ -7704,7 +7704,7 @@ $L__BB21_12:                            // %bb4.i163
 	ld.global.nc.b16 	%r96, [%rd7+50];
 	shl.b32 	%r97, %r96, 16;
 	or.b32 	%r316, %r97, %r316;
-$L__BB21_13:                            // %_RNCNvNtCs4rky8eibNT2_13inkrs_kernels10stem_conv17b_fragss_0B5_.exit172
+$L__BB21_13:                            // %_RNCNvNtCsito1s8sq8Ij_13inkrs_kernels10stem_conv17b_fragss_0B5_.exit172
 	ld.global.nc.b16 	%r98, [%rd7+464];
 	ld.global.nc.b16 	%r99, [%rd7+466];
 	mov.b32 	%r317, 0;
@@ -7719,7 +7719,7 @@ $L__BB21_16:                            // %bb4.i205
 	ld.global.nc.b16 	%r101, [%rd7+482];
 	shl.b32 	%r102, %r101, 16;
 	or.b32 	%r317, %r102, %r317;
-$L__BB21_17:                            // %_RNCNvNtCs4rky8eibNT2_13inkrs_kernels10stem_conv17b_fragss_0B5_.exit214
+$L__BB21_17:                            // %_RNCNvNtCsito1s8sq8Ij_13inkrs_kernels10stem_conv17b_fragss_0B5_.exit214
 	shl.b32 	%r83, %r82, 16;
 	shl.b32 	%r86, %r85, 16;
 	shl.b32 	%r89, %r88, 16;
@@ -7844,7 +7844,7 @@ $L__BB21_20:                            // %bb10.i301
 	cvt.u64.u16 	%rd66, %rs77;
 	or.b64 	%rd67, %rd66, 2860;
 	and.b64 	%rd75, %rd67, 3071;
-$L__BB21_21:                            // %_RNCNvNtCs4rky8eibNT2_13inkrs_kernels10stem_conv14tapss0_0B5_.exit319
+$L__BB21_21:                            // %_RNCNvNtCsito1s8sq8Ij_13inkrs_kernels10stem_conv14tapss0_0B5_.exit319
 	add.s64 	%rd9, %rd39, %rd41;
 	add.s64 	%rd10, %rd42, %rd44;
 	add.s64 	%rd11, %rd47, %rd50;
@@ -8084,7 +8084,7 @@ $L__BB21_24:                            // %bb96
 	add.f32 	%r280, %r19, %r21;
 	add.f32 	%r281, %r18, %r20;
 	shl.b32 	%r282, %r16, 3;
-	mov.b32 	%r283, __shared_mem_33b99fbdeea67422_d65db44b718deb00;
+	mov.b32 	%r283, __shared_mem_d72d91c76a656d4d_d22b3dd26f9af4cf;
 	add.s32 	%r284, %r283, %r282;
 	shl.b32 	%r285, %r10, 3;
 	add.s32 	%r286, %r284, %r285;
@@ -8104,7 +8104,7 @@ $L__BB21_25:                            // %bb105
 	bra.uni 	$L__BB21_26;
 $L__BB21_26:                            // %bb106
 	shl.b32 	%r289, %r4, 3;
-	mov.b32 	%r290, __shared_mem_33b99fbdeea67422_d65db44b718deb00;
+	mov.b32 	%r290, __shared_mem_d72d91c76a656d4d_d22b3dd26f9af4cf;
 	add.s32 	%r291, %r290, %r289;
 	ld.shared.b32 	%r292, [%r291];
 	ld.shared.b32 	%r293, [%r291+4];
@@ -8215,7 +8215,7 @@ $L__BB22_1:                             // %bb2
 	selp.b32 	%r47, -1, 128, %p15;
 	add.s32 	%r9, %r46, %r47;
 	shl.b32 	%r10, %r4, 1;
-	mov.b32 	%r48, __shared_mem_33b99fbdeea67422_c0e4ac65b696caa2;
+	mov.b32 	%r48, __shared_mem_d72d91c76a656d4d_fa4988eff1ba14ef;
 	add.s32 	%r49, %r10, %r48;
 	add.s32 	%r322, %r49, 2;
 	mad.lo.s32 	%r321, %r4, 258, %r48;
@@ -8281,7 +8281,7 @@ $L__BB22_8:                             // %bb13.i
 	bra.uni 	$L__BB22_9;
 $L__BB22_9:                             // %inkrs_kernels__stem_conv1_384__load_halo.exit
 	setp.gt.u32 	%p22, %r4, 15;
-	mov.b32 	%r319, __shared_mem_33b99fbdeea67422_80918b15e272c672;
+	mov.b32 	%r319, __shared_mem_d72d91c76a656d4d_3fc1189c1c4e7f39;
 	shl.b32 	%r320, %r4, 2;
 	@%p22 bra 	$L__BB22_11;
 	bra.uni 	$L__BB22_10;
@@ -8372,7 +8372,7 @@ $L__BB22_14:                            // %bb4.i173
 	ld.global.nc.b16 	%r103, [%rd8+50];
 	shl.b32 	%r104, %r103, 16;
 	or.b32 	%r323, %r104, %r323;
-$L__BB22_15:                            // %_RNCNvNtCs4rky8eibNT2_13inkrs_kernels14stem_conv1_3847b_fragss_0B5_.exit182
+$L__BB22_15:                            // %_RNCNvNtCsito1s8sq8Ij_13inkrs_kernels14stem_conv1_3847b_fragss_0B5_.exit182
 	ld.global.nc.b16 	%r105, [%rd8+464];
 	ld.global.nc.b16 	%r106, [%rd8+466];
 	mov.b32 	%r324, 0;
@@ -8387,7 +8387,7 @@ $L__BB22_18:                            // %bb4.i215
 	ld.global.nc.b16 	%r108, [%rd8+482];
 	shl.b32 	%r109, %r108, 16;
 	or.b32 	%r324, %r109, %r324;
-$L__BB22_19:                            // %_RNCNvNtCs4rky8eibNT2_13inkrs_kernels14stem_conv1_3847b_fragss_0B5_.exit224
+$L__BB22_19:                            // %_RNCNvNtCsito1s8sq8Ij_13inkrs_kernels14stem_conv1_3847b_fragss_0B5_.exit224
 	shl.b32 	%r90, %r89, 16;
 	shl.b32 	%r93, %r92, 16;
 	shl.b32 	%r96, %r95, 16;
@@ -8512,7 +8512,7 @@ $L__BB22_22:                            // %bb10.i312
 	cvt.u64.u16 	%rd68, %rs77;
 	or.b64 	%rd69, %rd68, 2860;
 	and.b64 	%rd77, %rd69, 3071;
-$L__BB22_23:                            // %_RNCNvNtCs4rky8eibNT2_13inkrs_kernels14stem_conv1_3844tapss0_0B5_.exit331
+$L__BB22_23:                            // %_RNCNvNtCsito1s8sq8Ij_13inkrs_kernels14stem_conv1_3844tapss0_0B5_.exit331
 	add.s64 	%rd10, %rd41, %rd43;
 	add.s64 	%rd11, %rd44, %rd46;
 	add.s64 	%rd12, %rd49, %rd52;
@@ -8752,7 +8752,7 @@ $L__BB22_26:                            // %bb96
 	add.f32 	%r287, %r22, %r24;
 	add.f32 	%r288, %r21, %r23;
 	shl.b32 	%r289, %r19, 3;
-	mov.b32 	%r290, __shared_mem_33b99fbdeea67422_d71a822a071350d1;
+	mov.b32 	%r290, __shared_mem_d72d91c76a656d4d_d6b01b586fafdf82;
 	add.s32 	%r291, %r290, %r289;
 	shl.b32 	%r292, %r13, 3;
 	add.s32 	%r293, %r291, %r292;
@@ -8772,7 +8772,7 @@ $L__BB22_27:                            // %bb105
 	bra.uni 	$L__BB22_28;
 $L__BB22_28:                            // %bb106
 	shl.b32 	%r296, %r4, 3;
-	mov.b32 	%r297, __shared_mem_33b99fbdeea67422_d71a822a071350d1;
+	mov.b32 	%r297, __shared_mem_d72d91c76a656d4d_d6b01b586fafdf82;
 	add.s32 	%r298, %r297, %r296;
 	ld.shared.b32 	%r299, [%r298];
 	ld.shared.b32 	%r300, [%r298+4];
@@ -8877,7 +8877,7 @@ $L__BB23_1:                             // %bb7
 	selp.b32 	%r9, 9, 17, %p14;
 	setp.gt.u32 	%p15, %r4, 679;
 	add.s32 	%r2773, %r5, -1;
-	mov.b32 	%r2774, __shared_mem_33b99fbdeea67422_bc51f91b79231763;
+	mov.b32 	%r2774, __shared_mem_d72d91c76a656d4d_06d2658fd2da0080;
 	and.b32 	%r2775, %r4, 1;
 	mul.lo.s32 	%r2776, %r3, 278528;
 	shl.b32 	%r2777, %r1, 8;
@@ -9003,7 +9003,7 @@ $L__BB23_8:                             // %bb15.lr.ph
 	cvt.u64.u32 	%rd7, %r133;
 	and.b32 	%r23, %r4, 28;
 	shl.b32 	%r134, %r7, 6;
-	mov.b32 	%r135, __shared_mem_33b99fbdeea67422_5a45170ecbb91176;
+	mov.b32 	%r135, __shared_mem_d72d91c76a656d4d_4a63b33f7b7a7567;
 	shl.b32 	%r136, %r133, 3;
 	add.s32 	%r25, %r135, %r136;
 	add.s32 	%r24, %r25, %r134;
@@ -10996,7 +10996,7 @@ $L__BB23_18:                            // %bb2.preheader.i
 	st.shared.b32 	[%r24+4], %r44;
 	st.shared.b32 	[%r24+32], %r43;
 	st.shared.b32 	[%r24+36], %r42;
-$L__BB23_19:                            // %_RNCNvNtCs4rky8eibNT2_13inkrs_kernels10stem_conv25statss_0B5_.exit
+$L__BB23_19:                            // %_RNCNvNtCsito1s8sq8Ij_13inkrs_kernels10stem_conv25statss_0B5_.exit
                                         //   in Loop: Header=BB23_12 Depth=1
 	bar.sync 	0;
 	ld.shared.b32 	%r2582, [%r25];
@@ -11271,7 +11271,7 @@ $L__BB23_22:                            // %bb2.preheader.i5855
 	st.shared.b32 	[%r24+4], %r52;
 	st.shared.b32 	[%r24+32], %r51;
 	st.shared.b32 	[%r24+36], %r50;
-$L__BB23_23:                            // %_RNCNvNtCs4rky8eibNT2_13inkrs_kernels10stem_conv25statss_0B5_.exit5908
+$L__BB23_23:                            // %_RNCNvNtCsito1s8sq8Ij_13inkrs_kernels10stem_conv25statss_0B5_.exit5908
                                         //   in Loop: Header=BB23_12 Depth=1
 	bar.sync 	0;
 	@%p28 bra 	$L__BB23_25;
@@ -11365,7 +11365,7 @@ $L__BB24_1:                             // %bb7
 	setp.eq.b32 	%p14, %r2, 0;
 	selp.b32 	%r10, 9, 17, %p14;
 	setp.gt.u32 	%p15, %r4, 679;
-	mov.b32 	%r2771, __shared_mem_33b99fbdeea67422_982e96fe0627c4c7;
+	mov.b32 	%r2771, __shared_mem_d72d91c76a656d4d_317979a95133acdc;
 	and.b32 	%r2772, %r4, 1;
 	mul.lo.s32 	%r2773, %r3, 2506752;
 	shl.b32 	%r2774, %r1, 5;
@@ -11490,7 +11490,7 @@ $L__BB24_8:                             // %bb15.lr.ph
 	cvt.u64.u32 	%rd6, %r134;
 	and.b32 	%r26, %r4, 28;
 	shl.b32 	%r135, %r8, 6;
-	mov.b32 	%r136, __shared_mem_33b99fbdeea67422_81cec7e1eb2478a2;
+	mov.b32 	%r136, __shared_mem_d72d91c76a656d4d_32fdae225b07bf93;
 	shl.b32 	%r137, %r134, 3;
 	add.s32 	%r28, %r136, %r137;
 	add.s32 	%r27, %r28, %r135;
@@ -13477,7 +13477,7 @@ $L__BB24_18:                            // %bb2.preheader.i
 	st.shared.b32 	[%r27+4], %r47;
 	st.shared.b32 	[%r27+32], %r46;
 	st.shared.b32 	[%r27+36], %r45;
-$L__BB24_19:                            // %_RNCNvNtCs4rky8eibNT2_13inkrs_kernels14stem_conv2_3845statss_0B5_.exit
+$L__BB24_19:                            // %_RNCNvNtCsito1s8sq8Ij_13inkrs_kernels14stem_conv2_3845statss_0B5_.exit
                                         //   in Loop: Header=BB24_12 Depth=1
 	bar.sync 	0;
 	ld.shared.b32 	%r2580, [%r28];
@@ -13752,7 +13752,7 @@ $L__BB24_22:                            // %bb2.preheader.i5862
 	st.shared.b32 	[%r27+4], %r55;
 	st.shared.b32 	[%r27+32], %r54;
 	st.shared.b32 	[%r27+36], %r53;
-$L__BB24_23:                            // %_RNCNvNtCs4rky8eibNT2_13inkrs_kernels14stem_conv2_3845statss_0B5_.exit5915
+$L__BB24_23:                            // %_RNCNvNtCsito1s8sq8Ij_13inkrs_kernels14stem_conv2_3845statss_0B5_.exit5915
                                         //   in Loop: Header=BB24_12 Depth=1
 	bar.sync 	0;
 	@%p28 bra 	$L__BB24_25;
@@ -14178,7 +14178,7 @@ $L__BB27_2:                             // %bb10
 	ld.global.nc.b32 	%r14, [%rd15+12];
 	mad.lo.s32 	%r15, %r14, %r1, %r13;
 	shl.b32 	%r16, %r3, 2;
-	mov.b32 	%r17, __shared_mem_33b99fbdeea67422_9adbb578f89004f6;
+	mov.b32 	%r17, __shared_mem_d72d91c76a656d4d_a2b97e72fd575f13;
 	add.s32 	%r5, %r17, %r16;
 	st.shared.b32 	[%r5], 0;
 	bar.sync 	0;
@@ -14279,7 +14279,7 @@ $L__BB28_2:                             // %bb10
 	ld.global.nc.b32 	%r14, [%rd15+12];
 	mad.lo.s32 	%r15, %r14, %r1, %r13;
 	shl.b32 	%r16, %r3, 2;
-	mov.b32 	%r17, __shared_mem_33b99fbdeea67422_08574e1558d829a1;
+	mov.b32 	%r17, __shared_mem_d72d91c76a656d4d_797164037726445e;
 	add.s32 	%r6, %r17, %r16;
 	st.shared.b32 	[%r6], 0;
 	bar.sync 	0;
@@ -14785,7 +14785,7 @@ $L__BB31_7:                             // %bb3.i171
 	bra.uni 	$L__BB31_8;
 $L__BB31_8:                             // %bb4.i186
 	shr.u32 	%r43, %r3, 3;
-	mov.b32 	%r44, __shared_mem_33b99fbdeea67422_3d906fb10e4d3e30;
+	mov.b32 	%r44, __shared_mem_d72d91c76a656d4d_4f1dc124db436fb5;
 	add.s32 	%r4, %r44, %r43;
 	st.shared.b32 	[%r4], %r39;
 	bra.uni 	$L__BB31_10;
@@ -14794,26 +14794,26 @@ $L__BB31_9:                             // %bb14.i
 $L__BB31_10:                            // %inkrs_kernels__tiles384__block_tree.exit
 	cvt.u32.u64 	%r60, %rd6;
 	bar.sync 	0;
-	ld.shared.b32 	%r46, [__shared_mem_33b99fbdeea67422_3d906fb10e4d3e30];
-	ld.shared.b32 	%r47, [__shared_mem_33b99fbdeea67422_3d906fb10e4d3e30+4];
+	ld.shared.b32 	%r46, [__shared_mem_d72d91c76a656d4d_4f1dc124db436fb5];
+	ld.shared.b32 	%r47, [__shared_mem_d72d91c76a656d4d_4f1dc124db436fb5+4];
 	// begin inline asm
 	add.rn.f32 %r45, %r46, %r47;
 	// end inline asm
-	ld.shared.b32 	%r49, [__shared_mem_33b99fbdeea67422_3d906fb10e4d3e30+8];
-	ld.shared.b32 	%r50, [__shared_mem_33b99fbdeea67422_3d906fb10e4d3e30+12];
+	ld.shared.b32 	%r49, [__shared_mem_d72d91c76a656d4d_4f1dc124db436fb5+8];
+	ld.shared.b32 	%r50, [__shared_mem_d72d91c76a656d4d_4f1dc124db436fb5+12];
 	// begin inline asm
 	add.rn.f32 %r48, %r49, %r50;
 	// end inline asm
 	// begin inline asm
 	add.rn.f32 %r51, %r45, %r48;
 	// end inline asm
-	ld.shared.b32 	%r53, [__shared_mem_33b99fbdeea67422_3d906fb10e4d3e30+16];
-	ld.shared.b32 	%r54, [__shared_mem_33b99fbdeea67422_3d906fb10e4d3e30+20];
+	ld.shared.b32 	%r53, [__shared_mem_d72d91c76a656d4d_4f1dc124db436fb5+16];
+	ld.shared.b32 	%r54, [__shared_mem_d72d91c76a656d4d_4f1dc124db436fb5+20];
 	// begin inline asm
 	add.rn.f32 %r52, %r53, %r54;
 	// end inline asm
-	ld.shared.b32 	%r56, [__shared_mem_33b99fbdeea67422_3d906fb10e4d3e30+24];
-	ld.shared.b32 	%r57, [__shared_mem_33b99fbdeea67422_3d906fb10e4d3e30+28];
+	ld.shared.b32 	%r56, [__shared_mem_d72d91c76a656d4d_4f1dc124db436fb5+24];
+	ld.shared.b32 	%r57, [__shared_mem_d72d91c76a656d4d_4f1dc124db436fb5+28];
 	// begin inline asm
 	add.rn.f32 %r55, %r56, %r57;
 	// end inline asm
@@ -14854,7 +14854,7 @@ $L__BB31_16:                            // %bb11.i
 	trap; exit;
 $L__BB31_17:                            // %bb12.i
 	trap; exit;
-$L__BB31_18:                            // %_RNvMNtCs4rky8eibNT2_13inkrs_kernels8tiles384NtB2_3Src3new.exit
+$L__BB31_18:                            // %_RNvMNtCsito1s8sq8Ij_13inkrs_kernels8tiles384NtB2_3Src3new.exit
 	ld.param.b32 	%r26, [tile_sq_384_param_11];
 	ld.param.b32 	%r25, [tile_sq_384_param_10];
 	ld.param.b64 	%rd14, [tile_sq_384_param_7];
@@ -14910,7 +14910,7 @@ $L__BB31_19:                            // %bb3.i
 	bra.uni 	$L__BB31_20;
 $L__BB31_20:                            // %bb7.i157
 	trap; exit;
-$L__BB31_21:                            // %_RNvMNtCs4rky8eibNT2_13inkrs_kernels8tiles384NtB2_3Src2at.exit168
+$L__BB31_21:                            // %_RNvMNtCsito1s8sq8Ij_13inkrs_kernels8tiles384NtB2_3Src2at.exit168
                                         //   in Loop: Header=BB31_19 Depth=1
 	shr.u32 	%r66, %r15, 7;
 	mul.lo.s32 	%r17, %r66, 1224;
@@ -14949,7 +14949,7 @@ $L__BB31_22:                            // %bb3.i37
 	bra.uni 	$L__BB31_23;
 $L__BB31_23:                            // %bb7.i132
 	trap; exit;
-$L__BB31_24:                            // %_RNvMNtCs4rky8eibNT2_13inkrs_kernels8tiles384NtB2_3Src2at.exit143
+$L__BB31_24:                            // %_RNvMNtCsito1s8sq8Ij_13inkrs_kernels8tiles384NtB2_3Src2at.exit143
                                         //   in Loop: Header=BB31_22 Depth=2
 	add.s64 	%rd36, %rd4, %rd11;
 	ld.global.nc.b8 	%rs2, [%rd36];
@@ -14992,7 +14992,7 @@ $L__BB31_26:                            // %bb7.i46
 	bra.uni 	$L__BB31_27;
 $L__BB31_27:                            // %bb7.i109
 	trap; exit;
-$L__BB31_28:                            // %_RNvMNtCs4rky8eibNT2_13inkrs_kernels8tiles384NtB2_3Src2at.exit
+$L__BB31_28:                            // %_RNvMNtCsito1s8sq8Ij_13inkrs_kernels8tiles384NtB2_3Src2at.exit
                                         //   in Loop: Header=BB31_19 Depth=1
 	add.s64 	%rd37, %rd4, %rd12;
 	ld.global.nc.b8 	%rs3, [%rd37];
@@ -15004,7 +15004,7 @@ $L__BB31_28:                            // %_RNvMNtCs4rky8eibNT2_13inkrs_kernels
 	// begin inline asm
 	add.rn.f32 %r203, %r203, %r123;
 	// end inline asm
-$L__BB31_29:                            // %_RNvMNtCs4rky8eibNT2_13inkrs_kernels8tiles384NtB2_3Src5chain.exit
+$L__BB31_29:                            // %_RNvMNtCsito1s8sq8Ij_13inkrs_kernels8tiles384NtB2_3Src5chain.exit
                                         //   in Loop: Header=BB31_19 Depth=1
 	shfl.sync.bfly.b32 	%r125, %r203, 1, 31, -1;
 	// begin inline asm
@@ -15033,7 +15033,7 @@ $L__BB31_30:                            // %bb5.i
 	shl.b32 	%r135, %r16, 3;
 	add.s32 	%r136, %r135, %r12;
 	shl.b32 	%r137, %r136, 2;
-	mov.b32 	%r138, __shared_mem_33b99fbdeea67422_6aef470347b9960f;
+	mov.b32 	%r138, __shared_mem_d72d91c76a656d4d_20b270f714dc2d48;
 	add.s32 	%r24, %r138, %r137;
 	st.shared.b32 	[%r24], %r132;
 $L__BB31_31:                            // %bb7.i
@@ -15049,26 +15049,26 @@ $L__BB31_32:                            // %bb8.i
 	@%p27 bra 	$L__BB31_4;
 	bra.uni 	$L__BB31_33;
 $L__BB31_33:                            // %bb10.i18
-	ld.shared.b32 	%r139, [__shared_mem_33b99fbdeea67422_6aef470347b9960f];
-	ld.shared.b32 	%r140, [__shared_mem_33b99fbdeea67422_6aef470347b9960f+4];
+	ld.shared.b32 	%r139, [__shared_mem_d72d91c76a656d4d_20b270f714dc2d48];
+	ld.shared.b32 	%r140, [__shared_mem_d72d91c76a656d4d_20b270f714dc2d48+4];
 	// begin inline asm
 	add.rn.f32 %r143, %r139, %r140;
 	// end inline asm
-	ld.shared.b32 	%r141, [__shared_mem_33b99fbdeea67422_6aef470347b9960f+8];
-	ld.shared.b32 	%r142, [__shared_mem_33b99fbdeea67422_6aef470347b9960f+12];
+	ld.shared.b32 	%r141, [__shared_mem_d72d91c76a656d4d_20b270f714dc2d48+8];
+	ld.shared.b32 	%r142, [__shared_mem_d72d91c76a656d4d_20b270f714dc2d48+12];
 	// begin inline asm
 	add.rn.f32 %r144, %r141, %r142;
 	// end inline asm
 	// begin inline asm
 	add.rn.f32 %r151, %r143, %r144;
 	// end inline asm
-	ld.shared.b32 	%r145, [__shared_mem_33b99fbdeea67422_6aef470347b9960f+16];
-	ld.shared.b32 	%r146, [__shared_mem_33b99fbdeea67422_6aef470347b9960f+20];
+	ld.shared.b32 	%r145, [__shared_mem_d72d91c76a656d4d_20b270f714dc2d48+16];
+	ld.shared.b32 	%r146, [__shared_mem_d72d91c76a656d4d_20b270f714dc2d48+20];
 	// begin inline asm
 	add.rn.f32 %r149, %r145, %r146;
 	// end inline asm
-	ld.shared.b32 	%r147, [__shared_mem_33b99fbdeea67422_6aef470347b9960f+24];
-	ld.shared.b32 	%r148, [__shared_mem_33b99fbdeea67422_6aef470347b9960f+28];
+	ld.shared.b32 	%r147, [__shared_mem_d72d91c76a656d4d_20b270f714dc2d48+24];
+	ld.shared.b32 	%r148, [__shared_mem_d72d91c76a656d4d_20b270f714dc2d48+28];
 	// begin inline asm
 	add.rn.f32 %r150, %r147, %r148;
 	// end inline asm
@@ -15078,26 +15078,26 @@ $L__BB31_33:                            // %bb10.i18
 	// begin inline asm
 	add.rn.f32 %r167, %r151, %r152;
 	// end inline asm
-	ld.shared.b32 	%r153, [__shared_mem_33b99fbdeea67422_6aef470347b9960f+32];
-	ld.shared.b32 	%r154, [__shared_mem_33b99fbdeea67422_6aef470347b9960f+36];
+	ld.shared.b32 	%r153, [__shared_mem_d72d91c76a656d4d_20b270f714dc2d48+32];
+	ld.shared.b32 	%r154, [__shared_mem_d72d91c76a656d4d_20b270f714dc2d48+36];
 	// begin inline asm
 	add.rn.f32 %r157, %r153, %r154;
 	// end inline asm
-	ld.shared.b32 	%r155, [__shared_mem_33b99fbdeea67422_6aef470347b9960f+40];
-	ld.shared.b32 	%r156, [__shared_mem_33b99fbdeea67422_6aef470347b9960f+44];
+	ld.shared.b32 	%r155, [__shared_mem_d72d91c76a656d4d_20b270f714dc2d48+40];
+	ld.shared.b32 	%r156, [__shared_mem_d72d91c76a656d4d_20b270f714dc2d48+44];
 	// begin inline asm
 	add.rn.f32 %r158, %r155, %r156;
 	// end inline asm
 	// begin inline asm
 	add.rn.f32 %r165, %r157, %r158;
 	// end inline asm
-	ld.shared.b32 	%r159, [__shared_mem_33b99fbdeea67422_6aef470347b9960f+48];
-	ld.shared.b32 	%r160, [__shared_mem_33b99fbdeea67422_6aef470347b9960f+52];
+	ld.shared.b32 	%r159, [__shared_mem_d72d91c76a656d4d_20b270f714dc2d48+48];
+	ld.shared.b32 	%r160, [__shared_mem_d72d91c76a656d4d_20b270f714dc2d48+52];
 	// begin inline asm
 	add.rn.f32 %r163, %r159, %r160;
 	// end inline asm
-	ld.shared.b32 	%r161, [__shared_mem_33b99fbdeea67422_6aef470347b9960f+56];
-	ld.shared.b32 	%r162, [__shared_mem_33b99fbdeea67422_6aef470347b9960f+60];
+	ld.shared.b32 	%r161, [__shared_mem_d72d91c76a656d4d_20b270f714dc2d48+56];
+	ld.shared.b32 	%r162, [__shared_mem_d72d91c76a656d4d_20b270f714dc2d48+60];
 	// begin inline asm
 	add.rn.f32 %r164, %r161, %r162;
 	// end inline asm
@@ -15110,26 +15110,26 @@ $L__BB31_33:                            // %bb10.i18
 	// begin inline asm
 	add.rn.f32 %r200, %r167, %r168;
 	// end inline asm
-	ld.shared.b32 	%r169, [__shared_mem_33b99fbdeea67422_6aef470347b9960f+64];
-	ld.shared.b32 	%r170, [__shared_mem_33b99fbdeea67422_6aef470347b9960f+68];
+	ld.shared.b32 	%r169, [__shared_mem_d72d91c76a656d4d_20b270f714dc2d48+64];
+	ld.shared.b32 	%r170, [__shared_mem_d72d91c76a656d4d_20b270f714dc2d48+68];
 	// begin inline asm
 	add.rn.f32 %r173, %r169, %r170;
 	// end inline asm
-	ld.shared.b32 	%r171, [__shared_mem_33b99fbdeea67422_6aef470347b9960f+72];
-	ld.shared.b32 	%r172, [__shared_mem_33b99fbdeea67422_6aef470347b9960f+76];
+	ld.shared.b32 	%r171, [__shared_mem_d72d91c76a656d4d_20b270f714dc2d48+72];
+	ld.shared.b32 	%r172, [__shared_mem_d72d91c76a656d4d_20b270f714dc2d48+76];
 	// begin inline asm
 	add.rn.f32 %r174, %r171, %r172;
 	// end inline asm
 	// begin inline asm
 	add.rn.f32 %r181, %r173, %r174;
 	// end inline asm
-	ld.shared.b32 	%r175, [__shared_mem_33b99fbdeea67422_6aef470347b9960f+80];
-	ld.shared.b32 	%r176, [__shared_mem_33b99fbdeea67422_6aef470347b9960f+84];
+	ld.shared.b32 	%r175, [__shared_mem_d72d91c76a656d4d_20b270f714dc2d48+80];
+	ld.shared.b32 	%r176, [__shared_mem_d72d91c76a656d4d_20b270f714dc2d48+84];
 	// begin inline asm
 	add.rn.f32 %r179, %r175, %r176;
 	// end inline asm
-	ld.shared.b32 	%r177, [__shared_mem_33b99fbdeea67422_6aef470347b9960f+88];
-	ld.shared.b32 	%r178, [__shared_mem_33b99fbdeea67422_6aef470347b9960f+92];
+	ld.shared.b32 	%r177, [__shared_mem_d72d91c76a656d4d_20b270f714dc2d48+88];
+	ld.shared.b32 	%r178, [__shared_mem_d72d91c76a656d4d_20b270f714dc2d48+92];
 	// begin inline asm
 	add.rn.f32 %r180, %r177, %r178;
 	// end inline asm
@@ -15139,26 +15139,26 @@ $L__BB31_33:                            // %bb10.i18
 	// begin inline asm
 	add.rn.f32 %r197, %r181, %r182;
 	// end inline asm
-	ld.shared.b32 	%r183, [__shared_mem_33b99fbdeea67422_6aef470347b9960f+96];
-	ld.shared.b32 	%r184, [__shared_mem_33b99fbdeea67422_6aef470347b9960f+100];
+	ld.shared.b32 	%r183, [__shared_mem_d72d91c76a656d4d_20b270f714dc2d48+96];
+	ld.shared.b32 	%r184, [__shared_mem_d72d91c76a656d4d_20b270f714dc2d48+100];
 	// begin inline asm
 	add.rn.f32 %r187, %r183, %r184;
 	// end inline asm
-	ld.shared.b32 	%r185, [__shared_mem_33b99fbdeea67422_6aef470347b9960f+104];
-	ld.shared.b32 	%r186, [__shared_mem_33b99fbdeea67422_6aef470347b9960f+108];
+	ld.shared.b32 	%r185, [__shared_mem_d72d91c76a656d4d_20b270f714dc2d48+104];
+	ld.shared.b32 	%r186, [__shared_mem_d72d91c76a656d4d_20b270f714dc2d48+108];
 	// begin inline asm
 	add.rn.f32 %r188, %r185, %r186;
 	// end inline asm
 	// begin inline asm
 	add.rn.f32 %r195, %r187, %r188;
 	// end inline asm
-	ld.shared.b32 	%r189, [__shared_mem_33b99fbdeea67422_6aef470347b9960f+112];
-	ld.shared.b32 	%r190, [__shared_mem_33b99fbdeea67422_6aef470347b9960f+116];
+	ld.shared.b32 	%r189, [__shared_mem_d72d91c76a656d4d_20b270f714dc2d48+112];
+	ld.shared.b32 	%r190, [__shared_mem_d72d91c76a656d4d_20b270f714dc2d48+116];
 	// begin inline asm
 	add.rn.f32 %r193, %r189, %r190;
 	// end inline asm
-	ld.shared.b32 	%r191, [__shared_mem_33b99fbdeea67422_6aef470347b9960f+120];
-	ld.shared.b32 	%r192, [__shared_mem_33b99fbdeea67422_6aef470347b9960f+124];
+	ld.shared.b32 	%r191, [__shared_mem_d72d91c76a656d4d_20b270f714dc2d48+120];
+	ld.shared.b32 	%r192, [__shared_mem_d72d91c76a656d4d_20b270f714dc2d48+124];
 	// begin inline asm
 	add.rn.f32 %r194, %r191, %r192;
 	// end inline asm
@@ -15490,7 +15490,7 @@ $L__BB32_39:                            // %bb2.i.i
 	// begin inline asm
 	add.rn.f32 %r126, %r4, %r57;
 	// end inline asm
-$L__BB32_40:                            // %_RNCNvNtCs4rky8eibNT2_13inkrs_kernels5tiles59cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_tile_stats0B5_.exit
+$L__BB32_40:                            // %_RNCNvNtCsito1s8sq8Ij_13inkrs_kernels5tiles59cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_tile_stats0B5_.exit
 	mov.b32 	%r128, 0;
 	mov.b64 	%rd8, 0;
 	mov.b64 	%rd45, %rd48;
@@ -15624,7 +15624,7 @@ $L__BB32_60:                            // %bb2.i.i20
 	// begin inline asm
 	add.rn.f32 %r130, %r13, %r70;
 	// end inline asm
-$L__BB32_61:                            // %_RNCNvNtCs4rky8eibNT2_13inkrs_kernels5tiles59cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_tile_stats0B5_.exit27
+$L__BB32_61:                            // %_RNCNvNtCsito1s8sq8Ij_13inkrs_kernels5tiles59cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_tile_stats0B5_.exit27
 	and.b32 	%r71, %r33, 1;
 	shr.u32 	%r19, %r33, 1;
 	add.s32 	%r20, %r71, -1;
@@ -15845,10 +15845,10 @@ $L__BB33_1:                             // %bb9
 	bra.uni 	$L__BB33_2;
 $L__BB33_2:                             // %bb11
 	ld.global.b32 	%r37, [%rd6+12];
-	st.shared.b32 	[__shared_mem_33b99fbdeea67422_7dd07c80dde07976], %r37;
+	st.shared.b32 	[__shared_mem_d72d91c76a656d4d_ef317e6357768819], %r37;
 $L__BB33_3:                             // %bb12
 	bar.sync 	0;
-	ld.shared.b32 	%r2, [__shared_mem_33b99fbdeea67422_7dd07c80dde07976];
+	ld.shared.b32 	%r2, [__shared_mem_d72d91c76a656d4d_ef317e6357768819];
 	setp.ge.f32 	%p7, %r2, 0f00000000;
 	@%p7 bra 	$L__BB33_126;
 	bra.uni 	$L__BB33_4;
@@ -16347,7 +16347,7 @@ $L__BB33_45:                            // %inkrs_kernels__tiles__leaf.exit213
 	add.rn.f32 %r133, %r89, %r132;
 	// end inline asm
 	shl.b32 	%r134, %r9, 2;
-	mov.b32 	%r135, __shared_mem_33b99fbdeea67422_471375c92846e9df;
+	mov.b32 	%r135, __shared_mem_d72d91c76a656d4d_4a47fd1b222294c0;
 	add.s32 	%r136, %r135, %r134;
 	st.shared.b32 	[%r136], %r133;
 	add.s32 	%r11, %r9, 256;
@@ -16456,7 +16456,7 @@ $L__BB33_63:                            // %bb24.i.3
 	@%p47 bra 	$L__BB33_47;
 	bra.uni 	$L__BB33_64;
 $L__BB33_64:                            // %inkrs_kernels__tiles__tile_sum.exit
-	ld.shared.b32 	%r146, [__shared_mem_33b99fbdeea67422_471375c92846e9df];
+	ld.shared.b32 	%r146, [__shared_mem_d72d91c76a656d4d_4a47fd1b222294c0];
 	div.rn.f32 	%r18, %r146, 0f48880000;
 	bar.sync 	0;
 	mov.u32 	%r19, %tid.x;
@@ -17180,7 +17180,7 @@ $L__BB33_124:                           // %inkrs_kernels__tiles__tile_sum.exit6
 	@%p6 bra 	$L__BB33_126;
 	bra.uni 	$L__BB33_125;
 $L__BB33_125:                           // %bb27
-	ld.shared.b32 	%r312, [__shared_mem_33b99fbdeea67422_471375c92846e9df];
+	ld.shared.b32 	%r312, [__shared_mem_d72d91c76a656d4d_4a47fd1b222294c0];
 	div.rn.f32 	%r313, %r312, 0f48880000;
 	sqrt.rn.f32 	%r314, %r313;
 	cvt.f64.f32 	%rd145, %r314;
@@ -17231,10 +17231,10 @@ $L__BB34_1:                             // %bb3
 	bra.uni 	$L__BB34_2;
 $L__BB34_2:                             // %bb5
 	ld.global.b32 	%r9, [%rd4+12];
-	st.shared.b32 	[__shared_mem_33b99fbdeea67422_95636c19d4ee9180], %r9;
+	st.shared.b32 	[__shared_mem_d72d91c76a656d4d_3cb7988c2135c15f], %r9;
 $L__BB34_3:                             // %bb6
 	bar.sync 	0;
-	ld.shared.b32 	%r2, [__shared_mem_33b99fbdeea67422_95636c19d4ee9180];
+	ld.shared.b32 	%r2, [__shared_mem_d72d91c76a656d4d_3cb7988c2135c15f];
 	setp.ge.f32 	%p8, %r2, 0f00000000;
 	@%p8 bra 	$L__BB34_6;
 	bra.uni 	$L__BB34_4;
@@ -17302,7 +17302,7 @@ $L__BB34_9:                             // %bb3.i
 	bra.uni 	$L__BB34_10;
 $L__BB34_10:                            // %bb4.i
 	shr.u32 	%r22, %r1, 3;
-	mov.b32 	%r23, __shared_mem_33b99fbdeea67422_aab346f7cc62f846;
+	mov.b32 	%r23, __shared_mem_d72d91c76a656d4d_ba6964f8e0e5c647;
 	add.s32 	%r4, %r23, %r22;
 	st.shared.b32 	[%r4], %r18;
 	bra.uni 	$L__BB34_12;
@@ -17310,26 +17310,26 @@ $L__BB34_11:                            // %bb14.i
 	trap; exit;
 $L__BB34_12:                            // %inkrs_kernels__tiles384__block_tree.exit
 	bar.sync 	0;
-	ld.shared.b32 	%r25, [__shared_mem_33b99fbdeea67422_aab346f7cc62f846];
-	ld.shared.b32 	%r26, [__shared_mem_33b99fbdeea67422_aab346f7cc62f846+4];
+	ld.shared.b32 	%r25, [__shared_mem_d72d91c76a656d4d_ba6964f8e0e5c647];
+	ld.shared.b32 	%r26, [__shared_mem_d72d91c76a656d4d_ba6964f8e0e5c647+4];
 	// begin inline asm
 	add.rn.f32 %r24, %r25, %r26;
 	// end inline asm
-	ld.shared.b32 	%r28, [__shared_mem_33b99fbdeea67422_aab346f7cc62f846+8];
-	ld.shared.b32 	%r29, [__shared_mem_33b99fbdeea67422_aab346f7cc62f846+12];
+	ld.shared.b32 	%r28, [__shared_mem_d72d91c76a656d4d_ba6964f8e0e5c647+8];
+	ld.shared.b32 	%r29, [__shared_mem_d72d91c76a656d4d_ba6964f8e0e5c647+12];
 	// begin inline asm
 	add.rn.f32 %r27, %r28, %r29;
 	// end inline asm
 	// begin inline asm
 	add.rn.f32 %r30, %r24, %r27;
 	// end inline asm
-	ld.shared.b32 	%r32, [__shared_mem_33b99fbdeea67422_aab346f7cc62f846+16];
-	ld.shared.b32 	%r33, [__shared_mem_33b99fbdeea67422_aab346f7cc62f846+20];
+	ld.shared.b32 	%r32, [__shared_mem_d72d91c76a656d4d_ba6964f8e0e5c647+16];
+	ld.shared.b32 	%r33, [__shared_mem_d72d91c76a656d4d_ba6964f8e0e5c647+20];
 	// begin inline asm
 	add.rn.f32 %r31, %r32, %r33;
 	// end inline asm
-	ld.shared.b32 	%r35, [__shared_mem_33b99fbdeea67422_aab346f7cc62f846+24];
-	ld.shared.b32 	%r36, [__shared_mem_33b99fbdeea67422_aab346f7cc62f846+28];
+	ld.shared.b32 	%r35, [__shared_mem_d72d91c76a656d4d_ba6964f8e0e5c647+24];
+	ld.shared.b32 	%r36, [__shared_mem_d72d91c76a656d4d_ba6964f8e0e5c647+28];
 	// begin inline asm
 	add.rn.f32 %r34, %r35, %r36;
 	// end inline asm
@@ -17459,7 +17459,7 @@ $L__BB35_3:                             // %bb3.i
 	bra.uni 	$L__BB35_4;
 $L__BB35_4:                             // %bb7.i151
 	trap; exit;
-$L__BB35_5:                             // %_RNvMNtCs4rky8eibNT2_13inkrs_kernels8tiles384NtB2_3Src2at.exit159
+$L__BB35_5:                             // %_RNvMNtCsito1s8sq8Ij_13inkrs_kernels8tiles384NtB2_3Src2at.exit159
                                         //   in Loop: Header=BB35_3 Depth=1
 	shr.u32 	%r37, %r11, 7;
 	mul.lo.s32 	%r13, %r37, 1224;
@@ -17494,7 +17494,7 @@ $L__BB35_6:                             // %bb3.i37
 	bra.uni 	$L__BB35_7;
 $L__BB35_7:                             // %bb7.i129
 	trap; exit;
-$L__BB35_8:                             // %_RNvMNtCs4rky8eibNT2_13inkrs_kernels8tiles384NtB2_3Src2at.exit137
+$L__BB35_8:                             // %_RNvMNtCsito1s8sq8Ij_13inkrs_kernels8tiles384NtB2_3Src2at.exit137
                                         //   in Loop: Header=BB35_6 Depth=2
 	add.s64 	%rd25, %rd3, %rd7;
 	ld.global.nc.b8 	%rs2, [%rd25];
@@ -17533,7 +17533,7 @@ $L__BB35_10:                            // %bb7.i46
 	bra.uni 	$L__BB35_11;
 $L__BB35_11:                            // %bb7.i109
 	trap; exit;
-$L__BB35_12:                            // %_RNvMNtCs4rky8eibNT2_13inkrs_kernels8tiles384NtB2_3Src2at.exit
+$L__BB35_12:                            // %_RNvMNtCsito1s8sq8Ij_13inkrs_kernels8tiles384NtB2_3Src2at.exit
                                         //   in Loop: Header=BB35_3 Depth=1
 	add.s64 	%rd26, %rd3, %rd8;
 	ld.global.nc.b8 	%rs3, [%rd26];
@@ -17541,7 +17541,7 @@ $L__BB35_12:                            // %_RNvMNtCs4rky8eibNT2_13inkrs_kernels
 	// begin inline asm
 	add.rn.f32 %r168, %r168, %r89;
 	// end inline asm
-$L__BB35_13:                            // %_RNvMNtCs4rky8eibNT2_13inkrs_kernels8tiles384NtB2_3Src5chain.exit
+$L__BB35_13:                            // %_RNvMNtCsito1s8sq8Ij_13inkrs_kernels8tiles384NtB2_3Src5chain.exit
                                         //   in Loop: Header=BB35_3 Depth=1
 	shfl.sync.bfly.b32 	%r90, %r168, 1, 31, -1;
 	// begin inline asm
@@ -17570,7 +17570,7 @@ $L__BB35_14:                            // %bb5.i
 	shl.b32 	%r100, %r12, 3;
 	add.s32 	%r101, %r100, %r8;
 	shl.b32 	%r102, %r101, 2;
-	mov.b32 	%r103, __shared_mem_33b99fbdeea67422_3df900a000607d00;
+	mov.b32 	%r103, __shared_mem_d72d91c76a656d4d_985e43556caf46b9;
 	add.s32 	%r20, %r103, %r102;
 	st.shared.b32 	[%r20], %r97;
 $L__BB35_15:                            // %bb7.i
@@ -17586,26 +17586,26 @@ $L__BB35_16:                            // %bb8.i
 	@%p21 bra 	$L__BB35_18;
 	bra.uni 	$L__BB35_17;
 $L__BB35_17:                            // %bb10.i18
-	ld.shared.b32 	%r104, [__shared_mem_33b99fbdeea67422_3df900a000607d00];
-	ld.shared.b32 	%r105, [__shared_mem_33b99fbdeea67422_3df900a000607d00+4];
+	ld.shared.b32 	%r104, [__shared_mem_d72d91c76a656d4d_985e43556caf46b9];
+	ld.shared.b32 	%r105, [__shared_mem_d72d91c76a656d4d_985e43556caf46b9+4];
 	// begin inline asm
 	add.rn.f32 %r108, %r104, %r105;
 	// end inline asm
-	ld.shared.b32 	%r106, [__shared_mem_33b99fbdeea67422_3df900a000607d00+8];
-	ld.shared.b32 	%r107, [__shared_mem_33b99fbdeea67422_3df900a000607d00+12];
+	ld.shared.b32 	%r106, [__shared_mem_d72d91c76a656d4d_985e43556caf46b9+8];
+	ld.shared.b32 	%r107, [__shared_mem_d72d91c76a656d4d_985e43556caf46b9+12];
 	// begin inline asm
 	add.rn.f32 %r109, %r106, %r107;
 	// end inline asm
 	// begin inline asm
 	add.rn.f32 %r116, %r108, %r109;
 	// end inline asm
-	ld.shared.b32 	%r110, [__shared_mem_33b99fbdeea67422_3df900a000607d00+16];
-	ld.shared.b32 	%r111, [__shared_mem_33b99fbdeea67422_3df900a000607d00+20];
+	ld.shared.b32 	%r110, [__shared_mem_d72d91c76a656d4d_985e43556caf46b9+16];
+	ld.shared.b32 	%r111, [__shared_mem_d72d91c76a656d4d_985e43556caf46b9+20];
 	// begin inline asm
 	add.rn.f32 %r114, %r110, %r111;
 	// end inline asm
-	ld.shared.b32 	%r112, [__shared_mem_33b99fbdeea67422_3df900a000607d00+24];
-	ld.shared.b32 	%r113, [__shared_mem_33b99fbdeea67422_3df900a000607d00+28];
+	ld.shared.b32 	%r112, [__shared_mem_d72d91c76a656d4d_985e43556caf46b9+24];
+	ld.shared.b32 	%r113, [__shared_mem_d72d91c76a656d4d_985e43556caf46b9+28];
 	// begin inline asm
 	add.rn.f32 %r115, %r112, %r113;
 	// end inline asm
@@ -17615,26 +17615,26 @@ $L__BB35_17:                            // %bb10.i18
 	// begin inline asm
 	add.rn.f32 %r132, %r116, %r117;
 	// end inline asm
-	ld.shared.b32 	%r118, [__shared_mem_33b99fbdeea67422_3df900a000607d00+32];
-	ld.shared.b32 	%r119, [__shared_mem_33b99fbdeea67422_3df900a000607d00+36];
+	ld.shared.b32 	%r118, [__shared_mem_d72d91c76a656d4d_985e43556caf46b9+32];
+	ld.shared.b32 	%r119, [__shared_mem_d72d91c76a656d4d_985e43556caf46b9+36];
 	// begin inline asm
 	add.rn.f32 %r122, %r118, %r119;
 	// end inline asm
-	ld.shared.b32 	%r120, [__shared_mem_33b99fbdeea67422_3df900a000607d00+40];
-	ld.shared.b32 	%r121, [__shared_mem_33b99fbdeea67422_3df900a000607d00+44];
+	ld.shared.b32 	%r120, [__shared_mem_d72d91c76a656d4d_985e43556caf46b9+40];
+	ld.shared.b32 	%r121, [__shared_mem_d72d91c76a656d4d_985e43556caf46b9+44];
 	// begin inline asm
 	add.rn.f32 %r123, %r120, %r121;
 	// end inline asm
 	// begin inline asm
 	add.rn.f32 %r130, %r122, %r123;
 	// end inline asm
-	ld.shared.b32 	%r124, [__shared_mem_33b99fbdeea67422_3df900a000607d00+48];
-	ld.shared.b32 	%r125, [__shared_mem_33b99fbdeea67422_3df900a000607d00+52];
+	ld.shared.b32 	%r124, [__shared_mem_d72d91c76a656d4d_985e43556caf46b9+48];
+	ld.shared.b32 	%r125, [__shared_mem_d72d91c76a656d4d_985e43556caf46b9+52];
 	// begin inline asm
 	add.rn.f32 %r128, %r124, %r125;
 	// end inline asm
-	ld.shared.b32 	%r126, [__shared_mem_33b99fbdeea67422_3df900a000607d00+56];
-	ld.shared.b32 	%r127, [__shared_mem_33b99fbdeea67422_3df900a000607d00+60];
+	ld.shared.b32 	%r126, [__shared_mem_d72d91c76a656d4d_985e43556caf46b9+56];
+	ld.shared.b32 	%r127, [__shared_mem_d72d91c76a656d4d_985e43556caf46b9+60];
 	// begin inline asm
 	add.rn.f32 %r129, %r126, %r127;
 	// end inline asm
@@ -17647,26 +17647,26 @@ $L__BB35_17:                            // %bb10.i18
 	// begin inline asm
 	add.rn.f32 %r165, %r132, %r133;
 	// end inline asm
-	ld.shared.b32 	%r134, [__shared_mem_33b99fbdeea67422_3df900a000607d00+64];
-	ld.shared.b32 	%r135, [__shared_mem_33b99fbdeea67422_3df900a000607d00+68];
+	ld.shared.b32 	%r134, [__shared_mem_d72d91c76a656d4d_985e43556caf46b9+64];
+	ld.shared.b32 	%r135, [__shared_mem_d72d91c76a656d4d_985e43556caf46b9+68];
 	// begin inline asm
 	add.rn.f32 %r138, %r134, %r135;
 	// end inline asm
-	ld.shared.b32 	%r136, [__shared_mem_33b99fbdeea67422_3df900a000607d00+72];
-	ld.shared.b32 	%r137, [__shared_mem_33b99fbdeea67422_3df900a000607d00+76];
+	ld.shared.b32 	%r136, [__shared_mem_d72d91c76a656d4d_985e43556caf46b9+72];
+	ld.shared.b32 	%r137, [__shared_mem_d72d91c76a656d4d_985e43556caf46b9+76];
 	// begin inline asm
 	add.rn.f32 %r139, %r136, %r137;
 	// end inline asm
 	// begin inline asm
 	add.rn.f32 %r146, %r138, %r139;
 	// end inline asm
-	ld.shared.b32 	%r140, [__shared_mem_33b99fbdeea67422_3df900a000607d00+80];
-	ld.shared.b32 	%r141, [__shared_mem_33b99fbdeea67422_3df900a000607d00+84];
+	ld.shared.b32 	%r140, [__shared_mem_d72d91c76a656d4d_985e43556caf46b9+80];
+	ld.shared.b32 	%r141, [__shared_mem_d72d91c76a656d4d_985e43556caf46b9+84];
 	// begin inline asm
 	add.rn.f32 %r144, %r140, %r141;
 	// end inline asm
-	ld.shared.b32 	%r142, [__shared_mem_33b99fbdeea67422_3df900a000607d00+88];
-	ld.shared.b32 	%r143, [__shared_mem_33b99fbdeea67422_3df900a000607d00+92];
+	ld.shared.b32 	%r142, [__shared_mem_d72d91c76a656d4d_985e43556caf46b9+88];
+	ld.shared.b32 	%r143, [__shared_mem_d72d91c76a656d4d_985e43556caf46b9+92];
 	// begin inline asm
 	add.rn.f32 %r145, %r142, %r143;
 	// end inline asm
@@ -17676,26 +17676,26 @@ $L__BB35_17:                            // %bb10.i18
 	// begin inline asm
 	add.rn.f32 %r162, %r146, %r147;
 	// end inline asm
-	ld.shared.b32 	%r148, [__shared_mem_33b99fbdeea67422_3df900a000607d00+96];
-	ld.shared.b32 	%r149, [__shared_mem_33b99fbdeea67422_3df900a000607d00+100];
+	ld.shared.b32 	%r148, [__shared_mem_d72d91c76a656d4d_985e43556caf46b9+96];
+	ld.shared.b32 	%r149, [__shared_mem_d72d91c76a656d4d_985e43556caf46b9+100];
 	// begin inline asm
 	add.rn.f32 %r152, %r148, %r149;
 	// end inline asm
-	ld.shared.b32 	%r150, [__shared_mem_33b99fbdeea67422_3df900a000607d00+104];
-	ld.shared.b32 	%r151, [__shared_mem_33b99fbdeea67422_3df900a000607d00+108];
+	ld.shared.b32 	%r150, [__shared_mem_d72d91c76a656d4d_985e43556caf46b9+104];
+	ld.shared.b32 	%r151, [__shared_mem_d72d91c76a656d4d_985e43556caf46b9+108];
 	// begin inline asm
 	add.rn.f32 %r153, %r150, %r151;
 	// end inline asm
 	// begin inline asm
 	add.rn.f32 %r160, %r152, %r153;
 	// end inline asm
-	ld.shared.b32 	%r154, [__shared_mem_33b99fbdeea67422_3df900a000607d00+112];
-	ld.shared.b32 	%r155, [__shared_mem_33b99fbdeea67422_3df900a000607d00+116];
+	ld.shared.b32 	%r154, [__shared_mem_d72d91c76a656d4d_985e43556caf46b9+112];
+	ld.shared.b32 	%r155, [__shared_mem_d72d91c76a656d4d_985e43556caf46b9+116];
 	// begin inline asm
 	add.rn.f32 %r158, %r154, %r155;
 	// end inline asm
-	ld.shared.b32 	%r156, [__shared_mem_33b99fbdeea67422_3df900a000607d00+120];
-	ld.shared.b32 	%r157, [__shared_mem_33b99fbdeea67422_3df900a000607d00+124];
+	ld.shared.b32 	%r156, [__shared_mem_d72d91c76a656d4d_985e43556caf46b9+120];
+	ld.shared.b32 	%r157, [__shared_mem_d72d91c76a656d4d_985e43556caf46b9+124];
 	// begin inline asm
 	add.rn.f32 %r159, %r156, %r157;
 	// end inline asm
@@ -18304,7 +18304,7 @@ $L__BB39_3:                             // %bb8.i
 	setp.ne.b32 	%p10, %r24, 0;
 	selp.b32 	%r25, 1, 0, %p10;
 	add.s32 	%r48, %r22, %r25;
-$L__BB39_4:                             // %_RNCNvNtCs4rky8eibNT2_13inkrs_kernels4v8in57cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_v8_blend0B5_.exit
+$L__BB39_4:                             // %_RNCNvNtCsito1s8sq8Ij_13inkrs_kernels4v8in57cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_v8_blend0B5_.exit
 	div.u32 	%r26, %r4, %r15;
 	add.s32 	%r27, %r26, 1;
 	min.u32 	%r6, %r13, %r27;
@@ -18319,7 +18319,7 @@ $L__BB39_5:                             // %bb8.i8
 	setp.ne.b32 	%p12, %r31, 0;
 	selp.b32 	%r32, 1, 0, %p12;
 	add.s32 	%r46, %r29, %r32;
-$L__BB39_6:                             // %_RNCNvNtCs4rky8eibNT2_13inkrs_kernels4v8in57cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_v8_blend0B5_.exit25
+$L__BB39_6:                             // %_RNCNvNtCsito1s8sq8Ij_13inkrs_kernels4v8in57cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_v8_blend0B5_.exit25
 	ld.param.b32 	%r17, [v8_blend_param_12];
 	setp.ge.u32 	%p13, %r48, %r6;
 	mov.b32 	%r51, 0f00000000;
@@ -18995,7 +18995,7 @@ $L__BB43_5:                             // %bb26
 	bra.uni 	$L__BB43_6;
 $L__BB43_6:                             // %bb27
 	shl.b32 	%r22, %r1, 3;
-	mov.b32 	%r23, __shared_mem_33b99fbdeea67422_9e587e1e7bba2713;
+	mov.b32 	%r23, __shared_mem_d72d91c76a656d4d_4893de2ecef92146;
 	add.s32 	%r24, %r23, %r22;
 	st.shared.b32 	[%r24], %r30;
 	st.shared.b32 	[%r24+4], %r29;
@@ -19669,7 +19669,7 @@ $L__BB44_40:                            // %bb137
 	add.s64 	%rd51, %rd9, %rd50;
 	ld.global.nc.b32 	%r42, [%rd51];
 	setp.gt.u32 	%p25, %r278, 575;
-	mov.b32 	%r267, __shared_mem_33b99fbdeea67422_ee374c7a453fa873;
+	mov.b32 	%r267, __shared_mem_d72d91c76a656d4d_c99bbfe4e5f6b05e;
 	@%p25 bra 	$L__BB44_5;
 	bra.uni 	$L__BB44_41;
 $L__BB44_41:                            // %bb9.preheader
@@ -20193,7 +20193,7 @@ $L__BB44_169:                           // %bb394
 	add.s64 	%rd125, %rd10, %rd124;
 	ld.global.nc.b32 	%r43, [%rd125];
 	shl.b32 	%r84, %r83, 1;
-	mov.b32 	%r85, __shared_mem_33b99fbdeea67422_89e1557a9d58a1bd;
+	mov.b32 	%r85, __shared_mem_d72d91c76a656d4d_2d69aee48d6a0fe4;
 	add.s32 	%r44, %r85, %r84;
 	add.s64 	%rd18, %rd7, %rd124;
 	bra.uni 	$L__BB44_6;
@@ -20325,7 +20325,7 @@ $L__BB45_6:                             // %bb20
 	bra.uni 	$L__BB45_7;
 $L__BB45_7:                             // %bb3.i
 	trap; exit;
-$L__BB45_8:                             // %_RNCNvNtCs4rky8eibNT2_13inkrs_kernels4v8in58cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_v8_up2cats_0B5_.exit
+$L__BB45_8:                             // %_RNCNvNtCsito1s8sq8Ij_13inkrs_kernels4v8in58cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_v8_up2cats_0B5_.exit
 	add.s32 	%r67, %r28, -1;
 	setp.lt.u32 	%p23, %r16, %r67;
 	selp.b32 	%r21, 1, 0, %p23;
@@ -20340,7 +20340,7 @@ $L__BB45_8:                             // %_RNCNvNtCs4rky8eibNT2_13inkrs_kernel
 	bra.uni 	$L__BB45_9;
 $L__BB45_9:                             // %bb3.i29
 	trap; exit;
-$L__BB45_10:                            // %_RNCNvNtCs4rky8eibNT2_13inkrs_kernels4v8in58cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_v8_up2cats_0B5_.exit42
+$L__BB45_10:                            // %_RNCNvNtCsito1s8sq8Ij_13inkrs_kernels4v8in58cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_v8_up2cats_0B5_.exit42
 	add.s32 	%r56, %r27, -1;
 	setp.lt.u32 	%p18, %r55, %r56;
 	selp.b32 	%r13, 1, 0, %p18;
@@ -20356,7 +20356,7 @@ $L__BB45_10:                            // %_RNCNvNtCs4rky8eibNT2_13inkrs_kernel
 	bra.uni 	$L__BB45_11;
 $L__BB45_11:                            // %bb3.i68
 	trap; exit;
-$L__BB45_12:                            // %_RNCNvNtCs4rky8eibNT2_13inkrs_kernels4v8in58cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_v8_up2cats_0B5_.exit81
+$L__BB45_12:                            // %_RNCNvNtCsito1s8sq8Ij_13inkrs_kernels4v8in58cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_v8_up2cats_0B5_.exit81
 	add.s32 	%r74, %r26, %r21;
 	mad.lo.s32 	%r75, %r74, %r2, %r10;
 	cvt.u64.u32 	%rd7, %r75;
@@ -20365,7 +20365,7 @@ $L__BB45_12:                            // %_RNCNvNtCs4rky8eibNT2_13inkrs_kernel
 	bra.uni 	$L__BB45_13;
 $L__BB45_13:                            // %bb3.i107
 	trap; exit;
-$L__BB45_14:                            // %_RNCNvNtCs4rky8eibNT2_13inkrs_kernels4v8in58cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_v8_up2cats_0B5_.exit120
+$L__BB45_14:                            // %_RNCNvNtCsito1s8sq8Ij_13inkrs_kernels4v8in58cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_v8_up2cats_0B5_.exit120
 	cvt.rn.f32.u32 	%r57, %r55;
 	sub.f32 	%r14, %r52, %r57;
 	mov.b32 	%r58, 0f3F800000;

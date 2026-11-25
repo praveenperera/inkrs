@@ -7,82 +7,82 @@
 .address_size 64
 
 	// .globl	avgpool2                // -- Begin function avgpool2
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_ab229a1e113ffc0a[64];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_3cc57afeecd8d295[512];
-.visible .shared .align 2 .b8 __shared_mem_445feb0385a80dea_ce36b75dff6bdfca[7800];
-.visible .shared .align 2 .b8 __shared_mem_445feb0385a80dea_7110fe6e7565bdcd[7800];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_97ac8cb3b5e03443[64];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_09b36a23cb018eb4[512];
-.visible .shared .align 2 .b8 __shared_mem_445feb0385a80dea_945c3742531d5755[7800];
-.visible .shared .align 2 .b8 __shared_mem_445feb0385a80dea_bb812c5ae2c93d1e[7800];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_da11d5d8a38c8a99[256];
-.visible .shared .align 16 .b8 __shared_mem_445feb0385a80dea_17cc9471ab3c9da6[32640];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_2eff2b89dde43d21[256];
-.visible .shared .align 16 .b8 __shared_mem_445feb0385a80dea_71b7499aad107106[32640];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_a9d4dac52bc10e19[32];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_6c0437c259f02845[4];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_d1c10dd0ac08ef90[1024];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_d7cf5e71148f94aa[128];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_1a9dde9f4e89c253[32];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_8c97a75bc0531d73[128];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_5651888c6df2d89d[2048];
-.visible .shared .align 2 .b8 __shared_mem_445feb0385a80dea_6715899c2b6b21e6[36992];
-.visible .global .align 4 .b8 __device_global_445feb0385a80dea_dcbc8cf2b0414e9a[8] = {0, 0, 0, 0, 128};
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_de66c29c6e72bb98[2304];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_4e748f8ff9f73ee4[2048];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_e32e185ef999c163[1024];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_07bd4f906a5518a7[6144];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_029b4460ab24e882[3072];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_0668c113a8ff10ae[4096];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_6f3df299fcc4e395[6144];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_3538a9cf3ef88d9d[1024];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_89d6799f820bbf0e[8192];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_be722b70424b1e0b[4];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_4460163a88381431[128];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_e7ae0aec4c47284c[128];
-.visible .shared .align 16 .b8 __shared_mem_445feb0385a80dea_225536584cd6ba59[10496];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_ffbdd24fdb621453[256];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_e1a2267cb9ee531a[256];
-.visible .shared .align 16 .b8 __shared_mem_445feb0385a80dea_555094a04c68bd93[27648];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_4b0be3dff721034e[128];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_976fbbe6092e9533[1024];
-.visible .shared .align 16 .b8 __shared_mem_445feb0385a80dea_572afbe240e6d62c[41472];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_d735aeb164c9e716[256];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_19fcd1025b046a9b[1024];
-.visible .shared .align 16 .b8 __shared_mem_445feb0385a80dea_ef52b654dc78f928[12288];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_8b7695d358aab5ee[256];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_51f467e0402d3743[1024];
-.visible .shared .align 16 .b8 __shared_mem_445feb0385a80dea_3da7c74b0b915740[19200];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_d85ab6564eff6d19[256];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_15085f1024b7636c[1024];
-.visible .shared .align 16 .b8 __shared_mem_445feb0385a80dea_3da30b657c6faba1[37120];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_83e5825c31fae44a[128];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_3bd34f981a5d33f7[128];
-.visible .shared .align 16 .b8 __shared_mem_445feb0385a80dea_6e5479a61c6fd524[6912];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_fa959740c15dbf95[128];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_c4f119673c2dcff0[512];
-.visible .shared .align 16 .b8 __shared_mem_445feb0385a80dea_6c6c03f712afc119[19200];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_b69819e103898147[256];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_5d391556716184c2[2048];
-.visible .shared .align 16 .b8 __shared_mem_445feb0385a80dea_70b9ce5d78bfa7af[41472];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_3db3aaf4100275ea[512];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_71f5a3dcd0965fa7[512];
-.visible .shared .align 16 .b8 __shared_mem_445feb0385a80dea_5774bd2bac85b1e8[41472];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_1b97d7219c64464f[256];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_757cf014d69fb42a[2048];
-.visible .shared .align 16 .b8 __shared_mem_445feb0385a80dea_57b6d3c42ba2e297[32768];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_1fa867554d7b25d0[128];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_017b032d9c20b01d[1024];
-.visible .shared .align 16 .b8 __shared_mem_445feb0385a80dea_706464547440c7d6[41472];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_c63de91dfe524ebe[256];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_e83bd954cede47cb[1024];
-.visible .shared .align 16 .b8 __shared_mem_445feb0385a80dea_d5ca287936372920[19200];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_c390d84e97646859[512];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_5756770e4fdb985c[512];
-.visible .shared .align 16 .b8 __shared_mem_445feb0385a80dea_bed323b21175b7c5[27648];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_3c66dfff8c1fa55e[256];
-.visible .shared .align 4 .b8 __shared_mem_445feb0385a80dea_642d518f92fa2a67[2048];
-.visible .shared .align 16 .b8 __shared_mem_445feb0385a80dea_bb172767c48fa380[36096];
+.visible .shared .align 2 .b8 __shared_mem_b36ae61f4ba23cec_14352a0b67d3b2b3[7800];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_fde281c959b3a270[64];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_3ddcc9cec302ea3b[512];
+.visible .shared .align 2 .b8 __shared_mem_b36ae61f4ba23cec_d77990fb525a01b4[7800];
+.visible .shared .align 2 .b8 __shared_mem_b36ae61f4ba23cec_5952a6cf4a52c4c8[7800];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_333b37697d416fdd[64];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_17b746bffa0c36c6[512];
+.visible .shared .align 2 .b8 __shared_mem_b36ae61f4ba23cec_f04a8c34cd515f83[7800];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_276843790c15b88b[256];
+.visible .shared .align 16 .b8 __shared_mem_b36ae61f4ba23cec_03b8d0f1662cf0d4[32640];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_67987b8caf6f662f[256];
+.visible .shared .align 16 .b8 __shared_mem_b36ae61f4ba23cec_babdaf2810dcce90[32640];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_b13d47edc71166ab[32];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_a53f792ab2d8c5d3[4];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_3dac2a8120794ae4[128];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_1d1b8693daa63e89[32];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_ba83e5adaa4ef282[1024];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_a6d54a2c6bc14135[128];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_be32f95da278e313[2048];
+.visible .shared .align 2 .b8 __shared_mem_b36ae61f4ba23cec_3a0f20d4a96e4910[36992];
+.visible .global .align 4 .b8 __device_global_b36ae61f4ba23cec_dcbc8cf2b0414e9a[8] = {0, 0, 0, 0, 128};
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_c2c4b9d4666c7fe2[2304];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_eae746dc02d69fe2[2048];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_0b838a713065ca75[1024];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_469bc8e97a5d3955[6144];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_96ef6f0bccb83790[3072];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_abb7df8a3a7e6ebc[4096];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_91cca3d726903df3[6144];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_ed525546845e73c4[8192];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_e6bfcf169125860d[4];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_69e5836ac0c054d7[1024];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_4840ce8f3646539b[256];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_08c303fd0b8be726[1024];
+.visible .shared .align 16 .b8 __shared_mem_b36ae61f4ba23cec_e8292f52eddf4ba7[37120];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_798c51ecf44ee743[512];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_d63963f884299e66[512];
+.visible .shared .align 16 .b8 __shared_mem_b36ae61f4ba23cec_028bad6f58cf216b[27648];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_02461c680c1e56b5[256];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_1b907fe213279d08[2048];
+.visible .shared .align 16 .b8 __shared_mem_b36ae61f4ba23cec_44b8ff1016453111[32768];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_8a2c3d4c46f79b9d[256];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_1729fa44a4e5bb20[2048];
+.visible .shared .align 16 .b8 __shared_mem_b36ae61f4ba23cec_c497e85ad18a4439[41472];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_23094be8d755243f[128];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_67535448d4b59b02[512];
+.visible .shared .align 16 .b8 __shared_mem_b36ae61f4ba23cec_3b00af7181320f97[19200];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_a8dd180ae0127d80[512];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_c28683a603918285[512];
+.visible .shared .align 16 .b8 __shared_mem_b36ae61f4ba23cec_07ea82c1fd385a2a[41472];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_59611b2d89b43ddc[128];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_f5d0ecc4bef78e01[1024];
+.visible .shared .align 16 .b8 __shared_mem_b36ae61f4ba23cec_1d7254d0ddddc726[41472];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_a4cb38760d474628[256];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_199ba5514fe1c88d[1024];
+.visible .shared .align 16 .b8 __shared_mem_b36ae61f4ba23cec_ef8b07769537c11e[19200];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_deb9f8f4f556b0b1[256];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_a396a9c8c1fbfab8[256];
+.visible .shared .align 16 .b8 __shared_mem_b36ae61f4ba23cec_5bcd694895dbd41d[27648];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_52f8b50e5346fc9b[128];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_e97ac61b226de336[128];
+.visible .shared .align 16 .b8 __shared_mem_b36ae61f4ba23cec_d9b0b79c47ff087f[10496];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_922228f8285fab64[256];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_2f9350260d2fd99d[2048];
+.visible .shared .align 16 .b8 __shared_mem_b36ae61f4ba23cec_15e5b7f8bce0f96a[36096];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_fb456867c7e43404[256];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_94db76cc6a38b299[1024];
+.visible .shared .align 16 .b8 __shared_mem_b36ae61f4ba23cec_12e486fe636f699a[19200];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_fac3d662d2f46e28[128];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_3915ae51eab7cadd[128];
+.visible .shared .align 16 .b8 __shared_mem_b36ae61f4ba23cec_d0a6409a95d596be[6912];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_96c7235500ec50fc[256];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_806e4c1180199441[1024];
+.visible .shared .align 16 .b8 __shared_mem_b36ae61f4ba23cec_3f35db60cfb24762[12288];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_a118bc2bb601d2ea[128];
+.visible .shared .align 4 .b8 __shared_mem_b36ae61f4ba23cec_1ae694113e205cb7[1024];
+.visible .shared .align 16 .b8 __shared_mem_b36ae61f4ba23cec_23cbfcf6fd59d714[41472];
                                         // @avgpool2
 .visible .entry avgpool2(
 	.param .u64 .ptr .align 1 avgpool2_param_0,
@@ -1176,7 +1176,7 @@ $L__BB5_3:                              // %bb17.i
 	bfe.u32 	%r935, %r1, 2, 4;
 	setp.eq.b32 	%p39, %r3, 0;
 	setp.eq.b32 	%p40, %r2, 0;
-	mov.b32 	%r936, __shared_mem_445feb0385a80dea_57b6d3c42ba2e297;
+	mov.b32 	%r936, __shared_mem_b36ae61f4ba23cec_44b8ff1016453111;
 	@%p22 bra 	$L__BB5_12;
 	bra.uni 	$L__BB5_4;
 $L__BB5_4:                              // %bb1.i
@@ -1235,7 +1235,7 @@ $L__BB5_10:                             // %bb54.i
 	trap; exit;
 $L__BB5_11:                             // %bb56.i
 	trap; exit;
-$L__BB5_12:                             // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d5stageKm1_KBL_Km10_KBT_KBL_Km20_Km2_Km8_EB4_.exit
+$L__BB5_12:                             // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d5stageKm1_KBL_Km10_KBT_KBL_Km20_Km2_Km8_EB4_.exit
 	cp.async.commit_group;
 	@%p22 bra 	$L__BB5_97;
 	bra.uni 	$L__BB5_13;
@@ -1290,13 +1290,13 @@ $L__BB5_13:                             // %bb32.i.lr.ph
 	shl.b32 	%r245, %r15, 1;
 	or.b32 	%r246, %r244, %r245;
 	shl.b32 	%r247, %r246, 2;
-	mov.b32 	%r248, __shared_mem_445feb0385a80dea_757cf014d69fb42a;
+	mov.b32 	%r248, __shared_mem_b36ae61f4ba23cec_1b907fe213279d08;
 	add.s32 	%r40, %r248, %r247;
 	shr.u32 	%r249, %r1, 2;
 	and.b32 	%r250, %r249, 192;
 	or.b32 	%r251, %r250, %r245;
 	shl.b32 	%r252, %r251, 2;
-	mov.b32 	%r253, __shared_mem_445feb0385a80dea_1b97d7219c64464f;
+	mov.b32 	%r253, __shared_mem_b36ae61f4ba23cec_02461c680c1e56b5;
 	add.s32 	%r41, %r253, %r252;
 	add.s32 	%r42, %r248, %r228;
 	add.s32 	%r43, %r253, %r228;
@@ -1446,7 +1446,7 @@ $L__BB5_21:                             // %bb54.i81
 	trap; exit;
 $L__BB5_22:                             // %bb56.i80
 	trap; exit;
-$L__BB5_23:                             // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d5stageKm1_KBL_Km10_KBT_KBL_Km20_Km2_Km8_EB4_.exit83
+$L__BB5_23:                             // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d5stageKm1_KBL_Km10_KBT_KBL_Km20_Km2_Km8_EB4_.exit83
                                         //   in Loop: Header=BB5_14 Depth=1
 	cp.async.commit_group;
 	div.u32 	%r54, %r45, %r6;
@@ -2462,7 +2462,7 @@ $L__BB5_57:                             // %bb96.i443.i.i
 	add.f32 	%r149, %r667, %r668;
 	st.shared.b32 	[%r40+224], %r149;
 	bra.uni 	$L__BB5_55;
-$L__BB5_58:                             // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d10reduce_putKj8_EB4_.exit553.i.i
+$L__BB5_58:                             // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d10reduce_putKj8_EB4_.exit553.i.i
                                         //   in Loop: Header=BB5_14 Depth=1
 	setp.gt.u32 	%p36, %r1, 63;
 	bar.sync 	0;
@@ -2873,7 +2873,7 @@ $L__BB5_91:                             // %bb96.i.i.i
 	add.f32 	%r180, %r909, %r910;
 	st.shared.b32 	[%r40+224], %r180;
 	bra.uni 	$L__BB5_89;
-$L__BB5_92:                             // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d10reduce_putKj8_EB4_.exit.i.i
+$L__BB5_92:                             // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d10reduce_putKj8_EB4_.exit.i.i
                                         //   in Loop: Header=BB5_14 Depth=1
 	setp.eq.b32 	%p37, %r4, 0;
 	bar.sync 	0;
@@ -3049,7 +3049,7 @@ $L__BB5_98:                             // %bb432.i
 	trap; exit;
 $L__BB5_99:                             // %bb434.i
 	trap; exit;
-$L__BB5_100:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d9conv_bodyKm1_KBP_Km10_KBX_KBP_Km20_Kj2_Kj8_Km8_Km2_EB4_.exit
+$L__BB5_100:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d9conv_bodyKm1_KBP_Km10_KBX_KBP_Km20_Kj2_Kj8_Km8_Km2_EB4_.exit
 	ret;
                                         // -- End function
 }
@@ -3169,7 +3169,7 @@ $L__BB6_3:                              // %bb17.i
 	setp.eq.b32 	%p47, %r3, 0;
 	setp.eq.b32 	%p48, %r2, 0;
 	setp.gt.u32 	%p49, %r1, 255;
-	mov.b32 	%r689, __shared_mem_445feb0385a80dea_ef52b654dc78f928;
+	mov.b32 	%r689, __shared_mem_b36ae61f4ba23cec_3f35db60cfb24762;
 	@%p23 bra 	$L__BB6_13;
 	bra.uni 	$L__BB6_4;
 $L__BB6_4:                              // %bb1.i20
@@ -3231,7 +3231,7 @@ $L__BB6_11:                             // %bb54.i82
 	trap; exit;
 $L__BB6_12:                             // %bb56.i81
 	trap; exit;
-$L__BB6_13:                             // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d5stageKm1_KBL_Km8_KBT_KBL_Km20_Km3_Km4_EB4_.exit84
+$L__BB6_13:                             // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d5stageKm1_KBL_Km8_KBT_KBL_Km20_Km3_Km4_EB4_.exit84
 	cp.async.commit_group;
 	setp.lt.u32 	%p29, %r12, 2;
 	@%p29 bra 	$L__BB6_21;
@@ -3296,7 +3296,7 @@ $L__BB6_20:                             // %bb38.i69.1
 	mov.b32 	%r693, %r33;
 	@%p35 bra 	$L__BB6_18;
 	bra.uni 	$L__BB6_21;
-$L__BB6_21:                             // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d5stageKm1_KBL_Km8_KBT_KBL_Km20_Km3_Km4_EB4_.exit84.1
+$L__BB6_21:                             // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d5stageKm1_KBL_Km8_KBT_KBL_Km20_Km3_Km4_EB4_.exit84.1
 	cp.async.commit_group;
 	@%p23 bra 	$L__BB6_107;
 	bra.uni 	$L__BB6_22;
@@ -3343,12 +3343,12 @@ $L__BB6_22:                             // %bb27.i.lr.ph
 	shl.b32 	%r233, %r14, 1;
 	or.b32 	%r234, %r232, %r233;
 	shl.b32 	%r235, %r234, 2;
-	mov.b32 	%r236, __shared_mem_445feb0385a80dea_19fcd1025b046a9b;
+	mov.b32 	%r236, __shared_mem_b36ae61f4ba23cec_806e4c1180199441;
 	add.s32 	%r49, %r236, %r235;
 	and.b32 	%r237, %r15, 448;
 	or.b32 	%r238, %r237, %r233;
 	shl.b32 	%r239, %r238, 2;
-	mov.b32 	%r240, __shared_mem_445feb0385a80dea_d735aeb164c9e716;
+	mov.b32 	%r240, __shared_mem_b36ae61f4ba23cec_96c7235500ec50fc;
 	add.s32 	%r50, %r240, %r239;
 	shl.b32 	%r241, %r1, 2;
 	add.s32 	%r51, %r236, %r241;
@@ -3473,7 +3473,7 @@ $L__BB6_31:                             // %bb54.i
 	trap; exit;
 $L__BB6_32:                             // %bb56.i
 	trap; exit;
-$L__BB6_33:                             // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d5stageKm1_KBL_Km8_KBT_KBL_Km20_Km3_Km4_EB4_.exit
+$L__BB6_33:                             // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d5stageKm1_KBL_Km8_KBT_KBL_Km20_Km3_Km4_EB4_.exit
                                         //   in Loop: Header=BB6_23 Depth=1
 	cp.async.commit_group;
 	div.u32 	%r65, %r711, %r6;
@@ -4134,7 +4134,7 @@ $L__BB6_67:                             // %bb96.i331.i.i
 	add.f32 	%r128, %r518, %r519;
 	st.shared.b32 	[%r49+224], %r128;
 	bra.uni 	$L__BB6_65;
-$L__BB6_68:                             // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d10reduce_putKj8_EB4_.exit441.i.i
+$L__BB6_68:                             // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d10reduce_putKj8_EB4_.exit441.i.i
                                         //   in Loop: Header=BB6_23 Depth=1
 	setp.gt.u32 	%p44, %r1, 63;
 	bar.sync 	0;
@@ -4457,7 +4457,7 @@ $L__BB6_101:                            // %bb96.i.i.i
 	add.f32 	%r159, %r672, %r673;
 	st.shared.b32 	[%r49+224], %r159;
 	bra.uni 	$L__BB6_99;
-$L__BB6_102:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d10reduce_putKj8_EB4_.exit.i.i
+$L__BB6_102:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d10reduce_putKj8_EB4_.exit.i.i
                                         //   in Loop: Header=BB6_23 Depth=1
 	setp.eq.b32 	%p45, %r4, 0;
 	bar.sync 	0;
@@ -4561,7 +4561,7 @@ $L__BB6_108:                            // %bb252.i
 	trap; exit;
 $L__BB6_109:                            // %bb254.i
 	trap; exit;
-$L__BB6_110:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d9conv_bodyKm1_KBP_Km8_KBX_KBP_Km20_Kj1_Kj8_Km4_Km3_EB4_.exit
+$L__BB6_110:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d9conv_bodyKm1_KBP_Km8_KBX_KBP_Km20_Kj1_Kj8_Km4_Km3_EB4_.exit
 	ret;
                                         // -- End function
 }
@@ -4678,7 +4678,7 @@ $L__BB7_3:                              // %bb17.i
 	bfe.u32 	%r1532, %r1, 3, 3;
 	setp.eq.b32 	%p41, %r3, 0;
 	setp.eq.b32 	%p42, %r2, 0;
-	mov.b32 	%r1533, __shared_mem_445feb0385a80dea_706464547440c7d6;
+	mov.b32 	%r1533, __shared_mem_b36ae61f4ba23cec_23cbfcf6fd59d714;
 	@%p20 bra 	$L__BB7_12;
 	bra.uni 	$L__BB7_4;
 $L__BB7_4:                              // %bb1.i1209.i
@@ -4750,7 +4750,7 @@ $L__BB7_10:                             // %bb54.i1274.i
 	trap; exit;
 $L__BB7_11:                             // %bb56.i1273.i
 	trap; exit;
-$L__BB7_12:                             // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d5stageKm1_Km3_Km10_KBT_KBL_Km20_Km2_Km8_EB4_.exit1276.i
+$L__BB7_12:                             // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d5stageKm1_Km3_Km10_KBT_KBL_Km20_Km2_Km8_EB4_.exit1276.i
 	cp.async.commit_group;
 	@%p20 bra 	$L__BB7_65;
 	bra.uni 	$L__BB7_13;
@@ -4892,13 +4892,13 @@ $L__BB7_13:                             // %bb32.i.lr.ph
 	shl.b32 	%r273, %r15, 1;
 	or.b32 	%r274, %r273, %r272;
 	shl.b32 	%r275, %r274, 2;
-	mov.b32 	%r276, __shared_mem_445feb0385a80dea_017b032d9c20b01d;
+	mov.b32 	%r276, __shared_mem_b36ae61f4ba23cec_1ae694113e205cb7;
 	add.s32 	%r59, %r276, %r275;
 	shr.u32 	%r277, %r1, 3;
 	and.b32 	%r278, %r277, 96;
 	or.b32 	%r279, %r278, %r273;
 	shl.b32 	%r280, %r279, 2;
-	mov.b32 	%r281, __shared_mem_445feb0385a80dea_1fa867554d7b25d0;
+	mov.b32 	%r281, __shared_mem_b36ae61f4ba23cec_a118bc2bb601d2ea;
 	add.s32 	%r60, %r281, %r280;
 	shl.b32 	%r282, %r1, 2;
 	add.s32 	%r61, %r276, %r282;
@@ -5034,7 +5034,7 @@ $L__BB7_21:                             // %bb54.i.i
 	trap; exit;
 $L__BB7_22:                             // %bb56.i.i
 	trap; exit;
-$L__BB7_23:                             // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d5stageKm1_Km3_Km10_KBT_KBL_Km20_Km2_Km8_EB4_.exit.i
+$L__BB7_23:                             // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d5stageKm1_Km3_Km10_KBT_KBL_Km20_Km2_Km8_EB4_.exit.i
                                         //   in Loop: Header=BB7_14 Depth=1
 	cp.async.commit_group;
 	div.u32 	%r73, %r64, %r6;
@@ -6147,7 +6147,7 @@ $L__BB7_41:                             // %bb48.i227.i
 	add.f32 	%r120, %r1377, %r1378;
 	st.shared.b32 	[%r59+96], %r120;
 	bra.uni 	$L__BB7_39;
-$L__BB7_42:                             // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d10reduce_putKj4_EB4_.exit277.i
+$L__BB7_42:                             // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d10reduce_putKj4_EB4_.exit277.i
                                         //   in Loop: Header=BB7_14 Depth=1
 	setp.gt.u32 	%p38, %r1, 31;
 	bar.sync 	0;
@@ -6366,7 +6366,7 @@ $L__BB7_59:                             // %bb48.i.i
 	add.f32 	%r135, %r1507, %r1508;
 	st.shared.b32 	[%r59+96], %r135;
 	bra.uni 	$L__BB7_57;
-$L__BB7_60:                             // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d10reduce_putKj4_EB4_.exit.i
+$L__BB7_60:                             // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d10reduce_putKj4_EB4_.exit.i
                                         //   in Loop: Header=BB7_14 Depth=1
 	setp.eq.b32 	%p39, %r4, 0;
 	bar.sync 	0;
@@ -6478,7 +6478,7 @@ $L__BB7_66:                             // %bb1200.i
 	trap; exit;
 $L__BB7_67:                             // %bb1202.i
 	trap; exit;
-$L__BB7_68:                             // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d9conv_bodyKm1_Km3_Km10_KBX_KBP_Km20_Kj2_Kj4_Km8_Km2_EB4_.exit
+$L__BB7_68:                             // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d9conv_bodyKm1_Km3_Km10_KBX_KBP_Km20_Kj2_Kj4_Km8_Km2_EB4_.exit
 	ret;
                                         // -- End function
 }
@@ -6595,7 +6595,7 @@ $L__BB8_3:                              // %bb17.i
 	bfe.u32 	%r1532, %r1, 3, 3;
 	setp.eq.b32 	%p41, %r3, 0;
 	setp.eq.b32 	%p42, %r2, 0;
-	mov.b32 	%r1533, __shared_mem_445feb0385a80dea_572afbe240e6d62c;
+	mov.b32 	%r1533, __shared_mem_b36ae61f4ba23cec_1d7254d0ddddc726;
 	@%p20 bra 	$L__BB8_12;
 	bra.uni 	$L__BB8_4;
 $L__BB8_4:                              // %bb1.i1209.i
@@ -6667,7 +6667,7 @@ $L__BB8_10:                             // %bb54.i1274.i
 	trap; exit;
 $L__BB8_11:                             // %bb56.i1273.i
 	trap; exit;
-$L__BB8_12:                             // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d5stageKm1_Km3_Km10_KBT_KBL_Km20_Km2_Km8_EB4_.exit1276.i
+$L__BB8_12:                             // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d5stageKm1_Km3_Km10_KBT_KBL_Km20_Km2_Km8_EB4_.exit1276.i
 	cp.async.commit_group;
 	@%p20 bra 	$L__BB8_65;
 	bra.uni 	$L__BB8_13;
@@ -6809,13 +6809,13 @@ $L__BB8_13:                             // %bb32.i.lr.ph
 	shl.b32 	%r273, %r15, 1;
 	or.b32 	%r274, %r273, %r272;
 	shl.b32 	%r275, %r274, 2;
-	mov.b32 	%r276, __shared_mem_445feb0385a80dea_976fbbe6092e9533;
+	mov.b32 	%r276, __shared_mem_b36ae61f4ba23cec_f5d0ecc4bef78e01;
 	add.s32 	%r59, %r276, %r275;
 	shr.u32 	%r277, %r1, 3;
 	and.b32 	%r278, %r277, 96;
 	or.b32 	%r279, %r278, %r273;
 	shl.b32 	%r280, %r279, 2;
-	mov.b32 	%r281, __shared_mem_445feb0385a80dea_4b0be3dff721034e;
+	mov.b32 	%r281, __shared_mem_b36ae61f4ba23cec_59611b2d89b43ddc;
 	add.s32 	%r60, %r281, %r280;
 	shl.b32 	%r282, %r1, 2;
 	add.s32 	%r61, %r276, %r282;
@@ -6951,7 +6951,7 @@ $L__BB8_21:                             // %bb54.i.i
 	trap; exit;
 $L__BB8_22:                             // %bb56.i.i
 	trap; exit;
-$L__BB8_23:                             // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d5stageKm1_Km3_Km10_KBT_KBL_Km20_Km2_Km8_EB4_.exit.i
+$L__BB8_23:                             // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d5stageKm1_Km3_Km10_KBT_KBL_Km20_Km2_Km8_EB4_.exit.i
                                         //   in Loop: Header=BB8_14 Depth=1
 	cp.async.commit_group;
 	div.u32 	%r73, %r64, %r6;
@@ -8064,7 +8064,7 @@ $L__BB8_41:                             // %bb48.i227.i
 	add.f32 	%r120, %r1377, %r1378;
 	st.shared.b32 	[%r59+96], %r120;
 	bra.uni 	$L__BB8_39;
-$L__BB8_42:                             // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d10reduce_putKj4_EB4_.exit277.i
+$L__BB8_42:                             // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d10reduce_putKj4_EB4_.exit277.i
                                         //   in Loop: Header=BB8_14 Depth=1
 	setp.gt.u32 	%p38, %r1, 31;
 	bar.sync 	0;
@@ -8283,7 +8283,7 @@ $L__BB8_59:                             // %bb48.i.i
 	add.f32 	%r135, %r1507, %r1508;
 	st.shared.b32 	[%r59+96], %r135;
 	bra.uni 	$L__BB8_57;
-$L__BB8_60:                             // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d10reduce_putKj4_EB4_.exit.i
+$L__BB8_60:                             // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d10reduce_putKj4_EB4_.exit.i
                                         //   in Loop: Header=BB8_14 Depth=1
 	setp.eq.b32 	%p39, %r4, 0;
 	bar.sync 	0;
@@ -8395,7 +8395,7 @@ $L__BB8_66:                             // %bb1200.i
 	trap; exit;
 $L__BB8_67:                             // %bb1202.i
 	trap; exit;
-$L__BB8_68:                             // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d9conv_bodyKm1_Km3_Km10_KBX_KBP_Km20_Kj2_Kj4_Km8_Km2_EB4_.exit
+$L__BB8_68:                             // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d9conv_bodyKm1_Km3_Km10_KBX_KBP_Km20_Kj2_Kj4_Km8_Km2_EB4_.exit
 	ret;
                                         // -- End function
 }
@@ -8513,7 +8513,7 @@ $L__BB9_3:                              // %bb17.i
 	bfe.u32 	%r2558, %r1, 3, 3;
 	setp.eq.b32 	%p41, %r3, 0;
 	setp.eq.b32 	%p42, %r2, 0;
-	mov.b32 	%r2559, __shared_mem_445feb0385a80dea_70b9ce5d78bfa7af;
+	mov.b32 	%r2559, __shared_mem_b36ae61f4ba23cec_c497e85ad18a4439;
 	@%p20 bra 	$L__BB9_12;
 	bra.uni 	$L__BB9_4;
 $L__BB9_4:                              // %bb1.i
@@ -8585,7 +8585,7 @@ $L__BB9_10:                             // %bb54.i
 	trap; exit;
 $L__BB9_11:                             // %bb56.i
 	trap; exit;
-$L__BB9_12:                             // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d5stageKm1_Km3_Km10_KBT_KBL_Km20_Km2_Km8_EB4_.exit
+$L__BB9_12:                             // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d5stageKm1_Km3_Km10_KBT_KBL_Km20_Km2_Km8_EB4_.exit
 	cp.async.commit_group;
 	@%p20 bra 	$L__BB9_97;
 	bra.uni 	$L__BB9_13;
@@ -8734,13 +8734,13 @@ $L__BB9_13:                             // %bb32.i.lr.ph
 	shl.b32 	%r343, %r15, 1;
 	or.b32 	%r344, %r342, %r343;
 	shl.b32 	%r345, %r344, 2;
-	mov.b32 	%r346, __shared_mem_445feb0385a80dea_5d391556716184c2;
+	mov.b32 	%r346, __shared_mem_b36ae61f4ba23cec_1729fa44a4e5bb20;
 	add.s32 	%r63, %r346, %r345;
 	shr.u32 	%r347, %r1, 2;
 	and.b32 	%r348, %r347, 192;
 	or.b32 	%r349, %r348, %r343;
 	shl.b32 	%r350, %r349, 2;
-	mov.b32 	%r351, __shared_mem_445feb0385a80dea_b69819e103898147;
+	mov.b32 	%r351, __shared_mem_b36ae61f4ba23cec_8a2c3d4c46f79b9d;
 	add.s32 	%r64, %r351, %r350;
 	shl.b32 	%r352, %r1, 2;
 	add.s32 	%r65, %r346, %r352;
@@ -8908,7 +8908,7 @@ $L__BB9_21:                             // %bb54.i84
 	trap; exit;
 $L__BB9_22:                             // %bb56.i83
 	trap; exit;
-$L__BB9_23:                             // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d5stageKm1_Km3_Km10_KBT_KBL_Km20_Km2_Km8_EB4_.exit86
+$L__BB9_23:                             // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d5stageKm1_Km3_Km10_KBT_KBL_Km20_Km2_Km8_EB4_.exit86
                                         //   in Loop: Header=BB9_14 Depth=1
 	cp.async.commit_group;
 	div.u32 	%r77, %r68, %r6;
@@ -11013,7 +11013,7 @@ $L__BB9_57:                             // %bb96.i443.i
 	add.f32 	%r172, %r2291, %r2292;
 	st.shared.b32 	[%r63+224], %r172;
 	bra.uni 	$L__BB9_55;
-$L__BB9_58:                             // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d10reduce_putKj8_EB4_.exit553.i
+$L__BB9_58:                             // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d10reduce_putKj8_EB4_.exit553.i
                                         //   in Loop: Header=BB9_14 Depth=1
 	setp.gt.u32 	%p38, %r1, 63;
 	bar.sync 	0;
@@ -11424,7 +11424,7 @@ $L__BB9_91:                             // %bb96.i.i
 	add.f32 	%r203, %r2533, %r2534;
 	st.shared.b32 	[%r63+224], %r203;
 	bra.uni 	$L__BB9_89;
-$L__BB9_92:                             // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d10reduce_putKj8_EB4_.exit.i
+$L__BB9_92:                             // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d10reduce_putKj8_EB4_.exit.i
                                         //   in Loop: Header=BB9_14 Depth=1
 	setp.eq.b32 	%p39, %r4, 0;
 	bar.sync 	0;
@@ -11600,7 +11600,7 @@ $L__BB9_98:                             // %bb2128.i
 	trap; exit;
 $L__BB9_99:                             // %bb2130.i
 	trap; exit;
-$L__BB9_100:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d9conv_bodyKm1_Km3_Km10_KBX_KBP_Km20_Kj2_Kj8_Km8_Km2_EB4_.exit
+$L__BB9_100:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d9conv_bodyKm1_Km3_Km10_KBX_KBP_Km20_Kj2_Kj8_Km8_Km2_EB4_.exit
 	ret;
                                         // -- End function
 }
@@ -11735,7 +11735,7 @@ $L__BB10_4:                             // %bb24.i
                                         //     Child Loop BB10_9 Depth 2
 	mov.pred 	%p1, %p45;
 	setp.ge.u32 	%p21, %r718, %r12;
-	mov.b32 	%r716, __shared_mem_445feb0385a80dea_555094a04c68bd93;
+	mov.b32 	%r716, __shared_mem_b36ae61f4ba23cec_5bcd694895dbd41d;
 	@%p21 bra 	$L__BB10_14;
 	bra.uni 	$L__BB10_5;
 $L__BB10_5:                             // %bb1.i178.i
@@ -11834,7 +11834,7 @@ $L__BB10_12:                            // %bb54.i246.i
 	trap; exit;
 $L__BB10_13:                            // %bb56.i245.i
 	trap; exit;
-$L__BB10_14:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d5stageKm1_Km3_Km4_KBT_KBT_Km20_KBP_KBT_EB4_.exit248.i
+$L__BB10_14:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d5stageKm1_Km3_Km4_KBT_KBT_Km20_KBP_KBT_EB4_.exit248.i
                                         //   in Loop: Header=BB10_4 Depth=1
 	cp.async.commit_group;
 	mov.b32 	%r718, 1;
@@ -11935,9 +11935,9 @@ $L__BB10_16:                            // %bb27.i.lr.ph
 	shl.b32 	%r211, %r15, 3;
 	shl.b32 	%r212, %r16, 6;
 	or.b32 	%r213, %r212, %r211;
-	mov.b32 	%r214, __shared_mem_445feb0385a80dea_e1a2267cb9ee531a;
+	mov.b32 	%r214, __shared_mem_b36ae61f4ba23cec_a396a9c8c1fbfab8;
 	add.s32 	%r55, %r214, %r213;
-	mov.b32 	%r215, __shared_mem_445feb0385a80dea_ffbdd24fdb621453;
+	mov.b32 	%r215, __shared_mem_b36ae61f4ba23cec_deb9f8f4f556b0b1;
 	add.s32 	%r56, %r215, %r213;
 	shl.b32 	%r216, %r1, 2;
 	add.s32 	%r57, %r214, %r216;
@@ -12063,7 +12063,7 @@ $L__BB10_25:                            // %bb54.i.i
 	trap; exit;
 $L__BB10_26:                            // %bb56.i.i
 	trap; exit;
-$L__BB10_27:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d5stageKm1_Km3_Km4_KBT_KBT_Km20_KBP_KBT_EB4_.exit.i
+$L__BB10_27:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d5stageKm1_Km3_Km4_KBT_KBT_Km20_KBP_KBT_EB4_.exit.i
                                         //   in Loop: Header=BB10_17 Depth=1
 	cp.async.commit_group;
 	div.u32 	%r72, %r726, %r6;
@@ -12496,7 +12496,7 @@ $L__BB10_37:                            // %bb24.i526
 	add.f32 	%r87, %r659, %r660;
 	st.shared.b32 	[%r55+32], %r87;
 	bra.uni 	$L__BB10_35;
-$L__BB10_38:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d10reduce_putKj2_EB4_.exit546
+$L__BB10_38:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d10reduce_putKj2_EB4_.exit546
                                         //   in Loop: Header=BB10_17 Depth=1
 	setp.gt.u32 	%p42, %r1, 63;
 	bar.sync 	0;
@@ -12585,7 +12585,7 @@ $L__BB10_47:                            // %bb24.i470
 	add.f32 	%r94, %r699, %r700;
 	st.shared.b32 	[%r55+32], %r94;
 	bra.uni 	$L__BB10_45;
-$L__BB10_48:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d10reduce_putKj2_EB4_.exit
+$L__BB10_48:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d10reduce_putKj2_EB4_.exit
                                         //   in Loop: Header=BB10_17 Depth=1
 	setp.eq.b32 	%p43, %r4, 0;
 	bar.sync 	0;
@@ -12641,7 +12641,7 @@ $L__BB10_54:                            // %bb468.i
 	trap; exit;
 $L__BB10_55:                            // %bb470.i
 	trap; exit;
-$L__BB10_56:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d9conv_bodyKm1_Km3_Km4_KBX_KBX_Km20_Kj1_Kj2_KBX_KBT_EB4_.exit
+$L__BB10_56:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d9conv_bodyKm1_Km3_Km4_KBX_KBX_Km20_Kj1_Kj2_KBX_KBT_EB4_.exit
 	ret;
                                         // -- End function
 }
@@ -12775,7 +12775,7 @@ $L__BB11_4:                             // %bb24.i
                                         //     Child Loop BB11_9 Depth 2
 	mov.pred 	%p1, %p45;
 	setp.ge.u32 	%p21, %r1032, %r12;
-	mov.b32 	%r1030, __shared_mem_445feb0385a80dea_bed323b21175b7c5;
+	mov.b32 	%r1030, __shared_mem_b36ae61f4ba23cec_028bad6f58cf216b;
 	@%p21 bra 	$L__BB11_14;
 	bra.uni 	$L__BB11_5;
 $L__BB11_5:                             // %bb1.i23
@@ -12874,7 +12874,7 @@ $L__BB11_12:                            // %bb54.i91
 	trap; exit;
 $L__BB11_13:                            // %bb56.i90
 	trap; exit;
-$L__BB11_14:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d5stageKm1_Km3_Km4_KBT_KBT_Km20_KBP_KBT_EB4_.exit93
+$L__BB11_14:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d5stageKm1_Km3_Km4_KBT_KBT_Km20_KBP_KBT_EB4_.exit93
                                         //   in Loop: Header=BB11_4 Depth=1
 	cp.async.commit_group;
 	mov.b32 	%r1032, 1;
@@ -12979,9 +12979,9 @@ $L__BB11_16:                            // %bb27.i.lr.ph
 	shl.b32 	%r237, %r15, 3;
 	shl.b32 	%r238, %r236, 2;
 	or.b32 	%r239, %r237, %r238;
-	mov.b32 	%r240, __shared_mem_445feb0385a80dea_5756770e4fdb985c;
+	mov.b32 	%r240, __shared_mem_b36ae61f4ba23cec_d63963f884299e66;
 	add.s32 	%r57, %r240, %r239;
-	mov.b32 	%r241, __shared_mem_445feb0385a80dea_c390d84e97646859;
+	mov.b32 	%r241, __shared_mem_b36ae61f4ba23cec_798c51ecf44ee743;
 	add.s32 	%r58, %r241, %r239;
 	shl.b32 	%r242, %r1, 2;
 	add.s32 	%r59, %r240, %r242;
@@ -13114,7 +13114,7 @@ $L__BB11_25:                            // %bb54.i
 	trap; exit;
 $L__BB11_26:                            // %bb56.i
 	trap; exit;
-$L__BB11_27:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d5stageKm1_Km3_Km4_KBT_KBT_Km20_KBP_KBT_EB4_.exit
+$L__BB11_27:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d5stageKm1_Km3_Km4_KBT_KBT_Km20_KBP_KBT_EB4_.exit
                                         //   in Loop: Header=BB11_17 Depth=1
 	cp.async.commit_group;
 	div.u32 	%r74, %r1044, %r6;
@@ -13832,7 +13832,7 @@ $L__BB11_45:                            // %bb48.i171.i.i
 	add.f32 	%r105, %r937, %r938;
 	st.shared.b32 	[%r57+96], %r105;
 	bra.uni 	$L__BB11_43;
-$L__BB11_46:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d10reduce_putKj4_EB4_.exit221.i.i
+$L__BB11_46:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d10reduce_putKj4_EB4_.exit221.i.i
                                         //   in Loop: Header=BB11_17 Depth=1
 	setp.gt.u32 	%p42, %r1, 127;
 	bar.sync 	0;
@@ -13997,7 +13997,7 @@ $L__BB11_63:                            // %bb48.i.i.i
 	add.f32 	%r120, %r1013, %r1014;
 	st.shared.b32 	[%r57+96], %r120;
 	bra.uni 	$L__BB11_61;
-$L__BB11_64:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d10reduce_putKj4_EB4_.exit.i.i
+$L__BB11_64:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d10reduce_putKj4_EB4_.exit.i.i
                                         //   in Loop: Header=BB11_17 Depth=1
 	setp.eq.b32 	%p43, %r4, 0;
 	bar.sync 	0;
@@ -14069,7 +14069,7 @@ $L__BB11_70:                            // %bb700.i
 	trap; exit;
 $L__BB11_71:                            // %bb702.i
 	trap; exit;
-$L__BB11_72:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d9conv_bodyKm1_Km3_Km4_KBX_KBX_Km20_Kj1_Kj4_KBX_KBT_EB4_.exit
+$L__BB11_72:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d9conv_bodyKm1_Km3_Km4_KBX_KBX_Km20_Kj1_Kj4_KBX_KBT_EB4_.exit
 	ret;
                                         // -- End function
 }
@@ -14199,7 +14199,7 @@ $L__BB12_4:                             // %bb24.i
                                         //     Child Loop BB12_9 Depth 2
 	mov.pred 	%p1, %p45;
 	setp.ge.u32 	%p21, %r1018, %r12;
-	mov.b32 	%r1016, __shared_mem_445feb0385a80dea_6e5479a61c6fd524;
+	mov.b32 	%r1016, __shared_mem_b36ae61f4ba23cec_d0a6409a95d596be;
 	@%p21 bra 	$L__BB12_14;
 	bra.uni 	$L__BB12_5;
 $L__BB12_5:                             // %bb1.i20
@@ -14291,7 +14291,7 @@ $L__BB12_12:                            // %bb54.i87
 	trap; exit;
 $L__BB12_13:                            // %bb56.i86
 	trap; exit;
-$L__BB12_14:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d5stageKm1_Km3_Km4_KBT_KBL_Km20_KBP_KBL_EB4_.exit89
+$L__BB12_14:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d5stageKm1_Km3_Km4_KBT_KBL_Km20_KBP_KBL_EB4_.exit89
                                         //   in Loop: Header=BB12_4 Depth=1
 	cp.async.commit_group;
 	mov.b32 	%r1018, 1;
@@ -14396,9 +14396,9 @@ $L__BB12_16:                            // %bb27.i.lr.ph
 	shl.b32 	%r230, %r15, 3;
 	shl.b32 	%r231, %r229, 2;
 	or.b32 	%r232, %r230, %r231;
-	mov.b32 	%r233, __shared_mem_445feb0385a80dea_3bd34f981a5d33f7;
+	mov.b32 	%r233, __shared_mem_b36ae61f4ba23cec_3915ae51eab7cadd;
 	add.s32 	%r55, %r233, %r232;
-	mov.b32 	%r234, __shared_mem_445feb0385a80dea_83e5825c31fae44a;
+	mov.b32 	%r234, __shared_mem_b36ae61f4ba23cec_fac3d662d2f46e28;
 	add.s32 	%r56, %r234, %r232;
 	shl.b32 	%r235, %r1, 2;
 	add.s32 	%r57, %r233, %r235;
@@ -14524,7 +14524,7 @@ $L__BB12_25:                            // %bb54.i
 	trap; exit;
 $L__BB12_26:                            // %bb56.i
 	trap; exit;
-$L__BB12_27:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d5stageKm1_Km3_Km4_KBT_KBL_Km20_KBP_KBL_EB4_.exit
+$L__BB12_27:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d5stageKm1_Km3_Km4_KBT_KBL_Km20_KBP_KBL_EB4_.exit
                                         //   in Loop: Header=BB12_17 Depth=1
 	cp.async.commit_group;
 	div.u32 	%r70, %r1031, %r6;
@@ -15241,7 +15241,7 @@ $L__BB12_45:                            // %bb48.i1052.i
 	add.f32 	%r101, %r929, %r930;
 	st.shared.b32 	[%r55+96], %r101;
 	bra.uni 	$L__BB12_43;
-$L__BB12_46:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d10reduce_putKj4_EB4_.exit1102.i
+$L__BB12_46:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d10reduce_putKj4_EB4_.exit1102.i
                                         //   in Loop: Header=BB12_17 Depth=1
 	setp.gt.u32 	%p42, %r1, 31;
 	bar.sync 	0;
@@ -15406,7 +15406,7 @@ $L__BB12_63:                            // %bb48.i.i
 	add.f32 	%r116, %r1005, %r1006;
 	st.shared.b32 	[%r55+96], %r116;
 	bra.uni 	$L__BB12_61;
-$L__BB12_64:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d10reduce_putKj4_EB4_.exit.i
+$L__BB12_64:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d10reduce_putKj4_EB4_.exit.i
                                         //   in Loop: Header=BB12_17 Depth=1
 	setp.eq.b32 	%p43, %r4, 0;
 	bar.sync 	0;
@@ -15472,7 +15472,7 @@ $L__BB12_70:                            // %bb700.i
 	trap; exit;
 $L__BB12_71:                            // %bb702.i
 	trap; exit;
-$L__BB12_72:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d9conv_bodyKm1_Km3_Km4_KBX_KBP_Km20_Kj1_Kj4_KBP_KBT_EB4_.exit
+$L__BB12_72:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d9conv_bodyKm1_Km3_Km4_KBX_KBP_Km20_Kj1_Kj4_KBP_KBT_EB4_.exit
 	ret;
                                         // -- End function
 }
@@ -15609,7 +15609,7 @@ $L__BB13_4:                             // %bb24.i
                                         //     Child Loop BB13_9 Depth 2
 	mov.pred 	%p1, %p45;
 	setp.ge.u32 	%p21, %r1040, %r12;
-	mov.b32 	%r1038, __shared_mem_445feb0385a80dea_6c6c03f712afc119;
+	mov.b32 	%r1038, __shared_mem_b36ae61f4ba23cec_3b00af7181320f97;
 	@%p21 bra 	$L__BB13_14;
 	bra.uni 	$L__BB13_5;
 $L__BB13_5:                             // %bb1.i922.i
@@ -15699,7 +15699,7 @@ $L__BB13_12:                            // %bb54.i989.i
 	trap; exit;
 $L__BB13_13:                            // %bb56.i988.i
 	trap; exit;
-$L__BB13_14:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d5stageKm1_Km3_Km8_KBT_KBL_Km20_KBP_Km4_EB4_.exit991.i
+$L__BB13_14:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d5stageKm1_Km3_Km8_KBT_KBL_Km20_KBP_Km4_EB4_.exit991.i
                                         //   in Loop: Header=BB13_4 Depth=1
 	cp.async.commit_group;
 	mov.b32 	%r1040, 1;
@@ -15806,12 +15806,12 @@ $L__BB13_16:                            // %bb27.i.lr.ph
 	shl.b32 	%r237, %r15, 1;
 	or.b32 	%r238, %r237, %r236;
 	shl.b32 	%r239, %r238, 2;
-	mov.b32 	%r240, __shared_mem_445feb0385a80dea_c4f119673c2dcff0;
+	mov.b32 	%r240, __shared_mem_b36ae61f4ba23cec_67535448d4b59b02;
 	add.s32 	%r56, %r240, %r239;
 	and.b32 	%r241, %r20, 224;
 	or.b32 	%r242, %r241, %r237;
 	shl.b32 	%r243, %r242, 2;
-	mov.b32 	%r244, __shared_mem_445feb0385a80dea_fa959740c15dbf95;
+	mov.b32 	%r244, __shared_mem_b36ae61f4ba23cec_23094be8d755243f;
 	add.s32 	%r57, %r244, %r243;
 	shl.b32 	%r245, %r1, 2;
 	add.s32 	%r58, %r240, %r245;
@@ -15935,7 +15935,7 @@ $L__BB13_25:                            // %bb54.i.i
 	trap; exit;
 $L__BB13_26:                            // %bb56.i.i
 	trap; exit;
-$L__BB13_27:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d5stageKm1_Km3_Km8_KBT_KBL_Km20_KBP_Km4_EB4_.exit.i
+$L__BB13_27:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d5stageKm1_Km3_Km8_KBT_KBL_Km20_KBP_Km4_EB4_.exit.i
                                         //   in Loop: Header=BB13_17 Depth=1
 	cp.async.commit_group;
 	div.u32 	%r71, %r1052, %r6;
@@ -16653,7 +16653,7 @@ $L__BB13_45:                            // %bb48.i171.i
 	add.f32 	%r102, %r939, %r940;
 	st.shared.b32 	[%r56+96], %r102;
 	bra.uni 	$L__BB13_43;
-$L__BB13_46:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d10reduce_putKj4_EB4_.exit221.i
+$L__BB13_46:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d10reduce_putKj4_EB4_.exit221.i
                                         //   in Loop: Header=BB13_17 Depth=1
 	setp.gt.u32 	%p42, %r1, 31;
 	bar.sync 	0;
@@ -16824,7 +16824,7 @@ $L__BB13_63:                            // %bb48.i.i
 	add.f32 	%r117, %r1021, %r1022;
 	st.shared.b32 	[%r56+96], %r117;
 	bra.uni 	$L__BB13_61;
-$L__BB13_64:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d10reduce_putKj4_EB4_.exit.i
+$L__BB13_64:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d10reduce_putKj4_EB4_.exit.i
                                         //   in Loop: Header=BB13_17 Depth=1
 	setp.eq.b32 	%p43, %r4, 0;
 	bar.sync 	0;
@@ -16896,7 +16896,7 @@ $L__BB13_70:                            // %bb700.i
 	trap; exit;
 $L__BB13_71:                            // %bb702.i
 	trap; exit;
-$L__BB13_72:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d9conv_bodyKm1_Km3_Km8_KBX_KBP_Km20_Kj1_Kj4_Km4_KBT_EB4_.exit
+$L__BB13_72:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d9conv_bodyKm1_Km3_Km8_KBX_KBP_Km20_Kj1_Kj4_Km4_KBT_EB4_.exit
 	ret;
                                         // -- End function
 }
@@ -17034,7 +17034,7 @@ $L__BB14_4:                             // %bb24.i
                                         //     Child Loop BB14_9 Depth 2
 	mov.pred 	%p1, %p45;
 	setp.ge.u32 	%p21, %r1690, %r12;
-	mov.b32 	%r1688, __shared_mem_445feb0385a80dea_3da7c74b0b915740;
+	mov.b32 	%r1688, __shared_mem_b36ae61f4ba23cec_12e486fe636f699a;
 	@%p21 bra 	$L__BB14_14;
 	bra.uni 	$L__BB14_5;
 $L__BB14_5:                             // %bb1.i20
@@ -17124,7 +17124,7 @@ $L__BB14_12:                            // %bb54.i87
 	trap; exit;
 $L__BB14_13:                            // %bb56.i86
 	trap; exit;
-$L__BB14_14:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d5stageKm1_Km3_Km8_KBT_KBL_Km20_KBP_Km4_EB4_.exit89
+$L__BB14_14:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d5stageKm1_Km3_Km8_KBT_KBL_Km20_KBP_Km4_EB4_.exit89
                                         //   in Loop: Header=BB14_4 Depth=1
 	cp.async.commit_group;
 	mov.b32 	%r1690, 1;
@@ -17238,12 +17238,12 @@ $L__BB14_16:                            // %bb27.i.lr.ph
 	shl.b32 	%r291, %r15, 1;
 	or.b32 	%r292, %r290, %r291;
 	shl.b32 	%r293, %r292, 2;
-	mov.b32 	%r294, __shared_mem_445feb0385a80dea_51f467e0402d3743;
+	mov.b32 	%r294, __shared_mem_b36ae61f4ba23cec_94db76cc6a38b299;
 	add.s32 	%r61, %r294, %r293;
 	and.b32 	%r295, %r16, 448;
 	or.b32 	%r296, %r295, %r291;
 	shl.b32 	%r297, %r296, 2;
-	mov.b32 	%r298, __shared_mem_445feb0385a80dea_8b7695d358aab5ee;
+	mov.b32 	%r298, __shared_mem_b36ae61f4ba23cec_fb456867c7e43404;
 	add.s32 	%r62, %r298, %r297;
 	shl.b32 	%r299, %r1, 2;
 	add.s32 	%r63, %r294, %r299;
@@ -17383,7 +17383,7 @@ $L__BB14_25:                            // %bb54.i
 	trap; exit;
 $L__BB14_26:                            // %bb56.i
 	trap; exit;
-$L__BB14_27:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d5stageKm1_Km3_Km8_KBT_KBL_Km20_KBP_Km4_EB4_.exit
+$L__BB14_27:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d5stageKm1_Km3_Km8_KBT_KBL_Km20_KBP_Km4_EB4_.exit
                                         //   in Loop: Header=BB14_17 Depth=1
 	cp.async.commit_group;
 	div.u32 	%r76, %r1710, %r6;
@@ -18725,7 +18725,7 @@ $L__BB14_61:                            // %bb96.i331.i.i
 	add.f32 	%r139, %r1517, %r1518;
 	st.shared.b32 	[%r61+224], %r139;
 	bra.uni 	$L__BB14_59;
-$L__BB14_62:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d10reduce_putKj8_EB4_.exit441.i.i
+$L__BB14_62:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d10reduce_putKj8_EB4_.exit441.i.i
                                         //   in Loop: Header=BB14_17 Depth=1
 	setp.gt.u32 	%p42, %r1, 63;
 	bar.sync 	0;
@@ -19048,7 +19048,7 @@ $L__BB14_95:                            // %bb96.i.i.i
 	add.f32 	%r170, %r1671, %r1672;
 	st.shared.b32 	[%r61+224], %r170;
 	bra.uni 	$L__BB14_93;
-$L__BB14_96:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d10reduce_putKj8_EB4_.exit.i.i
+$L__BB14_96:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d10reduce_putKj8_EB4_.exit.i.i
                                         //   in Loop: Header=BB14_17 Depth=1
 	setp.eq.b32 	%p43, %r4, 0;
 	bar.sync 	0;
@@ -19152,7 +19152,7 @@ $L__BB14_102:                           // %bb1164.i
 	trap; exit;
 $L__BB14_103:                           // %bb1166.i
 	trap; exit;
-$L__BB14_104:                           // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d9conv_bodyKm1_Km3_Km8_KBX_KBP_Km20_Kj1_Kj8_Km4_KBT_EB4_.exit
+$L__BB14_104:                           // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d9conv_bodyKm1_Km3_Km8_KBX_KBP_Km20_Kj1_Kj8_Km4_KBT_EB4_.exit
 	ret;
                                         // -- End function
 }
@@ -19290,7 +19290,7 @@ $L__BB15_4:                             // %bb24.i
                                         //     Child Loop BB15_9 Depth 2
 	mov.pred 	%p1, %p45;
 	setp.ge.u32 	%p21, %r1690, %r12;
-	mov.b32 	%r1688, __shared_mem_445feb0385a80dea_d5ca287936372920;
+	mov.b32 	%r1688, __shared_mem_b36ae61f4ba23cec_ef8b07769537c11e;
 	@%p21 bra 	$L__BB15_14;
 	bra.uni 	$L__BB15_5;
 $L__BB15_5:                             // %bb1.i20
@@ -19380,7 +19380,7 @@ $L__BB15_12:                            // %bb54.i87
 	trap; exit;
 $L__BB15_13:                            // %bb56.i86
 	trap; exit;
-$L__BB15_14:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d5stageKm1_Km3_Km8_KBT_KBL_Km20_KBP_Km4_EB4_.exit89
+$L__BB15_14:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d5stageKm1_Km3_Km8_KBT_KBL_Km20_KBP_Km4_EB4_.exit89
                                         //   in Loop: Header=BB15_4 Depth=1
 	cp.async.commit_group;
 	mov.b32 	%r1690, 1;
@@ -19494,12 +19494,12 @@ $L__BB15_16:                            // %bb27.i.lr.ph
 	shl.b32 	%r291, %r15, 1;
 	or.b32 	%r292, %r290, %r291;
 	shl.b32 	%r293, %r292, 2;
-	mov.b32 	%r294, __shared_mem_445feb0385a80dea_e83bd954cede47cb;
+	mov.b32 	%r294, __shared_mem_b36ae61f4ba23cec_199ba5514fe1c88d;
 	add.s32 	%r61, %r294, %r293;
 	and.b32 	%r295, %r16, 448;
 	or.b32 	%r296, %r295, %r291;
 	shl.b32 	%r297, %r296, 2;
-	mov.b32 	%r298, __shared_mem_445feb0385a80dea_c63de91dfe524ebe;
+	mov.b32 	%r298, __shared_mem_b36ae61f4ba23cec_a4cb38760d474628;
 	add.s32 	%r62, %r298, %r297;
 	shl.b32 	%r299, %r1, 2;
 	add.s32 	%r63, %r294, %r299;
@@ -19639,7 +19639,7 @@ $L__BB15_25:                            // %bb54.i
 	trap; exit;
 $L__BB15_26:                            // %bb56.i
 	trap; exit;
-$L__BB15_27:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d5stageKm1_Km3_Km8_KBT_KBL_Km20_KBP_Km4_EB4_.exit
+$L__BB15_27:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d5stageKm1_Km3_Km8_KBT_KBL_Km20_KBP_Km4_EB4_.exit
                                         //   in Loop: Header=BB15_17 Depth=1
 	cp.async.commit_group;
 	div.u32 	%r76, %r1710, %r6;
@@ -20981,7 +20981,7 @@ $L__BB15_61:                            // %bb96.i331.i.i
 	add.f32 	%r139, %r1517, %r1518;
 	st.shared.b32 	[%r61+224], %r139;
 	bra.uni 	$L__BB15_59;
-$L__BB15_62:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d10reduce_putKj8_EB4_.exit441.i.i
+$L__BB15_62:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d10reduce_putKj8_EB4_.exit441.i.i
                                         //   in Loop: Header=BB15_17 Depth=1
 	setp.gt.u32 	%p42, %r1, 63;
 	bar.sync 	0;
@@ -21304,7 +21304,7 @@ $L__BB15_95:                            // %bb96.i.i.i
 	add.f32 	%r170, %r1671, %r1672;
 	st.shared.b32 	[%r61+224], %r170;
 	bra.uni 	$L__BB15_93;
-$L__BB15_96:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d10reduce_putKj8_EB4_.exit.i.i
+$L__BB15_96:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d10reduce_putKj8_EB4_.exit.i.i
                                         //   in Loop: Header=BB15_17 Depth=1
 	setp.eq.b32 	%p43, %r4, 0;
 	bar.sync 	0;
@@ -21408,7 +21408,7 @@ $L__BB15_102:                           // %bb1164.i
 	trap; exit;
 $L__BB15_103:                           // %bb1166.i
 	trap; exit;
-$L__BB15_104:                           // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d9conv_bodyKm1_Km3_Km8_KBX_KBP_Km20_Kj1_Kj8_Km4_KBT_EB4_.exit
+$L__BB15_104:                           // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d9conv_bodyKm1_Km3_Km8_KBX_KBP_Km20_Kj1_Kj8_Km4_KBT_EB4_.exit
 	ret;
                                         // -- End function
 }
@@ -21534,7 +21534,7 @@ $L__BB16_3:                             // %bb17.i
 	bfe.u32 	%r1029, %r3, 3, 3;
 	setp.eq.b32 	%p41, %r5, 0;
 	setp.eq.b32 	%p42, %r4, 0;
-	mov.b32 	%r1030, __shared_mem_445feb0385a80dea_5774bd2bac85b1e8;
+	mov.b32 	%r1030, __shared_mem_b36ae61f4ba23cec_07ea82c1fd385a2a;
 	@%p20 bra 	$L__BB16_12;
 	bra.uni 	$L__BB16_4;
 $L__BB16_4:                             // %bb1.i
@@ -21615,7 +21615,7 @@ $L__BB16_10:                            // %bb54.i
 	trap; exit;
 $L__BB16_11:                            // %bb56.i
 	trap; exit;
-$L__BB16_12:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d5stageKm2_Km3_Km4_KBT_KBT_Km20_KBL_KBT_EB4_.exit
+$L__BB16_12:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d5stageKm2_Km3_Km4_KBT_KBT_Km20_KBL_KBT_EB4_.exit
 	cp.async.commit_group;
 	@%p20 bra 	$L__BB16_65;
 	bra.uni 	$L__BB16_13;
@@ -21724,9 +21724,9 @@ $L__BB16_13:                            // %bb27.i.lr.ph
 	shl.b32 	%r238, %r17, 3;
 	shl.b32 	%r239, %r237, 2;
 	or.b32 	%r240, %r238, %r239;
-	mov.b32 	%r241, __shared_mem_445feb0385a80dea_71f5a3dcd0965fa7;
+	mov.b32 	%r241, __shared_mem_b36ae61f4ba23cec_c28683a603918285;
 	add.s32 	%r53, %r241, %r240;
-	mov.b32 	%r242, __shared_mem_445feb0385a80dea_3db3aaf4100275ea;
+	mov.b32 	%r242, __shared_mem_b36ae61f4ba23cec_a8dd180ae0127d80;
 	add.s32 	%r54, %r242, %r240;
 	shl.b32 	%r243, %r3, 2;
 	add.s32 	%r55, %r241, %r243;
@@ -21855,7 +21855,7 @@ $L__BB16_21:                            // %bb54.i90
 	trap; exit;
 $L__BB16_22:                            // %bb56.i89
 	trap; exit;
-$L__BB16_23:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d5stageKm2_Km3_Km4_KBT_KBT_Km20_KBL_KBT_EB4_.exit92
+$L__BB16_23:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d5stageKm2_Km3_Km4_KBT_KBT_Km20_KBL_KBT_EB4_.exit92
                                         //   in Loop: Header=BB16_14 Depth=1
 	cp.async.commit_group;
 	div.u32 	%r69, %r58, %r8;
@@ -22571,7 +22571,7 @@ $L__BB16_41:                            // %bb48.i171.i
 	add.f32 	%r100, %r936, %r937;
 	st.shared.b32 	[%r53+96], %r100;
 	bra.uni 	$L__BB16_39;
-$L__BB16_42:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d10reduce_putKj4_EB4_.exit221.i
+$L__BB16_42:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d10reduce_putKj4_EB4_.exit221.i
                                         //   in Loop: Header=BB16_14 Depth=1
 	setp.gt.u32 	%p38, %r3, 127;
 	bar.sync 	0;
@@ -22736,7 +22736,7 @@ $L__BB16_59:                            // %bb48.i.i
 	add.f32 	%r115, %r1012, %r1013;
 	st.shared.b32 	[%r53+96], %r115;
 	bra.uni 	$L__BB16_57;
-$L__BB16_60:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d10reduce_putKj4_EB4_.exit.i
+$L__BB16_60:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d10reduce_putKj4_EB4_.exit.i
                                         //   in Loop: Header=BB16_14 Depth=1
 	setp.eq.b32 	%p39, %r6, 0;
 	bar.sync 	0;
@@ -22808,7 +22808,7 @@ $L__BB16_66:                            // %bb700.i
 	trap; exit;
 $L__BB16_67:                            // %bb702.i
 	trap; exit;
-$L__BB16_68:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d9conv_bodyKm2_Km3_Km4_KBX_KBX_Km20_Kj1_Kj4_KBX_KBP_EB4_.exit
+$L__BB16_68:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d9conv_bodyKm2_Km3_Km4_KBX_KBX_Km20_Kj1_Kj4_KBX_KBP_EB4_.exit
 	ret;
                                         // -- End function
 }
@@ -22932,7 +22932,7 @@ $L__BB17_3:                             // %bb17.i
 	setp.eq.b32 	%p41, %r5, 0;
 	setp.eq.b32 	%p42, %r4, 0;
 	setp.gt.u32 	%p43, %r3, 323;
-	mov.b32 	%r1016, __shared_mem_445feb0385a80dea_225536584cd6ba59;
+	mov.b32 	%r1016, __shared_mem_b36ae61f4ba23cec_d9b0b79c47ff087f;
 	@%p20 bra 	$L__BB17_13;
 	bra.uni 	$L__BB17_4;
 $L__BB17_4:                             // %bb1.i
@@ -23012,7 +23012,7 @@ $L__BB17_11:                            // %bb54.i
 	trap; exit;
 $L__BB17_12:                            // %bb56.i
 	trap; exit;
-$L__BB17_13:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d5stageKm2_Km3_Km4_KBT_Km1_Km20_KBL_KB11_EB4_.exit
+$L__BB17_13:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d5stageKm2_Km3_Km4_KBT_Km1_Km20_KBL_KB11_EB4_.exit
 	cp.async.commit_group;
 	@%p20 bra 	$L__BB17_67;
 	bra.uni 	$L__BB17_14;
@@ -23120,9 +23120,9 @@ $L__BB17_14:                            // %bb27.i.lr.ph
 	shl.b32 	%r233, %r17, 3;
 	shl.b32 	%r234, %r232, 2;
 	or.b32 	%r235, %r233, %r234;
-	mov.b32 	%r236, __shared_mem_445feb0385a80dea_e7ae0aec4c47284c;
+	mov.b32 	%r236, __shared_mem_b36ae61f4ba23cec_e97ac61b226de336;
 	add.s32 	%r52, %r236, %r235;
-	mov.b32 	%r237, __shared_mem_445feb0385a80dea_4460163a88381431;
+	mov.b32 	%r237, __shared_mem_b36ae61f4ba23cec_52f8b50e5346fc9b;
 	add.s32 	%r53, %r237, %r235;
 	shl.b32 	%r238, %r3, 2;
 	add.s32 	%r54, %r236, %r238;
@@ -23252,7 +23252,7 @@ $L__BB17_23:                            // %bb54.i86
 	trap; exit;
 $L__BB17_24:                            // %bb56.i85
 	trap; exit;
-$L__BB17_25:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d5stageKm2_Km3_Km4_KBT_Km1_Km20_KBL_KB11_EB4_.exit88
+$L__BB17_25:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d5stageKm2_Km3_Km4_KBT_Km1_Km20_KBL_KB11_EB4_.exit88
                                         //   in Loop: Header=BB17_15 Depth=1
 	cp.async.commit_group;
 	div.u32 	%r68, %r58, %r8;
@@ -23967,7 +23967,7 @@ $L__BB17_43:                            // %bb48.i963
 	add.f32 	%r99, %r929, %r930;
 	st.shared.b32 	[%r52+96], %r99;
 	bra.uni 	$L__BB17_41;
-$L__BB17_44:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d10reduce_putKj4_EB4_.exit1013
+$L__BB17_44:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d10reduce_putKj4_EB4_.exit1013
                                         //   in Loop: Header=BB17_15 Depth=1
 	setp.gt.u32 	%p38, %r3, 31;
 	bar.sync 	0;
@@ -24132,7 +24132,7 @@ $L__BB17_61:                            // %bb48.i
 	add.f32 	%r114, %r1005, %r1006;
 	st.shared.b32 	[%r52+96], %r114;
 	bra.uni 	$L__BB17_59;
-$L__BB17_62:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d10reduce_putKj4_EB4_.exit
+$L__BB17_62:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d10reduce_putKj4_EB4_.exit
                                         //   in Loop: Header=BB17_15 Depth=1
 	setp.eq.b32 	%p39, %r6, 0;
 	bar.sync 	0;
@@ -24198,7 +24198,7 @@ $L__BB17_68:                            // %bb700.i
 	trap; exit;
 $L__BB17_69:                            // %bb702.i
 	trap; exit;
-$L__BB17_70:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d9conv_bodyKm2_Km3_Km4_KBX_Km1_Km20_Kj1_Kj4_KB15_KBP_EB4_.exit
+$L__BB17_70:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d9conv_bodyKm2_Km3_Km4_KBX_Km1_Km20_Kj1_Kj4_KB15_KBP_EB4_.exit
 	ret;
                                         // -- End function
 }
@@ -24322,7 +24322,7 @@ $L__BB18_3:                             // %bb17.i
 	bfe.u32 	%r1682, %r3, 3, 3;
 	setp.eq.b32 	%p41, %r5, 0;
 	setp.eq.b32 	%p42, %r4, 0;
-	mov.b32 	%r1683, __shared_mem_445feb0385a80dea_3da30b657c6faba1;
+	mov.b32 	%r1683, __shared_mem_b36ae61f4ba23cec_e8292f52eddf4ba7;
 	@%p20 bra 	$L__BB18_12;
 	bra.uni 	$L__BB18_4;
 $L__BB18_4:                             // %bb1.i
@@ -24394,7 +24394,7 @@ $L__BB18_10:                            // %bb54.i
 	trap; exit;
 $L__BB18_11:                            // %bb56.i
 	trap; exit;
-$L__BB18_12:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d5stageKm2_Km3_Km8_KBT_Km1_Km20_KBL_Km4_EB4_.exit
+$L__BB18_12:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d5stageKm2_Km3_Km8_KBT_Km1_Km20_KBL_Km4_EB4_.exit
 	cp.async.commit_group;
 	@%p20 bra 	$L__BB18_97;
 	bra.uni 	$L__BB18_13;
@@ -24513,12 +24513,12 @@ $L__BB18_13:                            // %bb27.i.lr.ph
 	shl.b32 	%r287, %r17, 1;
 	or.b32 	%r288, %r286, %r287;
 	shl.b32 	%r289, %r288, 2;
-	mov.b32 	%r290, __shared_mem_445feb0385a80dea_15085f1024b7636c;
+	mov.b32 	%r290, __shared_mem_b36ae61f4ba23cec_08c303fd0b8be726;
 	add.s32 	%r57, %r290, %r289;
 	and.b32 	%r291, %r18, 448;
 	or.b32 	%r292, %r291, %r287;
 	shl.b32 	%r293, %r292, 2;
-	mov.b32 	%r294, __shared_mem_445feb0385a80dea_d85ab6564eff6d19;
+	mov.b32 	%r294, __shared_mem_b36ae61f4ba23cec_4840ce8f3646539b;
 	add.s32 	%r58, %r294, %r293;
 	shl.b32 	%r295, %r3, 2;
 	add.s32 	%r59, %r290, %r295;
@@ -24654,7 +24654,7 @@ $L__BB18_21:                            // %bb54.i86
 	trap; exit;
 $L__BB18_22:                            // %bb56.i85
 	trap; exit;
-$L__BB18_23:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d5stageKm2_Km3_Km8_KBT_Km1_Km20_KBL_Km4_EB4_.exit88
+$L__BB18_23:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d5stageKm2_Km3_Km8_KBT_Km1_Km20_KBL_Km4_EB4_.exit88
                                         //   in Loop: Header=BB18_14 Depth=1
 	cp.async.commit_group;
 	div.u32 	%r71, %r62, %r8;
@@ -25994,7 +25994,7 @@ $L__BB18_57:                            // %bb96.i331.i
 	add.f32 	%r134, %r1511, %r1512;
 	st.shared.b32 	[%r57+224], %r134;
 	bra.uni 	$L__BB18_55;
-$L__BB18_58:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d10reduce_putKj8_EB4_.exit441.i
+$L__BB18_58:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d10reduce_putKj8_EB4_.exit441.i
                                         //   in Loop: Header=BB18_14 Depth=1
 	setp.gt.u32 	%p38, %r3, 63;
 	bar.sync 	0;
@@ -26317,7 +26317,7 @@ $L__BB18_91:                            // %bb96.i.i
 	add.f32 	%r165, %r1665, %r1666;
 	st.shared.b32 	[%r57+224], %r165;
 	bra.uni 	$L__BB18_89;
-$L__BB18_92:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d10reduce_putKj8_EB4_.exit.i
+$L__BB18_92:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d10reduce_putKj8_EB4_.exit.i
                                         //   in Loop: Header=BB18_14 Depth=1
 	setp.eq.b32 	%p39, %r6, 0;
 	bar.sync 	0;
@@ -26421,7 +26421,7 @@ $L__BB18_98:                            // %bb1164.i
 	trap; exit;
 $L__BB18_99:                            // %bb1166.i
 	trap; exit;
-$L__BB18_100:                           // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d9conv_bodyKm2_Km3_Km8_KBX_Km1_Km20_Kj1_Kj8_Km4_KBP_EB4_.exit
+$L__BB18_100:                           // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d9conv_bodyKm2_Km3_Km8_KBX_Km1_Km20_Kj1_Kj8_Km4_KBP_EB4_.exit
 	ret;
                                         // -- End function
 }
@@ -26545,7 +26545,7 @@ $L__BB19_3:                             // %bb17.i
 	and.b32 	%r1141, %r3, 1;
 	setp.eq.b32 	%p41, %r5, 0;
 	setp.eq.b32 	%p42, %r4, 0;
-	mov.b32 	%r1142, __shared_mem_445feb0385a80dea_bb172767c48fa380;
+	mov.b32 	%r1142, __shared_mem_b36ae61f4ba23cec_15e5b7f8bce0f96a;
 	@%p20 bra 	$L__BB19_12;
 	bra.uni 	$L__BB19_4;
 $L__BB19_4:                             // %bb1.i
@@ -26617,7 +26617,7 @@ $L__BB19_10:                            // %bb54.i
 	trap; exit;
 $L__BB19_11:                            // %bb56.i
 	trap; exit;
-$L__BB19_12:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d5stageKm2_Km3_Km8_Km10_Km1_KBX_KBL_KBT_EB4_.exit
+$L__BB19_12:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d5stageKm2_Km3_Km8_Km10_Km1_KBX_KBL_KBT_EB4_.exit
 	cp.async.commit_group;
 	@%p20 bra 	$L__BB19_97;
 	bra.uni 	$L__BB19_13;
@@ -26706,11 +26706,11 @@ $L__BB19_13:                            // %bb27.i.lr.ph
 	shl.b32 	%r256, %r17, 3;
 	shl.b32 	%r257, %r254, 8;
 	or.b32 	%r258, %r257, %r256;
-	mov.b32 	%r259, __shared_mem_445feb0385a80dea_642d518f92fa2a67;
+	mov.b32 	%r259, __shared_mem_b36ae61f4ba23cec_2f9350260d2fd99d;
 	add.s32 	%r47, %r259, %r258;
 	and.b32 	%r260, %r3, 768;
 	or.b32 	%r261, %r256, %r260;
-	mov.b32 	%r262, __shared_mem_445feb0385a80dea_3c66dfff8c1fa55e;
+	mov.b32 	%r262, __shared_mem_b36ae61f4ba23cec_922228f8285fab64;
 	add.s32 	%r48, %r262, %r261;
 	shl.b32 	%r263, %r3, 2;
 	add.s32 	%r49, %r259, %r263;
@@ -26846,7 +26846,7 @@ $L__BB19_21:                            // %bb54.i87
 	trap; exit;
 $L__BB19_22:                            // %bb56.i86
 	trap; exit;
-$L__BB19_23:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d5stageKm2_Km3_Km8_Km10_Km1_KBX_KBL_KBT_EB4_.exit89
+$L__BB19_23:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d5stageKm2_Km3_Km8_Km10_Km1_KBX_KBL_KBT_EB4_.exit89
                                         //   in Loop: Header=BB19_14 Depth=1
 	cp.async.commit_group;
 	div.u32 	%r61, %r52, %r8;
@@ -27813,7 +27813,7 @@ $L__BB19_57:                            // %bb96.i1104
 	add.f32 	%r124, %r953, %r954;
 	st.shared.b32 	[%r47+224], %r124;
 	bra.uni 	$L__BB19_55;
-$L__BB19_58:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d10reduce_putKj8_EB4_.exit1214
+$L__BB19_58:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d10reduce_putKj8_EB4_.exit1214
                                         //   in Loop: Header=BB19_14 Depth=1
 	setp.gt.u32 	%p38, %r3, 63;
 	bar.sync 	0;
@@ -28144,7 +28144,7 @@ $L__BB19_91:                            // %bb96.i
 	add.f32 	%r155, %r1115, %r1116;
 	st.shared.b32 	[%r47+224], %r155;
 	bra.uni 	$L__BB19_89;
-$L__BB19_92:                            // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d10reduce_putKj8_EB4_.exit
+$L__BB19_92:                            // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d10reduce_putKj8_EB4_.exit
                                         //   in Loop: Header=BB19_14 Depth=1
 	setp.eq.b32 	%p39, %r6, 0;
 	bar.sync 	0;
@@ -28256,7 +28256,7 @@ $L__BB19_98:                            // %bb651.i
 	trap; exit;
 $L__BB19_99:                            // %bb653.i
 	trap; exit;
-$L__BB19_100:                           // %_RINvNtCs5RXk03b0LR6_13inkrs_kernels6conv2d9conv_bodyKm2_Km3_Km8_Km10_Km1_KB11_Kj1_Kj8_KBX_KBP_EB4_.exit
+$L__BB19_100:                           // %_RINvNtCsfp2cBap0A3g_13inkrs_kernels6conv2d9conv_bodyKm2_Km3_Km8_Km10_Km1_KB11_Kj1_Kj8_KBX_KBP_EB4_.exit
 	ret;
                                         // -- End function
 }
@@ -30786,7 +30786,7 @@ $L__BB22_21:                            // %inkrs_kernels__hecate__load.exit24
 	bra.uni 	$L__BB22_22;
 $L__BB22_22:                            // %bb30
 	shl.b32 	%r42, %r4, 3;
-	mov.b32 	%r43, __shared_mem_445feb0385a80dea_5651888c6df2d89d;
+	mov.b32 	%r43, __shared_mem_b36ae61f4ba23cec_be32f95da278e313;
 	add.s32 	%r44, %r43, %r42;
 	st.shared.b32 	[%r44], %r75;
 	st.shared.b32 	[%r44+4], %r74;
@@ -33267,7 +33267,7 @@ $L__BB32_8:                             // %bb25
 	bra.uni 	$L__BB32_9;
 $L__BB32_9:                             // %bb26
 	shl.b32 	%r40, %r3, 4;
-	mov.b32 	%r41, __shared_mem_445feb0385a80dea_0668c113a8ff10ae;
+	mov.b32 	%r41, __shared_mem_b36ae61f4ba23cec_abb7df8a3a7e6ebc;
 	add.s32 	%r42, %r41, %r40;
 	st.shared.b32 	[%r42], %r71;
 	st.shared.b32 	[%r42+4], %r72;
@@ -34383,7 +34383,7 @@ $L__BB38_1:                             // %bb2
 	mul.lo.s32 	%r7, %r3, 17;
 	add.s32 	%r8, %r7, 262143;
 	shl.b32 	%r9, %r4, 1;
-	mov.b32 	%r34, __shared_mem_445feb0385a80dea_7110fe6e7565bdcd;
+	mov.b32 	%r34, __shared_mem_b36ae61f4ba23cec_14352a0b67d3b2b3;
 	add.s32 	%r35, %r9, %r34;
 	add.s32 	%r257, %r35, 2;
 	mad.lo.s32 	%r256, %r4, 258, %r34;
@@ -34468,7 +34468,7 @@ $L__BB38_10:                            // %bb4.i142
 	ld.global.nc.b16 	%r63, [%rd9+50];
 	shl.b32 	%r64, %r63, 16;
 	or.b32 	%r258, %r64, %r258;
-$L__BB38_11:                            // %_RNCNvNtCs5RXk03b0LR6_13inkrs_kernels10stem_conv17b_fragss_0B5_.exit151
+$L__BB38_11:                            // %_RNCNvNtCsfp2cBap0A3g_13inkrs_kernels10stem_conv17b_fragss_0B5_.exit151
 	ld.global.nc.b16 	%r65, [%rd9+464];
 	ld.global.nc.b16 	%r66, [%rd9+466];
 	mov.b32 	%r259, 0;
@@ -34483,7 +34483,7 @@ $L__BB38_14:                            // %bb4.i184
 	ld.global.nc.b16 	%r68, [%rd9+482];
 	shl.b32 	%r69, %r68, 16;
 	or.b32 	%r259, %r69, %r259;
-$L__BB38_15:                            // %_RNCNvNtCs5RXk03b0LR6_13inkrs_kernels10stem_conv17b_fragss_0B5_.exit193
+$L__BB38_15:                            // %_RNCNvNtCsfp2cBap0A3g_13inkrs_kernels10stem_conv17b_fragss_0B5_.exit193
 	and.b32 	%r47, %r4, 3;
 	shl.b32 	%r50, %r49, 16;
 	shl.b32 	%r53, %r52, 16;
@@ -34610,7 +34610,7 @@ $L__BB38_18:                            // %bb10.i281
 	cvt.u64.u16 	%rd68, %rs60;
 	or.b64 	%rd69, %rd68, 2860;
 	and.b64 	%rd82, %rd69, 3071;
-$L__BB38_19:                            // %_RNCNvNtCs5RXk03b0LR6_13inkrs_kernels10stem_conv14tapss0_0B5_.exit299
+$L__BB38_19:                            // %_RNCNvNtCsfp2cBap0A3g_13inkrs_kernels10stem_conv14tapss0_0B5_.exit299
 	add.s64 	%rd11, %rd41, %rd43;
 	add.s64 	%rd12, %rd44, %rd46;
 	add.s64 	%rd13, %rd49, %rd52;
@@ -34790,7 +34790,7 @@ $L__BB38_23:                            // %bb10.i495
 	// end inline asm
 	cvt.u16.u32 	%rs67, %r195;
 	cvt.f32.f16 	%r263, %rs67;
-$L__BB38_24:                            // %_RNCNvNtCs5RXk03b0LR6_13inkrs_kernels10stem_conv160cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_stem1_applys_0B5_.exit501
+$L__BB38_24:                            // %_RNCNvNtCsfp2cBap0A3g_13inkrs_kernels10stem_conv160cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_stem1_applys_0B5_.exit501
                                         //   in Loop: Header=BB38_20 Depth=1
 	// begin inline asm
 	cvt.rn.f16x2.f32 %r198, %r263, %r262;
@@ -34853,7 +34853,7 @@ $L__BB38_27:                            // %bb10.i585
 	// end inline asm
 	cvt.u16.u32 	%rs74, %r214;
 	cvt.f32.f16 	%r265, %rs74;
-$L__BB38_28:                            // %_RNCNvNtCs5RXk03b0LR6_13inkrs_kernels10stem_conv160cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_stem1_applys_0B5_.exit591
+$L__BB38_28:                            // %_RNCNvNtCsfp2cBap0A3g_13inkrs_kernels10stem_conv160cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_stem1_applys_0B5_.exit591
                                         //   in Loop: Header=BB38_20 Depth=1
 	// begin inline asm
 	cvt.rn.f16x2.f32 %r217, %r265, %r264;
@@ -34912,7 +34912,7 @@ $L__BB38_31:                            // %bb10.i675
 	// end inline asm
 	cvt.u16.u32 	%rs81, %r233;
 	cvt.f32.f16 	%r267, %rs81;
-$L__BB38_32:                            // %_RNCNvNtCs5RXk03b0LR6_13inkrs_kernels10stem_conv160cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_stem1_applys_0B5_.exit681
+$L__BB38_32:                            // %_RNCNvNtCsfp2cBap0A3g_13inkrs_kernels10stem_conv160cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_stem1_applys_0B5_.exit681
                                         //   in Loop: Header=BB38_20 Depth=1
 	// begin inline asm
 	cvt.rn.f16x2.f32 %r236, %r267, %r266;
@@ -34971,7 +34971,7 @@ $L__BB38_35:                            // %bb10.i765
 	// end inline asm
 	cvt.u16.u32 	%rs88, %r252;
 	cvt.f32.f16 	%r269, %rs88;
-$L__BB38_36:                            // %_RNCNvNtCs5RXk03b0LR6_13inkrs_kernels10stem_conv160cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_stem1_applys_0B5_.exit771
+$L__BB38_36:                            // %_RNCNvNtCsfp2cBap0A3g_13inkrs_kernels10stem_conv160cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_stem1_applys_0B5_.exit771
                                         //   in Loop: Header=BB38_20 Depth=1
 	// begin inline asm
 	cvt.rn.f16x2.f32 %r255, %r269, %r268;
@@ -35070,7 +35070,7 @@ $L__BB39_1:                             // %bb2
 	selp.b32 	%r41, -1, 128, %p19;
 	add.s32 	%r11, %r6, %r41;
 	shl.b32 	%r12, %r4, 1;
-	mov.b32 	%r42, __shared_mem_445feb0385a80dea_bb812c5ae2c93d1e;
+	mov.b32 	%r42, __shared_mem_b36ae61f4ba23cec_5952a6cf4a52c4c8;
 	add.s32 	%r43, %r12, %r42;
 	add.s32 	%r263, %r43, 2;
 	mad.lo.s32 	%r262, %r4, 258, %r42;
@@ -35167,7 +35167,7 @@ $L__BB39_12:                            // %bb4.i151
 	ld.global.nc.b16 	%r70, [%rd10+50];
 	shl.b32 	%r71, %r70, 16;
 	or.b32 	%r264, %r71, %r264;
-$L__BB39_13:                            // %_RNCNvNtCs5RXk03b0LR6_13inkrs_kernels14stem_conv1_3847b_fragss_0B5_.exit160
+$L__BB39_13:                            // %_RNCNvNtCsfp2cBap0A3g_13inkrs_kernels14stem_conv1_3847b_fragss_0B5_.exit160
 	ld.global.nc.b16 	%r72, [%rd10+464];
 	ld.global.nc.b16 	%r73, [%rd10+466];
 	mov.b32 	%r265, 0;
@@ -35182,7 +35182,7 @@ $L__BB39_16:                            // %bb4.i193
 	ld.global.nc.b16 	%r75, [%rd10+482];
 	shl.b32 	%r76, %r75, 16;
 	or.b32 	%r265, %r76, %r265;
-$L__BB39_17:                            // %_RNCNvNtCs5RXk03b0LR6_13inkrs_kernels14stem_conv1_3847b_fragss_0B5_.exit202
+$L__BB39_17:                            // %_RNCNvNtCsfp2cBap0A3g_13inkrs_kernels14stem_conv1_3847b_fragss_0B5_.exit202
 	and.b32 	%r54, %r4, 3;
 	shl.b32 	%r57, %r56, 16;
 	shl.b32 	%r60, %r59, 16;
@@ -35309,7 +35309,7 @@ $L__BB39_20:                            // %bb10.i291
 	cvt.u64.u16 	%rd72, %rs60;
 	or.b64 	%rd73, %rd72, 2860;
 	and.b64 	%rd89, %rd73, 3071;
-$L__BB39_21:                            // %_RNCNvNtCs5RXk03b0LR6_13inkrs_kernels14stem_conv1_3844tapss0_0B5_.exit310
+$L__BB39_21:                            // %_RNCNvNtCsfp2cBap0A3g_13inkrs_kernels14stem_conv1_3844tapss0_0B5_.exit310
 	add.s64 	%rd12, %rd45, %rd47;
 	add.s64 	%rd13, %rd48, %rd50;
 	add.s64 	%rd14, %rd53, %rd56;
@@ -35488,7 +35488,7 @@ $L__BB39_25:                            // %bb10.i510
 	// end inline asm
 	cvt.u16.u32 	%rs67, %r201;
 	cvt.f32.f16 	%r269, %rs67;
-$L__BB39_26:                            // %_RNCNvNtCs5RXk03b0LR6_13inkrs_kernels14stem_conv1_38464cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_stem1_apply_384s_0B5_.exit516
+$L__BB39_26:                            // %_RNCNvNtCsfp2cBap0A3g_13inkrs_kernels14stem_conv1_38464cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_stem1_apply_384s_0B5_.exit516
                                         //   in Loop: Header=BB39_22 Depth=1
 	// begin inline asm
 	cvt.rn.f16x2.f32 %r204, %r269, %r268;
@@ -35551,7 +35551,7 @@ $L__BB39_29:                            // %bb10.i600
 	// end inline asm
 	cvt.u16.u32 	%rs74, %r220;
 	cvt.f32.f16 	%r271, %rs74;
-$L__BB39_30:                            // %_RNCNvNtCs5RXk03b0LR6_13inkrs_kernels14stem_conv1_38464cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_stem1_apply_384s_0B5_.exit606
+$L__BB39_30:                            // %_RNCNvNtCsfp2cBap0A3g_13inkrs_kernels14stem_conv1_38464cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_stem1_apply_384s_0B5_.exit606
                                         //   in Loop: Header=BB39_22 Depth=1
 	shl.b64 	%rd21, %rd20, 3;
 	// begin inline asm
@@ -35615,7 +35615,7 @@ $L__BB39_33:                            // %bb10.i690
 	// end inline asm
 	cvt.u16.u32 	%rs81, %r239;
 	cvt.f32.f16 	%r273, %rs81;
-$L__BB39_34:                            // %_RNCNvNtCs5RXk03b0LR6_13inkrs_kernels14stem_conv1_38464cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_stem1_apply_384s_0B5_.exit696
+$L__BB39_34:                            // %_RNCNvNtCsfp2cBap0A3g_13inkrs_kernels14stem_conv1_38464cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_stem1_apply_384s_0B5_.exit696
                                         //   in Loop: Header=BB39_22 Depth=1
 	// begin inline asm
 	cvt.rn.f16x2.f32 %r242, %r273, %r272;
@@ -35674,7 +35674,7 @@ $L__BB39_37:                            // %bb10.i780
 	// end inline asm
 	cvt.u16.u32 	%rs88, %r258;
 	cvt.f32.f16 	%r275, %rs88;
-$L__BB39_38:                            // %_RNCNvNtCs5RXk03b0LR6_13inkrs_kernels14stem_conv1_38464cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_stem1_apply_384s_0B5_.exit786
+$L__BB39_38:                            // %_RNCNvNtCsfp2cBap0A3g_13inkrs_kernels14stem_conv1_38464cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_stem1_apply_384s_0B5_.exit786
                                         //   in Loop: Header=BB39_22 Depth=1
 	// begin inline asm
 	cvt.rn.f16x2.f32 %r261, %r275, %r274;
@@ -36038,7 +36038,7 @@ $L__BB42_1:                             // %bb2
 	cvt.u64.u32 	%rd5, %r4;
 	mad.lo.s32 	%r7, %r3, 17, 262143;
 	shl.b32 	%r8, %r4, 1;
-	mov.b32 	%r40, __shared_mem_445feb0385a80dea_ce36b75dff6bdfca;
+	mov.b32 	%r40, __shared_mem_b36ae61f4ba23cec_d77990fb525a01b4;
 	add.s32 	%r41, %r8, %r40;
 	add.s32 	%r309, %r41, 2;
 	mad.lo.s32 	%r308, %r4, 258, %r40;
@@ -36092,7 +36092,7 @@ $L__BB42_6:                             // %bb7.i
 	bra.uni 	$L__BB42_7;
 $L__BB42_7:                             // %inkrs_kernels__stem_conv1__load_halo.exit
 	setp.gt.u32 	%p19, %r4, 15;
-	mov.b32 	%r306, __shared_mem_445feb0385a80dea_ab229a1e113ffc0a;
+	mov.b32 	%r306, __shared_mem_b36ae61f4ba23cec_fde281c959b3a270;
 	shl.b32 	%r307, %r4, 2;
 	@%p19 bra 	$L__BB42_9;
 	bra.uni 	$L__BB42_8;
@@ -36185,7 +36185,7 @@ $L__BB42_12:                            // %bb4.i179
 	ld.global.nc.b16 	%r98, [%rd7+50];
 	shl.b32 	%r99, %r98, 16;
 	or.b32 	%r310, %r99, %r310;
-$L__BB42_13:                            // %_RNCNvNtCs5RXk03b0LR6_13inkrs_kernels10stem_conv17b_fragss_0B5_.exit188
+$L__BB42_13:                            // %_RNCNvNtCsfp2cBap0A3g_13inkrs_kernels10stem_conv17b_fragss_0B5_.exit188
 	ld.global.nc.b16 	%r100, [%rd7+464];
 	ld.global.nc.b16 	%r101, [%rd7+466];
 	mov.b32 	%r311, 0;
@@ -36200,7 +36200,7 @@ $L__BB42_16:                            // %bb4.i221
 	ld.global.nc.b16 	%r103, [%rd7+482];
 	shl.b32 	%r104, %r103, 16;
 	or.b32 	%r311, %r104, %r311;
-$L__BB42_17:                            // %_RNCNvNtCs5RXk03b0LR6_13inkrs_kernels10stem_conv17b_fragss_0B5_.exit230
+$L__BB42_17:                            // %_RNCNvNtCsfp2cBap0A3g_13inkrs_kernels10stem_conv17b_fragss_0B5_.exit230
 	shl.b32 	%r85, %r84, 16;
 	shl.b32 	%r88, %r87, 16;
 	shl.b32 	%r91, %r90, 16;
@@ -36325,7 +36325,7 @@ $L__BB42_20:                            // %bb10.i318
 	cvt.u64.u16 	%rd66, %rs77;
 	or.b64 	%rd67, %rd66, 2860;
 	and.b64 	%rd75, %rd67, 3071;
-$L__BB42_21:                            // %_RNCNvNtCs5RXk03b0LR6_13inkrs_kernels10stem_conv14tapss0_0B5_.exit336
+$L__BB42_21:                            // %_RNCNvNtCsfp2cBap0A3g_13inkrs_kernels10stem_conv14tapss0_0B5_.exit336
 	add.s64 	%rd9, %rd39, %rd41;
 	add.s64 	%rd10, %rd42, %rd44;
 	add.s64 	%rd11, %rd47, %rd50;
@@ -36561,7 +36561,7 @@ $L__BB42_24:                            // %bb96
 	add.f32 	%r274, %r19, %r21;
 	add.f32 	%r275, %r18, %r20;
 	shl.b32 	%r276, %r16, 3;
-	mov.b32 	%r277, __shared_mem_445feb0385a80dea_3cc57afeecd8d295;
+	mov.b32 	%r277, __shared_mem_b36ae61f4ba23cec_3ddcc9cec302ea3b;
 	add.s32 	%r278, %r277, %r276;
 	shl.b32 	%r279, %r10, 3;
 	add.s32 	%r280, %r278, %r279;
@@ -36581,7 +36581,7 @@ $L__BB42_25:                            // %bb105
 	bra.uni 	$L__BB42_26;
 $L__BB42_26:                            // %bb106
 	shl.b32 	%r283, %r4, 3;
-	mov.b32 	%r284, __shared_mem_445feb0385a80dea_3cc57afeecd8d295;
+	mov.b32 	%r284, __shared_mem_b36ae61f4ba23cec_3ddcc9cec302ea3b;
 	add.s32 	%r285, %r284, %r283;
 	ld.shared.b32 	%r286, [%r285];
 	ld.shared.b32 	%r287, [%r285+4];
@@ -36692,7 +36692,7 @@ $L__BB43_1:                             // %bb2
 	selp.b32 	%r47, -1, 128, %p15;
 	add.s32 	%r9, %r46, %r47;
 	shl.b32 	%r10, %r4, 1;
-	mov.b32 	%r48, __shared_mem_445feb0385a80dea_945c3742531d5755;
+	mov.b32 	%r48, __shared_mem_b36ae61f4ba23cec_f04a8c34cd515f83;
 	add.s32 	%r49, %r10, %r48;
 	add.s32 	%r316, %r49, 2;
 	mad.lo.s32 	%r315, %r4, 258, %r48;
@@ -36758,7 +36758,7 @@ $L__BB43_8:                             // %bb13.i
 	bra.uni 	$L__BB43_9;
 $L__BB43_9:                             // %inkrs_kernels__stem_conv1_384__load_halo.exit
 	setp.gt.u32 	%p22, %r4, 15;
-	mov.b32 	%r313, __shared_mem_445feb0385a80dea_97ac8cb3b5e03443;
+	mov.b32 	%r313, __shared_mem_b36ae61f4ba23cec_333b37697d416fdd;
 	shl.b32 	%r314, %r4, 2;
 	@%p22 bra 	$L__BB43_11;
 	bra.uni 	$L__BB43_10;
@@ -36851,7 +36851,7 @@ $L__BB43_14:                            // %bb4.i186
 	ld.global.nc.b16 	%r105, [%rd8+50];
 	shl.b32 	%r106, %r105, 16;
 	or.b32 	%r317, %r106, %r317;
-$L__BB43_15:                            // %_RNCNvNtCs5RXk03b0LR6_13inkrs_kernels14stem_conv1_3847b_fragss_0B5_.exit195
+$L__BB43_15:                            // %_RNCNvNtCsfp2cBap0A3g_13inkrs_kernels14stem_conv1_3847b_fragss_0B5_.exit195
 	ld.global.nc.b16 	%r107, [%rd8+464];
 	ld.global.nc.b16 	%r108, [%rd8+466];
 	mov.b32 	%r318, 0;
@@ -36866,7 +36866,7 @@ $L__BB43_18:                            // %bb4.i228
 	ld.global.nc.b16 	%r110, [%rd8+482];
 	shl.b32 	%r111, %r110, 16;
 	or.b32 	%r318, %r111, %r318;
-$L__BB43_19:                            // %_RNCNvNtCs5RXk03b0LR6_13inkrs_kernels14stem_conv1_3847b_fragss_0B5_.exit237
+$L__BB43_19:                            // %_RNCNvNtCsfp2cBap0A3g_13inkrs_kernels14stem_conv1_3847b_fragss_0B5_.exit237
 	shl.b32 	%r92, %r91, 16;
 	shl.b32 	%r95, %r94, 16;
 	shl.b32 	%r98, %r97, 16;
@@ -36991,7 +36991,7 @@ $L__BB43_22:                            // %bb10.i326
 	cvt.u64.u16 	%rd68, %rs77;
 	or.b64 	%rd69, %rd68, 2860;
 	and.b64 	%rd77, %rd69, 3071;
-$L__BB43_23:                            // %_RNCNvNtCs5RXk03b0LR6_13inkrs_kernels14stem_conv1_3844tapss0_0B5_.exit345
+$L__BB43_23:                            // %_RNCNvNtCsfp2cBap0A3g_13inkrs_kernels14stem_conv1_3844tapss0_0B5_.exit345
 	add.s64 	%rd10, %rd41, %rd43;
 	add.s64 	%rd11, %rd44, %rd46;
 	add.s64 	%rd12, %rd49, %rd52;
@@ -37227,7 +37227,7 @@ $L__BB43_26:                            // %bb96
 	add.f32 	%r281, %r22, %r24;
 	add.f32 	%r282, %r21, %r23;
 	shl.b32 	%r283, %r19, 3;
-	mov.b32 	%r284, __shared_mem_445feb0385a80dea_09b36a23cb018eb4;
+	mov.b32 	%r284, __shared_mem_b36ae61f4ba23cec_17b746bffa0c36c6;
 	add.s32 	%r285, %r284, %r283;
 	shl.b32 	%r286, %r13, 3;
 	add.s32 	%r287, %r285, %r286;
@@ -37247,7 +37247,7 @@ $L__BB43_27:                            // %bb105
 	bra.uni 	$L__BB43_28;
 $L__BB43_28:                            // %bb106
 	shl.b32 	%r290, %r4, 3;
-	mov.b32 	%r291, __shared_mem_445feb0385a80dea_09b36a23cb018eb4;
+	mov.b32 	%r291, __shared_mem_b36ae61f4ba23cec_17b746bffa0c36c6;
 	add.s32 	%r292, %r291, %r290;
 	ld.shared.b32 	%r293, [%r292];
 	ld.shared.b32 	%r294, [%r292+4];
@@ -37352,7 +37352,7 @@ $L__BB44_1:                             // %bb7
 	selp.b32 	%r9, 9, 17, %p14;
 	setp.gt.u32 	%p15, %r4, 679;
 	add.s32 	%r1861, %r5, -1;
-	mov.b32 	%r1862, __shared_mem_445feb0385a80dea_17cc9471ab3c9da6;
+	mov.b32 	%r1862, __shared_mem_b36ae61f4ba23cec_03b8d0f1662cf0d4;
 	and.b32 	%r1863, %r4, 1;
 	mul.lo.s32 	%r1864, %r3, 278528;
 	shl.b32 	%r1865, %r1, 8;
@@ -37478,7 +37478,7 @@ $L__BB44_8:                             // %bb15.lr.ph
 	cvt.u64.u32 	%rd7, %r165;
 	and.b32 	%r23, %r4, 28;
 	shl.b32 	%r166, %r7, 6;
-	mov.b32 	%r167, __shared_mem_445feb0385a80dea_da11d5d8a38c8a99;
+	mov.b32 	%r167, __shared_mem_b36ae61f4ba23cec_276843790c15b88b;
 	shl.b32 	%r168, %r165, 3;
 	add.s32 	%r25, %r167, %r168;
 	add.s32 	%r24, %r25, %r166;
@@ -38743,7 +38743,7 @@ $L__BB44_18:                            // %bb2.preheader.i
 	st.shared.b32 	[%r24+4], %r76;
 	st.shared.b32 	[%r24+32], %r75;
 	st.shared.b32 	[%r24+36], %r74;
-$L__BB44_19:                            // %_RNCNvNtCs5RXk03b0LR6_13inkrs_kernels10stem_conv25statss_0B5_.exit
+$L__BB44_19:                            // %_RNCNvNtCsfp2cBap0A3g_13inkrs_kernels10stem_conv25statss_0B5_.exit
                                         //   in Loop: Header=BB44_12 Depth=1
 	bar.sync 	0;
 	ld.shared.b32 	%r1734, [%r25];
@@ -38890,7 +38890,7 @@ $L__BB44_22:                            // %bb2.preheader.i4763
 	st.shared.b32 	[%r24+4], %r84;
 	st.shared.b32 	[%r24+32], %r83;
 	st.shared.b32 	[%r24+36], %r82;
-$L__BB44_23:                            // %_RNCNvNtCs5RXk03b0LR6_13inkrs_kernels10stem_conv25statss_0B5_.exit4816
+$L__BB44_23:                            // %_RNCNvNtCsfp2cBap0A3g_13inkrs_kernels10stem_conv25statss_0B5_.exit4816
                                         //   in Loop: Header=BB44_12 Depth=1
 	bar.sync 	0;
 	@%p28 bra 	$L__BB44_25;
@@ -38984,7 +38984,7 @@ $L__BB45_1:                             // %bb7
 	setp.eq.b32 	%p14, %r2, 0;
 	selp.b32 	%r10, 9, 17, %p14;
 	setp.gt.u32 	%p15, %r4, 679;
-	mov.b32 	%r1859, __shared_mem_445feb0385a80dea_71b7499aad107106;
+	mov.b32 	%r1859, __shared_mem_b36ae61f4ba23cec_babdaf2810dcce90;
 	and.b32 	%r1860, %r4, 1;
 	mul.lo.s32 	%r1861, %r3, 2506752;
 	shl.b32 	%r1862, %r1, 5;
@@ -39109,7 +39109,7 @@ $L__BB45_8:                             // %bb15.lr.ph
 	cvt.u64.u32 	%rd6, %r166;
 	and.b32 	%r26, %r4, 28;
 	shl.b32 	%r167, %r8, 6;
-	mov.b32 	%r168, __shared_mem_445feb0385a80dea_2eff2b89dde43d21;
+	mov.b32 	%r168, __shared_mem_b36ae61f4ba23cec_67987b8caf6f662f;
 	shl.b32 	%r169, %r166, 3;
 	add.s32 	%r28, %r168, %r169;
 	add.s32 	%r27, %r28, %r167;
@@ -40368,7 +40368,7 @@ $L__BB45_18:                            // %bb2.preheader.i
 	st.shared.b32 	[%r27+4], %r79;
 	st.shared.b32 	[%r27+32], %r78;
 	st.shared.b32 	[%r27+36], %r77;
-$L__BB45_19:                            // %_RNCNvNtCs5RXk03b0LR6_13inkrs_kernels14stem_conv2_3845statss_0B5_.exit
+$L__BB45_19:                            // %_RNCNvNtCsfp2cBap0A3g_13inkrs_kernels14stem_conv2_3845statss_0B5_.exit
                                         //   in Loop: Header=BB45_12 Depth=1
 	bar.sync 	0;
 	ld.shared.b32 	%r1732, [%r28];
@@ -40515,7 +40515,7 @@ $L__BB45_22:                            // %bb2.preheader.i4770
 	st.shared.b32 	[%r27+4], %r87;
 	st.shared.b32 	[%r27+32], %r86;
 	st.shared.b32 	[%r27+36], %r85;
-$L__BB45_23:                            // %_RNCNvNtCs5RXk03b0LR6_13inkrs_kernels14stem_conv2_3845statss_0B5_.exit4823
+$L__BB45_23:                            // %_RNCNvNtCsfp2cBap0A3g_13inkrs_kernels14stem_conv2_3845statss_0B5_.exit4823
                                         //   in Loop: Header=BB45_12 Depth=1
 	bar.sync 	0;
 	@%p28 bra 	$L__BB45_25;
@@ -40941,7 +40941,7 @@ $L__BB48_2:                             // %bb10
 	ld.global.nc.b32 	%r14, [%rd15+12];
 	mad.lo.s32 	%r15, %r14, %r1, %r13;
 	shl.b32 	%r16, %r3, 2;
-	mov.b32 	%r17, __shared_mem_445feb0385a80dea_3538a9cf3ef88d9d;
+	mov.b32 	%r17, __shared_mem_b36ae61f4ba23cec_69e5836ac0c054d7;
 	add.s32 	%r5, %r17, %r16;
 	st.shared.b32 	[%r5], 0;
 	bar.sync 	0;
@@ -41042,7 +41042,7 @@ $L__BB49_2:                             // %bb10
 	ld.global.nc.b32 	%r14, [%rd15+12];
 	mad.lo.s32 	%r15, %r14, %r1, %r13;
 	shl.b32 	%r16, %r3, 2;
-	mov.b32 	%r17, __shared_mem_445feb0385a80dea_d1c10dd0ac08ef90;
+	mov.b32 	%r17, __shared_mem_b36ae61f4ba23cec_ba83e5adaa4ef282;
 	add.s32 	%r6, %r17, %r16;
 	st.shared.b32 	[%r6], 0;
 	bar.sync 	0;
@@ -41524,7 +41524,7 @@ $L__BB52_7:                             // %bb3.i166
 $L__BB52_8:                             // %bb4.i181
 	add.rn.f32 	%r4, %r41, %r42;
 	shr.u32 	%r44, %r3, 3;
-	mov.b32 	%r45, __shared_mem_445feb0385a80dea_1a9dde9f4e89c253;
+	mov.b32 	%r45, __shared_mem_b36ae61f4ba23cec_1d1b8693daa63e89;
 	add.s32 	%r5, %r45, %r44;
 	st.shared.b32 	[%r5], %r4;
 	bra.uni 	$L__BB52_10;
@@ -41538,14 +41538,14 @@ $L__BB52_10:                            // %inkrs_kernels__tiles384__block_tree.
 	@%p14 bra 	$L__BB52_14;
 	bra.uni 	$L__BB52_11;
 $L__BB52_11:                            // %bb2.i
-	ld.shared.b32 	%r47, [__shared_mem_445feb0385a80dea_1a9dde9f4e89c253];
-	ld.shared.b32 	%r48, [__shared_mem_445feb0385a80dea_1a9dde9f4e89c253+4];
-	ld.shared.b32 	%r50, [__shared_mem_445feb0385a80dea_1a9dde9f4e89c253+8];
-	ld.shared.b32 	%r51, [__shared_mem_445feb0385a80dea_1a9dde9f4e89c253+12];
-	ld.shared.b32 	%r54, [__shared_mem_445feb0385a80dea_1a9dde9f4e89c253+16];
-	ld.shared.b32 	%r55, [__shared_mem_445feb0385a80dea_1a9dde9f4e89c253+20];
-	ld.shared.b32 	%r57, [__shared_mem_445feb0385a80dea_1a9dde9f4e89c253+24];
-	ld.shared.b32 	%r58, [__shared_mem_445feb0385a80dea_1a9dde9f4e89c253+28];
+	ld.shared.b32 	%r47, [__shared_mem_b36ae61f4ba23cec_1d1b8693daa63e89];
+	ld.shared.b32 	%r48, [__shared_mem_b36ae61f4ba23cec_1d1b8693daa63e89+4];
+	ld.shared.b32 	%r50, [__shared_mem_b36ae61f4ba23cec_1d1b8693daa63e89+8];
+	ld.shared.b32 	%r51, [__shared_mem_b36ae61f4ba23cec_1d1b8693daa63e89+12];
+	ld.shared.b32 	%r54, [__shared_mem_b36ae61f4ba23cec_1d1b8693daa63e89+16];
+	ld.shared.b32 	%r55, [__shared_mem_b36ae61f4ba23cec_1d1b8693daa63e89+20];
+	ld.shared.b32 	%r57, [__shared_mem_b36ae61f4ba23cec_1d1b8693daa63e89+24];
+	ld.shared.b32 	%r58, [__shared_mem_b36ae61f4ba23cec_1d1b8693daa63e89+28];
 	shl.b64 	%rd31, %rd8, 2;
 	add.s64 	%rd9, %rd3, %rd31;
 	ld.global.nc.b32 	%r7, [%rd9];
@@ -41572,7 +41572,7 @@ $L__BB52_16:                            // %bb11.i
 	trap; exit;
 $L__BB52_17:                            // %bb12.i
 	trap; exit;
-$L__BB52_18:                            // %_RNvMNtCs5RXk03b0LR6_13inkrs_kernels8tiles384NtB2_3Src3new.exit
+$L__BB52_18:                            // %_RNvMNtCsfp2cBap0A3g_13inkrs_kernels8tiles384NtB2_3Src3new.exit
 	ld.param.b32 	%r28, [tile_sq_384_param_11];
 	ld.param.b32 	%r27, [tile_sq_384_param_10];
 	ld.param.b64 	%rd14, [tile_sq_384_param_7];
@@ -41635,7 +41635,7 @@ $L__BB52_19:                            // %bb3.i
 	bra.uni 	$L__BB52_20;
 $L__BB52_20:                            // %bb7.i154
 	trap; exit;
-$L__BB52_21:                            // %_RNvMNtCs5RXk03b0LR6_13inkrs_kernels8tiles384NtB2_3Src2at.exit163
+$L__BB52_21:                            // %_RNvMNtCsfp2cBap0A3g_13inkrs_kernels8tiles384NtB2_3Src2at.exit163
                                         //   in Loop: Header=BB52_19 Depth=1
 	shr.u32 	%r67, %r16, 7;
 	mul.lo.s32 	%r18, %r67, 1224;
@@ -41672,7 +41672,7 @@ $L__BB52_22:                            // %bb3.i37
 	bra.uni 	$L__BB52_23;
 $L__BB52_23:                            // %bb7.i131
 	trap; exit;
-$L__BB52_24:                            // %_RNvMNtCs5RXk03b0LR6_13inkrs_kernels8tiles384NtB2_3Src2at.exit140
+$L__BB52_24:                            // %_RNvMNtCsfp2cBap0A3g_13inkrs_kernels8tiles384NtB2_3Src2at.exit140
                                         //   in Loop: Header=BB52_22 Depth=2
 	add.s64 	%rd36, %rd4, %rd11;
 	ld.global.nc.b8 	%rs2, [%rd36];
@@ -41711,7 +41711,7 @@ $L__BB52_26:                            // %bb8.i45
 	bra.uni 	$L__BB52_27;
 $L__BB52_27:                            // %bb7.i110
 	trap; exit;
-$L__BB52_28:                            // %_RNvMNtCs5RXk03b0LR6_13inkrs_kernels8tiles384NtB2_3Src2at.exit
+$L__BB52_28:                            // %_RNvMNtCsfp2cBap0A3g_13inkrs_kernels8tiles384NtB2_3Src2at.exit
                                         //   in Loop: Header=BB52_19 Depth=1
 	add.s64 	%rd37, %rd4, %rd12;
 	ld.global.nc.b8 	%rs3, [%rd37];
@@ -41719,7 +41719,7 @@ $L__BB52_28:                            // %_RNvMNtCs5RXk03b0LR6_13inkrs_kernels
 	sub.f32 	%r124, %r123, %r6;
 	mul.rn.f32 	%r125, %r124, %r124;
 	add.rn.f32 	%r203, %r203, %r125;
-$L__BB52_29:                            // %_RNvMNtCs5RXk03b0LR6_13inkrs_kernels8tiles384NtB2_3Src5chain.exit
+$L__BB52_29:                            // %_RNvMNtCsfp2cBap0A3g_13inkrs_kernels8tiles384NtB2_3Src5chain.exit
                                         //   in Loop: Header=BB52_19 Depth=1
 	shfl.sync.bfly.b32 	%r126, %r203, 1, 31, -1;
 	add.rn.f32 	%r127, %r203, %r126;
@@ -41738,7 +41738,7 @@ $L__BB52_30:                            // %bb5.i
 	shl.b32 	%r135, %r17, 3;
 	add.s32 	%r136, %r135, %r13;
 	shl.b32 	%r137, %r136, 2;
-	mov.b32 	%r138, __shared_mem_445feb0385a80dea_d7cf5e71148f94aa;
+	mov.b32 	%r138, __shared_mem_b36ae61f4ba23cec_3dac2a8120794ae4;
 	add.s32 	%r26, %r138, %r137;
 	st.shared.b32 	[%r26], %r25;
 $L__BB52_31:                            // %bb7.i
@@ -41754,64 +41754,64 @@ $L__BB52_32:                            // %bb8.i
 	@%p27 bra 	$L__BB52_4;
 	bra.uni 	$L__BB52_33;
 $L__BB52_33:                            // %bb10.i18
-	ld.shared.b32 	%r139, [__shared_mem_445feb0385a80dea_d7cf5e71148f94aa];
-	ld.shared.b32 	%r140, [__shared_mem_445feb0385a80dea_d7cf5e71148f94aa+4];
+	ld.shared.b32 	%r139, [__shared_mem_b36ae61f4ba23cec_3dac2a8120794ae4];
+	ld.shared.b32 	%r140, [__shared_mem_b36ae61f4ba23cec_3dac2a8120794ae4+4];
 	add.rn.f32 	%r141, %r139, %r140;
-	ld.shared.b32 	%r142, [__shared_mem_445feb0385a80dea_d7cf5e71148f94aa+8];
-	ld.shared.b32 	%r143, [__shared_mem_445feb0385a80dea_d7cf5e71148f94aa+12];
+	ld.shared.b32 	%r142, [__shared_mem_b36ae61f4ba23cec_3dac2a8120794ae4+8];
+	ld.shared.b32 	%r143, [__shared_mem_b36ae61f4ba23cec_3dac2a8120794ae4+12];
 	add.rn.f32 	%r144, %r142, %r143;
 	add.rn.f32 	%r145, %r141, %r144;
-	ld.shared.b32 	%r146, [__shared_mem_445feb0385a80dea_d7cf5e71148f94aa+16];
-	ld.shared.b32 	%r147, [__shared_mem_445feb0385a80dea_d7cf5e71148f94aa+20];
+	ld.shared.b32 	%r146, [__shared_mem_b36ae61f4ba23cec_3dac2a8120794ae4+16];
+	ld.shared.b32 	%r147, [__shared_mem_b36ae61f4ba23cec_3dac2a8120794ae4+20];
 	add.rn.f32 	%r148, %r146, %r147;
-	ld.shared.b32 	%r149, [__shared_mem_445feb0385a80dea_d7cf5e71148f94aa+24];
-	ld.shared.b32 	%r150, [__shared_mem_445feb0385a80dea_d7cf5e71148f94aa+28];
+	ld.shared.b32 	%r149, [__shared_mem_b36ae61f4ba23cec_3dac2a8120794ae4+24];
+	ld.shared.b32 	%r150, [__shared_mem_b36ae61f4ba23cec_3dac2a8120794ae4+28];
 	add.rn.f32 	%r151, %r149, %r150;
 	add.rn.f32 	%r152, %r148, %r151;
 	add.rn.f32 	%r153, %r145, %r152;
-	ld.shared.b32 	%r154, [__shared_mem_445feb0385a80dea_d7cf5e71148f94aa+32];
-	ld.shared.b32 	%r155, [__shared_mem_445feb0385a80dea_d7cf5e71148f94aa+36];
+	ld.shared.b32 	%r154, [__shared_mem_b36ae61f4ba23cec_3dac2a8120794ae4+32];
+	ld.shared.b32 	%r155, [__shared_mem_b36ae61f4ba23cec_3dac2a8120794ae4+36];
 	add.rn.f32 	%r156, %r154, %r155;
-	ld.shared.b32 	%r157, [__shared_mem_445feb0385a80dea_d7cf5e71148f94aa+40];
-	ld.shared.b32 	%r158, [__shared_mem_445feb0385a80dea_d7cf5e71148f94aa+44];
+	ld.shared.b32 	%r157, [__shared_mem_b36ae61f4ba23cec_3dac2a8120794ae4+40];
+	ld.shared.b32 	%r158, [__shared_mem_b36ae61f4ba23cec_3dac2a8120794ae4+44];
 	add.rn.f32 	%r159, %r157, %r158;
 	add.rn.f32 	%r160, %r156, %r159;
-	ld.shared.b32 	%r161, [__shared_mem_445feb0385a80dea_d7cf5e71148f94aa+48];
-	ld.shared.b32 	%r162, [__shared_mem_445feb0385a80dea_d7cf5e71148f94aa+52];
+	ld.shared.b32 	%r161, [__shared_mem_b36ae61f4ba23cec_3dac2a8120794ae4+48];
+	ld.shared.b32 	%r162, [__shared_mem_b36ae61f4ba23cec_3dac2a8120794ae4+52];
 	add.rn.f32 	%r163, %r161, %r162;
-	ld.shared.b32 	%r164, [__shared_mem_445feb0385a80dea_d7cf5e71148f94aa+56];
-	ld.shared.b32 	%r165, [__shared_mem_445feb0385a80dea_d7cf5e71148f94aa+60];
+	ld.shared.b32 	%r164, [__shared_mem_b36ae61f4ba23cec_3dac2a8120794ae4+56];
+	ld.shared.b32 	%r165, [__shared_mem_b36ae61f4ba23cec_3dac2a8120794ae4+60];
 	add.rn.f32 	%r166, %r164, %r165;
 	add.rn.f32 	%r167, %r163, %r166;
 	add.rn.f32 	%r168, %r160, %r167;
 	add.rn.f32 	%r169, %r153, %r168;
-	ld.shared.b32 	%r170, [__shared_mem_445feb0385a80dea_d7cf5e71148f94aa+64];
-	ld.shared.b32 	%r171, [__shared_mem_445feb0385a80dea_d7cf5e71148f94aa+68];
+	ld.shared.b32 	%r170, [__shared_mem_b36ae61f4ba23cec_3dac2a8120794ae4+64];
+	ld.shared.b32 	%r171, [__shared_mem_b36ae61f4ba23cec_3dac2a8120794ae4+68];
 	add.rn.f32 	%r172, %r170, %r171;
-	ld.shared.b32 	%r173, [__shared_mem_445feb0385a80dea_d7cf5e71148f94aa+72];
-	ld.shared.b32 	%r174, [__shared_mem_445feb0385a80dea_d7cf5e71148f94aa+76];
+	ld.shared.b32 	%r173, [__shared_mem_b36ae61f4ba23cec_3dac2a8120794ae4+72];
+	ld.shared.b32 	%r174, [__shared_mem_b36ae61f4ba23cec_3dac2a8120794ae4+76];
 	add.rn.f32 	%r175, %r173, %r174;
 	add.rn.f32 	%r176, %r172, %r175;
-	ld.shared.b32 	%r177, [__shared_mem_445feb0385a80dea_d7cf5e71148f94aa+80];
-	ld.shared.b32 	%r178, [__shared_mem_445feb0385a80dea_d7cf5e71148f94aa+84];
+	ld.shared.b32 	%r177, [__shared_mem_b36ae61f4ba23cec_3dac2a8120794ae4+80];
+	ld.shared.b32 	%r178, [__shared_mem_b36ae61f4ba23cec_3dac2a8120794ae4+84];
 	add.rn.f32 	%r179, %r177, %r178;
-	ld.shared.b32 	%r180, [__shared_mem_445feb0385a80dea_d7cf5e71148f94aa+88];
-	ld.shared.b32 	%r181, [__shared_mem_445feb0385a80dea_d7cf5e71148f94aa+92];
+	ld.shared.b32 	%r180, [__shared_mem_b36ae61f4ba23cec_3dac2a8120794ae4+88];
+	ld.shared.b32 	%r181, [__shared_mem_b36ae61f4ba23cec_3dac2a8120794ae4+92];
 	add.rn.f32 	%r182, %r180, %r181;
 	add.rn.f32 	%r183, %r179, %r182;
 	add.rn.f32 	%r184, %r176, %r183;
-	ld.shared.b32 	%r185, [__shared_mem_445feb0385a80dea_d7cf5e71148f94aa+96];
-	ld.shared.b32 	%r186, [__shared_mem_445feb0385a80dea_d7cf5e71148f94aa+100];
+	ld.shared.b32 	%r185, [__shared_mem_b36ae61f4ba23cec_3dac2a8120794ae4+96];
+	ld.shared.b32 	%r186, [__shared_mem_b36ae61f4ba23cec_3dac2a8120794ae4+100];
 	add.rn.f32 	%r187, %r185, %r186;
-	ld.shared.b32 	%r188, [__shared_mem_445feb0385a80dea_d7cf5e71148f94aa+104];
-	ld.shared.b32 	%r189, [__shared_mem_445feb0385a80dea_d7cf5e71148f94aa+108];
+	ld.shared.b32 	%r188, [__shared_mem_b36ae61f4ba23cec_3dac2a8120794ae4+104];
+	ld.shared.b32 	%r189, [__shared_mem_b36ae61f4ba23cec_3dac2a8120794ae4+108];
 	add.rn.f32 	%r190, %r188, %r189;
 	add.rn.f32 	%r191, %r187, %r190;
-	ld.shared.b32 	%r192, [__shared_mem_445feb0385a80dea_d7cf5e71148f94aa+112];
-	ld.shared.b32 	%r193, [__shared_mem_445feb0385a80dea_d7cf5e71148f94aa+116];
+	ld.shared.b32 	%r192, [__shared_mem_b36ae61f4ba23cec_3dac2a8120794ae4+112];
+	ld.shared.b32 	%r193, [__shared_mem_b36ae61f4ba23cec_3dac2a8120794ae4+116];
 	add.rn.f32 	%r194, %r192, %r193;
-	ld.shared.b32 	%r195, [__shared_mem_445feb0385a80dea_d7cf5e71148f94aa+120];
-	ld.shared.b32 	%r196, [__shared_mem_445feb0385a80dea_d7cf5e71148f94aa+124];
+	ld.shared.b32 	%r195, [__shared_mem_b36ae61f4ba23cec_3dac2a8120794ae4+120];
+	ld.shared.b32 	%r196, [__shared_mem_b36ae61f4ba23cec_3dac2a8120794ae4+124];
 	add.rn.f32 	%r197, %r195, %r196;
 	add.rn.f32 	%r198, %r194, %r197;
 	add.rn.f32 	%r199, %r191, %r198;
@@ -42108,7 +42108,7 @@ $L__BB53_35:                            // %bb1.i.i
 $L__BB53_36:                            // %bb4.i.i
 	mul.rn.f32 	%r55, %r8, %r34;
 	add.rn.f32 	%r123, %r3, %r55;
-$L__BB53_37:                            // %_RNCNvNtCs5RXk03b0LR6_13inkrs_kernels5tiles59cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_tile_stats0B5_.exit
+$L__BB53_37:                            // %_RNCNvNtCsfp2cBap0A3g_13inkrs_kernels5tiles59cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_tile_stats0B5_.exit
 	mov.b32 	%r125, 0;
 	mov.b64 	%rd9, 0;
 	mov.b64 	%rd47, %rd50;
@@ -42227,7 +42227,7 @@ $L__BB53_56:                            // %bb1.i.i15
 $L__BB53_57:                            // %bb4.i.i20
 	mul.rn.f32 	%r67, %r17, %r37;
 	add.rn.f32 	%r127, %r12, %r67;
-$L__BB53_58:                            // %_RNCNvNtCs5RXk03b0LR6_13inkrs_kernels5tiles59cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_tile_stats0B5_.exit27
+$L__BB53_58:                            // %_RNCNvNtCsfp2cBap0A3g_13inkrs_kernels5tiles59cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_tile_stats0B5_.exit27
 	and.b32 	%r68, %r32, 1;
 	shr.u32 	%r18, %r32, 1;
 	add.s32 	%r19, %r68, -1;
@@ -42448,10 +42448,10 @@ $L__BB54_1:                             // %bb9
 	bra.uni 	$L__BB54_2;
 $L__BB54_2:                             // %bb11
 	ld.global.b32 	%r39, [%rd6+12];
-	st.shared.b32 	[__shared_mem_445feb0385a80dea_be722b70424b1e0b], %r39;
+	st.shared.b32 	[__shared_mem_b36ae61f4ba23cec_e6bfcf169125860d], %r39;
 $L__BB54_3:                             // %bb12
 	bar.sync 	0;
-	ld.shared.b32 	%r2, [__shared_mem_445feb0385a80dea_be722b70424b1e0b];
+	ld.shared.b32 	%r2, [__shared_mem_b36ae61f4ba23cec_e6bfcf169125860d];
 	setp.ge.f32 	%p7, %r2, 0f00000000;
 	@%p7 bra 	$L__BB54_126;
 	bra.uni 	$L__BB54_4;
@@ -42888,7 +42888,7 @@ $L__BB54_45:                            // %inkrs_kernels__tiles__leaf.exit212
 	add.rn.f32 	%r133, %r129, %r132;
 	add.rn.f32 	%r134, %r11, %r133;
 	shl.b32 	%r135, %r9, 2;
-	mov.b32 	%r136, __shared_mem_445feb0385a80dea_89d6799f820bbf0e;
+	mov.b32 	%r136, __shared_mem_b36ae61f4ba23cec_ed525546845e73c4;
 	add.s32 	%r137, %r136, %r135;
 	st.shared.b32 	[%r137], %r134;
 	add.s32 	%r12, %r9, 256;
@@ -42989,7 +42989,7 @@ $L__BB54_63:                            // %bb27.i.3
 	@%p47 bra 	$L__BB54_47;
 	bra.uni 	$L__BB54_64;
 $L__BB54_64:                            // %inkrs_kernels__tiles__tile_sum.exit
-	ld.shared.b32 	%r147, [__shared_mem_445feb0385a80dea_89d6799f820bbf0e];
+	ld.shared.b32 	%r147, [__shared_mem_b36ae61f4ba23cec_ed525546845e73c4];
 	div.rn.f32 	%r19, %r147, 0f48880000;
 	bar.sync 	0;
 	mov.u32 	%r20, %tid.x;
@@ -43579,7 +43579,7 @@ $L__BB54_124:                           // %inkrs_kernels__tiles__tile_sum.exit6
 	@%p6 bra 	$L__BB54_126;
 	bra.uni 	$L__BB54_125;
 $L__BB54_125:                           // %bb27
-	ld.shared.b32 	%r312, [__shared_mem_445feb0385a80dea_89d6799f820bbf0e];
+	ld.shared.b32 	%r312, [__shared_mem_b36ae61f4ba23cec_ed525546845e73c4];
 	div.rn.f32 	%r313, %r312, 0f48880000;
 	sqrt.rn.f32 	%r314, %r313;
 	cvt.f64.f32 	%rd145, %r314;
@@ -43630,10 +43630,10 @@ $L__BB55_1:                             // %bb3
 	bra.uni 	$L__BB55_2;
 $L__BB55_2:                             // %bb5
 	ld.global.b32 	%r11, [%rd4+12];
-	st.shared.b32 	[__shared_mem_445feb0385a80dea_6c0437c259f02845], %r11;
+	st.shared.b32 	[__shared_mem_b36ae61f4ba23cec_a53f792ab2d8c5d3], %r11;
 $L__BB55_3:                             // %bb6
 	bar.sync 	0;
-	ld.shared.b32 	%r2, [__shared_mem_445feb0385a80dea_6c0437c259f02845];
+	ld.shared.b32 	%r2, [__shared_mem_b36ae61f4ba23cec_a53f792ab2d8c5d3];
 	setp.ge.f32 	%p8, %r2, 0f00000000;
 	@%p8 bra 	$L__BB55_6;
 	bra.uni 	$L__BB55_4;
@@ -43644,18 +43644,18 @@ $L__BB55_4:                             // %bb9
 	@%p9 bra 	$L__BB55_13;
 	bra.uni 	$L__BB55_8;
 $L__BB55_5:                             // %bb11
-	ld.shared.b32 	%r25, [__shared_mem_445feb0385a80dea_a9d4dac52bc10e19];
-	ld.shared.b32 	%r26, [__shared_mem_445feb0385a80dea_a9d4dac52bc10e19+4];
+	ld.shared.b32 	%r25, [__shared_mem_b36ae61f4ba23cec_b13d47edc71166ab];
+	ld.shared.b32 	%r26, [__shared_mem_b36ae61f4ba23cec_b13d47edc71166ab+4];
 	add.rn.f32 	%r27, %r25, %r26;
-	ld.shared.b32 	%r28, [__shared_mem_445feb0385a80dea_a9d4dac52bc10e19+8];
-	ld.shared.b32 	%r29, [__shared_mem_445feb0385a80dea_a9d4dac52bc10e19+12];
+	ld.shared.b32 	%r28, [__shared_mem_b36ae61f4ba23cec_b13d47edc71166ab+8];
+	ld.shared.b32 	%r29, [__shared_mem_b36ae61f4ba23cec_b13d47edc71166ab+12];
 	add.rn.f32 	%r30, %r28, %r29;
 	add.rn.f32 	%r31, %r27, %r30;
-	ld.shared.b32 	%r32, [__shared_mem_445feb0385a80dea_a9d4dac52bc10e19+16];
-	ld.shared.b32 	%r33, [__shared_mem_445feb0385a80dea_a9d4dac52bc10e19+20];
+	ld.shared.b32 	%r32, [__shared_mem_b36ae61f4ba23cec_b13d47edc71166ab+16];
+	ld.shared.b32 	%r33, [__shared_mem_b36ae61f4ba23cec_b13d47edc71166ab+20];
 	add.rn.f32 	%r34, %r32, %r33;
-	ld.shared.b32 	%r35, [__shared_mem_445feb0385a80dea_a9d4dac52bc10e19+24];
-	ld.shared.b32 	%r36, [__shared_mem_445feb0385a80dea_a9d4dac52bc10e19+28];
+	ld.shared.b32 	%r35, [__shared_mem_b36ae61f4ba23cec_b13d47edc71166ab+24];
+	ld.shared.b32 	%r36, [__shared_mem_b36ae61f4ba23cec_b13d47edc71166ab+28];
 	add.rn.f32 	%r37, %r35, %r36;
 	add.rn.f32 	%r38, %r34, %r37;
 	add.rn.f32 	%r6, %r31, %r38;
@@ -43706,7 +43706,7 @@ $L__BB55_9:                             // %bb3.i
 $L__BB55_10:                            // %bb4.i
 	add.rn.f32 	%r4, %r20, %r21;
 	shr.u32 	%r23, %r1, 3;
-	mov.b32 	%r24, __shared_mem_445feb0385a80dea_a9d4dac52bc10e19;
+	mov.b32 	%r24, __shared_mem_b36ae61f4ba23cec_b13d47edc71166ab;
 	add.s32 	%r5, %r24, %r23;
 	st.shared.b32 	[%r5], %r4;
 	bra.uni 	$L__BB55_12;
@@ -43834,7 +43834,7 @@ $L__BB56_3:                             // %bb3.i
 	bra.uni 	$L__BB56_4;
 $L__BB56_4:                             // %bb7.i154
 	trap; exit;
-$L__BB56_5:                             // %_RNvMNtCs5RXk03b0LR6_13inkrs_kernels8tiles384NtB2_3Src2at.exit163
+$L__BB56_5:                             // %_RNvMNtCsfp2cBap0A3g_13inkrs_kernels8tiles384NtB2_3Src2at.exit163
                                         //   in Loop: Header=BB56_3 Depth=1
 	shr.u32 	%r38, %r11, 7;
 	mul.lo.s32 	%r13, %r38, 1224;
@@ -43869,7 +43869,7 @@ $L__BB56_6:                             // %bb3.i37
 	bra.uni 	$L__BB56_7;
 $L__BB56_7:                             // %bb7.i131
 	trap; exit;
-$L__BB56_8:                             // %_RNvMNtCs5RXk03b0LR6_13inkrs_kernels8tiles384NtB2_3Src2at.exit140
+$L__BB56_8:                             // %_RNvMNtCsfp2cBap0A3g_13inkrs_kernels8tiles384NtB2_3Src2at.exit140
                                         //   in Loop: Header=BB56_6 Depth=2
 	add.s64 	%rd25, %rd3, %rd7;
 	ld.global.nc.b8 	%rs2, [%rd25];
@@ -43906,13 +43906,13 @@ $L__BB56_10:                            // %bb8.i45
 	bra.uni 	$L__BB56_11;
 $L__BB56_11:                            // %bb7.i110
 	trap; exit;
-$L__BB56_12:                            // %_RNvMNtCs5RXk03b0LR6_13inkrs_kernels8tiles384NtB2_3Src2at.exit
+$L__BB56_12:                            // %_RNvMNtCsfp2cBap0A3g_13inkrs_kernels8tiles384NtB2_3Src2at.exit
                                         //   in Loop: Header=BB56_3 Depth=1
 	add.s64 	%rd26, %rd3, %rd8;
 	ld.global.nc.b8 	%rs3, [%rd26];
 	cvt.rn.f32.u16 	%r90, %rs3;
 	add.rn.f32 	%r168, %r168, %r90;
-$L__BB56_13:                            // %_RNvMNtCs5RXk03b0LR6_13inkrs_kernels8tiles384NtB2_3Src5chain.exit
+$L__BB56_13:                            // %_RNvMNtCsfp2cBap0A3g_13inkrs_kernels8tiles384NtB2_3Src5chain.exit
                                         //   in Loop: Header=BB56_3 Depth=1
 	shfl.sync.bfly.b32 	%r91, %r168, 1, 31, -1;
 	add.rn.f32 	%r92, %r168, %r91;
@@ -43931,7 +43931,7 @@ $L__BB56_14:                            // %bb5.i
 	shl.b32 	%r100, %r12, 3;
 	add.s32 	%r101, %r100, %r8;
 	shl.b32 	%r102, %r101, 2;
-	mov.b32 	%r103, __shared_mem_445feb0385a80dea_8c97a75bc0531d73;
+	mov.b32 	%r103, __shared_mem_b36ae61f4ba23cec_a6d54a2c6bc14135;
 	add.s32 	%r21, %r103, %r102;
 	st.shared.b32 	[%r21], %r20;
 $L__BB56_15:                            // %bb7.i
@@ -43947,64 +43947,64 @@ $L__BB56_16:                            // %bb8.i
 	@%p21 bra 	$L__BB56_18;
 	bra.uni 	$L__BB56_17;
 $L__BB56_17:                            // %bb10.i18
-	ld.shared.b32 	%r104, [__shared_mem_445feb0385a80dea_8c97a75bc0531d73];
-	ld.shared.b32 	%r105, [__shared_mem_445feb0385a80dea_8c97a75bc0531d73+4];
+	ld.shared.b32 	%r104, [__shared_mem_b36ae61f4ba23cec_a6d54a2c6bc14135];
+	ld.shared.b32 	%r105, [__shared_mem_b36ae61f4ba23cec_a6d54a2c6bc14135+4];
 	add.rn.f32 	%r106, %r104, %r105;
-	ld.shared.b32 	%r107, [__shared_mem_445feb0385a80dea_8c97a75bc0531d73+8];
-	ld.shared.b32 	%r108, [__shared_mem_445feb0385a80dea_8c97a75bc0531d73+12];
+	ld.shared.b32 	%r107, [__shared_mem_b36ae61f4ba23cec_a6d54a2c6bc14135+8];
+	ld.shared.b32 	%r108, [__shared_mem_b36ae61f4ba23cec_a6d54a2c6bc14135+12];
 	add.rn.f32 	%r109, %r107, %r108;
 	add.rn.f32 	%r110, %r106, %r109;
-	ld.shared.b32 	%r111, [__shared_mem_445feb0385a80dea_8c97a75bc0531d73+16];
-	ld.shared.b32 	%r112, [__shared_mem_445feb0385a80dea_8c97a75bc0531d73+20];
+	ld.shared.b32 	%r111, [__shared_mem_b36ae61f4ba23cec_a6d54a2c6bc14135+16];
+	ld.shared.b32 	%r112, [__shared_mem_b36ae61f4ba23cec_a6d54a2c6bc14135+20];
 	add.rn.f32 	%r113, %r111, %r112;
-	ld.shared.b32 	%r114, [__shared_mem_445feb0385a80dea_8c97a75bc0531d73+24];
-	ld.shared.b32 	%r115, [__shared_mem_445feb0385a80dea_8c97a75bc0531d73+28];
+	ld.shared.b32 	%r114, [__shared_mem_b36ae61f4ba23cec_a6d54a2c6bc14135+24];
+	ld.shared.b32 	%r115, [__shared_mem_b36ae61f4ba23cec_a6d54a2c6bc14135+28];
 	add.rn.f32 	%r116, %r114, %r115;
 	add.rn.f32 	%r117, %r113, %r116;
 	add.rn.f32 	%r118, %r110, %r117;
-	ld.shared.b32 	%r119, [__shared_mem_445feb0385a80dea_8c97a75bc0531d73+32];
-	ld.shared.b32 	%r120, [__shared_mem_445feb0385a80dea_8c97a75bc0531d73+36];
+	ld.shared.b32 	%r119, [__shared_mem_b36ae61f4ba23cec_a6d54a2c6bc14135+32];
+	ld.shared.b32 	%r120, [__shared_mem_b36ae61f4ba23cec_a6d54a2c6bc14135+36];
 	add.rn.f32 	%r121, %r119, %r120;
-	ld.shared.b32 	%r122, [__shared_mem_445feb0385a80dea_8c97a75bc0531d73+40];
-	ld.shared.b32 	%r123, [__shared_mem_445feb0385a80dea_8c97a75bc0531d73+44];
+	ld.shared.b32 	%r122, [__shared_mem_b36ae61f4ba23cec_a6d54a2c6bc14135+40];
+	ld.shared.b32 	%r123, [__shared_mem_b36ae61f4ba23cec_a6d54a2c6bc14135+44];
 	add.rn.f32 	%r124, %r122, %r123;
 	add.rn.f32 	%r125, %r121, %r124;
-	ld.shared.b32 	%r126, [__shared_mem_445feb0385a80dea_8c97a75bc0531d73+48];
-	ld.shared.b32 	%r127, [__shared_mem_445feb0385a80dea_8c97a75bc0531d73+52];
+	ld.shared.b32 	%r126, [__shared_mem_b36ae61f4ba23cec_a6d54a2c6bc14135+48];
+	ld.shared.b32 	%r127, [__shared_mem_b36ae61f4ba23cec_a6d54a2c6bc14135+52];
 	add.rn.f32 	%r128, %r126, %r127;
-	ld.shared.b32 	%r129, [__shared_mem_445feb0385a80dea_8c97a75bc0531d73+56];
-	ld.shared.b32 	%r130, [__shared_mem_445feb0385a80dea_8c97a75bc0531d73+60];
+	ld.shared.b32 	%r129, [__shared_mem_b36ae61f4ba23cec_a6d54a2c6bc14135+56];
+	ld.shared.b32 	%r130, [__shared_mem_b36ae61f4ba23cec_a6d54a2c6bc14135+60];
 	add.rn.f32 	%r131, %r129, %r130;
 	add.rn.f32 	%r132, %r128, %r131;
 	add.rn.f32 	%r133, %r125, %r132;
 	add.rn.f32 	%r134, %r118, %r133;
-	ld.shared.b32 	%r135, [__shared_mem_445feb0385a80dea_8c97a75bc0531d73+64];
-	ld.shared.b32 	%r136, [__shared_mem_445feb0385a80dea_8c97a75bc0531d73+68];
+	ld.shared.b32 	%r135, [__shared_mem_b36ae61f4ba23cec_a6d54a2c6bc14135+64];
+	ld.shared.b32 	%r136, [__shared_mem_b36ae61f4ba23cec_a6d54a2c6bc14135+68];
 	add.rn.f32 	%r137, %r135, %r136;
-	ld.shared.b32 	%r138, [__shared_mem_445feb0385a80dea_8c97a75bc0531d73+72];
-	ld.shared.b32 	%r139, [__shared_mem_445feb0385a80dea_8c97a75bc0531d73+76];
+	ld.shared.b32 	%r138, [__shared_mem_b36ae61f4ba23cec_a6d54a2c6bc14135+72];
+	ld.shared.b32 	%r139, [__shared_mem_b36ae61f4ba23cec_a6d54a2c6bc14135+76];
 	add.rn.f32 	%r140, %r138, %r139;
 	add.rn.f32 	%r141, %r137, %r140;
-	ld.shared.b32 	%r142, [__shared_mem_445feb0385a80dea_8c97a75bc0531d73+80];
-	ld.shared.b32 	%r143, [__shared_mem_445feb0385a80dea_8c97a75bc0531d73+84];
+	ld.shared.b32 	%r142, [__shared_mem_b36ae61f4ba23cec_a6d54a2c6bc14135+80];
+	ld.shared.b32 	%r143, [__shared_mem_b36ae61f4ba23cec_a6d54a2c6bc14135+84];
 	add.rn.f32 	%r144, %r142, %r143;
-	ld.shared.b32 	%r145, [__shared_mem_445feb0385a80dea_8c97a75bc0531d73+88];
-	ld.shared.b32 	%r146, [__shared_mem_445feb0385a80dea_8c97a75bc0531d73+92];
+	ld.shared.b32 	%r145, [__shared_mem_b36ae61f4ba23cec_a6d54a2c6bc14135+88];
+	ld.shared.b32 	%r146, [__shared_mem_b36ae61f4ba23cec_a6d54a2c6bc14135+92];
 	add.rn.f32 	%r147, %r145, %r146;
 	add.rn.f32 	%r148, %r144, %r147;
 	add.rn.f32 	%r149, %r141, %r148;
-	ld.shared.b32 	%r150, [__shared_mem_445feb0385a80dea_8c97a75bc0531d73+96];
-	ld.shared.b32 	%r151, [__shared_mem_445feb0385a80dea_8c97a75bc0531d73+100];
+	ld.shared.b32 	%r150, [__shared_mem_b36ae61f4ba23cec_a6d54a2c6bc14135+96];
+	ld.shared.b32 	%r151, [__shared_mem_b36ae61f4ba23cec_a6d54a2c6bc14135+100];
 	add.rn.f32 	%r152, %r150, %r151;
-	ld.shared.b32 	%r153, [__shared_mem_445feb0385a80dea_8c97a75bc0531d73+104];
-	ld.shared.b32 	%r154, [__shared_mem_445feb0385a80dea_8c97a75bc0531d73+108];
+	ld.shared.b32 	%r153, [__shared_mem_b36ae61f4ba23cec_a6d54a2c6bc14135+104];
+	ld.shared.b32 	%r154, [__shared_mem_b36ae61f4ba23cec_a6d54a2c6bc14135+108];
 	add.rn.f32 	%r155, %r153, %r154;
 	add.rn.f32 	%r156, %r152, %r155;
-	ld.shared.b32 	%r157, [__shared_mem_445feb0385a80dea_8c97a75bc0531d73+112];
-	ld.shared.b32 	%r158, [__shared_mem_445feb0385a80dea_8c97a75bc0531d73+116];
+	ld.shared.b32 	%r157, [__shared_mem_b36ae61f4ba23cec_a6d54a2c6bc14135+112];
+	ld.shared.b32 	%r158, [__shared_mem_b36ae61f4ba23cec_a6d54a2c6bc14135+116];
 	add.rn.f32 	%r159, %r157, %r158;
-	ld.shared.b32 	%r160, [__shared_mem_445feb0385a80dea_8c97a75bc0531d73+120];
-	ld.shared.b32 	%r161, [__shared_mem_445feb0385a80dea_8c97a75bc0531d73+124];
+	ld.shared.b32 	%r160, [__shared_mem_b36ae61f4ba23cec_a6d54a2c6bc14135+120];
+	ld.shared.b32 	%r161, [__shared_mem_b36ae61f4ba23cec_a6d54a2c6bc14135+124];
 	add.rn.f32 	%r162, %r160, %r161;
 	add.rn.f32 	%r163, %r159, %r162;
 	add.rn.f32 	%r164, %r156, %r163;
@@ -45774,7 +45774,7 @@ $L__BB63_9:                             // %inkrs_kernels__unet3d__chan.exit
 	@%p10 bra 	$L__BB63_5;
 	bra.uni 	$L__BB63_10;
 $L__BB63_10:                            // %bb18
-	mov.b32 	%r59, __shared_mem_445feb0385a80dea_029b4460ab24e882;
+	mov.b32 	%r59, __shared_mem_b36ae61f4ba23cec_96ef6f0bccb83790;
 	mad.lo.s32 	%r11, %r2, 12, %r59;
 	st.shared.b32 	[%r11], %r112;
 	st.shared.b32 	[%r11+4], %r113;
@@ -46072,9 +46072,9 @@ $L__BB63_50:                            // %bb25.7
 	bra.uni 	$L__BB63_51;
 $L__BB63_51:                            // %bb28
 	ld.param.b32 	%r48, [u3_finalize_param_8];
-	ld.shared.b32 	%r100, [__shared_mem_445feb0385a80dea_029b4460ab24e882];
-	ld.shared.b32 	%r101, [__shared_mem_445feb0385a80dea_029b4460ab24e882+4];
-	ld.shared.b32 	%r102, [__shared_mem_445feb0385a80dea_029b4460ab24e882+8];
+	ld.shared.b32 	%r100, [__shared_mem_b36ae61f4ba23cec_96ef6f0bccb83790];
+	ld.shared.b32 	%r101, [__shared_mem_b36ae61f4ba23cec_96ef6f0bccb83790+4];
+	ld.shared.b32 	%r102, [__shared_mem_b36ae61f4ba23cec_96ef6f0bccb83790+8];
 	setp.leu.f32 	%p35, %r100, 0f00000000;
 	div.rn.f32 	%r103, %r102, %r100;
 	selp.f32 	%r104, 0f00000000, %r103, %p35;
@@ -46440,7 +46440,7 @@ $L__BB66_2:                             // %bb9
 	ld.param.b32 	%r15, [u3_hist_param_10];
 	mov.u32 	%r2, %tid.x;
 	shl.b32 	%r22, %r2, 2;
-	mov.b32 	%r23, __shared_mem_445feb0385a80dea_e32e185ef999c163;
+	mov.b32 	%r23, __shared_mem_b36ae61f4ba23cec_0b838a713065ca75;
 	add.s32 	%r3, %r23, %r22;
 	st.shared.b32 	[%r3], 0;
 	bar.sync 	0;
@@ -46699,7 +46699,7 @@ $L__BB67_16:                            // %inkrs_kernels__unet3d__biased.exit37
 	@%p18 bra 	$L__BB67_7;
 	bra.uni 	$L__BB67_17;
 $L__BB67_17:                            // %bb30
-	mov.b32 	%r62, __shared_mem_445feb0385a80dea_07bd4f906a5518a7;
+	mov.b32 	%r62, __shared_mem_b36ae61f4ba23cec_469bc8e97a5d3955;
 	mad.lo.s32 	%r63, %r2, 24, %r62;
 	st.shared.b32 	[%r63], %r13;
 	st.shared.b32 	[%r63+4], %r12;
@@ -48466,7 +48466,7 @@ $L__BB73_16:                            // %inkrs_kernels__unet3d__fp16__biased.
 	@%p16 bra 	$L__BB73_7;
 	bra.uni 	$L__BB73_17;
 $L__BB73_17:                            // %bb30
-	mov.b32 	%r50, __shared_mem_445feb0385a80dea_6f3df299fcc4e395;
+	mov.b32 	%r50, __shared_mem_b36ae61f4ba23cec_91cca3d726903df3;
 	mad.lo.s32 	%r51, %r2, 24, %r50;
 	st.shared.b32 	[%r51], %r13;
 	st.shared.b32 	[%r51+4], %r12;
@@ -49005,7 +49005,7 @@ $L__BB76_3:                             // %bb8.i
 	setp.ne.b32 	%p10, %r25, 0;
 	selp.b32 	%r26, 1, 0, %p10;
 	add.s32 	%r48, %r23, %r26;
-$L__BB76_4:                             // %_RNCNvNtCs5RXk03b0LR6_13inkrs_kernels4v8in57cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_v8_blend0B5_.exit
+$L__BB76_4:                             // %_RNCNvNtCsfp2cBap0A3g_13inkrs_kernels4v8in57cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_v8_blend0B5_.exit
 	div.u32 	%r27, %r4, %r16;
 	add.s32 	%r28, %r27, 1;
 	min.u32 	%r6, %r14, %r28;
@@ -49020,7 +49020,7 @@ $L__BB76_5:                             // %bb8.i8
 	setp.ne.b32 	%p12, %r32, 0;
 	selp.b32 	%r33, 1, 0, %p12;
 	add.s32 	%r46, %r30, %r33;
-$L__BB76_6:                             // %_RNCNvNtCs5RXk03b0LR6_13inkrs_kernels4v8in57cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_v8_blend0B5_.exit25
+$L__BB76_6:                             // %_RNCNvNtCsfp2cBap0A3g_13inkrs_kernels4v8in57cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_v8_blend0B5_.exit25
 	ld.param.b32 	%r18, [v8_blend_param_12];
 	setp.ge.u32 	%p13, %r48, %r6;
 	mov.b32 	%r51, 0f00000000;
@@ -49681,7 +49681,7 @@ $L__BB80_5:                             // %bb26
 	bra.uni 	$L__BB80_6;
 $L__BB80_6:                             // %bb27
 	shl.b32 	%r22, %r1, 3;
-	mov.b32 	%r23, __shared_mem_445feb0385a80dea_4e748f8ff9f73ee4;
+	mov.b32 	%r23, __shared_mem_b36ae61f4ba23cec_eae746dc02d69fe2;
 	add.s32 	%r24, %r23, %r22;
 	st.shared.b32 	[%r24], %r30;
 	st.shared.b32 	[%r24+4], %r29;
@@ -50355,7 +50355,7 @@ $L__BB81_40:                            // %bb137
 	add.s64 	%rd51, %rd9, %rd50;
 	ld.global.nc.b32 	%r42, [%rd51];
 	setp.gt.u32 	%p25, %r282, 575;
-	mov.b32 	%r271, __shared_mem_445feb0385a80dea_de66c29c6e72bb98;
+	mov.b32 	%r271, __shared_mem_b36ae61f4ba23cec_c2c4b9d4666c7fe2;
 	@%p25 bra 	$L__BB81_5;
 	bra.uni 	$L__BB81_41;
 $L__BB81_41:                            // %bb9.preheader
@@ -50879,7 +50879,7 @@ $L__BB81_169:                           // %bb394
 	add.s64 	%rd125, %rd10, %rd124;
 	ld.global.nc.b32 	%r43, [%rd125];
 	shl.b32 	%r84, %r83, 1;
-	mov.b32 	%r85, __shared_mem_445feb0385a80dea_6715899c2b6b21e6;
+	mov.b32 	%r85, __shared_mem_b36ae61f4ba23cec_3a0f20d4a96e4910;
 	add.s32 	%r44, %r85, %r84;
 	add.s64 	%rd18, %rd7, %rd124;
 	bra.uni 	$L__BB81_6;
@@ -51011,7 +51011,7 @@ $L__BB82_6:                             // %bb20
 	bra.uni 	$L__BB82_7;
 $L__BB82_7:                             // %bb3.i
 	trap; exit;
-$L__BB82_8:                             // %_RNCNvNtCs5RXk03b0LR6_13inkrs_kernels4v8in58cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_v8_up2cats_0B5_.exit
+$L__BB82_8:                             // %_RNCNvNtCsfp2cBap0A3g_13inkrs_kernels4v8in58cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_v8_up2cats_0B5_.exit
 	add.s32 	%r67, %r28, -1;
 	setp.lt.u32 	%p23, %r16, %r67;
 	selp.b32 	%r21, 1, 0, %p23;
@@ -51026,7 +51026,7 @@ $L__BB82_8:                             // %_RNCNvNtCs5RXk03b0LR6_13inkrs_kernel
 	bra.uni 	$L__BB82_9;
 $L__BB82_9:                             // %bb3.i29
 	trap; exit;
-$L__BB82_10:                            // %_RNCNvNtCs5RXk03b0LR6_13inkrs_kernels4v8in58cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_v8_up2cats_0B5_.exit42
+$L__BB82_10:                            // %_RNCNvNtCsfp2cBap0A3g_13inkrs_kernels4v8in58cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_v8_up2cats_0B5_.exit42
 	add.s32 	%r56, %r27, -1;
 	setp.lt.u32 	%p18, %r55, %r56;
 	selp.b32 	%r13, 1, 0, %p18;
@@ -51042,7 +51042,7 @@ $L__BB82_10:                            // %_RNCNvNtCs5RXk03b0LR6_13inkrs_kernel
 	bra.uni 	$L__BB82_11;
 $L__BB82_11:                            // %bb3.i68
 	trap; exit;
-$L__BB82_12:                            // %_RNCNvNtCs5RXk03b0LR6_13inkrs_kernels4v8in58cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_v8_up2cats_0B5_.exit81
+$L__BB82_12:                            // %_RNCNvNtCsfp2cBap0A3g_13inkrs_kernels4v8in58cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_v8_up2cats_0B5_.exit81
 	add.s32 	%r74, %r26, %r21;
 	mad.lo.s32 	%r75, %r74, %r2, %r10;
 	cvt.u64.u32 	%rd7, %r75;
@@ -51051,7 +51051,7 @@ $L__BB82_12:                            // %_RNCNvNtCs5RXk03b0LR6_13inkrs_kernel
 	bra.uni 	$L__BB82_13;
 $L__BB82_13:                            // %bb3.i107
 	trap; exit;
-$L__BB82_14:                            // %_RNCNvNtCs5RXk03b0LR6_13inkrs_kernels4v8in58cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_v8_up2cats_0B5_.exit120
+$L__BB82_14:                            // %_RNCNvNtCsfp2cBap0A3g_13inkrs_kernels4v8in58cuda_oxide_codegen_v1_cuda_oxide_kernel_246e25db_v8_up2cats_0B5_.exit120
 	cvt.rn.f32.u32 	%r57, %r55;
 	sub.f32 	%r14, %r52, %r57;
 	mov.b32 	%r58, 0f3F800000;
